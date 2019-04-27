@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "352833414422",
+    "firebase_url": "https://fire-one-58ddc.firebaseio.com",
+    "project_id": "fire-one-58ddc",
+    "storage_bucket": "fire-one-58ddc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352833414422:android:ea8b8601625b2cbd",
+        "android_client_info": {
+          "package_name": "com.together"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352833414422-4p31tl8iodmoodjldqp2otoasp51pasm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.together",
+            "certificate_hash": "1bc08f7b4aaaa37ac575ac0278502b0cb1ccc46b"
+          }
+        },
+        {
+          "client_id": "352833414422-4qt81mifve0h0v5pu1em0tnarjmq0j7j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyjEZmmv_2EYovePnu2UPaka9h4cA7zkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "352833414422-4qt81mifve0h0v5pu1em0tnarjmq0j7j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
