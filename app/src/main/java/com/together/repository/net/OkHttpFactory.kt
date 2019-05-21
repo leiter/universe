@@ -1,4 +1,4 @@
-package com.together.repository
+package com.together.repository.net
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

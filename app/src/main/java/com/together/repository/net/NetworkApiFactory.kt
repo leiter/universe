@@ -1,4 +1,4 @@
-package com.together.repository
+package com.together.repository.net
 
 import retrofit2.Retrofit
 

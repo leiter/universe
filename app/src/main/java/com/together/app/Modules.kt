@@ -1,4 +1,4 @@
-package com.together
+package com.together.app
 
 import android.app.Application
 import com.google.firebase.auth.FirebaseAuth
@@ -14,12 +14,13 @@ import javax.inject.Singleton
 
 @Module(includes = [
     AndroidInjectionModule::class,
-    FirebaseModule::class,
     BuildersModule::class
     ])
 interface AppModule {
     @Binds
     fun provideContext(app: App) : Application
+
+
 
 }
 
@@ -36,6 +37,8 @@ abstract class BuildersModule {
     @ContributesAndroidInjector(modules = [ProvideActivitiesModule::class])
     abstract fun bindMainActivity(): MainActivity
 
+
+
 }
 
 @Module
@@ -43,11 +46,6 @@ object ProvideActivitiesModule {
     @JvmStatic
     @Provides
     fun mainActivity(mainActivity: MainActivity) = mainActivity
-    //bindPresenter
-}
-
-@Module
-object FirebaseModule {
 
     @JvmStatic
     @Provides

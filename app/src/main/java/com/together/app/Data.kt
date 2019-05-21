@@ -1,4 +1,4 @@
-package com.together
+package com.together.app
 
 import java.util.*
 
@@ -10,6 +10,21 @@ interface BaseModel {
     //type
 }
 
+
+data class ChatThread(val id: String,
+                      val name: String,
+                      val userIds: List<String>,
+                      val messageList: List<ChatMessage>,
+                      val photoUrl: String)
+
+
+
+data class ChatMessage(val id: String,
+                       val text: String,
+                       val name: String,
+                       val photoUrl: String  )
+
+
 data class User(
     override val remoteId: Int,
     override val createdAt: Date,
@@ -18,13 +33,22 @@ data class User(
     val userId: Int,
     val roles: List<Role>
 
+
+
 ) : BaseModel
 
 
 data class Order(
+    override val remoteId: Int,
+    override val createdAt: Date,
+    override var modifiedAt: Date,
     val user: User,
     val articles: List<Article>
-)
+):BaseModel
+
+
+
+
 
 data class Article(
     val productId: Int,
@@ -37,8 +61,9 @@ data class Article(
 
 object DeviceData {
     val androidSdkVersion: Int = 1
-
 }
+
+
 
 sealed class Amount {
     class Hands(var amount: Long) : Amount()
@@ -49,6 +74,8 @@ sealed class Amount {
 }
 
 sealed class Role {
+    val buyer = 0
+    val seller = 1
     class Buyer(val me: Int = 0) : Role()
     class Seller(val me: Int = 1) : Role()
 }
