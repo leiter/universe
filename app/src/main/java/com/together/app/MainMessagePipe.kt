@@ -4,6 +4,6 @@ import io.reactivex.subjects.PublishSubject
 
 object MainMessagePipe {
 
-    val mainThreadMessage : PublishSubject<Any> = PublishSubject.create()
+    val mainThreadMessage : PublishSubject<in BaseModel> = PublishSubject.create()
 
 }

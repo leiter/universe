@@ -1,5 +1,6 @@
 package com.together.repository.auth
 
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
@@ -13,7 +14,7 @@ interface Authentification {
 
 }
 
-class AuthentificationImpl @Inject constructor()  : Authentification {
+class AuthentificationImpl @Inject constructor(context: Context) : Authentification {
 
     var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 

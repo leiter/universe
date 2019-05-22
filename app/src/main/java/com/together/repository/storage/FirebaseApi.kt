@@ -3,23 +3,20 @@ package com.together.repository.storage
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.together.app.Article
-import com.together.app.LoggedState
-import com.together.app.MainMessagePipe
+import com.together.app.*
+import java.util.*
+import javax.inject.Inject
 
 
-sealed class FireBaseMessage {
-    class LoggedOut : FireBaseMessage()
-    class LoggedIn : FireBaseMessage()
-    data class Supply(val articles: List<Article>) : FireBaseMessage()
-
-
-}
 
 
 class Firebase : FirebaseAuth.AuthStateListener {
 
 //    private val listenerMap: MutableMap<FireDataBaseType, Pair<DatabaseReference, ChildEventListener>> = hashMapOf()
+
+    @Inject
+    lateinit var database : FirebaseDatabase
+
 
     //Create Enum
     fun <T> getChildEventListener(clazz: Class<T>): ChildEventListener {
@@ -27,6 +24,7 @@ class Firebase : FirebaseAuth.AuthStateListener {
         return object : ChildEventListener {
 
             override fun onCancelled(p0: DatabaseError) {
+
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -49,6 +47,7 @@ class Firebase : FirebaseAuth.AuthStateListener {
     }
 
     fun isLoggedIn(): LoggedState {
+
         when (firebaseAuth.currentUser != null) {
             true -> return LoggedState.IN()
             else -> return LoggedState.OUT()
@@ -67,24 +66,22 @@ class Firebase : FirebaseAuth.AuthStateListener {
         val user = p0.currentUser
         if (user == null) {
             MainMessagePipe.mainThreadMessage.onNext(
-                FireBaseMessage.LoggedOut()
+                LoggedOut(hashCode(), Date(), Date())
             )
         } else {
             MainMessagePipe.mainThreadMessage.onNext(
-                FireBaseMessage.LoggedIn()
+                LoggedIn(hashCode(), Date(), Date())
             )
         }
     }
 
-    fun getSupplyList() {
+    fun getSupplyList(ref: DatabaseReference) {
         Log.e("Enter", "For debugging");
 
-        reference.addChildEventListener(listener)
+        ref.child("articles").addChildEventListener(listener)
 
 
     }
-
-    val reference = firebaseDatabase.getReference().child("articles")
 
     val listener: ChildEventListener = object : ChildEventListener {
 
@@ -117,7 +114,5 @@ class Firebase : FirebaseAuth.AuthStateListener {
 
     }
 
-    @IgnoreExtraProperties
-    data class Da(var available:Boolean, var name:String, var views:String)
 
 }

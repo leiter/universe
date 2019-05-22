@@ -1,13 +1,14 @@
 package com.together
 
-import android.os.SystemClock
 import android.util.Log
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.FirebaseDatabase
 import com.together.app.MainMessagePipe
 import com.together.repository.storage.Firebase
-import io.reactivex.subjects.PublishSubject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,27 +27,28 @@ class FireDatabaseTests {
 //        assertEquals("com.together", appContext.packageName)
 //    }
 
-    lateinit var pipe: PublishSubject<Any>
+    //    lateinit var pipe: PublishSubject<>
     lateinit var fire: Firebase
-
 
     var notNull: String? = null
     val thisIdleFunction = { notNull != null }
 
     @Before
     fun setup() {
-        notNull = null
-        pipe = MainMessagePipe.mainThreadMessage
         fire = Firebase()
-        val idlingResource = IdleMessager("getArticleList", thisIdleFunction)
-        Espresso.registerIdlingResources(idlingResource)
+
 
     }
 
     @Test
     fun getArticleList() {
-        notNull = null
-        pipe.subscribe(
+        val idlingResource = IdleMessager("getArticleList", thisIdleFunction)
+        IdlingRegistry.getInstance().register(idlingResource)
+        val app =
+            FirebaseApp.initializeApp(InstrumentationRegistry
+                .getInstrumentation().targetContext) as FirebaseApp
+        fire.getSupplyList(FirebaseDatabase.getInstance(app).reference)
+        MainMessagePipe.mainThreadMessage.subscribe(
             { Log.e("SUCCESS", "getArticleList") },
             {
                 Log.e("FAILED", "getArticleList")
@@ -56,12 +58,12 @@ class FireDatabaseTests {
                 notNull = ""
             }
         )
-
-        fire.getSupplyList()
-        SystemClock.sleep(5000)
     }
 
 }
+
+
+
 
 class IdleMessager(val tagName: String, val idleFunction: () -> Boolean) : IdlingResource {
 
@@ -73,7 +75,7 @@ class IdleMessager(val tagName: String, val idleFunction: () -> Boolean) : Idlin
 
     override fun isIdleNow(): Boolean {
         val idle = idleFunction()
-//        if (idle) callback?.onTransitionToIdle()
+        if (idle) callback?.onTransitionToIdle()
         return idle
     }
 

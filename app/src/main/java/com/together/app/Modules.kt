@@ -20,8 +20,6 @@ interface AppModule {
     @Binds
     fun provideContext(app: App) : Application
 
-
-
 }
 
 
@@ -29,14 +27,27 @@ interface AppModule {
 @Component(modules = [AppModule::class])
 interface AppComponent : AndroidInjector<App> {
     @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<App>()
+    abstract class Builder : AndroidInjector.Builder<App>(){}
+
+
+
+
+
+}
+
+@Module
+abstract class FragmentModuleTest{
+
+    @Provides
+    fun firebaseDatabase(): FirebaseDatabase = FirebaseDatabase.getInstance()
+
+
 }
 
 @Module
 abstract class BuildersModule {
     @ContributesAndroidInjector(modules = [ProvideActivitiesModule::class])
     abstract fun bindMainActivity(): MainActivity
-
 
 
 }

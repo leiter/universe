@@ -8,7 +8,7 @@ import com.firebase.ui.auth.AuthUI
 
 
 
-object TryIndef{
+object TryIndef {
 
     const val ARTICLE_LIST = 0  //L
     const val STAT_2 = 2
@@ -38,7 +38,7 @@ object AQ {
         return ni !=null && ni.isConnected && ni.type ==  type //ConnectivityManager.TYPE_WIFI
     }
 
-    fun hasInternetConnection(context: Context):Boolean {
+    fun hasInternetConnection(context: Context): Boolean {
         return isConnectedTo(getConnectionManager(context),ConnectivityManager.TYPE_WIFI) ||
                 isConnectedTo(getConnectionManager(context),ConnectivityManager.TYPE_MOBILE)
     }
