@@ -17,9 +17,18 @@ object TryIndef {
     @Retention(AnnotationRetention.SOURCE)
     @IntDef( ARTICLE_LIST, STAT_2, STAT_3)
     annotation class FireDataBaseType
+
+
+
+
 }
 
+object GeneralUtils {
 
+
+
+
+}
 
 
 

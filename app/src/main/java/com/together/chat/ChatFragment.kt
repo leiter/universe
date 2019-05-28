@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 
 class ChatFragment : Fragment() {
 
+
+
 }
 
 
@@ -17,17 +19,15 @@ const val CHAT_FRIENDS = 2
 class ChatCategoryAdapter(fm:FragmentManager) : FragmentStatePagerAdapter(fm) {
 
 
-
-
-
     override fun getItem(position: Int): Fragment {  //@FragmentPosition
         when (position) {
-            CURRENT_CHAT -> return CurrentChatFragment()
+            CURRENT_CHAT -> return OpenChatsFragment()
             OLD_CHAT_LIST -> return OldChatsFragment()
             CHAT_FRIENDS -> return ChatContactFragment()
 
 
-            else -> throw IllegalStateException("No Fragment on this pager for ${position}.")
+            else -> throw IllegalStateException(
+                "No Fragment on this pager for ${position}.")
         }
 
     }

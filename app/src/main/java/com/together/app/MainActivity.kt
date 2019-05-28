@@ -5,35 +5,31 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.together.R
-import com.together.chat.AnyIdeaFragment
 import com.together.chat.ChatFragment
+import com.together.chat.anyidea.AnyIdeaFragment
 import com.together.order.main.OrderFragmentMain
-import com.together.repository.storage.Firebase
+import com.together.repository.Result
+import com.together.repository.auth.FirebaseAuth
 import com.together.utils.AQ
 import dagger.android.AndroidInjection
-import dagger.android.DispatchingAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
-const val LOGIN_REQUEST = 12
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
-    private val fire = Firebase()
+    val LOGIN_REQUEST = 12
 
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    private lateinit var viewModel: MainViewModel
+    private val fire = FirebaseAuth
 
     private var firebaseDatabase: FirebaseDatabase? = null
-    private  var articleSource: DatabaseReference? = null
+    private var articleSource: DatabaseReference? = null
 
     private val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -60,44 +56,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         AndroidInjection.inject(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
         viewModel.loggedState.observe(this, Observer {
             when (it) {
-                is LoggedState.IN -> supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, ChatFragment()).commit()
-                else -> startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+                is UiState.LOGGEDIN -> supportFragmentManager.beginTransaction()
+                    .replace(R.id.container, OrderFragmentMain()).commit()
+                else -> {
+                    //set logged out state
+                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+                }
             }
 
         })
-        viewModel.loggedState.value = Firebase().isLoggedIn()
+        viewModel.loggedState.value = fire.isLoggedIn()
 
         navigation.setOnNavigationItemSelectedListener(selectedListener)
 
-
-//        firebaseDatabase?.setLogLevel(Logger.Level.DEBUG)
         firebaseDatabase = FirebaseDatabase.getInstance()
+
+
+        if (savedInstanceState == null) {
+
+        }
+
+
 
         MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
-                is Da -> {
-                    val s = (it).name
-                    Toast.makeText(baseContext,"msg Received ${s}.",
-                        Toast.LENGTH_SHORT).show() }
+                is Result.Article -> {
+                    val s = (it).productName
+                    Toast.makeText(
+                        baseContext, "msg Received ${s}.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
             }
-            }
+        }
+
 
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
 
     }
 
@@ -105,10 +109,12 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                viewModel.loggedState.value = LoggedState.IN()
+                viewModel.loggedState.value = UiState.LOGGEDIN
             } else {
-                viewModel.loggedState.value = LoggedState.OUT()
+                viewModel.loggedState.value = UiState.LOGGEDOUT
             }
+        } else {
+            finish()
         }
     }
 
