@@ -16,6 +16,7 @@ import com.together.chat.anyidea.AnyIdeaFragment
 import com.together.order.main.OrderFragmentMain
 import com.together.repository.Result
 import com.together.repository.auth.FirebaseAuth
+import com.together.repository.storage.DatabaseManager
 import com.together.utils.AQ
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,22 +29,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private val fire = FirebaseAuth
 
-    private var firebaseDatabase: FirebaseDatabase? = null
-
+    private lateinit var firebaseDatabase: FirebaseDatabase
 
     companion object {
 
         private val LOGIN_ACTION = "action.login"
 
-        fun startLogin(context: Context){
-            val i = Intent(context,MainActivity::class.java).apply {
+        fun startLogin(context: Context) {
+            val i = Intent(context, MainActivity::class.java).apply {
                 action = context.packageName + LOGIN_ACTION
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(i)
         }
     }
-
-
 
     private val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                     .replace(R.id.container, OrderFragmentMain()).commit()
                 else -> {
                     //set logged out state
-                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+//                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
                 }
             }
 
@@ -94,30 +93,20 @@ class MainActivity : AppCompatActivity() {
 
         button_next.setOnClickListener {
 
-
-
+            //startLogin(baseContext)
+//            FireData().getSupplyList(firebaseDatabase!!.reference)
+            DatabaseManager.ARTICLE_LIST.setup(firebaseDatabase.reference)
         }
 
-        MainMessagePipe.mainThreadMessage.subscribe {
-            when (it) {
-                is Result.Article -> {
-                    val s = (it).productName
-                    Toast.makeText(
-                        baseContext, "msg Received ${s}.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
-            }
-        }
 
 
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (intent!=null && intent.action == packageName + LOGIN_ACTION){
-            startActivityForResult(AQ.getFirebaseUIStarter(),LOGIN_REQUEST)
+        if (intent != null && intent.action == packageName + LOGIN_ACTION) {
+            startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
         }
 
     }

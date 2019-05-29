@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
 
     val loggedState: MutableLiveData<UiState> = MutableLiveData()
 
-    val openChat: MutableLiveData<MutableList<UiState.PostChatMessage>> = MutableLiveData()
+    val openChat: MutableLiveData<MutableList<UiState.ChatMessage>> = MutableLiveData()
 
     val availableArticleList: MutableLiveData<MutableList<UiState.ArticleList>> = MutableLiveData()
 

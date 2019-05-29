@@ -15,7 +15,7 @@ import com.together.app.MainViewModel
 import com.together.order.main.ArticleAdapter
 import com.together.repository.Result
 import com.together.repository.auth.FirebaseAuth
-import com.together.repository.storage.FireDatabase
+import com.together.repository.storage.FireData
 import kotlinx.android.synthetic.main.any_idea_fragment.*
 
 
@@ -35,7 +35,8 @@ class AnyIdeaPresenter(val dataRef: DatabaseReference) {
 
 
 
-    private fun fire(): FireDatabase = FireDatabase()
+
+    private fun fire(): FireData = FireData()
 }
 
 
@@ -50,8 +51,6 @@ class AnyIdeaFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-
 
 
     }
@@ -69,9 +68,11 @@ class AnyIdeaFragment : Fragment() {
 
         input_message.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

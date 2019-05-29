@@ -16,7 +16,7 @@ object MainMessagePipe {
         uiEvent = PublishSubject.create()
         uiDisposable = uiEvent.subscribe {
             when(it){
-                is UiEvent.LogIn -> {  // todo care for
+                is UiEvent.LogIn -> {
                     MainActivity.startLogin(it.context)
                 }
                 is UiEvent.LogOut -> {
@@ -24,10 +24,12 @@ object MainMessagePipe {
                 }
 
 
+
+
+
             }
         }
     }
-
 
     val mainThreadMessage : PublishSubject<in Result> = PublishSubject.create()
 

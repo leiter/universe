@@ -27,13 +27,9 @@ object FirebaseAuth : FirebaseAuth.AuthStateListener {
     override fun onAuthStateChanged(p0: FirebaseAuth) {
         val user = p0.currentUser
         if (user == null) {
-            MainMessagePipe.mainThreadMessage.onNext(
-                Result.LoggedOut
-            )
+            MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
         } else {
-            MainMessagePipe.mainThreadMessage.onNext(
-                Result.LoggedIn
-            )
+            MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn)
         }
     }
 

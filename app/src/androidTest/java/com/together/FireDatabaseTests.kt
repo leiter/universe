@@ -7,7 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.together.app.MainMessagePipe
-import com.together.repository.storage.FireDatabase
+import com.together.repository.storage.FireData
 import com.together.utils.IdleMessager
 import com.together.utils.TestData
 import org.junit.Before
@@ -29,7 +29,7 @@ class FireDatabaseTests {
 //    }
 
     //    lateinit var pipe: PublishSubject<>
-    lateinit var fire: FireDatabase
+    lateinit var fire: FireData
 
     val app = FirebaseApp.initializeApp(
         InstrumentationRegistry.getInstrumentation()
@@ -41,7 +41,7 @@ class FireDatabaseTests {
 
     @Before
     fun setup() {
-        fire = FireDatabase(
+        fire = FireData(
 //            FirebaseDatabase.getInstance(app!!).reference
         )
 

@@ -40,10 +40,15 @@ sealed class UiState {
             }
     }
 
-    data class PostChatMessage(val creatorId: String,
-                               val name: String,
-                               val text: String,
-                               val photoUrl: String) : UiState()
+    data class ChatMessage(var creatorId: String,
+                           var name: String,
+                           var text: String,
+                           var photoUrl: String) : UiState()
+
+    data class PostAnyMessage(var creatorId: String,
+                               var name: String,
+                               var text: String,
+                               var photoUrl: String) : UiState()
 
 
 }

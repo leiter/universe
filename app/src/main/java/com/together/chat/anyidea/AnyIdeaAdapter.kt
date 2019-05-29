@@ -9,10 +9,10 @@ import com.together.app.UiState
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.chat_message.*
 
-class AnyIdeaAdapter(val data: MutableList<UiState.PostChatMessage>) :
-    RecyclerView.Adapter<AnyIdeaAdapter.IdeaViewHolder>() {
+class AnyIdeaAdapter(val data: MutableList<UiState.ChatMessage>) :
+    RecyclerView.Adapter<IdeaViewHolder>() {
 
-    fun update(newData: MutableList<UiState.PostChatMessage>) {
+    fun update(newData: MutableList<UiState.ChatMessage>) {
         //todo use diffutils
         data.clear()
         data.addAll(newData)
@@ -21,26 +21,28 @@ class AnyIdeaAdapter(val data: MutableList<UiState.PostChatMessage>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IdeaViewHolder {
         // diff on ViewTyp
-        return IdeaViewHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.chat_message, parent, false))
+        return IdeaViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.chat_message, parent, false)
+        )
     }
 
     override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: IdeaViewHolder, position: Int) {
-        holder.bindItem(position)
+        holder.bindItem(position, data[position])
     }
 
+}
 
-    inner class IdeaViewHolder(override val containerView: View)
-        : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class IdeaViewHolder(override val containerView: View)
 
-        fun bindItem(position: Int) {
-            message_creator.text = data[position].name
-            message_text.text = data[position].text
-        }
+    : RecyclerView.ViewHolder(containerView), LayoutContainer {
+
+    fun bindItem(position: Int, item: UiState.ChatMessage) {
+        message_creator.text = item.name
+        message_text.text = item.text
     }
-
 }
 
 

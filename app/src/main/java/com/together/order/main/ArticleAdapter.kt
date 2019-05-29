@@ -7,22 +7,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.together.R
 import com.together.app.UiState
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.product_item.*
 
-class ArticleAdapter(val data: MutableList<UiState>) : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
+class ArticleAdapter(val data: MutableList<UiState.Article>)
+
+    : RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
 
 
-    fun update(newData: MutableList<UiState>) {
-
+    fun update(newData: MutableList<UiState.Article>) {
+        data.clear()
+        data.addAll(newData)
+        notifyDataSetChanged()
     }
 
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-
-
-        LayoutInflater.from(parent.context).inflate(R.layout.product_item ,parent,false)
-
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+       return ArticleViewHolder(LayoutInflater.from(parent.context)
+           .inflate(R.layout.product_item ,parent,false))
     }
 
     override fun getItemCount() = data.size
@@ -31,12 +31,12 @@ class ArticleAdapter(val data: MutableList<UiState>) : RecyclerView.Adapter<Arti
          holder.bindItem(position)
     }
 
-
     inner class ArticleViewHolder(override val containerView: View?)
+
         : RecyclerView.ViewHolder(containerView!!), LayoutContainer{
 
         fun bindItem(position: Int) {
-
+            product_name.text = data[position].productName
         }
 
     }
