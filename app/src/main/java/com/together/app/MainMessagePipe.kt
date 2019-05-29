@@ -3,6 +3,7 @@ package com.together.app
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DatabaseReference
 import com.together.repository.Result
+import com.together.repository.auth.FirebaseAuth
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
@@ -16,12 +17,13 @@ object MainMessagePipe {
         uiDisposable = uiEvent.subscribe {
             when(it){
                 is UiEvent.LogIn -> {  // todo care for
-//                    it.context.startActivity()
-
+                    MainActivity.startLogin(it.context)
                 }
                 is UiEvent.LogOut -> {
-
+                    FirebaseAuth.logOut()
                 }
+
+
             }
         }
     }

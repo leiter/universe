@@ -1,9 +1,6 @@
 package com.together.repository.storage
 
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.*
 import com.together.app.MainMessagePipe
 import com.together.repository.Result
 
@@ -13,7 +10,7 @@ class FireDatabase {
     fun createChildEventListener(
         enum: DatabaseManager,
         ref: DatabaseReference
-    ) {
+    ): ChildEventListener {
 
         val connection = object : ChildEventListener {
 
@@ -55,7 +52,8 @@ class FireDatabase {
         }
 
 //        return Pair(connection, ref)
-        MainMessagePipe.listenerMap.put(connection,Pair(connection,ref))
+        MainMessagePipe.listenerMap.put(connection, Pair(connection, ref))
+        return connection
     }
 
     fun getSupplyList(ref: DatabaseReference) {
@@ -65,14 +63,20 @@ class FireDatabase {
     fun createArticle(ref: DatabaseReference, article: Result) {
         ref.child("articles").push().setValue(article)
             .addOnFailureListener {
-            MainMessagePipe.mainThreadMessage.onError(it)
-        }
+                MainMessagePipe.mainThreadMessage.onError(it)
+            }
             .addOnCompleteListener {
-            MainMessagePipe.mainThreadMessage.onNext(article)
-        }
+                MainMessagePipe.mainThreadMessage.onNext(article)
+            }
     }
 
-    fun createDocument(ref: DatabaseReference, path: String, document: Result){
+
+    fun loadAvailableArticles(ref: DatabaseReference, path: String, document: Result) {
+        ref.database.getReference("article")
+    }
+
+
+    fun createDocument(ref: DatabaseReference, path: String, document: Result) {
         ref.child(path).push().setValue(document)
     }
 
@@ -90,9 +94,7 @@ class FireDatabase {
         override fun onChildAdded(p0: DataSnapshot, p1: String?) {
             val result = p0.getValue(Result.Article::class.java)
                     as Result.Article   //find a solution that does not use assertion and no cast
-            MainMessagePipe.mainThreadMessage.onNext(result
-//                DatabaseManager.ARTICLE_LIST.getValueClazz().newInstance()
-            )
+            MainMessagePipe.mainThreadMessage.onNext(result)
         }
 
         override fun onChildRemoved(p0: DataSnapshot) {
@@ -102,10 +104,7 @@ class FireDatabase {
     }
 }
 
-fun createChildEventListener(
-    enum: DatabaseManager
-):
-        ChildEventListener {
+fun createChildEventListener(enum: DatabaseManager): ChildEventListener {
 
     val connection = object : ChildEventListener {
 
@@ -120,52 +119,66 @@ fun createChildEventListener(
         }
 
         override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-
             MainMessagePipe.mainThreadMessage.onNext(
-                enum.getValueClazz().newInstance()
+                p0.getValue(enum.getValueClazz())!!
             )
         }
 
         override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-
             MainMessagePipe.mainThreadMessage.onNext(
-                enum.getValueClazz().newInstance()
+                p0.getValue(enum.getValueClazz())!!
             )
         }
 
         override fun onChildAdded(p0: DataSnapshot, p1: String?) {
             MainMessagePipe.mainThreadMessage.onNext(
-                enum.getValueClazz().newInstance()
+                p0.getValue(enum.getValueClazz())!!
             )
         }
 
         override fun onChildRemoved(p0: DataSnapshot) {
             MainMessagePipe.mainThreadMessage.onNext(
-                enum.getValueClazz().newInstance()
+                p0.getValue(enum.getValueClazz())!!
             )
         }
-
     }
-
     return connection
 }
 
-enum class DatabaseManager {
+fun createValueListener(
+    enum: DatabaseManager
+) : ValueEventListener {
 
+   return object : ValueEventListener {
+        override fun onCancelled(p0: DatabaseError) {
+            MainMessagePipe.mainThreadMessage.onNext(
+                Result.FireDatabaseError(p0.code, p0.message, p0.details)
+            )
+        }
+
+        override fun onDataChange(p0: DataSnapshot) {
+            MainMessagePipe.mainThreadMessage.onNext(
+                p0.getValue(enum.getValueClazz())!!
+            )
+        }
+    }
+}
+
+
+enum class DatabaseManager {
 
     ARTICLE_LIST {
 
-        lateinit var connection :ChildEventListener
-
         override fun setup(
-            enum: DatabaseManager,
             ref: DatabaseReference,
             bag: MutableMap<String, Pair<ChildEventListener, DatabaseReference>>
         ) {
             val articles = ref.child("articles")
 
+            val connection: ChildEventListener
             connection = articles.addChildEventListener(createChildEventListener(ARTICLE_LIST))
-            bag[this.name] = Pair(connection,articles)
+
+            bag[articles.key!!] = Pair(connection, articles)  // todo test
 
         }
 
@@ -177,9 +190,21 @@ enum class DatabaseManager {
 
     },
 
+    LOAD_ARTICLES {
+        override fun getValueClazz(): Class<Result.ArticleList> = Result.ArticleList::class.java
+
+        override fun setup(
+            ref: DatabaseReference,
+            bag: MutableMap<String, Pair<ChildEventListener, DatabaseReference>>
+        ) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+
+    },
+
     LAST_ACTIVE_CHATS {
         override fun setup(
-            enum: DatabaseManager,
             ref: DatabaseReference,
             bag: MutableMap<String, Pair<ChildEventListener,
                     DatabaseReference>>
@@ -197,7 +222,6 @@ enum class DatabaseManager {
     abstract fun getValueClazz(): Class<out Result>
 
     abstract fun setup(
-        enum: DatabaseManager,
         ref: DatabaseReference,
         bag: MutableMap<String, Pair<ChildEventListener, DatabaseReference>>
     )

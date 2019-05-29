@@ -21,7 +21,8 @@ class AnyIdeaAdapter(val data: MutableList<UiState.PostChatMessage>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IdeaViewHolder {
         // diff on ViewTyp
-        return IdeaViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_message, parent, false))
+        return IdeaViewHolder(LayoutInflater.from(parent.context)
+            .inflate(R.layout.chat_message, parent, false))
     }
 
     override fun getItemCount(): Int = data.size

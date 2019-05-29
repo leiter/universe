@@ -4,9 +4,9 @@ import android.content.Context
 
 sealed class UiEvent {
 
-
     class LogIn(val context: Context) : UiEvent()
-    class LogOut(val context: Context) : UiEvent()
+
+    object LogOut : UiEvent()
 
 
 

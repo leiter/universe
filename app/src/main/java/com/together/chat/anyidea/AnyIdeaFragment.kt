@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.together.R
 import com.together.app.MainViewModel
+import com.together.order.main.ArticleAdapter
 import com.together.repository.Result
 import com.together.repository.auth.FirebaseAuth
 import com.together.repository.storage.FireDatabase
@@ -30,13 +31,9 @@ class AnyIdeaPresenter(val dataRef: DatabaseReference) {
             )
             fire().createDocument(dataRef, "anymessage", message)
         }
-
-
     }
 
-    fun inviteUserToChat(userId: String) {
 
-    }
 
     private fun fire(): FireDatabase = FireDatabase()
 }
@@ -49,8 +46,13 @@ class AnyIdeaFragment : Fragment() {
 
     private val presenter = AnyIdeaPresenter(dataRef)
 
+    private lateinit var adapter: ArticleAdapter
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+
+
 
     }
 
@@ -81,8 +83,8 @@ class AnyIdeaFragment : Fragment() {
         })
 
         send_message.setOnClickListener {
-            presenter.postAnyMessage(send_message.text.toString())
-            send_message.text = ""
+            presenter.postAnyMessage(input_message.text.toString())
+            input_message.setText("")
         }
     }
 

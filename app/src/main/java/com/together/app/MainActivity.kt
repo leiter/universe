@@ -1,6 +1,7 @@
 package com.together.app
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -8,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.together.R
 import com.together.chat.ChatFragment
@@ -29,7 +29,21 @@ class MainActivity : AppCompatActivity() {
     private val fire = FirebaseAuth
 
     private var firebaseDatabase: FirebaseDatabase? = null
-    private var articleSource: DatabaseReference? = null
+
+
+    companion object {
+
+        private val LOGIN_ACTION = "action.login"
+
+        fun startLogin(context: Context){
+            val i = Intent(context,MainActivity::class.java).apply {
+                action = context.packageName + LOGIN_ACTION
+            }
+            context.startActivity(i)
+        }
+    }
+
+
 
     private val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -78,11 +92,11 @@ class MainActivity : AppCompatActivity() {
         firebaseDatabase = FirebaseDatabase.getInstance()
 
 
-        if (savedInstanceState == null) {
+        button_next.setOnClickListener {
+
+
 
         }
-
-
 
         MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
@@ -102,6 +116,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        if (intent!=null && intent.action == packageName + LOGIN_ACTION){
+            startActivityForResult(AQ.getFirebaseUIStarter(),LOGIN_REQUEST)
+        }
 
     }
 

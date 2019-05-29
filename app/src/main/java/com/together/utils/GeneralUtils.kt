@@ -18,19 +18,7 @@ object TryIndef {
     @IntDef( ARTICLE_LIST, STAT_2, STAT_3)
     annotation class FireDataBaseType
 
-
-
-
 }
-
-object GeneralUtils {
-
-
-
-
-}
-
-
 
 
 
@@ -62,5 +50,7 @@ object AQ {
             .setIsSmartLockEnabled(false)
             .setAvailableProviders(providers).build()
     }
+
+
 
 }
