@@ -6,4 +6,15 @@
 
 
     <color name="textColorMain">#FA9C4D</color>
+
+
+
+
+
+
+
+
+    <color name="black">@android:color/black</color>
+
+
 </resources>
