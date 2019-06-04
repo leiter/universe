@@ -44,10 +44,12 @@
             android:id="@+id/idea_messages"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
             app:layout_constraintBottom_toTopOf="@id/attach_image"
             app:stackFromEnd="true"
+            tools:itemCount="4"
             tools:listitem="@layout/any_idea_item"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

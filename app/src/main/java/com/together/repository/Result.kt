@@ -1,17 +1,7 @@
 package com.together.repository
 
-import java.util.*
 
-
-interface BaseModel {
-    // integrate as fieldType
-    val createdAt: Date
-    var modifiedAt: Date
-    //type
-}
-
-
-// Results are used for Requests and results this will probably change in future
+// Results are used for Requests and Results this will probably change in future
 sealed class Result {
 
     object LoggedOut : Result()

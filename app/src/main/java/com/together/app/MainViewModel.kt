@@ -21,6 +21,7 @@ class MainViewModel : ViewModel() {
                 is Result.LoggedIn ->
                     loggedState.value = UiState.LOGGEDIN
 
+                is Result.Article -> productList.value?.add(UiState.Article())
 
                 is Result.ArticleList -> throw Exception("TTTTTTTTTTTTTTTTT")
 
@@ -38,9 +39,11 @@ class MainViewModel : ViewModel() {
 
     val loggedState: MutableLiveData<UiState> = MutableLiveData()
 
+
+
     val openChat: MutableLiveData<MutableList<UiState.ChatMessage>> = MutableLiveData()
 
-    val availableArticleList: MutableLiveData<MutableList<UiState.ArticleList>> = MutableLiveData()
+    val productList: MutableLiveData<MutableList<UiState.Article>> = MutableLiveData()
 
 
 

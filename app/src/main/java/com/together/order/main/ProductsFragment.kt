@@ -8,17 +8,21 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
+import com.together.app.UiState
 import com.together.repository.TestData
 import kotlinx.android.synthetic.main.main_order_fragment.*
 
-class OrderFragmentMain : Fragment() {
+class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
+    override fun clicked(item: UiState.Article) {
+
+        product_name.text = item.productName
+        product_description.text = item.productDescription
 
     }
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,7 +34,10 @@ class OrderFragmentMain : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         val d = TestData.uiArticleList.toMutableList()
-        article_list.adapter = ArticleAdapter(d)
+        article_list.adapter = ProductAdapter(d, this)
+
+
+
 //
 //        MainMessagePipe.mainThreadMessage.subscribe {
 //            when (it) {
@@ -46,6 +53,7 @@ class OrderFragmentMain : Fragment() {
 //        }
 
     }
+
 
 
 }

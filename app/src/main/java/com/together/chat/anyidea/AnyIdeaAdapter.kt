@@ -1,13 +1,10 @@
 package com.together.chat.anyidea
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
 import com.together.app.UiState
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.chat_message.*
 
 class AnyIdeaAdapter(val data: MutableList<UiState.ChatMessage>) :
     RecyclerView.Adapter<IdeaViewHolder>() {
@@ -31,19 +28,13 @@ class AnyIdeaAdapter(val data: MutableList<UiState.ChatMessage>) :
 
     override fun onBindViewHolder(holder: IdeaViewHolder, position: Int) {
         holder.bindItem(position, data[position])
+
     }
+
 
 }
 
-class IdeaViewHolder(override val containerView: View)
 
-    : RecyclerView.ViewHolder(containerView), LayoutContainer {
-
-    fun bindItem(position: Int, item: UiState.ChatMessage) {
-        message_creator.text = item.name
-        message_text.text = item.text
-    }
-}
 
 
 

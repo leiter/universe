@@ -53,17 +53,17 @@ class FireDatabaseTests {
         val idlingResource = IdleMessager("getArticleList", thisIdleFunction)
         IdlingRegistry.getInstance().register(idlingResource)
 
-        fire.getSupplyList(FirebaseDatabase.getInstance(app!!).reference)
-        MainMessagePipe.mainThreadMessage.subscribe(
-            { Log.e("SUCCESS", "getArticleList") },
-            {
-                Log.e("FAILED", "getArticleList")
-                notNull = ""
-
-            }, {
-                notNull = ""
-            }
-        )
+//        fire.getSupplyList(FirebaseDatabase.getInstance(app!!).reference)
+//        MainMessagePipe.mainThreadMessage.subscribe(
+//            { Log.e("SUCCESS", "getArticleList") },
+//            {
+//                Log.e("FAILED", "getArticleList")
+//                notNull = ""
+//
+//            }, {
+//                notNull = ""
+//            }
+//        )
     }
 
     @Test

@@ -8,36 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.together.R
 import com.together.app.MainViewModel
-import com.together.order.main.ArticleAdapter
-import com.together.repository.Result
-import com.together.repository.auth.FirebaseAuth
-import com.together.repository.storage.FireData
+import com.together.order.main.ProductAdapter
 import kotlinx.android.synthetic.main.any_idea_fragment.*
 
-
-class AnyIdeaPresenter(val dataRef: DatabaseReference) {
-
-    fun postAnyMessage(msg: String) {
-        if (FirebaseAuth.fireUser != null) {
-            val user = FirebaseAuth.fireUser
-            val message = Result.ChatMessage(
-                user.uid,
-                user.displayName ?: " ",
-                msg, user.photoUrl?.toString() ?: ""
-            )
-            fire().createDocument(dataRef, "anymessage", message)
-        }
-    }
-
-
-
-
-    private fun fire(): FireData = FireData()
-}
 
 
 class AnyIdeaFragment : Fragment() {
@@ -47,11 +23,10 @@ class AnyIdeaFragment : Fragment() {
 
     private val presenter = AnyIdeaPresenter(dataRef)
 
-    private lateinit var adapter: ArticleAdapter
+    private lateinit var adapter: ProductAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
 
     }
 
@@ -76,9 +51,7 @@ class AnyIdeaFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.toString().trim().length > 0) {
-                    send_message.isEnabled = true
-                } else send_message.isEnabled = false
+                    send_message.isEnabled = s.toString().trim().length > 0
             }
 
         })
@@ -87,6 +60,9 @@ class AnyIdeaFragment : Fragment() {
             presenter.postAnyMessage(input_message.text.toString())
             input_message.setText("")
         }
+        send_message.isEnabled = send_message.text.isNotEmpty()
+
+
     }
 
 

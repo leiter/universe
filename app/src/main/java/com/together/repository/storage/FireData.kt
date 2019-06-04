@@ -6,15 +6,8 @@ import com.together.repository.Result
 
 class FireData {
 
-
-    fun getSupplyList(ref: DatabaseReference) {
-        ref.child("articles").addChildEventListener(listener)
-    }
-
-
-
     fun createArticle(ref: DatabaseReference, article: Result) {
-        ref.child("articles").push().setValue(article)
+        val d = ref.child("articles").push().setValue(article)
             .addOnFailureListener {
                 MainMessagePipe.mainThreadMessage.onError(it)
             }
@@ -25,7 +18,21 @@ class FireData {
 
 
     fun loadAvailableArticles(ref: DatabaseReference, path: String, document: Result) {
-        ref.database.getReference("article")
+        ref.database.getReference(path).addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot) {
+
+                p0.children.forEach {
+
+                }
+                ref.database.getReference("article").removeEventListener(this)
+
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+        })
     }
 
 
@@ -33,31 +40,6 @@ class FireData {
         ref.child(path).push().setValue(document)
     }
 
-    val listener: ChildEventListener = createChildEventListener(DatabaseManager.ARTICLE_LIST)
-
-
-//        object : ChildEventListener {
-//
-//        override fun onCancelled(p0: DatabaseError) {
-//        }
-//
-//        override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-//        }
-//
-//        override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-//        }
-//
-//        override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-//            val result = p0.getValue(Result.Article::class.java)
-//                    as Result.Article   //find a solution that does not use assertion and no cast
-//            MainMessagePipe.mainThreadMessage.onNext(result)
-//        }
-//
-//        override fun onChildRemoved(p0: DataSnapshot) {
-//
-//        }
-//
-//    }
 }
 
 fun createChildEventListener(enum: DatabaseManager): ChildEventListener {
@@ -76,7 +58,6 @@ fun createChildEventListener(enum: DatabaseManager): ChildEventListener {
 
         override fun onChildMoved(p0: DataSnapshot, p1: String?) {
             MainMessagePipe.mainThreadMessage.onNext(
-
                 p0.getValue(enum.getValueClazz())!!
             )
         }
@@ -111,53 +92,15 @@ fun createValueListener(enum: DatabaseManager): ValueEventListener {
         }
 
         override fun onDataChange(p0: DataSnapshot) {
-            MainMessagePipe.mainThreadMessage.onNext(
-                p0.getValue(enum.getValueClazz())!!
-            )
+
+            for (p in p0.children){
+                MainMessagePipe.mainThreadMessage.onNext(
+                    p.getValue(enum.getValueClazz())!!
+                )
+            }
+
         }
     }
 }
 
 
-enum class DatabaseManager {
-
-    ARTICLE_LIST {
-        override fun setup(ref: DatabaseReference) {
-            val articles = ref.child("articles")
-            val connection = articles.addChildEventListener(createChildEventListener(ARTICLE_LIST))
-            MainMessagePipe.listenerMap[connection] = Pair(connection, articles)  // todo test
-        }
-
-        override fun getValueClazz(): Class<Result.Article> = Result.Article::class.java
-
-    },
-
-    LOAD_ARTICLES {
-        override fun getValueClazz(): Class<Result.ArticleList> = Result.ArticleList::class.java
-
-
-        override fun setup(ref: DatabaseReference) {
-
-
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-
-    },
-
-    LAST_ACTIVE_CHATS {
-        override fun setup(ref: DatabaseReference) {
-
-        }
-
-        override fun getValueClazz(): Class<Result.ChatThread> = Result.ChatThread::class.java
-
-
-    };
-
-    abstract fun getValueClazz(): Class<out Result>
-
-    abstract fun setup(ref: DatabaseReference)
-
-
-}

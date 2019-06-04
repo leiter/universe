@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,8 +12,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.together.R
 import com.together.chat.ChatFragment
 import com.together.chat.anyidea.AnyIdeaFragment
-import com.together.order.main.OrderFragmentMain
-import com.together.repository.Result
+import com.together.order.main.ProductsFragment
 import com.together.repository.auth.FirebaseAuth
 import com.together.repository.storage.DatabaseManager
 import com.together.utils.AQ
@@ -49,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_home -> {
 
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, OrderFragmentMain()).commit()
+                    .replace(R.id.container, ProductsFragment()).commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
@@ -76,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.loggedState.observe(this, Observer {
             when (it) {
                 is UiState.LOGGEDIN -> supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, OrderFragmentMain()).commit()
+                    .replace(R.id.container, ProductsFragment()).commit()
                 else -> {
                     //set logged out state
 //                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
@@ -92,9 +90,6 @@ class MainActivity : AppCompatActivity() {
 
 
         button_next.setOnClickListener {
-
-            //startLogin(baseContext)
-//            FireData().getSupplyList(firebaseDatabase!!.reference)
             DatabaseManager.ARTICLE_LIST.setup(firebaseDatabase.reference)
         }
 

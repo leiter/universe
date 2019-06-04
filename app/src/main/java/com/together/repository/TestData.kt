@@ -34,7 +34,29 @@ object TestData {
         Result.User(displayName = "Annabel", emailAdress = "")
     )
 
+
+
+
+
     val uiArticleList = mutableListOf(
+        UiState.Article(
+            0,
+            "Banana",
+            "Nice fruit to eat.",
+            true
+        ),
+        UiState.Article(
+            1,
+            "Apple",
+            "Nice fruit to eat.",
+            false
+        ),
+        UiState.Article(
+            2,
+            "Potato",
+            "Lovely vegetable.",
+            true
+        ),
         UiState.Article(
             0,
             "Banana",
