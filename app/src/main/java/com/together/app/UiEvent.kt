@@ -9,7 +9,7 @@ sealed class UiEvent{
 
     object LogOut : UiEvent()
 
-
+    object LoadProducts : UiEvent()
 
     data class PostChatMessage(var creatorId: String,
                                var name: String,

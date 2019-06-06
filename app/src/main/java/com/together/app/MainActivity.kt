@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -73,11 +74,13 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.loggedState.observe(this, Observer {
             when (it) {
-                is UiState.LOGGEDIN -> supportFragmentManager.beginTransaction()
+                is UiState.LOGGEDIN ->
+                    supportFragmentManager.beginTransaction()
                     .replace(R.id.container, ProductsFragment()).commit()
                 else -> {
+                    Log.e("TTTTT", "For debugging");
                     //set logged out state
-//                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
                 }
             }
 
@@ -94,8 +97,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
+        log_out.setOnClickListener {
+            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

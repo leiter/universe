@@ -1,14 +1,26 @@
 package com.together.repository
 
 
+
+
 // Results are used for Requests and Results this will probably change in future
 sealed class Result {
 
-    object LoggedOut : Result()
+    abstract var id :String
 
-    object LoggedIn : Result()
+    object LoggedOut : Result(){
+        override var id: String = ""
+
+    }
+
+    object LoggedIn : Result() {
+        override var id: String = ""
+
+    }
 
     data class FireDatabaseError(
+        override var id: String = "",
+
         var code: Int = Int.MAX_VALUE,
         var message: String = "",
         var detail: String = ""
@@ -16,7 +28,7 @@ sealed class Result {
 
 
     data class User(
-        var id: String = "",
+        override var id: String = "",
         var displayName: String = "",
         var emailAdress: String = "",
         var chatThreadIds: List<String> = listOf()
@@ -24,6 +36,7 @@ sealed class Result {
 
 
     data class Article(
+        override var id: String = "",
         var productId: Int = -1,
         var productName: String = "",
         var productDescription: String? = null,
@@ -35,6 +48,8 @@ sealed class Result {
 
 
     data class Order(
+        override var id: String = "",
+
         var user: User,
         var articles: List<Article>
     ) : Result()
@@ -44,11 +59,11 @@ sealed class Result {
         var androidSdkVersion: Int = 1
     }
 
-    data class ArticleList(
-        var articles: List<Article>
-    ) : Result()
+
 
     data class ChatMessage(
+        override var id: String = "",
+
         val creatorId: String,
         val name: String,
         val text: String,
@@ -57,7 +72,7 @@ sealed class Result {
 
 
     data class ChatThread (
-        var id: String = "",
+        override var id: String = "",
         var name: String = "",
         var userIds: List<String> = emptyList(),
         var messageList: List<ChatMessage> = emptyList(),

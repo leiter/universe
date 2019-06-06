@@ -49,6 +49,7 @@ fun createChildEventListener(enum: DatabaseManager): ChildEventListener {
         override fun onCancelled(p0: DatabaseError) {
             MainMessagePipe.mainThreadMessage.onNext(
                 Result.FireDatabaseError(
+                    "",
                     p0.code,
                     p0.message,
                     p0.details
@@ -63,9 +64,8 @@ fun createChildEventListener(enum: DatabaseManager): ChildEventListener {
         }
 
         override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            MainMessagePipe.mainThreadMessage.onNext(
-                p0.getValue(enum.getValueClazz())!!
-            )
+            val i = p0.getValue(enum.getValueClazz())!!
+            MainMessagePipe.mainThreadMessage.onNext(i)
         }
 
         override fun onChildAdded(p0: DataSnapshot, p1: String?) {
@@ -88,7 +88,7 @@ fun createValueListener(enum: DatabaseManager): ValueEventListener {
     return object : ValueEventListener {
         override fun onCancelled(p0: DatabaseError) {
             MainMessagePipe.mainThreadMessage.onNext(
-                Result.FireDatabaseError(p0.code, p0.message, p0.details))
+                Result.FireDatabaseError("", p0.code, p0.message, p0.details))
         }
 
         override fun onDataChange(p0: DataSnapshot) {

@@ -6,16 +6,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.together.R
 import com.together.app.UiState
 
-class ProductAdapter(val data: MutableList<UiState.Article>, val click: ItemClicked) : RecyclerView.Adapter<ArticleViewHolder>() {
+class ProductAdapter(var data: MutableList<UiState.Article>, val click: ItemClicked) : RecyclerView.Adapter<ArticleViewHolder>() {
 
     interface ItemClicked {
         fun clicked(item: UiState.Article)
     }
 
     fun update(newData: MutableList<UiState.Article>) {
-        data.clear()
-        data.addAll(newData)
-        notifyDataSetChanged()
+//        data.clear()
+//        data.addAll(newData)
+//        notifyDataSetChanged()
+        data = newData
+    }
+
+    fun addItem(item : UiState.Article){
+        data.add(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {

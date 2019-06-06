@@ -19,7 +19,6 @@ import javax.inject.Singleton
 interface AppModule {
     @Binds
     fun provideContext(app: App) : Application
-
 }
 
 
@@ -28,11 +27,6 @@ interface AppModule {
 interface AppComponent : AndroidInjector<App> {
     @Component.Builder
     abstract class Builder : AndroidInjector.Builder<App>(){}
-
-
-
-
-
 }
 
 @Module

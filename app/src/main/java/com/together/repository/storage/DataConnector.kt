@@ -19,30 +19,17 @@ enum class DatabaseManager {
 
     LOAD_ARTICLES {
 
-        override fun getValueClazz(): Class<Result.ArticleList> = Result.ArticleList::class.java
-
+        override fun getValueClazz(): Class<Result.Article> = Result.Article::class.java
 
         override fun setup(ref: DatabaseReference) {
+            val products = ref.child("articles")
+            val listener = products.addChildEventListener(createChildEventListener(LOAD_ARTICLES))
 
 
         }
-
-
-    },
-
-    LAST_ACTIVE_CHATS {
-
-
-        override fun setup(ref: DatabaseReference) {
-
-        }
-
-        override fun getValueClazz(): Class<Result.ChatThread> = Result.ChatThread::class.java
 
 
     };
-
-
 
 
 

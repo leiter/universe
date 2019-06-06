@@ -8,10 +8,15 @@ import io.reactivex.disposables.CompositeDisposable
 
 class MainViewModel : ViewModel() {
 
+    val productList: MutableLiveData<MutableList<UiState.Article>>
+
     var disposable: CompositeDisposable = CompositeDisposable()
 
     init {
         // wire DataSource to UiState
+
+        productList = MutableLiveData()
+        productList.value = mutableListOf()
 
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
@@ -21,14 +26,10 @@ class MainViewModel : ViewModel() {
                 is Result.LoggedIn ->
                     loggedState.value = UiState.LOGGEDIN
 
-                is Result.Article -> productList.value?.add(UiState.Article())
-
-                is Result.ArticleList -> throw Exception("TTTTTTTTTTTTTTTTT")
+                is Result.Article -> productList.value?.add(UiState.Article(productName = it.productName,
+                    productDescription = it.productDescription, imageUrl = it.imageUrl))
 
                 is Result.ChatThread -> throw Exception("TTTTTTTTTTTTTTTTT")
-
-
-
 
 
             }
@@ -36,15 +37,9 @@ class MainViewModel : ViewModel() {
     }
 
 
-
     val loggedState: MutableLiveData<UiState> = MutableLiveData()
 
-
-
     val openChat: MutableLiveData<MutableList<UiState.ChatMessage>> = MutableLiveData()
-
-    val productList: MutableLiveData<MutableList<UiState.Article>> = MutableLiveData()
-
 
 
     override fun onCleared() {

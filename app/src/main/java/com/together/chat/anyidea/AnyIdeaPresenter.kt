@@ -12,6 +12,7 @@ class AnyIdeaPresenter(val dataRef: DatabaseReference) {
         if (FirebaseAuth.fireUser != null) {
             val user = FirebaseAuth.fireUser
             val message = Result.ChatMessage(
+                "",
                 user.uid,
                 user.displayName ?: " ",
                 msg, user.photoUrl?.toString() ?: ""
@@ -21,8 +22,7 @@ class AnyIdeaPresenter(val dataRef: DatabaseReference) {
     }
 
 
-
-    fun setupAdapter(){
+    fun setupAdapter() {
 
     }
 

@@ -18,13 +18,13 @@ sealed class UiState {
         var imageUrl: String = ""
     ) : UiState()
 
-    class ArticleList(list: List<Result.Article>) : UiState() {
+    class ProductList(list: List<Result.Article>) : UiState() {
 
-        val allArticles: MutableList<Article> = mutableListOf()
+        val allProducts: MutableList<Article> = mutableListOf()
 
         init {
             list.forEach {
-                allArticles.add(
+                allProducts.add(
                     Article(
                         it.productId,
                         it.productName,
@@ -34,9 +34,9 @@ sealed class UiState {
             }
         }
 
-        val availableArticles: List<Article>
+        val availableProducts: List<Article>
             get() {
-                return allArticles.filter { it.available }
+                return allProducts.filter { it.available }
             }
     }
 
