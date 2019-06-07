@@ -17,10 +17,14 @@ class ProductAdapter(var data: MutableList<UiState.Article>, val click: ItemClic
 //        data.addAll(newData)
 //        notifyDataSetChanged()
         data = newData
+        notifyDataSetChanged()
+
     }
 
     fun addItem(item : UiState.Article){
         data.add(item)
+        notifyDataSetChanged()
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {

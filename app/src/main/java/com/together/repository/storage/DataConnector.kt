@@ -9,7 +9,7 @@ enum class DatabaseManager {
     ARTICLE_LIST {
         override fun setup(ref: DatabaseReference) {
             val articles = ref.child("articles")
-            val connection = articles.addChildEventListener(createChildEventListener(ARTICLE_LIST))
+            val connection = articles.addChildEventListener(createChildEventListener(getValueClazz()))
             MainMessagePipe.listenerMap[connection] = Pair(connection, articles)
         }
 
@@ -23,8 +23,7 @@ enum class DatabaseManager {
 
         override fun setup(ref: DatabaseReference) {
             val products = ref.child("articles")
-            val listener = products.addChildEventListener(createChildEventListener(LOAD_ARTICLES))
-
+            val listener = products.addChildEventListener(createChildEventListener(getValueClazz()))
 
         }
 

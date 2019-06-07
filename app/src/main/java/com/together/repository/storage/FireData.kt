@@ -42,7 +42,7 @@ class FireData {
 
 }
 
-fun createChildEventListener(enum: DatabaseManager): ChildEventListener {
+fun createChildEventListener(enum: Class<out Result>): ChildEventListener {
 
     val connection = object : ChildEventListener {
 
@@ -58,26 +58,27 @@ fun createChildEventListener(enum: DatabaseManager): ChildEventListener {
         }
 
         override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            MainMessagePipe.mainThreadMessage.onNext(
-                p0.getValue(enum.getValueClazz())!!
-            )
+//            MainMessagePipe.mainThreadMessage.onNext(
+//                p0.getValue(enum.getValueClazz())!!
+//            )
         }
 
         override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            val i = p0.getValue(enum.getValueClazz())!!
-            MainMessagePipe.mainThreadMessage.onNext(i)
+//            val i = p0.getValue(enum.getValueClazz())!!
+//            i.id = p0.key ?: ""
+//            MainMessagePipe.mainThreadMessage.onNext(i)
         }
 
         override fun onChildAdded(p0: DataSnapshot, p1: String?) {
             MainMessagePipe.mainThreadMessage.onNext(
-                p0.getValue(enum.getValueClazz())!!
+                p0.getValue(enum)!!
             )
         }
 
         override fun onChildRemoved(p0: DataSnapshot) {
-            MainMessagePipe.mainThreadMessage.onNext(
-                p0.getValue(enum.getValueClazz())!!
-            )
+//            MainMessagePipe.mainThreadMessage.onNext(
+//                p0.getValue(enum.getValueClazz())!!
+//            )
         }
     }
     return connection

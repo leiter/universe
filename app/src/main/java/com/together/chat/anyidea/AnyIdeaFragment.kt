@@ -25,11 +25,6 @@ class AnyIdeaFragment : Fragment() {
 
     private lateinit var adapter: ProductAdapter
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-    }
-
     private fun getModel(): MainViewModel {
         return ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
     }
