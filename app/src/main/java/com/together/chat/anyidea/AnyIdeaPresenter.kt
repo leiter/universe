@@ -22,9 +22,5 @@ class AnyIdeaPresenter(val dataRef: DatabaseReference) {
     }
 
 
-    fun setupAdapter() {
-
-    }
-
     private fun fire(): FireData = FireData()
 }

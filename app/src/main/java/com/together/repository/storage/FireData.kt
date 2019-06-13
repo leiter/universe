@@ -3,6 +3,8 @@ package com.together.repository.storage
 import com.google.firebase.database.*
 import com.together.app.MainMessagePipe
 import com.together.repository.Result
+import io.reactivex.Observable
+import io.reactivex.Single
 
 class FireData {
 
@@ -14,25 +16,6 @@ class FireData {
             .addOnCompleteListener {
                 MainMessagePipe.mainThreadMessage.onNext(article)
             }
-    }
-
-
-    fun loadAvailableArticles(ref: DatabaseReference, path: String, document: Result) {
-        ref.database.getReference(path).addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(p0: DataSnapshot) {
-
-                p0.children.forEach {
-
-                }
-                ref.database.getReference("article").removeEventListener(this)
-
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
-        })
     }
 
 
@@ -84,24 +67,75 @@ fun createChildEventListener(enum: Class<out Result>): ChildEventListener {
     return connection
 }
 
-fun createValueListener(enum: DatabaseManager): ValueEventListener {
 
-    return object : ValueEventListener {
-        override fun onCancelled(p0: DatabaseError) {
-            MainMessagePipe.mainThreadMessage.onNext(
-                Result.FireDatabaseError("", p0.code, p0.message, p0.details))
-        }
+inline fun <reified T> Query.getObservable(): Single<T> {
+    return Single.create { emitter ->
 
-        override fun onDataChange(p0: DataSnapshot) {
+        val valueEventListener = object :  ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
 
-            for (p in p0.children){
-                MainMessagePipe.mainThreadMessage.onNext(
-                    p.getValue(enum.getValueClazz())!!
-                )
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
+            override fun onDataChange(p0: DataSnapshot) {
+
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
         }
+
+
     }
+
 }
 
 
+inline fun <reified T> DatabaseReference.getObservable(): Observable<T> {
+
+    return Observable.create { emitter ->
+
+        val listener = addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                emitter.onNext(p0.getValue(T::class.java)!!)
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                emitter.onNext(p0.getValue(T::class.java)!!)
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                emitter.onNext(p0.getValue(T::class.java)!!)
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+                emitter.onNext(p0.getValue(T::class.java)!!)
+            }
+
+        })
+
+        emitter.setCancellable { removeEventListener(listener) }
+
+    }
+
+}
+
+inline fun <reified T> DatabaseReference.getSingle(): Single<T> {
+    return Single.create { emitter ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                emitter.onSuccess(p0.getValue(T::class.java)!!)
+            }
+
+        }
+        addListenerForSingleValueEvent(listener)
+        emitter.setCancellable { removeEventListener(listener) }
+    }
+
+}

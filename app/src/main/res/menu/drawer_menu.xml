@@ -2,14 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/profile"
-        android:icon="@drawable/ic_avatar_placeholder_24dp"
-        android:title="Profil"/>
+            android:id="@+id/profile"
+            android:icon="@drawable/ic_avatar_placeholder_24dp"
+            android:title="Profil"/>
 
     <item
-        android:id="@+id/contacts"
-        android:icon="@drawable/ic_avatar_placeholder_24dp"
-        android:title="Kontakte"
-        />
+            android:id="@+id/contacts"
+            android:icon="@drawable/ic_avatar_placeholder_24dp"
+            android:title="Kontakte"
+            />
+
+    <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_avatar_placeholder_24dp"
+            android:title="Einstellungen"
+            />
 
 </menu>

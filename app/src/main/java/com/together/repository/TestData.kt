@@ -38,6 +38,19 @@ object TestData {
     )
 
 
+    val orderList = listOf(
+        Result.Order(
+            id="",
+            user = userList[0],
+            articles = articleList),
+        Result.Order(
+            id="",
+            user = userList[1],
+            articles = articleList)
+
+    )
+
+
 
 
 
@@ -49,7 +62,8 @@ object TestData {
             true,
             "kg",
             "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+            "https://firebasestorage.googleapis.com/v0/b/" +
+                    "fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
         ),
         UiState.Article(
             1,
@@ -58,7 +72,8 @@ object TestData {
             false,
             "kg",
             "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+            "https://firebasestorage.googleapis.com/v0/b/" +
+                    "fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
         ),
         UiState.Article(
             2,

@@ -8,22 +8,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
 import com.together.R
 import com.together.app.MainViewModel
-import com.together.order.main.ProductAdapter
+import com.together.app.UiState
+import com.together.repository.storage.getObservable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.any_idea_fragment.*
-
 
 
 class AnyIdeaFragment : Fragment() {
 
-    private val datbase = FirebaseDatabase.getInstance()
-    private val dataRef = datbase.reference
+    private val dataRef = FirebaseDatabase.getInstance().reference
 
     private val presenter = AnyIdeaPresenter(dataRef)
 
-    private lateinit var adapter: ProductAdapter
+    private val adapter: AnyIdeaAdapter = AnyIdeaAdapter()
+
+    private val disposable = CompositeDisposable()
 
     private fun getModel(): MainViewModel {
         return ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
@@ -46,7 +50,7 @@ class AnyIdeaFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    send_message.isEnabled = s.toString().trim().length > 0
+                send_message.isEnabled = s.toString().trim().isNotEmpty()
             }
 
         })
@@ -55,14 +59,24 @@ class AnyIdeaFragment : Fragment() {
             presenter.postAnyMessage(input_message.text.toString())
             input_message.setText("")
         }
+
         send_message.isEnabled = send_message.text.isNotEmpty()
 
+        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, true)
+        idea_messages.layoutManager = layoutManager
+        idea_messages.adapter = adapter
+
+        val ref = FirebaseDatabase.getInstance().reference
+        val anymessage = ref.child("anymessage").getObservable<UiState.ChatMessage>()
+        disposable.add(anymessage.subscribe {
+            adapter.addMessage(it)
+        })
+
+
+//
 
     }
 
 
-
 }
-
-
 

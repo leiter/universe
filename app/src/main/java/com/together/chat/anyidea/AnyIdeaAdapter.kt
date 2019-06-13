@@ -6,13 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.together.R
 import com.together.app.UiState
 
-class AnyIdeaAdapter(val data: MutableList<UiState.ChatMessage>) :
-    RecyclerView.Adapter<IdeaViewHolder>() {
+class AnyIdeaAdapter : RecyclerView.Adapter<IdeaViewHolder>() {
 
-    fun update(newData: MutableList<UiState.ChatMessage>) {
-        //todo use diffutils
-        data.clear()
-        data.addAll(newData)
+    val data: MutableList<UiState.ChatMessage> = mutableListOf()
+
+    fun addMessage(msg: UiState.ChatMessage){
+        data.add(msg)
         notifyDataSetChanged()
     }
 

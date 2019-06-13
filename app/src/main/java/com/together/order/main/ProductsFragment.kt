@@ -7,25 +7,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.app.MainMessagePipe
 import com.together.app.MainViewModel
-import com.together.app.UiEvent
 import com.together.app.UiState
 import com.together.repository.Result
-import io.reactivex.Observable
+import com.together.repository.storage.getObservable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.main_order_fragment.*
 
 class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private lateinit var model: MainViewModel
     private lateinit var adapter: ProductAdapter
+    private val disposable = CompositeDisposable()
 
     override fun clicked(item: UiState.Article) {
         product_name.text = item.productName
@@ -49,61 +46,13 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         adapter = ProductAdapter(d,this)
         article_list.adapter = adapter
 
-
-
         val ref = FirebaseDatabase.getInstance().reference
         val products = ref.child("articles")
-        val listener = products.addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-             val i = p0.getValue(Result.Article::class.java)!!
-                val e = UiState.Article(productName = i.productName,
-                    productDescription = i.productDescription, imageUrl = i.imageUrl)
-                adapter.addItem(e)
-
-            }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
+        disposable.add(products.getObservable<Result.Article>().subscribe {
+            val e = UiState.Article(productName = it.productName,
+                    productDescription = it.productDescription, imageUrl = it.imageUrl)
+            adapter.addItem(e)
         })
-
-//        MainMessagePipe.mainThreadMessage.subscribe {
-//            when (it) {
-//                is Result.Article -> {
-//                    val s = (it).productName
-//                    Toast.makeText(
-//                        baseContext, "msg Received ${s}.",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//
-//            }
-//        }
-
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        MainMessagePipe.uiEvent.onNext(UiEvent.LoadProducts)
-Observable.create<Result.Article> {
-
-
-
-}
     }
 
 }

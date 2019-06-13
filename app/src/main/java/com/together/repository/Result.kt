@@ -1,8 +1,6 @@
 package com.together.repository
 
 
-
-
 // Results are used for Requests and Results this will probably change in future
 sealed class Result {
 
@@ -30,8 +28,7 @@ sealed class Result {
     data class User(
         override var id: String = "",
         var displayName: String = "",
-        var emailAdress: String = "",
-        var chatThreadIds: List<String> = listOf()
+        var emailAdress: String = ""
     ) : Result()
 
 
@@ -49,17 +46,9 @@ sealed class Result {
 
     data class Order(
         override var id: String = "",
-
         var user: User,
         var articles: List<Article>
     ) : Result()
-
-
-    object DeviceData {
-        var androidSdkVersion: Int = 1
-    }
-
-
 
     data class ChatMessage(
         override var id: String = "",
@@ -71,14 +60,7 @@ sealed class Result {
     ) : Result()
 
 
-    data class ChatThread (
-        override var id: String = "",
-        var name: String = "",
-        var userIds: List<String> = emptyList(),
-        var messageList: List<ChatMessage> = emptyList(),
-        var photoUrl: String = ""
 
-    ) : Result()
 }
 
 

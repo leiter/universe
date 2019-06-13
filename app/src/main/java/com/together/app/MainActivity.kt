@@ -4,22 +4,21 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
+import com.together.CreateFragment
 import com.together.R
-import com.together.chat.ChatFragment
 import com.together.chat.anyidea.AnyIdeaFragment
 import com.together.order.main.ProductsFragment
+import com.together.repository.TestData
 import com.together.repository.auth.FirebaseAuth
-import com.together.repository.storage.DatabaseManager
 import com.together.utils.AQ
 import dagger.android.AndroidInjection
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,8 +26,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
     private val fire = FirebaseAuth
-
     private lateinit var firebaseDatabase: FirebaseDatabase
+
+    private val disposable = CompositeDisposable()
+
+    private val presenter = MainActivityPresenter()
 
     companion object {
 
@@ -53,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.navigation_dashboard -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, ChatFragment()).commit()
+                    .replace(R.id.container, CreateFragment()).commit()
 
                 return@OnNavigationItemSelectedListener true
             }
@@ -75,30 +77,46 @@ class MainActivity : AppCompatActivity() {
         viewModel.loggedState.observe(this, Observer {
             when (it) {
                 is UiState.LOGGEDIN ->
+
                     supportFragmentManager.beginTransaction()
                     .replace(R.id.container, ProductsFragment()).commit()
-                else -> {
-                    Log.e("TTTTT", "For debugging");
-                    //set logged out state
-                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+
+
+                is UiState.LOGGEDOUT -> {
+
                 }
+
+
+
+//                else -> {
+//                    Log.e("TTTTT", "For debugging");
+//                    //set logged out state
+//                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+//                }
             }
 
         })
         viewModel.loggedState.value = fire.isLoggedIn()
 
-        navigation.setOnNavigationItemSelectedListener(selectedListener)
+        disposable.add(presenter.setupBottomNavigation(navigation))
+
 
         firebaseDatabase = FirebaseDatabase.getInstance()
 
 
-        button_next.setOnClickListener {
-            DatabaseManager.ARTICLE_LIST.setup(firebaseDatabase.reference)
+        menu_start.setOnClickListener {
+            currentFocus?.clearFocus()
         }
 
 
+
         log_out.setOnClickListener {
-            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
+
+            val i = firebaseDatabase.reference
+                .child("orders/${FirebaseAuth.fireUser!!.uid}").push().setValue(TestData.orderList[0])
+
+
+//            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         }
     }
 
