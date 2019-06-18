@@ -71,12 +71,7 @@ class AnyIdeaFragment : Fragment() {
         disposable.add(anymessage.subscribe {
             adapter.addMessage(it)
         })
-
-
-//
-
     }
-
 
 }
 

@@ -23,7 +23,9 @@ import kotlinx.android.synthetic.main.main_order_fragment.*
 class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private lateinit var model: MainViewModel
+
     private lateinit var adapter: ProductAdapter
+
     private val disposable = CompositeDisposable()
 
     override fun clicked(item: UiState.Article) {
@@ -44,7 +46,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
                     product_description.text = it.productDescription
         val p = Picasso.Builder(context)
             .downloader(OkHttp3Downloader(context)).build()
-        p.load(it.imageUrl).placeholder(R.drawable.ic_shopping_cart_black_24dp).into(product_image)
+        p.load(it.remoteImageUrl).placeholder(R.drawable.ic_shopping_cart_black_24dp)
+            .into(product_image)
         })
 
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -57,9 +60,13 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         val products = ref.child("articles")
         disposable.add(products.getObservable<Result.Article>().subscribe {
             val e = UiState.Article(productName = it.productName,
-                    productDescription = it.productDescription, imageUrl = it.imageUrl)
+                    productDescription = it.productDescription, remoteImageUrl = it.imageUrl)
             adapter.addItem(e)
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        disposable.clear()
+    }
 }

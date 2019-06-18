@@ -1,5 +1,7 @@
 package com.together.repository
 
+import android.net.Uri
+
 
 // Results are used for Requests and Results this will probably change in future
 sealed class Result {
@@ -22,6 +24,8 @@ sealed class Result {
         var detail: String = ""
     ) : Result()
 
+
+    data class NewImageCreated(override var id: String, val uri: Uri) : Result()
 
     data class User(
         override var id: String = "",

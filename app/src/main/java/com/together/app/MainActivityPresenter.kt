@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
@@ -15,11 +16,12 @@ import com.together.R
 import com.together.chat.anyidea.AnyIdeaFragment
 import com.together.order.main.ProductsFragment
 import com.together.repository.auth.FirebaseAuth
+import com.together.utils.hide
 import io.reactivex.disposables.Disposable
 
 class MainActivityPresenter {
 
-    fun setupDrawerNavigation(navigationItemView: NavigationView): Disposable {
+    fun setupDrawerNavigation(navigationItemView: NavigationView, drawer: DrawerLayout): Disposable {
 
         return navigationItemView.itemSelections().subscribe {
             when (it.itemId) {
@@ -28,6 +30,7 @@ class MainActivityPresenter {
                 }
 
             }
+            drawer.closeDrawers()
         }
     }
 
@@ -65,6 +68,7 @@ class MainActivityPresenter {
         return navigation.itemSelections().subscribe {
             when (it.itemId) {
                 R.id.navigation_home -> {
+                    navigation.hide()
                     fm.beginTransaction()
                         .replace(R.id.container, ProductsFragment()).commit()
                 }

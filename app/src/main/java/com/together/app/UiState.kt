@@ -1,5 +1,7 @@
 package com.together.app
 
+import android.net.Uri
+
 sealed class UiState {
 
     object LOGGEDOUT : UiState()
@@ -13,9 +15,16 @@ sealed class UiState {
         var available: Boolean = false,
         var unit: String = "",  // Bund, Stück, Kg,
         var pricePerUnit: String = "",
-        var imageUrl: String = ""
+        var remoteImageUrl: String = "",
+        var localImageUrl: String = ""
+
     ) : UiState()
 
+
+
+
+
+    data class NewProductImage(val uri: Uri)
 
     data class ChatMessage(var id: String = "",
                            var creatorId: String = "",

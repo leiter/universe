@@ -12,6 +12,7 @@ import com.together.R
 import com.together.order.main.ProductsFragment
 import com.together.repository.auth.FirebaseAuth
 import com.together.utils.AQ
+import com.together.utils.hide
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
@@ -65,30 +66,22 @@ class MainActivity : AppCompatActivity() {
 
         })
         viewModel.loggedState.value = fire.isLoggedIn()
-
-        disposable.add(presenter.setupDrawerNavigation(navigation_drawer))
+        disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
         disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
-
-
-
-
-        menu_start.setOnClickListener {
-            drawer_layout.openDrawer(navigation_drawer)
-//            currentFocus?.clearFocus()
-//            MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(drawer_layout,Gravity.END))
-        }
-
-
-        menu_end.setOnClickListener {
-            //            MainMessagePipe.uiEvent.onNext(UiEvent.LogIn(baseContext))
-
-        }
-
         disposable.add(log_out.clicks().subscribe {
             drawer_layout.closeDrawers()
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         })
 
+
+        menu_start.setOnClickListener {
+            drawer_layout.openDrawer(navigation_drawer)
+            container.hide()
+        }
+
+        menu_end.setOnClickListener {
+
+        }
 
     }
 
@@ -97,7 +90,6 @@ class MainActivity : AppCompatActivity() {
         if (intent != null && intent.action == packageName + LOGIN_ACTION) {
             startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
         }
-
     }
 
     override fun onDestroy() {

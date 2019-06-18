@@ -8,34 +8,43 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.together.app.MainMessagePipe
+import com.together.repository.Result
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import java.io.File
 import java.io.IOException
+import java.util.*
 
 interface AddPicture {
     fun startAddPhoto(): Disposable
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
 }
 
-class AddPictureImpl(private val fragment: Fragment) : AddPicture {
+class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
     private lateinit var dialogFragment: ChooseDialog
 
     private lateinit var actions: PublishSubject<ChooseDialog.Action>
 
+    private lateinit var currentImageFile : File
+
 
     override fun startAddPhoto(): Disposable {
 
-        val ft = fragment.fragmentManager!!.beginTransaction()
-        val prev: Fragment? = fragment.fragmentManager!!.findFragmentByTag(ChooseDialog.TAG)
+        val ft = activity.supportFragmentManager.beginTransaction()
+        val prev: Fragment? = activity.supportFragmentManager.findFragmentByTag(ChooseDialog.TAG)
         if (prev != null) {
             ft.remove(prev).commit()
         }
         dialogFragment = ChooseDialog()
-        dialogFragment.show(fragment.fragmentManager, ChooseDialog.TAG)
+        dialogFragment.show(activity.supportFragmentManager, ChooseDialog.TAG)
 
         actions = dialogFragment.actionChannel
 
@@ -44,11 +53,7 @@ class AddPictureImpl(private val fragment: Fragment) : AddPicture {
                 ChooseDialog.Action.TAKE_PICKTURE -> startTakePicture()
                 ChooseDialog.Action.CHOOSE_PICTURE -> startPickImage()
                 ChooseDialog.Action.DELETE_PHOTO() -> deleteImage()
-                ChooseDialog.Action.CANCEL_ADD_PICTURE -> {
-
-                }
-                is ChooseDialog.Action.PermissionResult -> onPermissionResult(it)
-                is ChooseDialog.Action.ActivityResult -> onActivityResult(it)
+                ChooseDialog.Action.CANCEL_ADD_PICTURE -> activity.finish()
             }
         }
 
@@ -73,7 +78,7 @@ class AddPictureImpl(private val fragment: Fragment) : AddPicture {
 
 
     private fun startTakePicture() {
-        val granted = ContextCompat.checkSelfPermission(fragment.context!!, Manifest.permission.CAMERA)
+        val granted = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
         when (granted) {
             PackageManager.PERMISSION_GRANTED -> startCamera()
             else -> dialogFragment.requestPermissions(arrayOf(Manifest.permission.CAMERA),
@@ -84,56 +89,70 @@ class AddPictureImpl(private val fragment: Fragment) : AddPicture {
     private fun startCamera() {
 
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePicture ->
-            takePicture.resolveActivity(fragment.context!!.packageManager)
+            takePicture.resolveActivity(activity.packageManager)
                 ?.also {
                     val file: File? = try {
-                        createFile(fragment.requireContext())
+                        createFile(activity)
                     } catch (ex: IOException) {
                         return
                     }
                     file?.also {
                         val fileUri: Uri = FileProvider.getUriForFile(
-                            fragment.context!!, fragment.context!!.packageName, it
+                            activity, activity.packageName, it
                         )
                         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
-                        dialogFragment.startActivityForResult(takePicture, REQUEST_TAKE_PICTURE)
+                        activity.startActivityForResult(takePicture, REQUEST_TAKE_PICTURE)
                     }
                 }
         }
 
     }
 
-    private fun onPermissionResult(perm: ChooseDialog.Action.PermissionResult) {
-        if (perm.permissions.size == 1 &&
-            perm.requestCode == REQUEST_PIC_PICTURE_PERMISSION &&
-            perm.permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE &&
-            perm.grantResults[0] == PackageManager.PERMISSION_GRANTED
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (permissions.size == 1 &&
+            requestCode == REQUEST_PIC_PICTURE_PERMISSION &&
+            permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
             startPickIntent()
         }
 
-        if (perm.permissions.size == 1 &&
-            perm.requestCode == REQUEST_TAKE_PICTURE_PERMISSION &&
-            perm.permissions[0] == Manifest.permission.CAMERA &&
-            perm.grantResults[0] == PackageManager.PERMISSION_GRANTED
+        if (permissions.size == 1 &&
+            requestCode == REQUEST_TAKE_PICTURE_PERMISSION &&
+            permissions[0] == Manifest.permission.CAMERA &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
             startCamera()
         }
     }
 
-    private fun onActivityResult(result: ChooseDialog.Action.ActivityResult) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val fileUri : Uri
 
-        if (result.resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_TAKE_PICTURE){
+                fileUri = FileProvider.getUriForFile(activity,activity.packageName,currentImageFile)
+                val image = Result.NewImageCreated(fileUri.path?:"noFound", fileUri)
+                MainMessagePipe.mainThreadMessage.onNext(image)
+            }
+
+
+            val result = "content://com.together/photos/default"
+
 
 
         }
 
 
+        activity.finish()
     }
 
-    private fun createFile(context: Context, tmpName: String = "toBeOverridden.jpg")
-            : File = File(context.filesDir, tmpName)
+    private fun createFile(context: Context, tmpName: String = "default.jpg") : File {
+        currentImageFile = File(context.filesDir, tmpName)
+        return currentImageFile
+    }
 
+    private fun someString() = UUID.randomUUID().toString() + ".jpg"
 
     private fun startPickIntent() {
         val getIntent = Intent(Intent.ACTION_GET_CONTENT)
@@ -141,16 +160,16 @@ class AddPictureImpl(private val fragment: Fragment) : AddPicture {
                 setType(IMAGE_TYPE)
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
-        dialogFragment.startActivityForResult(getIntent, REQUEST_PIC_PICTURE)
+        activity.startActivityForResult(getIntent, REQUEST_PIC_PICTURE)
     }
 
     private fun startPickImage() {
         val granted =
-            ContextCompat.checkSelfPermission(fragment.context!!, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
         when (granted) {
             PackageManager.PERMISSION_GRANTED -> startPickIntent()
             else -> {
-                dialogFragment.requestPermissions(
+                ActivityCompat.requestPermissions(activity,
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     REQUEST_PIC_PICTURE_PERMISSION
                 )

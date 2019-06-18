@@ -22,8 +22,11 @@ class MainViewModel : ViewModel() {
                 is Result.LoggedIn ->
                     loggedState.value = UiState.LOGGEDIN
 
-
-
+                is Result.NewImageCreated -> {
+                    if (newProduct.value == null)
+                        newProduct.value = UiState.NewProductImage(it.uri)
+                    newProduct.value = UiState.NewProductImage(it.uri)
+                }
             }
         })
     }
@@ -32,12 +35,15 @@ class MainViewModel : ViewModel() {
 
     val focusedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
+    val createProduct: MutableLiveData<UiState.Article> = MutableLiveData()
+
+    val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
+
 
     override fun onCleared() {
         disposable.clear()
         super.onCleared()
     }
-
 
 
 }

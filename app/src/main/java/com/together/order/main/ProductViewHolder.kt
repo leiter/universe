@@ -14,7 +14,7 @@ class ArticleViewHolder(override val containerView: View?, private val click: Pr
         product_name.text = item.productName
 
         containerView?.setOnClickListener {
-            click.clicked(item)  // todo rx here
+            click.clicked(item)
         }
     }
 
