@@ -7,18 +7,16 @@ sealed class Result {
     abstract var id :String
 
     object LoggedOut : Result(){
-        override var id: String = ""
-
+        override var id: String = "loggedIn"
     }
 
     object LoggedIn : Result() {
-        override var id: String = ""
+        override var id: String = "loggedOut"
 
     }
 
     data class FireDatabaseError(
-        override var id: String = "",
-
+        override var id: String = "ERROR FIRE DATABASE",
         var code: Int = Int.MAX_VALUE,
         var message: String = "",
         var detail: String = ""
@@ -52,7 +50,6 @@ sealed class Result {
 
     data class ChatMessage(
         override var id: String = "",
-
         val creatorId: String,
         val name: String,
         val text: String,

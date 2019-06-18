@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
@@ -25,11 +27,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
     private val disposable = CompositeDisposable()
 
     override fun clicked(item: UiState.Article) {
-        product_name.text = item.productName
-        product_description.text = item.productDescription
-        val p = Picasso.Builder(context)
-            .downloader(OkHttp3Downloader(context)).build()
-        p.load(item.imageUrl).placeholder(R.drawable.ic_shopping_cart_black_24dp).into(product_image)
+        model.focusedProduct.value = item
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,6 +37,15 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+        model.focusedProduct.observe(this, Observer {
+            product_name.text =it.productName
+                    product_description.text = it.productDescription
+        val p = Picasso.Builder(context)
+            .downloader(OkHttp3Downloader(context)).build()
+        p.load(it.imageUrl).placeholder(R.drawable.ic_shopping_cart_black_24dp).into(product_image)
+        })
 
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         val d = mutableListOf<UiState.Article>()

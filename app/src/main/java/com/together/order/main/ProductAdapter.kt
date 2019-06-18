@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.together.R
 import com.together.app.UiState
 
-class ProductAdapter(var data: MutableList<UiState.Article>, val click: ItemClicked) : RecyclerView.Adapter<ArticleViewHolder>() {
+class ProductAdapter(var data: MutableList<UiState.Article>, val click: ItemClicked)
+
+                    : RecyclerView.Adapter<ArticleViewHolder>() {
 
     interface ItemClicked {
         fun clicked(item: UiState.Article)
@@ -35,6 +37,7 @@ class ProductAdapter(var data: MutableList<UiState.Article>, val click: ItemClic
     override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
+        if (position==0) click.clicked(data[position])
          holder.bindItem(position,data[position])
     }
 

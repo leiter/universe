@@ -1,25 +1,23 @@
 package com.together
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.together.addpicture.AddPictureImpl
 import com.together.app.UiState
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create.*
-import java.io.File
-import java.io.IOException
-import java.util.*
 
 
 class CreateFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+
+    private val disposable = CompositeDisposable()
+    private val addPicture = AddPictureImpl(this)
 
     private var newProduct: UiState.Article? = UiState.Article()
 
@@ -43,31 +41,13 @@ class CreateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         create_fab.setOnClickListener {
-            startActivityForResult(getPhotoIntent(), 12)
+            disposable.add(addPicture.startAddPhoto())
         }
     }
 
-    private fun getPhotoIntent(): Intent {
-        return Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePicture ->
-            takePicture.resolveActivity(context!!.packageManager)
-                ?.also {
-                    val file: File? = try {
-                        File(context!!.filesDir, UUID.randomUUID().toString())
-                    } catch (ex: IOException) {
-                        throw ex
-                    }
-                    file?.also {
-                        val fileUri = FileProvider.getUriForFile(context!!, context!!.packageName, file)
-                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
-                    }
-                }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        Log.e("TTTTT", "For debugging")
+    override fun onDestroyView() {
+        super.onDestroyView()
+        disposable.clear()
     }
 
     companion object {

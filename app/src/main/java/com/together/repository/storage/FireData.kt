@@ -8,16 +8,6 @@ import io.reactivex.Single
 
 class FireData {
 
-    fun createArticle(ref: DatabaseReference, article: Result) {
-        val d = ref.child("articles").push().setValue(article)
-            .addOnFailureListener {
-                MainMessagePipe.mainThreadMessage.onError(it)
-            }
-            .addOnCompleteListener {
-                MainMessagePipe.mainThreadMessage.onNext(article)
-            }
-    }
-
 
     fun createDocument(ref: DatabaseReference, path: String, document: Result) {
         ref.child(path).push().setValue(document)
@@ -68,22 +58,20 @@ fun createChildEventListener(enum: Class<out Result>): ChildEventListener {
 }
 
 
-inline fun <reified T> Query.getObservable(): Single<T> {
+inline fun <reified T> Query.getSingle(): Single<T> {
     return Single.create { emitter ->
 
         val valueEventListener = object :  ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
 
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                emitter.onSuccess(p0.getValue(T::class.java)!!)
             }
         }
-
-
+        addListenerForSingleValueEvent(valueEventListener)
+        emitter.setCancellable { removeEventListener(valueEventListener) }
     }
 
 }

@@ -2,7 +2,7 @@ package com.together.app
 
 import android.content.Context
 import android.view.Gravity
-import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.drawerlayout.widget.DrawerLayout
 
 
 sealed class UiEvent {
@@ -16,8 +16,9 @@ sealed class UiEvent {
     data class ShowToast(val context: Context, val msg: Int,
                          var gravity: Int = Gravity.TOP) : UiEvent()
 
+    data class FocusProduct(var product: UiState.Article)
 
-    data class DrawerState(val drawerToggle: ActionBarDrawerToggle)
+    data class DrawerState(val drawerLayout: DrawerLayout, val gravity: Int) : UiEvent()
 
     data class PostChatMessage(var creatorId: String,
                                var name: String,
@@ -29,6 +30,9 @@ sealed class UiEvent {
                               var name: String,
                               var text: String,
                               var photoUrl: String) : UiEvent()
+
+
+    class ShowFragment()
 
 
 }

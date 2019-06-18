@@ -11,7 +11,6 @@ class MainViewModel : ViewModel() {
     var disposable: CompositeDisposable = CompositeDisposable()
 
 
-
     init {
         // wire DataSource to UiState
 
@@ -31,6 +30,7 @@ class MainViewModel : ViewModel() {
 
     val loggedState: MutableLiveData<UiState> = MutableLiveData()
 
+    val focusedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
 
     override fun onCleared() {

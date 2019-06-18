@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:padding="32dp"
+        android:layout_height="240dp"
+        android:paddingTop="32dp"
         >
 
     <ImageView
-            android:id="@+id/avatar"
+            android:id="@+id/user_avatar"
             android:src="@drawable/ic_avatar_placeholder_24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -17,12 +17,29 @@
             android:layout_width="144dp"
             android:layout_height="144dp"/>
 
+
+    <Button
+            android:id="@+id/log_in"
+
+            android:layout_width="wrap_content"
+            android:text="Einloggen"
+            android:visibility="visible"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/user_email"/>
+
     <TextView
             android:id="@+id/user_name"
-            app:layout_constraintTop_toBottomOf="@id/avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_avatar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Marco the man"
+            tools:text="Marco the man"
             android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -33,7 +50,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:textSize="12sp"
-            android:text="mmaleiter@gmail.com"
+            tools:text="mmaleiter@gmail.com"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

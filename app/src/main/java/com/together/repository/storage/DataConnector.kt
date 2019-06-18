@@ -13,6 +13,7 @@ enum class DatabaseManager {
             MainMessagePipe.listenerMap[connection] = Pair(connection, articles)
         }
 
+
         override fun getValueClazz(): Class<Result.Article> = Result.Article::class.java
 
     },

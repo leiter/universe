@@ -6,13 +6,11 @@ interface ProductView {
 
 }
 
-class ProductsPresenter (val view: ProductView){
+class ProductsPresenter () {
 
 
-    fun loadProducts(){
 
 
-    }
 
 
 }
