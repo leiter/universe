@@ -4,9 +4,17 @@ import android.net.Uri
 
 
 // Results are used for Requests and Results this will probably change in future
-sealed class Result {
+sealed class Result(var callbackType : Int = -1) {
 
     abstract var id :String
+
+    companion object{
+        val CHILD_ADDED = 0
+        val CHILD_CHANGED = 1
+        val CHILD_MOVED = 2
+        val CHILD_REMOVED = 3
+    }
+
 
     object LoggedOut : Result(){
         override var id: String = "loggedIn"
@@ -25,7 +33,7 @@ sealed class Result {
     ) : Result()
 
 
-    data class NewImageCreated(override var id: String, val uri: Uri) : Result()
+    data class NewImageCreated(override var id: String = "", var uri: Uri?) : Result()
 
     data class User(
         override var id: String = "",
@@ -48,16 +56,16 @@ sealed class Result {
 
     data class Order(
         override var id: String = "",
-        var user: User,
-        var articles: List<Article>
+        var user: User = User(),
+        var articles: List<Article> = emptyList()
     ) : Result()
 
     data class ChatMessage(
         override var id: String = "",
-        val creatorId: String,
-        val name: String,
-        val text: String,
-        val photoUrl: String
+        val creatorId: String = "",
+        val name: String = "",
+        val text: String = "",
+        val photoUrl: String = ""
     ) : Result()
 
 

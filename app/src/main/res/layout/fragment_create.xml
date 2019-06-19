@@ -3,17 +3,23 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".CreateFragment">
 
+    <include
+            android:id="@+id/toolbar"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            layout="@layout/fake_toolbar"/>
+
     <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginStart="16dp"
             android:layout_width="244dp"
             android:layout_height="wrap_content"
             android:id="@+id/product_name_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -29,7 +35,7 @@
             android:layout_width="244dp"
             android:layout_height="wrap_content"
             android:id="@+id/product_description_layout"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/product_name_layout"
             app:layout_constraintTop_toBottomOf="@id/product_name_layout"
             >
 
@@ -48,7 +54,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/product_price_layout"
             android:minWidth="250dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/product_name_layout"
             app:layout_constraintTop_toBottomOf="@id/product_description_layout">
 
 
@@ -57,6 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
+                android:inputType="number"
                 android:maxLength="30"
                 android:hint="Preis pro Einheit"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -70,7 +77,7 @@
             app:layout_constraintTop_toBottomOf="@+id/product_price_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            >
+            android:id="@+id/textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/product_description_text"
@@ -131,9 +138,11 @@
             android:id="@+id/product_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/product_name_layout"
             app:layout_constraintTop_toBottomOf="@+id/product_price_unit_layout"
-            tools:layout_editor_absoluteX="16dp"/>
+
+            />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"

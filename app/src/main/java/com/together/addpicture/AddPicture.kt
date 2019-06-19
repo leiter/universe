@@ -147,7 +147,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         activity.finish()
     }
 
-    private fun createFile(context: Context, tmpName: String = "default.jpg") : File {
+    private fun createFile(context: Context, tmpName: String = someString()) : File {
         currentImageFile = File(context.filesDir, tmpName)
         return currentImageFile
     }

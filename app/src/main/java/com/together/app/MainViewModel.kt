@@ -8,8 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 class MainViewModel : ViewModel() {
 
-    var disposable: CompositeDisposable = CompositeDisposable()
-
+    private var disposable: CompositeDisposable = CompositeDisposable()
 
     init {
         // wire DataSource to UiState
@@ -24,8 +23,8 @@ class MainViewModel : ViewModel() {
 
                 is Result.NewImageCreated -> {
                     if (newProduct.value == null)
-                        newProduct.value = UiState.NewProductImage(it.uri)
-                    newProduct.value = UiState.NewProductImage(it.uri)
+                        newProduct.value = UiState.NewProductImage(it.uri!!)
+                    newProduct.value = UiState.NewProductImage(it.uri!!)
                 }
             }
         })
@@ -33,9 +32,9 @@ class MainViewModel : ViewModel() {
 
     val loggedState: MutableLiveData<UiState> = MutableLiveData()
 
-    val focusedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
+    val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
-    val createProduct: MutableLiveData<UiState.Article> = MutableLiveData()
+    val editProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
 

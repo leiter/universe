@@ -23,7 +23,7 @@ class ChooseDialog : DialogFragment() {
     }
 
     companion object {
-        const val TAG = "AddPicture"  // Handle hide delete
+        const val TAG = "AddPicture"  // Handle hideIme delete
         fun newInstance(): ChooseDialog {
             val frag = ChooseDialog()
 //            val args: Bundle = Bundle().apply { put }

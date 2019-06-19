@@ -7,28 +7,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <include
+            android:id="@+id/toolbar"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            layout="@layout/fake_toolbar"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/orders_root"
             android:background="@color/textColorMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="240dp"
+            android:layout_below="@id/toolbar"
+            android:minHeight="264dp"
             android:layout_marginBottom="44dp">
 
         <ImageView
                 android:id="@+id/product_image"
                 android:scaleType="centerCrop"
-                android:paddingStart="24dp"
-                android:paddingTop="48dp"
-                android:paddingBottom="48dp"
-
+                android:adjustViewBounds="true"
                 android:src="@drawable/ic_shopping_cart_black_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintDimensionRatio="W,1:1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                />
+                android:layout_width="144dp"
+                android:layout_height="168dp"
+
+                app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
                 android:textSize="32sp"
@@ -54,6 +58,7 @@
                 android:layout_height="wrap_content"/>
 
         <TextView
+
                 android:textSize="24sp"
                 android:text="7,99 €/kg"
                 android:layout_width="wrap_content"
@@ -62,15 +67,16 @@
                 app:layout_constraintBottom_toTopOf="@+id/recyclerView"
                 app:layout_constraintTop_toBottomOf="@+id/product_image"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                android:id="@+id/product_price"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
-                android:minHeight="48dp"
+                android:minHeight="64dp"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:itemCount="5"
-                app:layout_constraintTop_toBottomOf="@id/product_image"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -89,8 +95,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/order_fab"
-            android:visibility="invisible"
-            android:src="@drawable/ic_add_circle_outline_black_24dp"
+            android:visibility="visible"
+            android:src="@drawable/ic_add_shopping_cart_black"
             android:layout_alignParentEnd="true"
             android:layout_above="@id/article_list"
             android:layout_margin="16dp"

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -12,7 +13,7 @@ import com.together.R
 import com.together.order.main.ProductsFragment
 import com.together.repository.auth.FirebaseAuth
 import com.together.utils.AQ
-import com.together.utils.hide
+import com.together.utils.hideIme
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
@@ -61,10 +62,9 @@ class MainActivity : AppCompatActivity() {
                 is UiState.LOGGEDOUT -> {
                     presenter.setLoggedOut(navigation_drawer, log_out)
                 }
-
             }
-
         })
+
         viewModel.loggedState.value = fire.isLoggedIn()
         disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
         disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
@@ -73,15 +73,14 @@ class MainActivity : AppCompatActivity() {
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         })
 
-
-        menu_start.setOnClickListener {
-            drawer_layout.openDrawer(navigation_drawer)
-            container.hide()
-        }
-
-        menu_end.setOnClickListener {
-
-        }
+        disposable.add(MainMessagePipe.uiEvent.subscribe {
+            when(it) {
+                is UiEvent.DrawerState -> if(it.gravity == Gravity.START){
+                    container.hideIme()
+                    drawer_layout.openDrawer(navigation_drawer)
+                } else drawer_layout.closeDrawers()
+            }
+        })
 
     }
 
@@ -94,9 +93,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.clear()
+        disposable.dispose()
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -108,6 +106,5 @@ class MainActivity : AppCompatActivity() {
             moveTaskToBack(true)
         }
     }
-
 
 }

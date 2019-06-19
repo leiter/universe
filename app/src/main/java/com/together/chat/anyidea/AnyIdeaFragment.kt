@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.together.R
 import com.together.app.MainViewModel
 import com.together.app.UiState
+import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.any_idea_fragment.*
@@ -67,9 +68,10 @@ class AnyIdeaFragment : Fragment() {
         idea_messages.adapter = adapter
 
         val ref = FirebaseDatabase.getInstance().reference
-        val anymessage = ref.child("anymessage").getObservable<UiState.ChatMessage>()
+        val anymessage = ref.child("anymessage").getObservable<Result.ChatMessage>()
         disposable.add(anymessage.subscribe {
-            adapter.addMessage(it)
+            val i = UiState.ChatMessage(it.id,it.creatorId,it.name,it.text,it.photoUrl)
+            adapter.addMessage(i)
         })
     }
 

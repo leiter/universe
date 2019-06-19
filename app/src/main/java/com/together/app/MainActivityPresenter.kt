@@ -16,7 +16,7 @@ import com.together.R
 import com.together.chat.anyidea.AnyIdeaFragment
 import com.together.order.main.ProductsFragment
 import com.together.repository.auth.FirebaseAuth
-import com.together.utils.hide
+import com.together.utils.hideIme
 import io.reactivex.disposables.Disposable
 
 class MainActivityPresenter {
@@ -68,7 +68,7 @@ class MainActivityPresenter {
         return navigation.itemSelections().subscribe {
             when (it.itemId) {
                 R.id.navigation_home -> {
-                    navigation.hide()
+                    navigation.hideIme()
                     fm.beginTransaction()
                         .replace(R.id.container, ProductsFragment()).commit()
                 }

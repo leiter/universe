@@ -54,63 +54,63 @@ object TestData {
 
 
 
-    val uiArticleList = mutableListOf(
-        UiState.Article(
-            0,
-            "Banana",
-            "Nice fruit to eat.",
-            true,
-            "kg",
-            "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/" +
-                    "fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
-        ),
-        UiState.Article(
-            1,
-            "Apple",
-            "Nice fruit to eat.",
-            false,
-            "kg",
-            "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/" +
-                    "fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
-        ),
-        UiState.Article(
-            2,
-            "Potato",
-            "Lovely vegetable.",
-            true,
-            "kg",
-            "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
-        ),
-        UiState.Article(
-            0,
-            "Banana",
-            "Nice fruit to eat.",
-            true,
-            "kg",
-            "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
-        ),
-        UiState.Article(
-            1,
-            "Apple",
-            "Nice fruit to eat.",
-            false,
-            "kg",
-            "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
-        ),
-        UiState.Article(
-            2,
-            "Potato",
-            "Lovely vegetable.",
-            true,
-            "kg",
-            "2,30",
-            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
-        )
+    val uiArticleList = mutableListOf<UiState.Article>(
+//        UiState.Article(
+//            "0",
+//            "Banana",
+//            "Nice fruit to eat.",
+//            true,
+//            "kg",
+//            "2,30",
+//            "https://firebasestorage.googleapis.com/v0/b/" +
+//                    "fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+//        ),
+//        UiState.Article(
+//            1,
+//            "Apple",
+//            "Nice fruit to eat.",
+//            false,
+//            "kg",
+//            "2,30",
+//            "https://firebasestorage.googleapis.com/v0/b/" +
+//                    "fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+//        ),
+//        UiState.Article(
+//            2,
+//            "Potato",
+//            "Lovely vegetable.",
+//            true,
+//            "kg",
+//            "2,30",
+//            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+//        ),
+//        UiState.Article(
+//            0,
+//            "Banana",
+//            "Nice fruit to eat.",
+//            true,
+//            "kg",
+//            "2,30",
+//            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+//        ),
+//        UiState.Article(
+//            1,
+//            "Apple",
+//            "Nice fruit to eat.",
+//            false,
+//            "kg",
+//            "2,30",
+//            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+//        ),
+//        UiState.Article(
+//            2,
+//            "Potato",
+//            "Lovely vegetable.",
+//            true,
+//            "kg",
+//            "2,30",
+//            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
+//        )
 
     )
 

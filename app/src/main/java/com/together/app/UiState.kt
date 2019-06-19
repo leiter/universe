@@ -4,11 +4,19 @@ import android.net.Uri
 
 sealed class UiState {
 
-    object LOGGEDOUT : UiState()
+    abstract var id : String
 
-    object LOGGEDIN : UiState()
+    object LOGGEDOUT : UiState(){
+        override var id = "StateLoggedOut"
+    }
+
+    object LOGGEDIN : UiState() {
+        override var id = "StateLoggedIn"
+
+    }
 
     data class Article(
+        override var id: String = "",
         var productId: Int = -1,
         var productName: String = "",
         var productDescription: String? = null,
@@ -21,21 +29,19 @@ sealed class UiState {
     ) : UiState()
 
 
-
-
-
     data class NewProductImage(val uri: Uri)
 
-    data class ChatMessage(var id: String = "",
+    data class ChatMessage(override var id: String = "",
                            var creatorId: String = "",
                            var name: String = "",
                            var text: String = "",
                            var photoUrl: String = "") : UiState()
 
-    data class PostAnyMessage(var creatorId: String,
-                               var name: String,
-                               var text: String,
-                               var photoUrl: String) : UiState()
+    data class PostAnyMessage(
+        override var id: String = "", var creatorId: String,
+        var name: String = "",
+        var text: String = "",
+        var photoUrl: String = "") : UiState()
 
 
     data class PostAnyMessages(var list: MutableList<PostAnyMessage>)

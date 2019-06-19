@@ -2,7 +2,7 @@ package com.together
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.picasso.OkHttp3Downloader
@@ -20,15 +19,15 @@ import com.together.order.main.ProductAdapter
 import com.together.repository.Result
 import com.together.repository.storage.FireData
 import com.together.repository.storage.getObservable
-import com.together.repository.storage.getSingle
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.fake_toolbar.*
 import kotlinx.android.synthetic.main.fragment_create.*
 
 
 class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     override fun clicked(item: UiState.Article) {
-        model.createProduct.value = item
+        model.editProduct.value = item
     }
 
     private var param1: String? = null
@@ -63,10 +62,12 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         model.newProduct.observe(this, Observer {
             val p = Picasso.Builder(context)
                 .downloader(OkHttp3Downloader(context)).build()
-            p.load(it.uri).placeholder(R.drawable.ic_shopping_cart_black_24dp)
+            p.load(it.uri)
+//                .placeholder(R.drawable.ic_shopping_cart_black_24dp)
                 .into(image)
+
         })
-        model.createProduct.observe(this, Observer {
+        model.editProduct.observe(this, Observer {
             product_name.setText(it.productName)
             product_description.setText(it.productDescription)
             product_price.setText(it.pricePerUnit)
@@ -75,7 +76,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         })
 
 
-        product_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        product_list.layoutManager = LinearLayoutManager(context)
         val d = mutableListOf<UiState.Article>()
 
         adapter = ProductAdapter(d, this)
@@ -85,8 +86,13 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         val products = ref.child("articles")
         disposable.add(products.getObservable<Result.Article>().subscribe {
             val e = UiState.Article(
+                id = it.id,
                 productName = it.productName,
-                productDescription = it.productDescription, remoteImageUrl = it.imageUrl
+                productDescription = it.productDescription,
+                remoteImageUrl = it.imageUrl,
+                unit = it.unit,
+                pricePerUnit = it.pricePerUnit
+
             )
             adapter.addItem(e)
         })
@@ -97,6 +103,9 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         manage_image.setOnClickListener {
             UtilsActivity.startAddImage(activity!!)
         }
+
+        toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START)) }
+
     }
 
     override fun onDestroyView() {
@@ -122,44 +131,37 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         val ref = FirebaseStorage.getInstance().reference
             .child("images/${uri.lastPathSegment}")
             .putFile(uri)
-//            ref.addOnSuccessListener{
-//                val uiState = model.createProduct.value!!
-//                Result.Article(
-//                    id = "",
-//                    productId = -1,
-//                    productName = uiState.productName,
-//                    productDescription = uiState.productDescription,
-//                    imageUrl = it.uploadSessionUri.toString(),
-//                    available = uiState.available,
-//                    pricePerUnit = uiState.pricePerUnit,unit = uiState.unit
-//                )
-//
-//            }
+        ref.addOnSuccessListener {
 
-        val i = ref.getSingle().map { uri ->
-            if (uri is Result.NewImageCreated) {
-                val uiState = model.createProduct.value!!
+            it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
 
-                val result = Result.Article(
+                writeToNewProduct()  //writing should happen on the fly
+                val uiState = model.editProduct.value!!
+
+                val resulT = Result.Article(
                     id = "",
                     productId = -1,
                     productName = uiState.productName,
                     productDescription = uiState.productDescription,
-                    imageUrl = uri.uri.toString(),
+                    imageUrl = it.toString(),
                     available = uiState.available,
-                    pricePerUnit = uiState.pricePerUnit, unit = uiState.unit
+                    pricePerUnit = uiState.pricePerUnit,
+                    unit = uiState.unit
                 )
                 val fireData = FireData()
-                fireData.createDocument("articles",result)
-
+                fireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
             }
 
-        }.subscribe ({
-            Log.e("TTTTT", "For debugging");
+        }
 
-            MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(context!!,R.string.app_name))
-        },{
-Log.e("TTTTT", "For debugging         ");
-        })
+    }
+
+    private fun writeToNewProduct() {
+
+        model.editProduct.value?.productName = product_name.text.toString()
+        model.editProduct.value?.productDescription = product_description.text.toString()
+        model.editProduct.value?.pricePerUnit = product_price.text.toString()
+        model.editProduct.value?.unit = product_price_unit.text.toString()
+
     }
 }

@@ -1,6 +1,7 @@
 package com.together.order.main
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +14,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.together.R
+import com.together.app.MainMessagePipe
 import com.together.app.MainViewModel
+import com.together.app.UiEvent
 import com.together.app.UiState
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.fake_toolbar.*
 import kotlinx.android.synthetic.main.main_order_fragment.*
 
 class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
@@ -29,7 +33,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
     private val disposable = CompositeDisposable()
 
     override fun clicked(item: UiState.Article) {
-        model.focusedProduct.value = item
+        model.presentedProduct.value = item
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,28 +45,41 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         super.onViewCreated(view, savedInstanceState)
 
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
-        model.focusedProduct.observe(this, Observer {
-            product_name.text =it.productName
-                    product_description.text = it.productDescription
-        val p = Picasso.Builder(context)
-            .downloader(OkHttp3Downloader(context)).build()
-        p.load(it.remoteImageUrl).placeholder(R.drawable.ic_shopping_cart_black_24dp)
-            .into(product_image)
+        model.presentedProduct.observe(this, Observer {
+            product_name.text = it.productName
+            product_description.text = it.productDescription
+            val price = it.pricePerUnit + " €/" + it.unit
+            product_price.text = price
+
+            val p = Picasso.Builder(context)
+                .downloader(OkHttp3Downloader(context)).build()
+            p.load(it.remoteImageUrl)
+                .into(product_image)
         })
 
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         val d = mutableListOf<UiState.Article>()
 
-        adapter = ProductAdapter(d,this)
+        adapter = ProductAdapter(d, this)
         article_list.adapter = adapter
 
         val ref = FirebaseDatabase.getInstance().reference
         val products = ref.child("articles")
         disposable.add(products.getObservable<Result.Article>().subscribe {
-            val e = UiState.Article(productName = it.productName,
-                    productDescription = it.productDescription, remoteImageUrl = it.imageUrl)
+            val e = UiState.Article(
+                productName = it.productName,
+                productDescription = it.productDescription,
+                remoteImageUrl = it.imageUrl,
+                pricePerUnit = it.pricePerUnit,
+                unit = it.unit
+
+            )
             adapter.addItem(e)
         })
+
+        toolbar_start.setOnClickListener {
+            MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
+        }
     }
 
     override fun onDestroyView() {

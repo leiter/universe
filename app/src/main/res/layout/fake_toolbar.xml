@@ -3,31 +3,33 @@
                 android:orientation="horizontal"
                 android:animateLayoutChanges="true"
                 android:layout_width="match_parent"
+                android:padding="16dp"
                 android:layout_height="?attr/actionBarSize">
 
     <ImageButton
-            android:id="@+id/menu_start"
+            android:id="@+id/toolbar_start"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
-            android:padding="16dp"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
 
     <ImageButton
-            android:id="@+id/menu_end_2"
+            android:id="@+id/toolbar_end_2"
             android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
             android:padding="16dp"
+            android:visibility="invisible"
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     <ImageButton
-            android:id="@+id/menu_end_1"
-            android:visibility="gone"
-            android:layout_toStartOf="@id/menu_end_2"
+            android:id="@+id/toolbar_end_1"
+            android:visibility="invisible"
+            android:layout_toStartOf="@id/toolbar_end_2"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
             android:padding="16dp"
@@ -36,8 +38,8 @@
 
     <TextView
             android:id="@+id/title"
-            android:layout_toEndOf="@id/menu_start"
-            android:layout_toStartOf="@id/menu_end_1"
+            android:layout_toEndOf="@id/toolbar_start"
+            android:layout_toStartOf="@id/toolbar_end_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
