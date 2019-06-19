@@ -34,13 +34,6 @@ import java.io.InputStream
 
 class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
-    override fun clicked(item: UiState.Article) {
-        model.editProduct.value = item
-    }
-
-    private var param1: String? = null
-    private var param2: String? = null
-
     private val disposable = CompositeDisposable()
 
     private lateinit var model: MainViewModel
@@ -49,27 +42,15 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private lateinit var picasso: Picasso
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_create, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        picasso = Picasso.Builder(context)
-            .downloader(OkHttp3Downloader(context)).build()
+        picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         model.newProduct.observe(this, Observer {
@@ -83,6 +64,9 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             model.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
         })
 
+        toolbar_end_2.setImageResource(R.drawable.ic_edit_black)
+
+        toolbar_end_2.visibility = View.VISIBLE
 
         product_list.layoutManager = LinearLayoutManager(context)
 
@@ -119,23 +103,13 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     }
 
+    override fun clicked(item: UiState.Article) {
+        model.editProduct.value = item
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         disposable.clear()
-    }
-
-    companion object {
-        private const val ARG_PARAM1 = "param1"
-        private const val ARG_PARAM2 = "param2"
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CreateFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 
     private fun updateProduct(imageUri: Uri) {

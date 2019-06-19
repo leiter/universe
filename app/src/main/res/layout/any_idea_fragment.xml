@@ -39,20 +39,22 @@
             android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@+id/attach_image"/>
 
+    <include
+            android:id="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            layout="@layout/fake_toolbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/idea_messages"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintBottom_toTopOf="@id/attach_image"
             app:stackFromEnd="true"
             app:reverseLayout="true"
             tools:itemCount="4"
             tools:listitem="@layout/any_idea_item"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-
-            />
+            android:layout_height="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,5 +33,4 @@ class ProductAdapter(var data: MutableList<UiState.Article>, val click: ItemClic
         holder.bindItem(position, data[position])
     }
 
-
 }

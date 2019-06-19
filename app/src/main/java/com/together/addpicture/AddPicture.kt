@@ -51,16 +51,10 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
             when (it) {
                 ChooseDialog.Action.TAKE_PICKTURE -> startTakePicture()
                 ChooseDialog.Action.CHOOSE_PICTURE -> startPickImage()
-                ChooseDialog.Action.DELETE_PHOTO() -> deleteImage()
+                ChooseDialog.Action.DELETE_PHOTO() -> {          }
                 ChooseDialog.Action.CANCEL_ADD_PICTURE -> activity.finish()
             }
         }
-
-    }
-
-    private fun deleteImage() {
-
-
     }
 
     companion object {

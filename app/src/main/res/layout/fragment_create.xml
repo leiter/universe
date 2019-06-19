@@ -102,7 +102,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:maxLength="30"
+
+                android:maxLength="5"
                 android:gravity="center"
                 android:hint="Einheit z.B Kg"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -140,9 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="@id/product_name_layout"
-            app:layout_constraintTop_toBottomOf="@+id/product_price_unit_layout"
-
-            />
+            app:layout_constraintTop_toBottomOf="@+id/product_price_unit_layout"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"

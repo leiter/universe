@@ -20,7 +20,7 @@
             android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
-            android:padding="16dp"
+
             android:visibility="invisible"
             android:layout_gravity="end"
             android:layout_width="wrap_content"
@@ -32,7 +32,6 @@
             android:layout_toStartOf="@id/toolbar_end_2"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
-            android:padding="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

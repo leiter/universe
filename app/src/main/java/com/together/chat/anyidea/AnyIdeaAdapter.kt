@@ -19,7 +19,7 @@ class AnyIdeaAdapter : RecyclerView.Adapter<IdeaViewHolder>() {
         // diff on ViewTyp
         return IdeaViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.chat_message, parent, false)
+                .inflate(R.layout.item_chat_message, parent, false)
         )
     }
 
