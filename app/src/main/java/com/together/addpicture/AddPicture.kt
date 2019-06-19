@@ -33,8 +33,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
     private lateinit var actions: PublishSubject<ChooseDialog.Action>
 
-    private lateinit var currentImageFile : File
-
+    private lateinit var currentImageFile: File
 
     override fun startAddPhoto(): Disposable {
 
@@ -81,8 +80,10 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         val granted = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
         when (granted) {
             PackageManager.PERMISSION_GRANTED -> startCamera()
-            else -> dialogFragment.requestPermissions(arrayOf(Manifest.permission.CAMERA),
-                REQUEST_PIC_PICTURE_PERMISSION)
+            else -> dialogFragment.requestPermissions(
+                arrayOf(Manifest.permission.CAMERA),
+                REQUEST_PIC_PICTURE_PERMISSION
+            )
         }
     }
 
@@ -113,41 +114,46 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
             requestCode == REQUEST_PIC_PICTURE_PERMISSION &&
             permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            startPickIntent()
-        }
+        ) {         startPickIntent()       }
 
         if (permissions.size == 1 &&
             requestCode == REQUEST_TAKE_PICTURE_PERMISSION &&
             permissions[0] == Manifest.permission.CAMERA &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            startCamera()
-        }
+        ) {         startCamera()       }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val fileUri : Uri
 
-            if (requestCode == REQUEST_TAKE_PICTURE){
-                fileUri = FileProvider.getUriForFile(activity,activity.packageName,currentImageFile)
-                val image = Result.NewImageCreated(fileUri.path?:"noFound", fileUri)
+            val fileUri: Uri
+
+            if (requestCode == REQUEST_TAKE_PICTURE) {
+                fileUri = FileProvider.getUriForFile(activity, activity.packageName, currentImageFile)
+                val image = Result.NewImageCreated(fileUri.path ?: "noFound", fileUri)
                 MainMessagePipe.mainThreadMessage.onNext(image)
+            } else if (requestCode == REQUEST_PIC_PICTURE) {
+                if (data != null) {
+                    val imageColumn = arrayOf(MediaStore.Images.Media.DATA)
+                    val id = data.data?.lastPathSegment!!.split(":")[1]
+                    val cursor = activity.contentResolver.query(
+                        getUri(),
+                        imageColumn,
+                        MediaStore.Images.Media._ID + "=" + id, null, null
+                    )
+                    cursor!!.moveToFirst()
+                    val uriString = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+                    fileUri = Uri.parse(uriString)
+                    cursor.close()
+                    val image = Result.NewImageCreated(fileUri.path ?: "noFound", fileUri)
+                    MainMessagePipe.mainThreadMessage.onNext(image)
+                }
             }
-
-
-            val result = "content://com.together/photos/default"
-
-
-
         }
-
-
         activity.finish()
     }
 
-    private fun createFile(context: Context, tmpName: String = someString()) : File {
+    private fun createFile(context: Context, tmpName: String = someString()): File {
         currentImageFile = File(context.filesDir, tmpName)
         return currentImageFile
     }
@@ -157,7 +163,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     private fun startPickIntent() {
         val getIntent = Intent(Intent.ACTION_GET_CONTENT)
             .apply {
-                setType(IMAGE_TYPE)
+                type = IMAGE_TYPE
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
         activity.startActivityForResult(getIntent, REQUEST_PIC_PICTURE)
@@ -169,14 +175,14 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         when (granted) {
             PackageManager.PERMISSION_GRANTED -> startPickIntent()
             else -> {
-                ActivityCompat.requestPermissions(activity,
+                ActivityCompat.requestPermissions(
+                    activity,
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     REQUEST_PIC_PICTURE_PERMISSION
                 )
             }
         }
     }
-
 
     private fun getUri(): Uri {
         val state: String = Environment.getExternalStorageState()

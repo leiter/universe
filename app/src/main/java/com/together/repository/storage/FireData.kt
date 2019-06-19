@@ -21,12 +21,16 @@ class FireData {
 }
 
 
-fun  UploadTask.getSingle(): Single<out Result> {
+fun  UploadTask.getSingle(): Single<UploadTask.TaskSnapshot> {
     return Single.create { emitter ->
 
         val listener = object : OnSuccessListener<UploadTask.TaskSnapshot> {
             override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
-                emitter.onSuccess(Result.NewImageCreated(p0?.toString()?:"n/a",p0?.uploadSessionUri!!))
+                emitter.onSuccess(p0!!
+
+//                    Result.NewImageCreated(p0?.toString()?:"n/a",p0?.uploadSessionUri!!)
+
+                )
                 removeOnSuccessListener(this)
             }
 

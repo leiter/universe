@@ -1,11 +1,14 @@
 package com.together
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,9 +22,14 @@ import com.together.order.main.ProductAdapter
 import com.together.repository.Result
 import com.together.repository.storage.FireData
 import com.together.repository.storage.getObservable
+import com.together.utils.FileUtil
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fake_toolbar.*
 import kotlinx.android.synthetic.main.fragment_create.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 
 class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
@@ -38,6 +46,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     private lateinit var model: MainViewModel
 
     private lateinit var adapter: ProductAdapter
+
+    private lateinit var picasso: Picasso
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,14 +68,12 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        picasso = Picasso.Builder(context)
+            .downloader(OkHttp3Downloader(context)).build()
+
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         model.newProduct.observe(this, Observer {
-            val p = Picasso.Builder(context)
-                .downloader(OkHttp3Downloader(context)).build()
-            p.load(it.uri)
-//                .placeholder(R.drawable.ic_shopping_cart_black_24dp)
-                .into(image)
-
+            picasso.load(it.uri).into(image)
         })
         model.editProduct.observe(this, Observer {
             product_name.setText(it.productName)
@@ -77,6 +85,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
 
         product_list.layoutManager = LinearLayoutManager(context)
+
         val d = mutableListOf<UiState.Article>()
 
         adapter = ProductAdapter(d, this)
@@ -92,19 +101,21 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                 remoteImageUrl = it.imageUrl,
                 unit = it.unit,
                 pricePerUnit = it.pricePerUnit
-
             )
+
             adapter.addItem(e)
         })
 
         create_fab.setOnClickListener {
-            updateProduct(model.newProduct.value!!.uri)
+            createBitmap(model.newProduct.value!!.uri)
         }
         manage_image.setOnClickListener {
             UtilsActivity.startAddImage(activity!!)
         }
 
-        toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START)) }
+        toolbar_start.setOnClickListener {
+            MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
+        }
 
     }
 
@@ -127,41 +138,73 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             }
     }
 
-    private fun updateProduct(uri: Uri) {
-        val ref = FirebaseStorage.getInstance().reference
-            .child("images/${uri.lastPathSegment}")
-            .putFile(uri)
-        ref.addOnSuccessListener {
+    private fun updateProduct(imageUri: Uri) {
+        writeToNewProduct()  // todo writing should happen on the fly
 
-            it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
+        val ref = FirebaseStorage.getInstance()
+            .reference
+            .child("images/${imageUri.lastPathSegment}")
+            .putFile(imageUri)
+            .addOnSuccessListener {
 
-                writeToNewProduct()  //writing should happen on the fly
-                val uiState = model.editProduct.value!!
+                it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
 
-                val resulT = Result.Article(
-                    id = "",
-                    productId = -1,
-                    productName = uiState.productName,
-                    productDescription = uiState.productDescription,
-                    imageUrl = it.toString(),
-                    available = uiState.available,
-                    pricePerUnit = uiState.pricePerUnit,
-                    unit = uiState.unit
-                )
-                val fireData = FireData()
-                fireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
+                    val uiState = model.editProduct.value!!
+
+                    val resulT = Result.Article(
+                        id = "",
+                        productId = -1,
+                        productName = uiState.productName,
+                        productDescription = uiState.productDescription,
+                        imageUrl = it.toString(),
+                        available = uiState.available,
+                        pricePerUnit = uiState.pricePerUnit,
+                        unit = uiState.unit
+                    )
+                    val fireData = FireData()
+                    fireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
+                }
+
             }
-
-        }
 
     }
 
-    private fun writeToNewProduct() {
 
+    private fun createBitmap(imageUri: Uri) {
+        disposable.add(Observable.just(Any()).map {
+            val bitmap: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            image.draw(canvas)
+            val tmpFile = createTempFile()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
+            tmpFile
+        }
+            .subscribe {
+                updateProduct(Uri.fromFile(it))
+                FileUtil.deleteFile(File(imageUri.path))
+
+            })
+    }
+    private fun getRotation(inputStream: InputStream) : Int {
+        val exif = ExifInterface(inputStream)
+        val result = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+        val rotation: Int
+        rotation = when (result) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+        return rotation
+    }
+
+    private fun writeToNewProduct() {
         model.editProduct.value?.productName = product_name.text.toString()
         model.editProduct.value?.productDescription = product_description.text.toString()
         model.editProduct.value?.pricePerUnit = product_price.text.toString()
         model.editProduct.value?.unit = product_price_unit.text.toString()
 
     }
+
+
 }

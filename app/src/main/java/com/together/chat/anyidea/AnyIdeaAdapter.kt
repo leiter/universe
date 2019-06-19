@@ -27,7 +27,6 @@ class AnyIdeaAdapter : RecyclerView.Adapter<IdeaViewHolder>() {
 
     override fun onBindViewHolder(holder: IdeaViewHolder, position: Int) {
         holder.bindItem(position, data[position])
-
     }
 
 

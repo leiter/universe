@@ -38,7 +38,6 @@ class MainViewModel : ViewModel() {
 
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
 
-
     override fun onCleared() {
         disposable.clear()
         super.onCleared()
