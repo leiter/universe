@@ -1,4 +1,4 @@
-package com.together.order.main
+package com.together.order
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

@@ -32,9 +32,9 @@ object TestData {
     )
 
     val userList = listOf(
-        Result.User(displayName = "Marco", emailAdress = "mmaleiter@gmail.com"),
-        Result.User(displayName = "Mandy", emailAdress = "marcoleiter@arcor.de"),
-        Result.User(displayName = "Annabel", emailAdress = "")
+        Result.User(displayName = "Marco", emailAddress = "mmaleiter@gmail.com"),
+        Result.User(displayName = "Mandy", emailAddress = "marcoleiter@arcor.de"),
+        Result.User(displayName = "Annabel", emailAddress = "")
     )
 
 

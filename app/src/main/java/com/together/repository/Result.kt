@@ -38,7 +38,7 @@ sealed class Result(var callbackType : Int = -1) {
     data class User(
         override var id: String = "",
         var displayName: String = "",
-        var emailAdress: String = ""
+        var emailAddress: String = ""
     ) : Result()
 
 

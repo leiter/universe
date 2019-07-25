@@ -1,4 +1,4 @@
-package com.together.order.main
+package com.together.order
 
 import android.os.Bundle
 import android.view.Gravity
