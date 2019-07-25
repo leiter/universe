@@ -20,8 +20,8 @@ class UtilsActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TYPE_HINT = "type_hint"
-        const val IMAGE_ADD = 1213
+        private const val TYPE_HINT = "type_hint"
+        private const val IMAGE_ADD = 1213
 
         fun startAddImage(context: Context) {
             context.startActivity(Intent(context, UtilsActivity::class.java).apply {
@@ -36,7 +36,9 @@ class UtilsActivity : AppCompatActivity() {
         addPicture.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<out String>,
+                                            grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         addPicture.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }

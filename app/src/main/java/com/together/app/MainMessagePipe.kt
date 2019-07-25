@@ -1,5 +1,7 @@
 package com.together.app
 
+import android.content.Intent
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.together.repository.Result
 import com.together.repository.auth.FirebaseAuth
 import io.reactivex.disposables.Disposable
@@ -23,10 +25,15 @@ object MainMessagePipe {
                 is UiEvent.ShowToast -> {
                     ToastProvider(it).show()
                 }
+                is UiEvent.ShowLicense -> {
+                    it.context.startActivity(Intent(it.context,OssLicensesMenuActivity::class.java))
+                }
             }
         }
     }
 
     val mainThreadMessage: PublishSubject<in Result> = PublishSubject.create()
+
+
 
 }

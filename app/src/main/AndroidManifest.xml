@@ -49,6 +49,15 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/file_path"/>
         </provider>
+
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+                  android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
+
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+                  android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
+
+
+
     </application>
 
 </manifest>

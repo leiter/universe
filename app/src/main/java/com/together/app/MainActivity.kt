@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+
+
         viewModel.loggedState.value = fire.isLoggedIn()
         disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
         disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))

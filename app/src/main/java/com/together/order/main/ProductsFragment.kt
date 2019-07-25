@@ -80,6 +80,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         toolbar_start.setOnClickListener {
             MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
         }
+
+
     }
 
     override fun onDestroyView() {

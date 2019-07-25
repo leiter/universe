@@ -4,7 +4,8 @@
     <item
             android:id="@+id/profile"
             android:icon="@drawable/ic_avatar_placeholder_24dp"
-            android:title="Profil"/>
+            android:title="Profil"
+            />
 
     <item
             android:id="@+id/contacts"
@@ -17,5 +18,12 @@
             android:icon="@drawable/ic_settings_black"
             android:title="Einstellungen"
             />
+
+    <item
+            android:id="@+id/licenses"
+            android:icon="@drawable/ic_photo_camera"
+            android:title="Lizensen"
+            />
+
 
 </menu>

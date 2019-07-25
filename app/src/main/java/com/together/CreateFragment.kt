@@ -50,6 +50,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
@@ -101,6 +102,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
         }
 
+
+
     }
 
     override fun clicked(item: UiState.Article) {
@@ -113,8 +116,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     }
 
     private fun updateProduct(imageUri: Uri) {
-        writeToNewProduct()  // todo writing should happen on the fly
 
+        writeToNewProduct()  // todo writing should happen on the fly
         val ref = FirebaseStorage.getInstance()
             .reference
             .child("images/${imageUri.lastPathSegment}")

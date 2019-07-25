@@ -29,6 +29,10 @@ class MainActivityPresenter {
 
                 }
 
+                R.id.licenses -> {
+                    MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(drawer.context))
+                }
+
             }
             drawer.closeDrawers()
         }

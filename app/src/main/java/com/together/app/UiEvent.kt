@@ -7,7 +7,7 @@ import android.view.Gravity
 
 sealed class UiEvent {
 
-    class LogIn(val context: Context) : UiEvent()
+    data class LogIn(val context: Context) : UiEvent()
 
     object LogOut : UiEvent()
 
@@ -15,6 +15,11 @@ sealed class UiEvent {
                          var gravity: Int = Gravity.TOP) : UiEvent()
 
     data class DrawerState(val gravity: Int) : UiEvent()
+
+
+
+    data class ShowLicense (val context: Context) : UiEvent()
+
 
 
 
