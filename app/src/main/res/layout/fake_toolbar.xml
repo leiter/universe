@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:orientation="horizontal"
                 android:animateLayoutChanges="true"
                 android:layout_width="match_parent"
                 android:padding="16dp"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="wrap_content">
 
     <ImageButton
             android:id="@+id/toolbar_start"
@@ -37,9 +38,22 @@
 
     <TextView
             android:id="@+id/title"
+            tools:text="@string/app_name"
+            android:gravity="center"
             android:layout_toEndOf="@id/toolbar_start"
             android:layout_toStartOf="@id/toolbar_end_1"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/sub_title"
+            android:layout_toEndOf="@id/toolbar_start"
+            android:layout_toStartOf="@id/toolbar_end_1"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_alignTop="@id/title"
+            tools:text="und so wie so"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"/>
 
 </RelativeLayout>

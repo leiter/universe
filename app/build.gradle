@@ -43,9 +43,12 @@ android {
 
         sell {
             dimension = "basic"
+//            applicationIdSuffix ".sell"
         }
         buy {
             dimension = "basic"
+//            applicationIdSuffix ".buy"
+
         }
 
 

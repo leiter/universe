@@ -2,8 +2,8 @@ package com.together.repository.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.together.app.MainMessagePipe
-import com.together.app.UiState
+import com.together.create.app.MainMessagePipe
+import com.together.create.app.UiState
 import com.together.repository.Result
 
 

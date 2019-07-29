@@ -4,9 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
-import com.together.app.UiState
+import com.together.create.app.UiState
 
-class ProductAdapter(var data: MutableList<UiState.Article>, val click: ItemClicked)
+class ProductAdapter(private val click: ItemClicked,
+                     var data: MutableList<UiState.Article> = mutableListOf())
 
     : RecyclerView.Adapter<ArticleViewHolder>() {
 

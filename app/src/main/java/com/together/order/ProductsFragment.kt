@@ -14,10 +14,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.app.MainMessagePipe
-import com.together.app.MainViewModel
-import com.together.app.UiEvent
-import com.together.app.UiState
+import com.together.create.app.MainMessagePipe
+import com.together.create.app.MainViewModel
+import com.together.create.app.UiEvent
+import com.together.create.app.UiState
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import io.reactivex.disposables.CompositeDisposable
@@ -36,7 +36,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         model.presentedProduct.value = item
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.main_order_fragment, container, false)
     }
 
@@ -58,9 +60,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         })
 
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        val d = mutableListOf<UiState.Article>()
 
-        adapter = ProductAdapter(d, this)
+        adapter = ProductAdapter( this)
         article_list.adapter = adapter
 
         val ref = FirebaseDatabase.getInstance().reference
@@ -80,8 +81,6 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         toolbar_start.setOnClickListener {
             MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
         }
-
-
     }
 
     override fun onDestroyView() {

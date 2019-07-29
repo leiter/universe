@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
-interface Authentification {
+interface Authentication {
 
     fun createUser(userEmail: String, password: String)
 
@@ -14,7 +14,7 @@ interface Authentification {
 
 }
 
-class AuthentificationImpl @Inject constructor(context: Context) : Authentification {
+class AuthentificationImpl @Inject constructor(context: Context) : Authentication {
 
     var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 

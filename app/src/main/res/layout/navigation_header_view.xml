@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:paddingTop="32dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         >
 
     <ImageView
@@ -14,9 +14,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="144dp"
-            android:layout_height="144dp"/>
-
+            android:scaleType="centerCrop"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
 
     <Button
             android:id="@+id/log_in"
@@ -34,24 +34,32 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/user_email"/>
 
+
+
+    <TextView
+            android:id="@+id/user_email"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/colorAccent"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            tools:text="mmaleiter@gmail.com"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
     <TextView
             android:id="@+id/user_name"
-            app:layout_constraintTop_toBottomOf="@id/user_avatar"
+            app:layout_constraintBottom_toTopOf="@id/user_email"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Marco the man"
             android:textSize="18sp"
-            android:layout_width="wrap_content"
+            android:background="@color/colorAccent"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-    <TextView
-            android:id="@+id/user_email"
-            app:layout_constraintTop_toBottomOf="@id/user_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textSize="12sp"
-            tools:text="mmaleiter@gmail.com"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

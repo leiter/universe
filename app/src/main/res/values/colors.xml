@@ -9,6 +9,7 @@
 
 
     <color name="black">@android:color/black</color>
+    <color name="white">#F0FFFFFF</color>
 
 
 </resources>

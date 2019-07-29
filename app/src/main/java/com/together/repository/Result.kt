@@ -60,6 +60,30 @@ sealed class Result(var callbackType : Int = -1) {
         var articles: List<Article> = emptyList()
     ) : Result()
 
+    data class SellerProfile(
+        override var id: String = "",
+        var displayName: String = "",
+
+        var firstName: String = "",
+        var lastName: String = "",
+
+        var street: String = "",
+        var city: String = "",
+        var zipcode: String = "",
+
+        var knownClientIds: MutableList<String> = mutableListOf(),
+
+        var lat: String = "",
+        var lng: String = ""
+
+
+
+
+    ) : Result()
+
+
+
+
     data class ChatMessage(
         override var id: String = "",
         val creatorId: String = "",
