@@ -37,7 +37,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@+id/attach_image"/>
+            app:layout_constraintStart_toEndOf="@+id/attach_image"
+            android:layout_marginLeft="8dp"/>
 
     <include
             android:id="@+id/toolbar"

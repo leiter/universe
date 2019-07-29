@@ -1,4 +1,4 @@
-package com.together
+package com.together.create
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -17,8 +17,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
+import com.together.R
 import com.together.app.*
-import com.together.order.main.ProductAdapter
+import com.together.order.ProductAdapter
 import com.together.repository.Result
 import com.together.repository.storage.FireData
 import com.together.repository.storage.getObservable
