@@ -1,8 +1,10 @@
-package com.together.app
+package com.together.base
 
 import android.content.Context
 import android.net.Uri
 import android.view.Gravity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 
 
 sealed class UiEvent {
@@ -22,7 +24,13 @@ sealed class UiEvent {
 
 
 
+    data class ReplaceFragment(val fragMange: FragmentManager,
+                               val fragment: Fragment,
+                               val tag: String): UiEvent()
 
+    data class AddFragment(val fragMange: FragmentManager,
+                           val fragment: Fragment,
+                           val tag: String): UiEvent()
 
 
     data class PostProduct(var product: UiState.Article)
@@ -41,6 +49,5 @@ sealed class UiEvent {
                               var text: String,
                               var photoUrl: String) : UiEvent()
 
-    class ShowFragment()
 
 }

@@ -16,9 +16,11 @@ import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.order.ProductsFragment
 import com.together.repository.auth.FirebaseAuth
+import com.together.repository.storage.FireData
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -60,7 +62,22 @@ class MainActivity : AppCompatActivity() {
             when (it) {
 
                 is UiState.LOGGEDIN ->
-                    presenter.setLoggedIn(navigation_drawer, log_out)
+
+                    FireData.doesNodeExist(listOf("sdfasd")).map {
+                        if(it){
+                            MainMessagePipe.uiEvent.onNext(
+                                UiEvent.ShowToast(baseContext,R.string.app_name,Gravity.TOP))
+
+
+                        } else{
+                            presenter.setLoggedIn(navigation_drawer, log_out)
+                        }
+                    }.subscribeBy( {
+
+
+                    },{
+
+                    })
 
                 is UiState.LOGGEDOUT -> {
                     presenter.setLoggedOut(navigation_drawer, log_out)

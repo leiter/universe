@@ -1,8 +1,9 @@
-package com.together.app
+package com.together.base
 
 import android.app.Application
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.together.app.MainActivity
 import dagger.Binds
 import dagger.Component
 import dagger.Module

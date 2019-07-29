@@ -17,7 +17,7 @@ class AnyIdeaPresenter(val dataRef: DatabaseReference) {
                 user.displayName ?: " ",
                 msg, user.photoUrl?.toString() ?: ""
             )
-            fire().createDocument(dataRef, "anymessage", message)
+            FireData.createDocument(dataRef, "anymessage", message)
         }
     }
 

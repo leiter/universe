@@ -7,7 +7,9 @@ import com.google.firebase.storage.UploadTask
 import com.together.repository.Result
 import io.reactivex.Single
 
-class FireData {
+object FireData {
+
+    private val fireRef = FirebaseDatabase.getInstance().reference
 
     fun createDocument(ref: DatabaseReference, path: String, document: Result) {
         ref.child(path).push().setValue(document)
@@ -16,6 +18,16 @@ class FireData {
     fun createDocument(path: String, document: Result)  {
         FirebaseDatabase.getInstance().reference.child(path).push().setValue(document)
     }
+
+    fun doesNodeExist(childList:List<String>) : Single<Boolean>{
+        val target = fireRef.root
+        childList.forEach {
+            target.child(it)
+        }
+        return fireRef.getSingle(childList[0])
+    }
+
+
 
 
 }

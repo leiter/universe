@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
-import com.together.create.app.UiState
+import com.together.base.UiState
 
 class ProductAdapter(private val click: ItemClicked,
                      var data: MutableList<UiState.Article> = mutableListOf())
@@ -21,8 +21,7 @@ class ProductAdapter(private val click: ItemClicked,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-        return ArticleViewHolder(
-            LayoutInflater.from(parent.context)
+        return ArticleViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.product_item, parent, false), click
         )
     }
@@ -30,7 +29,6 @@ class ProductAdapter(private val click: ItemClicked,
     override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
-        if (position == 0) click.clicked(data[position])
         holder.bindItem(position, data[position])
     }
 

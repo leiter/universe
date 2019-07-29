@@ -1,4 +1,4 @@
-package com.together.app
+package com.together.base
 
 import android.net.Uri
 

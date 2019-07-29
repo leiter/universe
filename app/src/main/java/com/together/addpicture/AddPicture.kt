@@ -13,7 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import com.together.create.app.MainMessagePipe
+import com.together.base.MainMessagePipe
 import com.together.repository.Result
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject

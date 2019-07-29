@@ -6,6 +6,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
     <include
             android:id="@+id/toolbar"
             android:layout_height="?attr/actionBarSize"
@@ -25,7 +27,7 @@
                 android:id="@+id/product_image"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_shopping_cart_black_24dp"
+                tools:src="@drawable/ic_add_shopping_cart_black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintDimensionRatio="W,1:1"
                 android:layout_width="144dp"

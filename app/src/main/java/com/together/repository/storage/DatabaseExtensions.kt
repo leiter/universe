@@ -1,11 +1,9 @@
 package com.together.repository.storage
 
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.*
 import com.together.repository.Result
 import io.reactivex.Observable
+import io.reactivex.Single
 
 
 inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T> {
@@ -49,24 +47,25 @@ inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T>
 
 }
 
-//inline fun <reified T> DatabaseReference.getSingle(): Single<T> {
-//    return Single.create { emitter ->
-//        val listener = object : ValueEventListener {
-//            override fun onCancelled(p0: DatabaseError) {
-//                emitter.onError(p0.toException())
-//            }
-//
-//            override fun onDataChange(p0: DataSnapshot) {
-//                emitter.onSuccess(p0.getValue(T::class.java)!!)
-//            }
-//        }
-//        addListenerForSingleValueEvent(listener)
-//        emitter.setCancellable {
-//            removeEventListener(listener)
-//        }
-//    }
-//
-//}
+fun DatabaseReference.getSingle(child :String): Single<Boolean> {
+    return Single.create { emitter ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val i = p0.hasChild(child)
+                emitter.onSuccess(i)
+            }
+        }
+        addListenerForSingleValueEvent(listener)
+        emitter.setCancellable {
+            removeEventListener(listener)
+        }
+    }
+
+}
 
 
 //inline fun <reified T> Query.getSingle(): Single<T> {

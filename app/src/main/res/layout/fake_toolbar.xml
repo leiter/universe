@@ -9,9 +9,10 @@
 
     <ImageButton
             android:id="@+id/toolbar_start"
+
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
-            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -21,7 +22,7 @@
             android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
-
+            android:layout_centerVertical="true"
             android:visibility="invisible"
             android:layout_gravity="end"
             android:layout_width="wrap_content"
@@ -31,6 +32,7 @@
             android:id="@+id/toolbar_end_1"
             android:visibility="invisible"
             android:layout_toStartOf="@id/toolbar_end_2"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
             android:layout_width="wrap_content"
@@ -38,7 +40,8 @@
 
     <TextView
             android:id="@+id/title"
-            tools:text="@string/app_name"
+            tools:text="Linda"
+            android:textSize="24dp"
             android:gravity="center"
             android:layout_toEndOf="@id/toolbar_start"
             android:layout_toStartOf="@id/toolbar_end_1"
@@ -49,11 +52,11 @@
             android:id="@+id/sub_title"
             android:layout_toEndOf="@id/toolbar_start"
             android:layout_toStartOf="@id/toolbar_end_1"
+            android:layout_below="@id/title"
             android:gravity="center"
             android:textColor="@color/black"
-            android:layout_alignTop="@id/title"
-            tools:text="und so wie so"
+            tools:text="Kartoffel"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
 
 </RelativeLayout>

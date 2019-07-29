@@ -18,7 +18,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.app.*
+import com.together.base.*
 import com.together.order.ProductAdapter
 import com.together.repository.Result
 import com.together.repository.storage.FireData
@@ -74,7 +74,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
         val d = mutableListOf<UiState.Article>()
 
-        adapter = ProductAdapter(d, this)
+        adapter = ProductAdapter(this)
         product_list.adapter = adapter
 
         val ref = FirebaseDatabase.getInstance().reference
@@ -107,9 +107,12 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     }
 
+
     override fun clicked(item: UiState.Article) {
         model.editProduct.value = item
+
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -139,8 +142,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                         pricePerUnit = uiState.pricePerUnit,
                         unit = uiState.unit
                     )
-                    val fireData = FireData()
-                    fireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
+//                    val fireData = FireData()
+                    FireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
                 }
 
             }
@@ -150,11 +153,13 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private fun createBitmap(imageUri: Uri) {
         disposable.add(Observable.just(Any()).map {
-            val bitmap: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
+            val bitmap: Bitmap = Bitmap.createBitmap(
+                image.width, image.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
             image.draw(canvas)
             val tmpFile = createTempFile()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
+            bitmap.compress(
+                Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
             tmpFile
         }
             .subscribe {

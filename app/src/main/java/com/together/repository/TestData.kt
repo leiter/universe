@@ -1,6 +1,6 @@
 package com.together.repository
 
-import com.together.create.app.UiState
+import com.together.base.UiState
 
 
 object TestData {

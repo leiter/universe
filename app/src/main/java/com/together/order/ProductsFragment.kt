@@ -14,10 +14,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.create.app.MainMessagePipe
-import com.together.create.app.MainViewModel
-import com.together.create.app.UiEvent
-import com.together.create.app.UiState
+import com.together.base.MainMessagePipe
+import com.together.base.MainViewModel
+import com.together.base.UiEvent
+import com.together.base.UiState
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import io.reactivex.disposables.CompositeDisposable
@@ -52,7 +52,6 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
             product_description.text = it.productDescription
             val price = it.pricePerUnit + " €/" + it.unit
             product_price.text = price
-
             val p = Picasso.Builder(context)
                 .downloader(OkHttp3Downloader(context)).build()
             p.load(it.remoteImageUrl)
@@ -76,11 +75,15 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
 
             )
             adapter.addItem(e)
+            if (adapter.data.size == 1) {
+                model.presentedProduct.value = adapter.data[0]
+            }
         })
 
         toolbar_start.setOnClickListener {
             MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
         }
+
     }
 
     override fun onDestroyView() {
