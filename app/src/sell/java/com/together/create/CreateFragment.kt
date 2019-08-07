@@ -51,14 +51,13 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         model.newProduct.observe(this, Observer {
             picasso.load(it.uri).into(image)
         })
-        model.editProduct.observe(this, Observer {
+        model.editProduct.observe(viewLifecycleOwner, Observer {
             product_name.setText(it.productName)
             product_description.setText(it.productDescription)
             product_price.setText(it.pricePerUnit)
@@ -71,8 +70,6 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         toolbar_end_2.visibility = View.VISIBLE
 
         product_list.layoutManager = LinearLayoutManager(context)
-
-        val d = mutableListOf<UiState.Article>()
 
         adapter = ProductAdapter(this)
         product_list.adapter = adapter
@@ -121,7 +118,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private fun updateProduct(imageUri: Uri) {
 
-        writeToNewProduct()  // todo writing should happen on the fly
+        writeToNewProduct()
         val ref = FirebaseStorage.getInstance()
             .reference
             .child("images/${imageUri.lastPathSegment}")
@@ -158,8 +155,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             val canvas = Canvas(bitmap)
             image.draw(canvas)
             val tmpFile = createTempFile()
-            bitmap.compress(
-                Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
             tmpFile
         }
             .subscribe {

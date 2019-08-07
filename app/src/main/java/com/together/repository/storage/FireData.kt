@@ -19,6 +19,7 @@ object FireData {
         FirebaseDatabase.getInstance().reference.child(path).push().setValue(document)
     }
 
+
     fun doesNodeExist(childList:List<String>) : Single<Boolean>{
         val target = fireRef.root
         childList.forEach {
@@ -34,7 +35,8 @@ object FireData {
 
 
 fun  UploadTask.getSingle(): Single<UploadTask.TaskSnapshot> {
-    return Single.create { emitter ->
+    return Single.create {
+            emitter ->
 
         val listener = object : OnSuccessListener<UploadTask.TaskSnapshot> {
             override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
@@ -47,6 +49,7 @@ fun  UploadTask.getSingle(): Single<UploadTask.TaskSnapshot> {
             }
 
         }
+
         addOnSuccessListener(listener)
         emitter.setCancellable { removeOnSuccessListener(listener) }
     }

@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-            android:id="@+id/profile"
-            android:icon="@drawable/ic_avatar_placeholder_24dp"
-            android:title="Profil"
-            />
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/drawer_nav_1"
+                android:icon="@drawable/ic_avatar_placeholder_24dp"
+                android:title="@string/nav_title_1"
+                />
 
-    <item
-            android:id="@+id/contacts"
-            android:icon="@drawable/ic_group_black"
-            android:title="Kontakte"
-            />
+        <item
+                android:id="@+id/drawer_nav_2"
+                android:icon="@drawable/ic_group_black"
+                android:title="@string/nav_title_2"
+                />
 
-    <item
-            android:id="@+id/settings"
-            android:icon="@drawable/ic_settings_black"
-            android:title="Einstellungen"
-            />
+        <item
+                android:id="@+id/drawer_nav_3"
+                android:icon="@drawable/ic_settings_black"
+                android:title="@string/nav_title_3"
+                />
 
-    <item
-            android:id="@+id/licenses"
-            android:icon="@drawable/ic_photo_camera"
-            android:title="Lizensen"
-            />
-
+        <item
+                android:id="@+id/drawer_nav_4"
+                android:icon="@drawable/ic_photo_camera"
+                android:title="@string/nav_title_4"
+                />
+    </group>
 
 </menu>

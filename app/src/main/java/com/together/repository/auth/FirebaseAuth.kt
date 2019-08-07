@@ -19,7 +19,7 @@ object FirebaseAuth : FirebaseAuth.AuthStateListener {
 
     fun isLoggedIn(): UiState {
         return when (firebaseAuth.currentUser != null) {
-            true -> UiState.LOGGEDIN
+            true -> UiState.BASE_AUTH
             else -> UiState.LOGGEDOUT
         }
     }

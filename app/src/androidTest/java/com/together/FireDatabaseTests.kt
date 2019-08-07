@@ -37,9 +37,7 @@ class FireDatabaseTests {
 
     @Before
     fun setup() {
-        fire = FireData(
-//            FirebaseDatabase.getInstance(app!!).reference
-        )
+        fire = FireData
 
 
     }

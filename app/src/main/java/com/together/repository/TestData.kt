@@ -8,6 +8,7 @@ object TestData {
     val articleList = listOf(
         Result.Article(
             "",
+            -1,
             0,
             "Banana",
             "Nice fruit to eat.",
@@ -15,6 +16,7 @@ object TestData {
         ),
         Result.Article(
             "",
+            -1,
             1,
             "Apple",
             "Nice fruit to eat.",
@@ -22,6 +24,7 @@ object TestData {
         ),
         Result.Article(
             "",
+            -1,
             2,
             "Potato",
             "Lovely vegetable.",

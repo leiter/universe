@@ -124,7 +124,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
             if (requestCode == REQUEST_TAKE_PICTURE) {
                 fileUri = FileProvider.getUriForFile(activity, activity.packageName, currentImageFile)
-                val image = Result.NewImageCreated(fileUri.path ?: "noFound", fileUri)
+                val image = Result.NewImageCreated(fileUri)
                 MainMessagePipe.mainThreadMessage.onNext(image)
             } else if (requestCode == REQUEST_PIC_PICTURE) {
                 if (data != null) {
@@ -139,7 +139,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
                     val uriString = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
                     fileUri = Uri.parse(uriString)
                     cursor.close()
-                    val image = Result.NewImageCreated(fileUri.path ?: "noFound", fileUri)
+                    val image = Result.NewImageCreated(fileUri)
                     MainMessagePipe.mainThreadMessage.onNext(image)
                 }
             }

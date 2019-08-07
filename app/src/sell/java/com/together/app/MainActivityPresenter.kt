@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso
 import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
+import com.together.create.CreateFragment
 import com.together.order.ProductsFragment
 import com.together.repository.auth.FirebaseAuth
 import com.together.utils.hideIme
@@ -25,11 +26,11 @@ class MainActivityPresenter {
 
         return navigationItemView.itemSelections().subscribe {
             when (it.itemId) {
-                R.id.profile -> {
+                R.id.drawer_nav_1 -> {
 
                 }
 
-                R.id.licenses -> {
+                R.id.drawer_nav_4 -> {
                     MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(drawer.context))
                 }
 
@@ -73,8 +74,11 @@ class MainActivityPresenter {
             when (it.itemId) {
                 R.id.navigation_home -> {
                     navigation.hideIme()
-                    fm.beginTransaction()
-                        .replace(R.id.container, ProductsFragment()).commit()
+                    fm.beginTransaction().replace(R.id.container, ProductsFragment()).commit()
+                }
+
+                R.id.navigation_dashboard -> {
+                    fm.beginTransaction().replace(R.id.container, CreateFragment()).commit()
                 }
 
 //                R.id.navigation_notifications -> {
@@ -84,6 +88,24 @@ class MainActivityPresenter {
             }
 
         }
+    }
+
+    fun isFullyRegistered() {
+
+//        FireData.doesNodeExist(listOf("sdfasd")).subscribeBy( {
+//
+//                    },{
+//
+//                        if(!it){
+//
+//                            MainMessagePipe.uiEvent.onNext(
+//                                UiEvent.ShowToast(baseContext,R.string.app_name,Gravity.TOP))
+//
+//
+//                        } else{
+//                            presenter.setLoggedIn(navigation_drawer, log_out)
+//                        }
+//                    })
     }
 
 

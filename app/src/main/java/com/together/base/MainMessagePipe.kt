@@ -31,7 +31,7 @@ object MainMessagePipe {
                     ToastProvider(it).show()
                 }
                 is UiEvent.ShowLicense -> {
-                    it.context.startActivity(Intent(it.context,OssLicensesMenuActivity::class.java))
+                    it.context.startActivity(Intent(it.context, OssLicensesMenuActivity::class.java))
                 }
                 is UiEvent.ReplaceFragment -> {
                     val f = it.fragMange.findFragmentByTag(it.tag)

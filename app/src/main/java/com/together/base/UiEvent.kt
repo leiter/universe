@@ -9,6 +9,14 @@ import androidx.fragment.app.FragmentManager
 
 sealed class UiEvent {
 
+    companion object {
+        //   Drawer State Actions
+        const val OPEN = 0
+        const val LOCK_MODE_UNLOCKED = 1
+        const val LOCK_MODE_LOCKED_CLOSED = 2
+    }
+
+
     data class LogIn(val context: Context) : UiEvent()
 
     object LogOut : UiEvent()
