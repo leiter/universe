@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="nav_title_1">Mein Shop</string>
+    <string name="nav_title_2">Meine Kunden</string>
+    <string name="nav_title_3">Einstellungen</string>
+    <string name="nav_title_4">Infos</string>
+
+</resources>

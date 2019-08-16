@@ -6,7 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding3.view.clicks
@@ -15,6 +17,7 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
+import com.together.loggedout.LoginFragment
 import com.together.profile.ProfileFragment
 import com.together.repository.Database
 import com.together.repository.storage.getSingleExists
@@ -24,7 +27,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+
+
+class MainActivity : AppCompatActivity(), MainActivityView {
+
+    override fun giveFragmentManager(): FragmentManager = supportFragmentManager
 
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
@@ -32,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private val disposable = CompositeDisposable()
 
-    private val presenter = MainActivityPresenter()
+    private val presenter : MainActivityPresenter by lazy {  MainActivityPresenter(this) }
 
     companion object {
 
@@ -47,6 +54,7 @@ class MainActivity : AppCompatActivity() {
             }
             context.startActivity(i)
         }
+
         fun reStart(context: Context) {
             val i = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -63,15 +71,10 @@ class MainActivity : AppCompatActivity() {
 //                .replace(R.id.container, ProductsFragment()).commit()
 //        }
 
-        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
-
         viewModel.loggedState.observe(this, Observer {
             when (it) {
 
                 is UiState.BASE_AUTH -> {
-
-//                    Handler().postDelayed({ loading_indicator.hide() },1500)
                     Database.profile().getSingleExists().subscribeBy({
                         MainMessagePipe.uiEvent.onNext(
                             UiEvent.ShowToast(baseContext, R.string.developer, Gravity.TOP)
@@ -88,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                                     MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
                                 })
                         } else {
+                            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                             MainMessagePipe.uiEvent.onNext(
                                 UiEvent.ReplaceFragment(supportFragmentManager, ProfileFragment(), ProfileFragment.TAG)
                             )
@@ -97,19 +101,26 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 is UiState.LOGGEDOUT -> {
-                    presenter.setLoggedOut(navigation_drawer, log_out)
+                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    MainMessagePipe.uiEvent.onNext(
+                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")
+                    )
+//                    presenter.setLoggedOut(navigation_drawer, log_out)
                 }
             }
         })
 
-
-
         disposable.add(MainMessagePipe.uiEvent.subscribe {
             when (it) {
-                is UiEvent.DrawerState -> if (it.gravity == Gravity.START) {
+                is UiEvent.DrawerState -> {if (it.gravity == Gravity.START) {
                     container.hideIme()
                     drawer_layout.openDrawer(navigation_drawer)
-                } else drawer_layout.closeDrawers()
+                } else drawer_layout.closeDrawers()}
+
+//                is UiEvent.ReplaceFrag -> {
+//                    supportFragmentManager.beginTransaction()
+//                        .add(R.id.container,it.fragment,it.tag).commit()
+//                }
             }
         })
 
@@ -134,10 +145,24 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                viewModel.loggedState.value = UiState.BASE_AUTH
+//                viewModel.loggedState.value = UiState.BASE_AUTH
             }
         } else {
             moveTaskToBack(true)
+        }
+    }
+
+    override fun onBackPressed() {
+        when {
+            drawer_layout.isDrawerOpen(GravityCompat.START) -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
+            supportFragmentManager.backStackEntryCount == 0 -> {
+                moveTaskToBack(true)
+                container.clearFocus()
+            }
+            else -> super.onBackPressed()
         }
     }
 

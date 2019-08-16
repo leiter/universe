@@ -143,7 +143,7 @@
             android:layout_marginTop="16dp"
             tools:itemCount="14"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/product_item"
+            tools:listitem="@layout/item_product"
             app:layout_constraintStart_toStartOf="@id/product_name_layout"
             app:layout_constraintTop_toBottomOf="@id/product_price_unit_layout"/>
 

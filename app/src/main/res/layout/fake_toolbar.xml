@@ -3,14 +3,16 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:orientation="horizontal"
                 android:animateLayoutChanges="true"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_width="match_parent"
-                android:padding="16dp"
                 android:layout_height="wrap_content">
 
     <ImageButton
             android:id="@+id/toolbar_start"
 
             android:layout_centerVertical="true"
+            android:padding="16dp"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
             android:layout_width="wrap_content"
@@ -19,6 +21,8 @@
 
     <ImageButton
             android:id="@+id/toolbar_end_2"
+            android:padding="16dp"
+
             android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_menu_hamburger"
@@ -31,6 +35,7 @@
     <ImageButton
             android:id="@+id/toolbar_end_1"
             android:visibility="invisible"
+
             android:layout_toStartOf="@id/toolbar_end_2"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackground"

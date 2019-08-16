@@ -1,6 +1,8 @@
 package com.together.base
 
 import android.net.Uri
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 sealed class UiState {
 
@@ -12,7 +14,6 @@ sealed class UiState {
 
     object BASE_AUTH : UiState() {
         override var id = "StateLoggedIn"
-
     }
 
     data class Article(
@@ -57,6 +58,19 @@ sealed class UiState {
 
     ) : UiState()
 
+
+    @Parcelize
+    data class Market(var name: String = "",
+                      var street: String = "",
+                      var houseNumber: String = "",
+                      var city: String = "",
+                      var zipcode: String = "",
+                      var dayOfWeek: String,
+                      var begin: String = "",
+                      var end: String = "",
+                      override var id: String = "") : UiState(), Parcelable
+
+
     data class ChatMessage(
         override var id: String = "",
         var creatorId: String = "",
@@ -71,9 +85,6 @@ sealed class UiState {
         var text: String = "",
         var photoUrl: String = ""
     ) : UiState()
-
-
-    data class PostAnyMessages(var list: MutableList<PostAnyMessage>)
 
 
 }

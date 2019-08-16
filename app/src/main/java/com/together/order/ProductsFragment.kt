@@ -32,9 +32,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private val disposable = CompositeDisposable()
 
-    override fun clicked(item: UiState.Article) {
-        model.presentedProduct.value = item
-    }
+    override fun clicked(item: UiState.Article) { model.presentedProduct.value = item }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -48,10 +46,10 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
 
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         model.presentedProduct.observe(this, Observer {
-            product_name.text = it.productName
-            product_description.text = it.productDescription
-            val price = it.pricePerUnit + " €/" + it.unit
-            product_price.text = price
+            title.text = it.productName
+            sub_title.text = it.productDescription
+//            val price = it.pricePerUnit + " €/" + it.unit
+//            product_price.text = price
             val p = Picasso.Builder(context)
                 .downloader(OkHttp3Downloader(context)).build()
             p.load(it.remoteImageUrl)
@@ -83,6 +81,11 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked {
         toolbar_start.setOnClickListener {
             MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
         }
+        toolbar_end_2.visibility = View.VISIBLE
+        toolbar_end_2.setImageResource(R.drawable.ic_info_outline)
+
+        toolbar_end_1.visibility = View.VISIBLE
+        toolbar_end_1.setImageResource(R.drawable.ic_shopping_basket)
 
     }
 

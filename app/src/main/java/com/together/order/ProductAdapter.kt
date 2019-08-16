@@ -22,7 +22,7 @@ class ProductAdapter(private val click: ItemClicked,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         return ArticleViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.product_item, parent, false), click
+                .inflate(R.layout.item_product, parent, false), click
         )
     }
 

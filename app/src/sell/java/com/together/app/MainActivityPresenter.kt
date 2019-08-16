@@ -12,6 +12,7 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.material.itemSelections
 import com.squareup.picasso.Picasso
 import com.together.R
+import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.create.CreateFragment
@@ -20,7 +21,7 @@ import com.together.repository.auth.FirebaseAuth
 import com.together.utils.hideIme
 import io.reactivex.disposables.Disposable
 
-class MainActivityPresenter {
+class MainActivityPresenter(val view: MainActivityView) {
 
     fun setupDrawerNavigation(navigationItemView: NavigationView, drawer: DrawerLayout): Disposable {
 
@@ -31,7 +32,10 @@ class MainActivityPresenter {
                 }
 
                 R.id.drawer_nav_4 -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(drawer.context))
+                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+                        view.giveFragmentManager(),
+                        AboutFragment(),AboutFragment.TAG))
+
                 }
 
             }
@@ -89,24 +93,5 @@ class MainActivityPresenter {
 
         }
     }
-
-    fun isFullyRegistered() {
-
-//        FireData.doesNodeExist(listOf("sdfasd")).subscribeBy( {
-//
-//                    },{
-//
-//                        if(!it){
-//
-//                            MainMessagePipe.uiEvent.onNext(
-//                                UiEvent.ShowToast(baseContext,R.string.app_name,Gravity.TOP))
-//
-//
-//                        } else{
-//                            presenter.setLoggedIn(navigation_drawer, log_out)
-//                        }
-//                    })
-    }
-
 
 }

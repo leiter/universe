@@ -19,6 +19,7 @@ class MainViewModel : ViewModel() {
 
                 is Result.LoggedOut ->
                     loggedState.value = UiState.LOGGEDOUT
+
                 is Result.LoggedIn ->
                     loggedState.value = UiState.BASE_AUTH
 
@@ -63,10 +64,23 @@ class MainViewModel : ViewModel() {
 
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
 
+    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
+        MutableLiveData<MutableList<UiState.Market>>().also {
+            it.value = mutableListOf()
+        }
+    }
+
+
+
+
+
+
+
     override fun onCleared() {
         disposable.clear()
         super.onCleared()
     }
+
 
 
 }

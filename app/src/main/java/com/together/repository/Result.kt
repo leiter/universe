@@ -91,11 +91,24 @@ sealed class Result {
         var lat: String = "",
         var lng: String = "",
 
+        var markets:MutableList<Market> = mutableListOf(),
+
         var urls: MutableList<String> = mutableListOf(),
 
         var knownClientIds: MutableList<String> = mutableListOf()
 
         ) : Result()
+
+
+    data class Market(var name: String = "",
+                       var street: String = "",
+                       var houseNumber: String = "",
+                       var city: String = "",
+                       var zipcode: String = "",
+                       var dayOfWeek: String,
+                       var begin: String = "",
+                       var end: String = "" )
+
 
 
     data class ChatMessage(

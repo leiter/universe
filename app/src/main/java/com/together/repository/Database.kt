@@ -13,10 +13,11 @@ object Database {
     private const val ORDERS = "orders"
     private const val CLIENTS = "clients"
 
-    fun articles(): DatabaseReference = fire().child(FirebaseAuth.fireUser!!.uid).child(ARTICLES)
-    fun profile(): DatabaseReference = fire().child(FirebaseAuth.fireUser!!.uid).child(PROFILE)
-    fun orders(): DatabaseReference = fire().child(FirebaseAuth.fireUser!!.uid).child(ORDERS)
-    fun clients(): DatabaseReference = fire().child(FirebaseAuth.fireUser!!.uid).child(CLIENTS)
+    fun articles(): DatabaseReference = fire().child(ARTICLES).child(FirebaseAuth.fireUser!!.uid)
+    fun profile(): DatabaseReference = fire().child(PROFILE).child(FirebaseAuth.fireUser!!.uid)
+    fun orders(): DatabaseReference = fire().child(ORDERS).child(FirebaseAuth.fireUser!!.uid)
+    fun clients(): DatabaseReference = fire().child(CLIENTS).child(FirebaseAuth.fireUser!!.uid)
+
 
 
 

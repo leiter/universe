@@ -36,9 +36,17 @@ sealed class UiEvent {
                                val fragment: Fragment,
                                val tag: String): UiEvent()
 
+    data class ReplaceFrag(
+                               val fragment: Fragment,
+                               val tag: String): UiEvent()
+
     data class AddFragment(val fragMange: FragmentManager,
                            val fragment: Fragment,
                            val tag: String): UiEvent()
+
+
+
+
 
 
     data class PostProduct(var product: UiState.Article)
