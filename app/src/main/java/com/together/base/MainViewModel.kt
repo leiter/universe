@@ -3,7 +3,7 @@ package com.together.base
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.together.repository.Result
-import com.together.repository.auth.FirebaseAuth
+import com.together.repository.auth.FireBaseAuth
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -51,9 +51,7 @@ class MainViewModel : ViewModel() {
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {
-        MutableLiveData<UiState>().also {
-            it.value = FirebaseAuth.isLoggedIn()
-        }
+        MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
     }
 
     val profile : UiState.SellerProfile = UiState.SellerProfile()
@@ -69,6 +67,13 @@ class MainViewModel : ViewModel() {
             it.value = mutableListOf()
         }
     }
+
+    val basket: MutableLiveData<MutableList<UiState.Article>> by lazy {
+        MutableLiveData<MutableList<UiState.Article>>().also {
+            it.value = mutableListOf()
+        }
+    }
+
 
 
 

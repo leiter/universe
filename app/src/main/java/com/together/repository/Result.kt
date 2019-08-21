@@ -1,6 +1,8 @@
 package com.together.repository
 
 import android.net.Uri
+import kotlin.reflect.KVisibility
+import kotlin.reflect.full.memberProperties
 
 sealed class Result {
 
@@ -59,8 +61,11 @@ sealed class Result {
         var available: Boolean = false,
         var unit: String = "",
         var pricePerUnit: String = "",
-        var imageUrl: String = ""
+        var imageUrl: String = "",
+        var discount: Long = 0L
+
     ) : Result()
+
 
 
     data class Order(
@@ -122,11 +127,25 @@ sealed class Result {
 
 
 
+
+
 }
 
 
+fun <T : Result> isCongruent(origin:T ,other: T): Boolean{
+
+    origin::class.memberProperties.forEach {
+
+        if(it.visibility== KVisibility.PUBLIC){
 
 
+        }
+
+    }
+
+
+    return true
+}
 
 
 

@@ -24,14 +24,14 @@ import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_main.*
-
 
 
 class MainActivity : AppCompatActivity(), MainActivityView {
 
-    override fun giveFragmentManager(): FragmentManager = supportFragmentManager
+    override fun giveFragmentManager(): FragmentManager {
+        return supportFragmentManager!!
+    }
 
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
@@ -39,13 +39,13 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     private val disposable = CompositeDisposable()
 
-    private val presenter : MainActivityPresenter by lazy {  MainActivityPresenter(this) }
+    private val presenter: MainActivityPresenter by lazy { MainActivityPresenter(this) }
 
     companion object {
 
         const val LOGIN_REQUEST = 12
 
-        private val LOGIN_ACTION = ".action.login"
+        private const val LOGIN_ACTION = ".action.login"
 
         fun startLogin(context: Context) {
             val i = Intent(context, MainActivity::class.java).apply {
@@ -75,12 +75,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             when (it) {
 
                 is UiState.BASE_AUTH -> {
-                    Database.profile().getSingleExists().subscribeBy({
-                        MainMessagePipe.uiEvent.onNext(
-                            UiEvent.ShowToast(baseContext, R.string.developer, Gravity.TOP)
-                        )
-
-                    }, { exists ->
+                    Database.profile().getSingleExists().subscribe({ exists ->
                         if (exists) {
                             presenter.setLoggedIn(navigation_drawer, log_out)
                             disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
@@ -97,6 +92,11 @@ class MainActivity : AppCompatActivity(), MainActivityView {
                             )
 
                         }
+                    }, {
+                        MainMessagePipe.uiEvent.onNext(
+                            UiEvent.ShowToast(baseContext, R.string.developer, Gravity.TOP)
+                        )
+
                     })
                 }
 
@@ -107,15 +107,25 @@ class MainActivity : AppCompatActivity(), MainActivityView {
                     )
 //                    presenter.setLoggedOut(navigation_drawer, log_out)
                 }
+
             }
         })
 
         disposable.add(MainMessagePipe.uiEvent.subscribe {
             when (it) {
-                is UiEvent.DrawerState -> {if (it.gravity == Gravity.START) {
-                    container.hideIme()
-                    drawer_layout.openDrawer(navigation_drawer)
-                } else drawer_layout.closeDrawers()}
+                is UiEvent.DrawerState -> {
+                    if (it.gravity == Gravity.START) {
+                        container.hideIme()
+                        drawer_layout.openDrawer(navigation_drawer)
+                    } else drawer_layout.closeDrawers()
+                }
+                is UiEvent.LockDrawer -> {
+                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                }
+                is UiEvent.UnlockDrawer -> {
+                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+
+                }
 
 //                is UiEvent.ReplaceFrag -> {
 //                    supportFragmentManager.beginTransaction()
@@ -146,6 +156,10 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
 //                viewModel.loggedState.value = UiState.BASE_AUTH
+            } else {
+                MainMessagePipe.uiEvent.onNext(
+                    UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")
+                )
             }
         } else {
             moveTaskToBack(true)

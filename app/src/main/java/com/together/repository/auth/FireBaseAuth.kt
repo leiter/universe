@@ -1,24 +1,22 @@
 package com.together.repository.auth
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
 import com.together.repository.Result
 
 
-object FirebaseAuth : FirebaseAuth.AuthStateListener {
-
-    private val firebaseAuth = FirebaseAuth.getInstance()
-
-    val fireUser: FirebaseUser? = firebaseAuth.currentUser
+object FireBaseAuth : FirebaseAuth.AuthStateListener {
 
     init {
-        firebaseAuth.addAuthStateListener(this)
+        FirebaseAuth.getInstance().addAuthStateListener(this)
     }
 
+    fun getAuth(): FirebaseAuth? {
+        return FirebaseAuth.getInstance()
+    }
     fun isLoggedIn(): UiState {
-        return when (firebaseAuth.currentUser != null) {
+        return when (getAuth()?.currentUser != null) {
             true -> UiState.BASE_AUTH
             else -> UiState.LOGGEDOUT
         }
@@ -34,7 +32,7 @@ object FirebaseAuth : FirebaseAuth.AuthStateListener {
     }
 
     fun logOut(){
-        firebaseAuth.signOut()
+        getAuth()?.signOut()
     }
 
 

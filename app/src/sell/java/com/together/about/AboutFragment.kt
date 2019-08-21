@@ -12,11 +12,9 @@ import kotlinx.android.synthetic.sell.fragment_about.*
 
 class AboutFragment : Fragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_about, container, false)
     }
 
@@ -26,6 +24,7 @@ class AboutFragment : Fragment() {
         show_licences.setOnClickListener {
             MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(context!!))
         }
+        back_button.setOnClickListener { activity?.onBackPressed() }
     }
 
     companion object {

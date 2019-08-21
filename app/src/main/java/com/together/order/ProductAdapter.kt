@@ -4,7 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
+import com.together.base.ADDED
+import com.together.base.CHANGED
+import com.together.base.REMOVED
 import com.together.base.UiState
+
 
 class ProductAdapter(private val click: ItemClicked,
                      var data: MutableList<UiState.Article> = mutableListOf())
@@ -16,6 +20,16 @@ class ProductAdapter(private val click: ItemClicked,
     }
 
     fun addItem(item: UiState.Article) {
+        when (item.mode) {
+            ADDED -> data.add(item)
+            REMOVED -> data.removeAt(findItemIndex(item))
+            CHANGED -> {
+                val i = findItemIndex(item)
+                data.removeAt(i)
+                data.add(i, item)
+            }
+        }
+
         data.add(item)
         notifyDataSetChanged()
     }
@@ -32,4 +46,12 @@ class ProductAdapter(private val click: ItemClicked,
         holder.bindItem(position, data[position])
     }
 
+    private fun findItemIndex(item: UiState.Article): Int {
+        for (i in 0 until data.size) {
+            if (data[i].id == item.id) {
+                return i
+            }
+        }
+        return -1
+    }
 }

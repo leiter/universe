@@ -17,7 +17,7 @@ import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.create.CreateFragment
 import com.together.order.ProductsFragment
-import com.together.repository.auth.FirebaseAuth
+import com.together.repository.auth.FireBaseAuth
 import com.together.utils.hideIme
 import io.reactivex.disposables.Disposable
 
@@ -35,7 +35,6 @@ class MainActivityPresenter(val view: MainActivityView) {
                     MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
                         view.giveFragmentManager(),
                         AboutFragment(),AboutFragment.TAG))
-
                 }
 
             }
@@ -58,7 +57,7 @@ class MainActivityPresenter(val view: MainActivityView) {
     }
 
     fun setLoggedIn(navigation_drawer: NavigationView, logOut: View) {
-        val user = FirebaseAuth.fireUser!!
+        val user = FireBaseAuth.getAuth()!!.currentUser!!
         val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)
         head.findViewById<Button>(R.id.log_in).visibility = View.GONE

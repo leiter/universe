@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_create.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.text.NumberFormat
 
 
 class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
@@ -43,13 +43,24 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private lateinit var picasso: Picasso
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+    private lateinit var editFlag: Observable<Boolean>
+
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_create, container, false)
     }
 
+    companion object {
+
+        const val TAG = "CreateFragment"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
 
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
@@ -57,17 +68,26 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         model.newProduct.observe(this, Observer {
             picasso.load(it.uri).into(image)
         })
-        model.editProduct.observe(viewLifecycleOwner, Observer {
+        model.editProduct.observe(viewLifecycleOwner, Observer {//todo do not listen and write
             product_name.setText(it.productName)
             product_description.setText(it.productDescription)
             product_price.setText(it.pricePerUnit)
             product_price_unit.setText(it.unit)
+            article_available.isChecked = it.available
+            product_discount.setText(it.discount.toString())
             model.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
         })
 
-        toolbar_end_2.setImageResource(R.drawable.ic_edit_black)
+        toolbar_end_1.setImageResource(R.drawable.ic_edit_black)
+        toolbar_end_1.visibility = View.VISIBLE
 
+
+        toolbar_end_2.setImageResource(R.drawable.ic_delete)
         toolbar_end_2.visibility = View.VISIBLE
+        toolbar_end_2.setOnClickListener {
+            val id = model.editProduct.value?.id
+            if (id != null) deleteArticle(id)
+        }
 
         product_list.layoutManager = LinearLayoutManager(context)
 
@@ -83,22 +103,31 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                 productDescription = it.productDescription,
                 remoteImageUrl = it.imageUrl,
                 unit = it.unit,
-                pricePerUnit = it.pricePerUnit
+                pricePerUnit = it.pricePerUnit,
+                discount = it.discount
             )
 
             adapter.addItem(e)
+            if(adapter.data.size==0){
+                empty_message.visibility = View.VISIBLE
+            } else                 empty_message.visibility = View.GONE
+
         })
 
         create_fab.setOnClickListener {
             createBitmap(model.newProduct.value!!.uri)
         }
+
         manage_image.setOnClickListener {
             UtilsActivity.startAddImage(activity!!)
         }
 
+        toolbar_start.setImageResource(R.drawable.ic_back)
         toolbar_start.setOnClickListener {
-            MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
+            activity!!.onBackPressed()
         }
+
+
 
 
 
@@ -107,19 +136,19 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     override fun clicked(item: UiState.Article) {
         model.editProduct.value = item
-
     }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
+        MainMessagePipe.uiEvent.onNext(UiEvent.UnlockDrawer)
         disposable.clear()
     }
 
     private fun updateProduct(imageUri: Uri) {
 
         writeToNewProduct()
-        val ref = FirebaseStorage.getInstance()
+        FirebaseStorage.getInstance()
             .reference
             .child("images/${imageUri.lastPathSegment}")
             .putFile(imageUri)
@@ -137,7 +166,10 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                         imageUrl = it.toString(),
                         available = uiState.available,
                         pricePerUnit = uiState.pricePerUnit,
-                        unit = uiState.unit
+                        unit = uiState.unit,
+                        discount = uiState.discount
+
+
                     )
 //                    val fireData = FireData()
                     FireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
@@ -151,7 +183,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     private fun createBitmap(imageUri: Uri) {
         disposable.add(Observable.just(Any()).map {
             val bitmap: Bitmap = Bitmap.createBitmap(
-                image.width, image.height, Bitmap.Config.ARGB_8888)
+                image.width, image.height, Bitmap.Config.ARGB_8888
+            )
             val canvas = Canvas(bitmap)
             image.draw(canvas)
             val tmpFile = createTempFile()
@@ -164,7 +197,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
             })
     }
-    private fun getRotation(inputStream: InputStream) : Int {
+
+    private fun getRotation(inputStream: InputStream): Int {
         val exif = ExifInterface(inputStream)
         val result = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
         val rotation: Int
@@ -182,8 +216,15 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         model.editProduct.value?.productDescription = product_description.text.toString()
         model.editProduct.value?.pricePerUnit = product_price.text.toString()
         model.editProduct.value?.unit = product_price_unit.text.toString()
+        model.editProduct.value?.discount = NumberFormat.getInstance()
+            .parse(product_discount.text.toString()).toLong()
 
     }
 
+
+    private fun deleteArticle(id: String) {
+        FirebaseDatabase.getInstance().reference
+            .child("articles").child(id).removeValue()
+    }
 
 }

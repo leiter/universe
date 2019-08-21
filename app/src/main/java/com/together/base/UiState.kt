@@ -4,16 +4,26 @@ import android.net.Uri
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
+const val ADDED = 0
+const val CHANGED = 1
+const val REMOVED = 2
+const val MOVED = -1
+
 sealed class UiState {
 
     abstract var id: String
+    abstract var mode: Int
 
     object LOGGEDOUT : UiState() {
         override var id = "StateLoggedOut"
+        override var mode: Int = MOVED
+
     }
 
     object BASE_AUTH : UiState() {
         override var id = "StateLoggedIn"
+        override var mode: Int = MOVED
+
     }
 
     data class Article(
@@ -25,7 +35,10 @@ sealed class UiState {
         var unit: String = "",  // Bund, Stück, Kg,
         var pricePerUnit: String = "",
         var remoteImageUrl: String = "",
-        var localImageUrl: String = ""
+        var localImageUrl: String = "",
+        var discount: Long = 0L,
+        override var mode: Int = MOVED
+
 
     ) : UiState()
 
@@ -54,7 +67,9 @@ sealed class UiState {
 
         var urls: MutableList<String> = mutableListOf(),
 
-        var knownClientIds: MutableList<String> = mutableListOf()
+        var knownClientIds: MutableList<String> = mutableListOf(),
+        override var mode: Int = MOVED
+
 
     ) : UiState()
 
@@ -68,7 +83,9 @@ sealed class UiState {
                       var dayOfWeek: String,
                       var begin: String = "",
                       var end: String = "",
-                      override var id: String = "") : UiState(), Parcelable
+                      override var id: String = "",
+                      override var mode: Int = MOVED
+    ) : UiState(), Parcelable
 
 
     data class ChatMessage(
@@ -76,14 +93,18 @@ sealed class UiState {
         var creatorId: String = "",
         var name: String = "",
         var text: String = "",
-        var photoUrl: String = ""
+        var photoUrl: String = "",
+        override var mode: Int = MOVED
+
     ) : UiState()
 
     data class PostAnyMessage(
         override var id: String = "", var creatorId: String,
         var name: String = "",
         var text: String = "",
-        var photoUrl: String = ""
+        var photoUrl: String = "",
+        override var mode: Int = MOVED
+
     ) : UiState()
 
 

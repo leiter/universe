@@ -8,7 +8,7 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.together.R
 import com.together.app.MainActivity
 import com.together.repository.Result
-import com.together.repository.auth.FirebaseAuth
+import com.together.repository.auth.FireBaseAuth
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
@@ -24,7 +24,7 @@ object MainMessagePipe {
                     MainActivity.startLogin(it.context)
                 }
                 is UiEvent.LogOut -> {
-                    FirebaseAuth.logOut()
+                    FireBaseAuth.logOut()
                 }
 
                 is UiEvent.ShowToast -> {

@@ -74,9 +74,9 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         val granted = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
         when (granted) {
             PackageManager.PERMISSION_GRANTED -> startCamera()
-            else -> dialogFragment.requestPermissions(
+            else -> ActivityCompat.requestPermissions(activity,
                 arrayOf(Manifest.permission.CAMERA),
-                REQUEST_PIC_PICTURE_PERMISSION
+                REQUEST_TAKE_PICTURE_PERMISSION
             )
         }
     }
@@ -111,7 +111,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         ) {         startPickIntent()       }
 
         if (permissions.size == 1 &&
-            requestCode == REQUEST_TAKE_PICTURE_PERMISSION &&
+            (requestCode == REQUEST_TAKE_PICTURE_PERMISSION || requestCode==65758) &&  //todo
             permissions[0] == Manifest.permission.CAMERA &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {         startCamera()       }

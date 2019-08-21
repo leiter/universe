@@ -27,16 +27,15 @@ sealed class UiEvent {
     data class DrawerState(val gravity: Int) : UiEvent()
 
 
+    object LockDrawer : UiEvent()
+
+    object UnlockDrawer :  UiEvent()
 
     data class ShowLicense (val context: Context) : UiEvent()
 
 
 
     data class ReplaceFragment(val fragMange: FragmentManager,
-                               val fragment: Fragment,
-                               val tag: String): UiEvent()
-
-    data class ReplaceFrag(
                                val fragment: Fragment,
                                val tag: String): UiEvent()
 

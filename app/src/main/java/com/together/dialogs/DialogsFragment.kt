@@ -22,9 +22,6 @@ class DialogsFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
             = inflater.inflate(R.layout.add_product_dialog, container, false)
 
-
-
-
     companion object {
 
         private const val ARG_DIALOG_TYPE = "dialogType"
