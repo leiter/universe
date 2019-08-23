@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
 import com.together.R
-import com.together.app.MainViewModel
-import com.together.app.UiState
+import com.together.base.MainViewModel
+import com.together.base.UiState
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import io.reactivex.disposables.CompositeDisposable

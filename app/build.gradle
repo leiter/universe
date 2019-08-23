@@ -43,15 +43,12 @@ android {
 
         sell {
             dimension = "basic"
-//            applicationIdSuffix ".sell"
+            applicationIdSuffix ".sell"
         }
         buy {
             dimension = "basic"
-//            applicationIdSuffix ".buy"
-
+            applicationIdSuffix ".buy"
         }
-
-
     }
 }
 
@@ -84,10 +81,10 @@ dependencies {
 
 
     implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
-    implementation "com.google.firebase:firebase-core:17.0.1"
-    implementation "com.google.firebase:firebase-auth:18.1.0"
-    implementation "com.google.firebase:firebase-database:18.0.1"
-    implementation "com.google.firebase:firebase-storage:18.1.1"
+    implementation "com.google.firebase:firebase-core:17.1.0"
+    implementation "com.google.firebase:firebase-auth:19.0.0"
+    implementation "com.google.firebase:firebase-database:19.0.0"
+    implementation "com.google.firebase:firebase-storage:19.0.0"
     implementation "com.firebaseui:firebase-ui-auth:4.3.2"
 
 //    implementation 'com.github.imtuann:FloatingActionButtonExpandable:1.1.2'

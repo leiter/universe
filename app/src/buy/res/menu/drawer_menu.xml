@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/orders"
+                android:icon="@drawable/ic_shopping_cart_black_24dp"
+                android:title="Bestellen"
+                />
+
+        <item
+                android:id="@+id/menu_contacts"
+                android:icon="@drawable/ic_group_black"
+                android:title="Kontakte"
+                />
+
+        <item
+                android:id="@+id/drawer_nav_3"
+                android:icon="@drawable/ic_add_shopping_cart_black"
+                android:title="Bestellungen"
+                />
+
+        <item
+                android:id="@+id/licenses"
+                android:icon="@drawable/ic_info_outline"
+                android:title="@string/nav_title_4"
+                />
+    </group>
+
+</menu>

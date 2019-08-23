@@ -17,6 +17,7 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
+import com.together.create.CreateFragment
 import com.together.loggedout.LoginFragment
 import com.together.profile.ProfileFragment
 import com.together.repository.Database
@@ -79,7 +80,9 @@ class MainActivity : AppCompatActivity(), MainActivityView {
                         if (exists) {
                             presenter.setLoggedIn(navigation_drawer, log_out)
                             disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
-                            disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
+                            MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+                                supportFragmentManager,CreateFragment(),CreateFragment.TAG))
+//                            disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
                             disposable.add(
                                 log_out.clicks().subscribe {
                                     drawer_layout.closeDrawers()

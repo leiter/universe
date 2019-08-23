@@ -1,7 +1,6 @@
 package com.together.order
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,15 +39,20 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
     private val disposable = CompositeDisposable()
 
+    private var mode: Int? = null
+
     private val presenter = ProductsPresenter(this)
 
     override fun clicked(item: UiState.Article) {
         model.presentedProduct.value = item
     }
 
+
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        arguments?.let { mode = it.getInt(MODE_PARAM) }
         return inflater.inflate(R.layout.main_order_fragment, container, false)
     }
 
@@ -58,7 +62,6 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         model.presentedProduct.observe(this, Observer {
@@ -105,40 +108,33 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
             }
         })
 
-        toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START)) }
+        toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
 
         toolbar_end_2.visibility = View.VISIBLE
         toolbar_end_2.setImageResource(R.drawable.ic_shopping_basket)
 
-//        toolbar_end_1.visibility = View.VISIBLE
-//        toolbar_end_1.setImageResource(R.drawable.ic_shopping_basket)
-
         edit_products.setOnClickListener { presenter.startEditProducts() }
-
 
         disposable.add(product_amount.textChanges()
             .debounce(400, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
-                if (it.length > 0 ) {
+                if (it.length > 0) {
 
                     val v = NumberFormat.getInstance().parse(it.toString())
                     var i = v.toDouble() *
                             NumberFormat.getInstance().parse(model.presentedProduct.value!!.pricePerUnit).toDouble()
-                    i = Math.round(i*100.0) /100.0
-                    val s = "%.2f€".format(i)//i.toString()
+                    i = Math.round(i * 100.0) / 100.0
+                    val s = "%.2f€".format(i)
 
                     price_amount.setText(s)
                 } else {
                     price_amount.setText("0")
                 }
-            },{
+            }, {
                 it.printStackTrace()
-            }
-
-
-            ))
+            }))
 
 
     }
@@ -155,6 +151,23 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     override fun onDestroyView() {
         super.onDestroyView()
         disposable.clear()
+    }
+
+    companion object {
+
+        const val MODE_PARAM = "mode"
+        const val BUYER = 0
+        const val SELLER = 1
+
+        fun newInstance(mode: Int) : ProductsFragment{
+            val frag = ProductsFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(MODE_PARAM,mode)
+                }
+            }
+            return frag
+        }
+
     }
 }
 

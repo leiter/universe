@@ -2,7 +2,7 @@ package com.together.chat.anyidea
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.together.app.UiState
+import com.together.base.UiState
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_chat_message.*
 

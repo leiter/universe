@@ -16,7 +16,6 @@ import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.create.CreateFragment
-import com.together.order.ProductsFragment
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.hideIme
 import io.reactivex.disposables.Disposable
@@ -77,7 +76,7 @@ class MainActivityPresenter(val view: MainActivityView) {
             when (it.itemId) {
                 R.id.navigation_home -> {
                     navigation.hideIme()
-                    fm.beginTransaction().replace(R.id.container, ProductsFragment()).commit()
+//                    fm.beginTransaction().replace(R.id.container, ProductsFragment()).commit()
                 }
 
                 R.id.navigation_dashboard -> {

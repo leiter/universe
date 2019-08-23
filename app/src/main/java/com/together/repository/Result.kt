@@ -6,18 +6,18 @@ import kotlin.reflect.full.memberProperties
 
 sealed class Result {
 
-    abstract var id :String
-    abstract var mode :Int
+    abstract var id: String
+    abstract var mode: Int
 
-    companion object{
-        val ADDED = 0
-        val CHANGED = 1
-        val MOVED = 2
-        val REMOVED = 3
-        val UNDEFINED = -1
+    companion object {
+        const val ADDED = 0
+        const val CHANGED = 1
+        const val MOVED = 2
+        const val REMOVED = 3
+        const val UNDEFINED = -1
     }
 
-    object LoggedOut : Result(){
+    object LoggedOut : Result() {
         override var id: String = "loggedIn"
         override var mode: Int = UNDEFINED
     }
@@ -67,13 +67,13 @@ sealed class Result {
     ) : Result()
 
 
-
     data class Order(
         override var id: String = "",
         override var mode: Int = UNDEFINED,
         var user: User = User(),
         var articles: List<Article> = emptyList()
     ) : Result()
+
 
     data class SellerProfile(
 
@@ -96,25 +96,52 @@ sealed class Result {
         var lat: String = "",
         var lng: String = "",
 
-        var markets:MutableList<Market> = mutableListOf(),
+        var markets: MutableList<Market> = mutableListOf(),
 
         var urls: MutableList<String> = mutableListOf(),
 
         var knownClientIds: MutableList<String> = mutableListOf()
 
-        ) : Result()
+    ) : Result()
+
+    data class BuyerProfile(
+
+        override var id: String = "",
+        override var mode: Int = UNDEFINED,
+
+        var displayName: String = "",
+
+        var firstName: String = "",
+        var lastName: String = "",
+
+        var emailAddress: String = "",
+
+        var street: String = "",
+        var houseNumber: String = "",
+
+        var city: String = "",
+        var zipCode: String = "",
+
+        var telephoneNumber: String = "",
+
+        var lat: String = "",
+        var lng: String = "",
+
+        var sellerIds: MutableList<String> = mutableListOf() // int is to order 10 100 1000
+
+    ) : Result()
 
 
-    data class Market(var name: String = "",
-                       var street: String = "",
-                       var houseNumber: String = "",
-                       var city: String = "",
-                       var zipcode: String = "",
-                       var dayOfWeek: String,
-                       var begin: String = "",
-                       var end: String = "" )
-
-
+    data class Market(
+        var name: String = "",
+        var street: String = "",
+        var houseNumber: String = "",
+        var city: String = "",
+        var zipcode: String = "",
+        var dayOfWeek: String,
+        var begin: String = "",
+        var end: String = ""
+    )
 
     data class ChatMessage(
         override var id: String = "",
@@ -126,17 +153,14 @@ sealed class Result {
     ) : Result()
 
 
-
-
-
 }
 
 
-fun <T : Result> isCongruent(origin:T ,other: T): Boolean{
+fun <T : Result> isCongruent(origin: T, other: T): Boolean {
 
     origin::class.memberProperties.forEach {
 
-        if(it.visibility== KVisibility.PUBLIC){
+        if (it.visibility == KVisibility.PUBLIC) {
 
 
         }

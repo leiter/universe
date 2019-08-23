@@ -58,7 +58,11 @@ class MainViewModel : ViewModel() {
 
     val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
-    val editProduct: MutableLiveData<UiState.Article> = MutableLiveData()
+    val editProduct: MutableLiveData<UiState.Article> by lazy {
+        MutableLiveData<UiState.Article>().also {
+            it.value = UiState.Article()
+        }
+    }
 
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
 

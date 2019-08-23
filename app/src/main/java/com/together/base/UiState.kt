@@ -4,15 +4,20 @@ import android.net.Uri
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-const val ADDED = 0
-const val CHANGED = 1
-const val REMOVED = 2
-const val MOVED = -1
+
 
 sealed class UiState {
 
     abstract var id: String
     abstract var mode: Int
+
+    companion object{
+        const val ADDED = 0
+        const val CHANGED = 1
+        const val MOVED = 2
+        const val REMOVED = 3
+        const val UNDEFINED = -1
+    }
 
     object LOGGEDOUT : UiState() {
         override var id = "StateLoggedOut"
@@ -41,6 +46,15 @@ sealed class UiState {
 
 
     ) : UiState()
+
+
+    data class ToBeBought(
+
+
+        override var id: String = "",
+        override var mode: Int = MOVED
+
+        ):UiState()
 
 
     data class NewProductImage(val uri: Uri)

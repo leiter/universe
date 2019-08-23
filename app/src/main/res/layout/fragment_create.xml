@@ -187,7 +187,7 @@
     <TextView
             android:id="@+id/empty_message"
             app:layout_constraintTop_toBottomOf="@id/product_discount_layout"
-            android:visibility="gone"
+            android:visibility="visible"
             android:text="Sie haben noch keine Produkte angelegt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
-import com.together.base.ADDED
-import com.together.base.CHANGED
-import com.together.base.REMOVED
 import com.together.base.UiState
+import com.together.base.UiState.Companion.ADDED
+import com.together.base.UiState.Companion.CHANGED
+import com.together.base.UiState.Companion.REMOVED
 
 
 class ProductAdapter(private val click: ItemClicked,
@@ -29,8 +29,6 @@ class ProductAdapter(private val click: ItemClicked,
                 data.add(i, item)
             }
         }
-
-        data.add(item)
         notifyDataSetChanged()
     }
 

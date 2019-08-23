@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,8 @@ import com.squareup.picasso.Picasso
 import com.together.R
 import com.together.base.*
 import com.together.order.ProductAdapter
+import com.together.repository.Database
 import com.together.repository.Result
-import com.together.repository.storage.FireData
 import com.together.repository.storage.getObservable
 import com.together.utils.FileUtil
 import io.reactivex.Observable
@@ -43,8 +44,6 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     private lateinit var picasso: Picasso
 
-    private lateinit var editFlag: Observable<Boolean>
-
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,15 +51,11 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     }
 
     companion object {
-
         const val TAG = "CreateFragment"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
 
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
@@ -95,7 +90,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         product_list.adapter = adapter
 
         val ref = FirebaseDatabase.getInstance().reference
-        val products = ref.child("articles")
+        val products = Database.articles() //ref.child("articles")
         disposable.add(products.getObservable<Result.Article>().subscribe {
             val e = UiState.Article(
                 id = it.id,
@@ -104,13 +99,17 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                 remoteImageUrl = it.imageUrl,
                 unit = it.unit,
                 pricePerUnit = it.pricePerUnit,
-                discount = it.discount
+                discount = it.discount,
+                mode = it.mode,
+                available = it.available
             )
 
             adapter.addItem(e)
             if(adapter.data.size==0){
                 empty_message.visibility = View.VISIBLE
-            } else                 empty_message.visibility = View.GONE
+            } else                 {
+                empty_message.visibility = View.GONE
+            }
 
         })
 
@@ -122,14 +121,10 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             UtilsActivity.startAddImage(activity!!)
         }
 
-        toolbar_start.setImageResource(R.drawable.ic_back)
+        toolbar_start.setImageResource(R.drawable.ic_menu_hamburger)
         toolbar_start.setOnClickListener {
-            activity!!.onBackPressed()
+           MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
         }
-
-
-
-
 
     }
 
@@ -172,7 +167,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
                     )
 //                    val fireData = FireData()
-                    FireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
+                    Database.articles().push().setValue(resulT)
+//                    FireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
                 }
 
             }
@@ -218,13 +214,13 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         model.editProduct.value?.unit = product_price_unit.text.toString()
         model.editProduct.value?.discount = NumberFormat.getInstance()
             .parse(product_discount.text.toString()).toLong()
+        model.editProduct.value?.available = article_available.isChecked
 
     }
 
 
     private fun deleteArticle(id: String) {
-        FirebaseDatabase.getInstance().reference
-            .child("articles").child(id).removeValue()
+        Database.articles().child(id).removeValue()
     }
 
 }

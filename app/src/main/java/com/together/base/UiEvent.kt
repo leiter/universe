@@ -27,6 +27,10 @@ sealed class UiEvent {
     data class DrawerState(val gravity: Int) : UiEvent()
 
 
+    object OpenDrawer : UiEvent()
+
+    object CloseDrawer : UiEvent()
+
     object LockDrawer : UiEvent()
 
     object UnlockDrawer :  UiEvent()

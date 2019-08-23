@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
-import com.together.app.UiState
+import com.together.base.UiState
 
 class AnyIdeaAdapter : RecyclerView.Adapter<IdeaViewHolder>() {
 

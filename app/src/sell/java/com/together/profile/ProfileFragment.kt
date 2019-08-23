@@ -106,7 +106,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     val open: (UiState.Market) -> Unit
-        inline get() = { Dialogs.newInstance(Dialogs.EDIT_MARKET,it).show(fragmentManager, "Edit") }
+        inline get() = { Dialogs.newInstance(Dialogs.EDIT_MARKET, it).show(fragmentManager, "Edit") }
 
 }
 

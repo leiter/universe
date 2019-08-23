@@ -1,5 +1,6 @@
 package com.together.app
 
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -15,17 +16,26 @@ import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.order.ProductsFragment
-import com.together.repository.auth.FirebaseAuth
+import com.together.repository.Database
+import com.together.repository.Result
+import com.together.repository.auth.FireBaseAuth
+import com.together.repository.storage.getSingle
+import com.together.repository.storage.getSingleExists
 import com.together.utils.hideIme
+import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-class MainActivityPresenter {
+class MainActivityPresenter(
+    private val disposable: CompositeDisposable,
+    val supportFragmentManager: FragmentManager
+) {
 
     fun setupDrawerNavigation(navigationItemView: NavigationView, drawer: DrawerLayout): Disposable {
 
         return navigationItemView.itemSelections().subscribe {
             when (it.itemId) {
-                R.id.profile -> {
+                R.id.orders -> {
 
                 }
 
@@ -38,9 +48,10 @@ class MainActivityPresenter {
         }
     }
 
-    fun setLoggedOut(navigation_drawer: NavigationView, logOut :View) {
+    fun setLoggedOut(navigation_drawer: NavigationView, logOut: View) {
         val head = navigation_drawer.getHeaderView(0)!!
         head.findViewById<ImageView>(R.id.user_avatar).visibility = View.GONE
+        head.findViewById<ImageView>(R.id.user_avatar).setImageDrawable(null)
         head.findViewById<TextView>(R.id.user_email).text = ""
         head.findViewById<TextView>(R.id.user_name).text = ""
         val logIn = head.findViewById<Button>(R.id.log_in)
@@ -53,7 +64,37 @@ class MainActivityPresenter {
     }
 
     fun setLoggedIn(navigation_drawer: NavigationView, logOut: View) {
-        val user = FirebaseAuth.fireUser!!
+
+        val user = FireBaseAuth.getAuth()!!.currentUser!!
+
+        disposable.add(
+            Database.buyer().getSingleExists().flatMap {
+                when (it) {
+                    true -> Database.buyer().getSingle<Result.BuyerProfile>()
+                    else -> Single.just(Unit)
+                }
+
+            }.subscribe({
+                when (it) {
+                    is Result.BuyerProfile -> {
+
+                    }
+                    is Unit -> {
+
+                    }
+
+                }
+
+
+            }, {
+                Log.e("EEEEE", "For debugging", it);
+            }
+            )
+
+
+        )
+
+
         val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)
         head.findViewById<Button>(R.id.log_in).visibility = View.GONE

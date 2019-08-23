@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,8 +13,6 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
-import com.together.order.ProductsFragment
-import com.together.repository.auth.FirebaseAuth
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import io.reactivex.disposables.CompositeDisposable
@@ -25,11 +22,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
 
-    private val fire = FirebaseAuth
-
     private val disposable = CompositeDisposable()
 
-    private val presenter = MainActivityPresenter()
+    private val presenter : MainActivityPresenter by lazy {
+        MainActivityPresenter(disposable, supportFragmentManager)
+    }
 
     companion object {
 
@@ -50,16 +47,16 @@ class MainActivity : AppCompatActivity() {
 //        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, ProductsFragment()).commit()
-        }
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.container, ProductsFragment()).commit()
+//        }
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.loggedState.observe(this, Observer {
             when (it) {
 
-                is UiState.LOGGEDIN ->
+                is UiState.BASE_AUTH ->
                     presenter.setLoggedIn(navigation_drawer, log_out)
 
                 is UiState.LOGGEDOUT -> {
@@ -68,11 +65,10 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+//        viewModel.loggedState.value = FireBaseAuth.isLoggedIn()
+//        disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
+//        disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
 
-
-        viewModel.loggedState.value = fire.isLoggedIn()
-        disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
-        disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
         disposable.add(log_out.clicks().subscribe {
             drawer_layout.closeDrawers()
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
@@ -80,10 +76,13 @@ class MainActivity : AppCompatActivity() {
 
         disposable.add(MainMessagePipe.uiEvent.subscribe {
             when(it) {
-                is UiEvent.DrawerState -> if(it.gravity == Gravity.START){
+                is UiEvent.OpenDrawer -> {
                     container.hideIme()
                     drawer_layout.openDrawer(navigation_drawer)
-                } else drawer_layout.closeDrawers()
+                }
+                is UiEvent.CloseDrawer -> {
+                    drawer_layout.closeDrawers()
+                }
             }
         })
 
@@ -105,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                viewModel.loggedState.value = UiState.LOGGEDIN
+//                viewModel.loggedState.value = UiState.BASE_AUTH
             }
         } else {
             moveTaskToBack(true)

@@ -12,6 +12,9 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
         FirebaseAuth.getInstance().addAuthStateListener(this)
     }
 
+    var userProfile: Result.BuyerProfile = Result.BuyerProfile()
+
+
     fun getAuth(): FirebaseAuth? {
         return FirebaseAuth.getInstance()
     }

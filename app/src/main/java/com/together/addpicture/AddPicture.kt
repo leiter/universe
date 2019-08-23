@@ -137,8 +137,8 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
                     )
                     cursor!!.moveToFirst()
                     val uriString = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-                    fileUri = Uri.parse(uriString)
                     cursor.close()
+                    fileUri = Uri.fromFile(File(uriString))
                     val image = Result.NewImageCreated(fileUri)
                     MainMessagePipe.mainThreadMessage.onNext(image)
                 }
