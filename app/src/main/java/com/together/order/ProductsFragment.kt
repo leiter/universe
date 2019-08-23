@@ -22,6 +22,7 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
+import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -87,20 +88,23 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         })
 
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-
         adapter = ProductAdapter(this)
         article_list.adapter = adapter
 
         val ref = FirebaseDatabase.getInstance().reference
-        val products = ref.child("articles")
+        val products = Database.providerArticles("Qx69mYNTkDMS55V2paSztcwEAPN2")  //ref.child("articles")
 
         disposable.add(products.getObservable<Result.Article>().subscribe {
             val e = UiState.Article(
+                id = it.id,
                 productName = it.productName,
                 productDescription = it.productDescription,
                 remoteImageUrl = it.imageUrl,
+                unit = it.unit,
                 pricePerUnit = it.pricePerUnit,
-                unit = it.unit
+                discount = it.discount,
+                mode = it.mode,
+                available = it.available
             )
             adapter.addItem(e)
             if (adapter.data.size == 1) {
@@ -109,7 +113,6 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         })
 
         toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
-
         toolbar_end_2.visibility = View.VISIBLE
         toolbar_end_2.setImageResource(R.drawable.ic_shopping_basket)
 
@@ -120,14 +123,13 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
-                if (it.length > 0) {
-
+                if (it.isNotEmpty()) {
                     val v = NumberFormat.getInstance().parse(it.toString())
                     var i = v.toDouble() *
-                            NumberFormat.getInstance().parse(model.presentedProduct.value!!.pricePerUnit).toDouble()
+                            NumberFormat.getInstance()
+                                .parse(model.presentedProduct.value!!.pricePerUnit).toDouble()
                     i = Math.round(i * 100.0) / 100.0
                     val s = "%.2f€".format(i)
-
                     price_amount.setText(s)
                 } else {
                     price_amount.setText("0")
@@ -141,11 +143,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
     private fun setupSpinner(article: UiState.Article) {
         val unit = article.unit.split(",")
-
         val spinnerAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_list_item_1, unit)
         unit_picker.adapter = spinnerAdapter
         unit_picker.onItemSelectedListener = UnitSelectedListener()
-
     }
 
     override fun onDestroyView() {
@@ -155,6 +155,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
     companion object {
 
+        const val TAG: String = "ProductsFragment"
         const val MODE_PARAM = "mode"
         const val BUYER = 0
         const val SELLER = 1

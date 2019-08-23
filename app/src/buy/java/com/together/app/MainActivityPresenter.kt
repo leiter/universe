@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
@@ -13,6 +12,7 @@ import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.material.itemSelections
 import com.squareup.picasso.Picasso
 import com.together.R
+import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.order.ProductsFragment
@@ -26,25 +26,31 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-class MainActivityPresenter(
-    private val disposable: CompositeDisposable,
-    val supportFragmentManager: FragmentManager
-) {
+class MainActivityPresenter(private val disposable: CompositeDisposable,
+                            private val supportFragmentManager: FragmentManager) {
 
-    fun setupDrawerNavigation(navigationItemView: NavigationView, drawer: DrawerLayout): Disposable {
+    private fun setupDrawerNavigation(navigationItemView: NavigationView): Disposable {
 
         return navigationItemView.itemSelections().subscribe {
             when (it.itemId) {
-                R.id.orders -> {
 
+                R.id.menu_orders -> {
+                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+                        supportFragmentManager,
+                        ProductsFragment(), ProductsFragment.TAG)
+                    )
                 }
 
+
                 R.id.licenses -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(drawer.context))
+                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+                            supportFragmentManager,
+                            AboutFragment(), AboutFragment.TAG)
+                    )
                 }
 
             }
-            drawer.closeDrawers()
+            MainMessagePipe.uiEvent.onNext(UiEvent.CloseDrawer)
         }
     }
 
@@ -67,8 +73,7 @@ class MainActivityPresenter(
 
         val user = FireBaseAuth.getAuth()!!.currentUser!!
 
-        disposable.add(
-            Database.buyer().getSingleExists().flatMap {
+        disposable.add(Database.buyer().getSingleExists().flatMap {
                 when (it) {
                     true -> Database.buyer().getSingle<Result.BuyerProfile>()
                     else -> Single.just(Unit)
@@ -80,7 +85,7 @@ class MainActivityPresenter(
 
                     }
                     is Unit -> {
-
+                        val buyer = Result.BuyerProfile()
                     }
 
                 }
@@ -90,10 +95,10 @@ class MainActivityPresenter(
                 Log.e("EEEEE", "For debugging", it);
             }
             )
-
-
         )
 
+
+        setupDrawerNavigation(navigation_drawer)
 
         val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)
@@ -117,7 +122,6 @@ class MainActivityPresenter(
                     fm.beginTransaction()
                         .replace(R.id.container, ProductsFragment()).commit()
                 }
-
 //                R.id.navigation_notifications -> {
 //                    fm.beginTransaction()
 //                        .replace(R.id.container, AnyIdeaFragment()).commit()

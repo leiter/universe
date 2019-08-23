@@ -3,7 +3,7 @@
 
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/orders"
+                android:id="@+id/menu_orders"
                 android:icon="@drawable/ic_shopping_cart_black_24dp"
                 android:title="Bestellen"
                 />

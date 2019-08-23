@@ -77,8 +77,10 @@
             <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:id="@+id/price_amount"
                     android:lines="1"
+                    android:textColor="@color/price_text_color"
                     android:textStyle="bold"
                     android:text="0,00€"
                     android:hint="Preis"/>
@@ -100,6 +102,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/product_amount"
                     android:lines="1"
+                    android:inputType="numberDecimal"
+                    android:digits="0123456789,"
                     android:hint="Menge"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,7 +114,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/product_name_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/product_name_layout"
-
                 app:layout_constraintTop_toTopOf="@+id/product_name_layout"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -127,13 +130,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-
-
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/edit_products"
             android:clickable="true"
             android:focusable="true"
+            android:visibility="gone"
             android:src="@drawable/ic_edit_black"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"

@@ -21,7 +21,7 @@ object Database {
     fun profile(): DatabaseReference = fire().child(PROFILE).child(FireBaseAuth.getAuth()!!.uid!!)
     fun orders(): DatabaseReference = fire().child(ORDERS).child(FireBaseAuth.getAuth()!!.uid!!)
     fun buyer(): DatabaseReference = fire().child(CLIENTS).child(FireBaseAuth.getAuth()!!.uid!!)
-    fun providerArticles(providerId: String) = fire().child(ARTICLES).child(providerId)
+    fun providerArticles(providerId: String): DatabaseReference  = fire().child(ARTICLES).child(providerId)
 
 
 

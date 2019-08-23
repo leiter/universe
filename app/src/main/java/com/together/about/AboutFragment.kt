@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
-import kotlinx.android.synthetic.sell.fragment_about.*
+import kotlinx.android.synthetic.main.fragment_about.*
 
 class AboutFragment : Fragment() {
 

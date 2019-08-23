@@ -16,7 +16,7 @@ import com.together.base.UiState
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.buy.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,13 +44,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.container, ProductsFragment()).commit()
-//        }
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         viewModel.loggedState.observe(this, Observer {
@@ -103,9 +98,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-//                viewModel.loggedState.value = UiState.BASE_AUTH
-            }
+            if (resultCode == Activity.RESULT_OK) { }
         } else {
             moveTaskToBack(true)
         }

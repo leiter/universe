@@ -76,7 +76,6 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         toolbar_end_1.setImageResource(R.drawable.ic_edit_black)
         toolbar_end_1.visibility = View.VISIBLE
 
-
         toolbar_end_2.setImageResource(R.drawable.ic_delete)
         toolbar_end_2.visibility = View.VISIBLE
         toolbar_end_2.setOnClickListener {
@@ -89,8 +88,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         adapter = ProductAdapter(this)
         product_list.adapter = adapter
 
-        val ref = FirebaseDatabase.getInstance().reference
-        val products = Database.articles() //ref.child("articles")
+        val products = Database.articles()
         disposable.add(products.getObservable<Result.Article>().subscribe {
             val e = UiState.Article(
                 id = it.id,
@@ -153,7 +151,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
                     val uiState = model.editProduct.value!!
 
-                    val resulT = Result.Article(
+                    val result = Result.Article(
                         id = "",
                         productId = -1,
                         productName = uiState.productName,
@@ -163,12 +161,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                         pricePerUnit = uiState.pricePerUnit,
                         unit = uiState.unit,
                         discount = uiState.discount
-
-
                     )
-//                    val fireData = FireData()
-                    Database.articles().push().setValue(resulT)
-//                    FireData.createDocument(FirebaseDatabase.getInstance().reference, "articles", resulT)
+                    Database.articles().push().setValue(result)
                 }
 
             }

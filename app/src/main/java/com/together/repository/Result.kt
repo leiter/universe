@@ -72,7 +72,10 @@ sealed class Result {
         override var mode: Int = UNDEFINED,
         var user: User = User(),
         var articles: List<Article> = emptyList()
+
     ) : Result()
+
+
 
 
     data class SellerProfile(
@@ -111,21 +114,9 @@ sealed class Result {
 
         var displayName: String = "",
 
-        var firstName: String = "",
-        var lastName: String = "",
-
         var emailAddress: String = "",
 
-        var street: String = "",
-        var houseNumber: String = "",
-
-        var city: String = "",
-        var zipCode: String = "",
-
-        var telephoneNumber: String = "",
-
-        var lat: String = "",
-        var lng: String = "",
+        var contactIds: MutableList<String> = mutableListOf(), // int is to order 10 100 1000
 
         var sellerIds: MutableList<String> = mutableListOf() // int is to order 10 100 1000
 
