@@ -1,6 +1,7 @@
 package com.together.order
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.FirebaseDatabase
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.squareup.picasso.Callback
@@ -22,12 +22,13 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
+import com.together.dialogs.BasketFragment
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.fake_toolbar.*
+import kotlinx.android.synthetic.main.batch_it.*
 import kotlinx.android.synthetic.main.main_order_fragment.*
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
@@ -45,14 +46,22 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     private val presenter = ProductsPresenter(this)
 
     override fun clicked(item: UiState.Article) {
-        model.presentedProduct.value = item
+        product_amount.setText("")
+        val b = model.basket.value?.find { item.id == it.id }
+        if (b == null) {
+            model.presentedProduct.value = item
+        } else {
+            item.amount = b.amount
+            item.price = b.price
+            model.presentedProduct.value = item
+        }
     }
 
-
-
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         arguments?.let { mode = it.getInt(MODE_PARAM) }
         return inflater.inflate(R.layout.main_order_fragment, container, false)
     }
@@ -65,34 +74,40 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         super.onViewCreated(view, savedInstanceState)
 
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
-        model.presentedProduct.observe(this, Observer {
+
+        model.presentedProduct.observe(viewLifecycleOwner, Observer {
             title.text = it.productName
             sub_title.text = it.productDescription
             load_image_progress.visibility = View.VISIBLE
-            price_amount.setText("0,00€")
-            product_amount.setText("0")
+            price_amount.setText(it.price)
+            product_amount.setText(it.amount)
             products.clearFocus()
             setupSpinner(it)
 
             val p = Picasso.Builder(context)
                 .downloader(OkHttp3Downloader(context)).build()
-            p.load(it.remoteImageUrl).into(product_image, object : Callback {
-                override fun onSuccess() {
-                    load_image_progress.visibility = View.GONE
-                }
+            p.load(it.remoteImageUrl).error(R.drawable.obst_1)
+                .into(product_image, object : Callback {
+                    override fun onSuccess() {
+                        load_image_progress.visibility = View.GONE
+                    }
 
-                override fun onError() {
-                    load_image_progress.visibility = View.GONE
-                }
-            })
+                    override fun onError() {
+                        load_image_progress.visibility = View.GONE
+                    }
+                })
         })
 
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         adapter = ProductAdapter(this)
         article_list.adapter = adapter
 
-        val ref = FirebaseDatabase.getInstance().reference
-        val products = Database.providerArticles("Qx69mYNTkDMS55V2paSztcwEAPN2")  //ref.child("articles")
+        add_product.setOnClickListener {
+            putIntoBasket(model.presentedProduct.value!!)
+
+        }
+
+        val products = Database.providerArticles("Qx69mYNTkDMS55V2paSztcwEAPN2")  //todo
 
         disposable.add(products.getObservable<Result.Article>().subscribe {
             val e = UiState.Article(
@@ -113,31 +128,44 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         })
 
         toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
-        toolbar_end_2.visibility = View.VISIBLE
-        toolbar_end_2.setImageResource(R.drawable.ic_shopping_basket)
+        toolbar_end_2.setOnClickListener {
+            if (model.basket.value!!.size > 0)
+                BasketFragment().show(fragmentManager, "Basket")
+            else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(context!!, R.string.empty_basket_msg, Gravity.CENTER))
+        }
+
+
 
         edit_products.setOnClickListener { presenter.startEditProducts() }
 
-        disposable.add(product_amount.textChanges()
-            .debounce(400, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        disposable.add(
+            product_amount.textChanges()
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.isNotEmpty()) {
+                        val v = NumberFormat.getInstance().parse(it.toString())
+                        var i = v.toDouble() *
+                                NumberFormat.getInstance()
+                                    .parse(model.presentedProduct.value!!.pricePerUnit).toDouble()
+                        i = Math.round(i * 100.0) / 100.0
+                        val s = "%.2f€".format(i)
+                        price_amount.setText(s)
+                    } else {
+                        price_amount.setText("0,00€")
+                    }
+                }, {
+                    it.printStackTrace()
+                })
+        )
 
-                if (it.isNotEmpty()) {
-                    val v = NumberFormat.getInstance().parse(it.toString())
-                    var i = v.toDouble() *
-                            NumberFormat.getInstance()
-                                .parse(model.presentedProduct.value!!.pricePerUnit).toDouble()
-                    i = Math.round(i * 100.0) / 100.0
-                    val s = "%.2f€".format(i)
-                    price_amount.setText(s)
-                } else {
-                    price_amount.setText("0")
+        disposable.add(MainMessagePipe.uiEvent.subscribe {
+            when (it) {
+                is UiEvent.BasketMinusOne -> {
+                    badge_count.text = model.basket.value?.size.toString()
                 }
-            }, {
-                it.printStackTrace()
-            }))
-
+            }
+        })
 
     }
 
@@ -146,6 +174,19 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         val spinnerAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_list_item_1, unit)
         unit_picker.adapter = spinnerAdapter
         unit_picker.onItemSelectedListener = UnitSelectedListener()
+    }
+
+    private fun prepareUnitData(article: UiState.Article): List<UiState.Unit>{
+        val unit = article.unit.split(",")
+        val result = mutableListOf<UiState.Unit>()
+        unit.forEach {
+            val u = it.split(";")
+            var p = UiState.Unit()
+            result.add(p)
+        }
+        return result.toList()
+
+
     }
 
     override fun onDestroyView() {
@@ -160,17 +201,52 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         const val BUYER = 0
         const val SELLER = 1
 
-        fun newInstance(mode: Int) : ProductsFragment{
-            val frag = ProductsFragment().apply {
+        fun newInstance(mode: Int): ProductsFragment {
+            return ProductsFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(MODE_PARAM,mode)
+                    putInt(MODE_PARAM, mode)
                 }
             }
-            return frag
+        }
+    }
+
+    private fun putIntoBasket(product: UiState.Article) {
+        val p = UiState.Article(
+            productId = product.productId,
+            productName = product.productName,
+            productDescription = product.productDescription,
+            id = product.id,
+            amount = product_amount.text.toString(),
+            price = price_amount.text.toString()
+        )
+        val basket = model.basket.value!!
+        var inBasket = -1
+        basket.forEachIndexed { index, basketItem ->
+            if (basketItem.id == p.id) {
+                inBasket = index
+            }
+        }
+        if (inBasket != -1) {
+            basket.removeAt(inBasket)
+            basket.add(inBasket, p)
+
+        } else {
+            basket.add(p)
+
         }
 
+        if (basket.size == 0) {
+            badge_count.visibility = View.INVISIBLE
+        } else {
+            badge_count.visibility = View.VISIBLE
+            badge_count.text = basket.size.toString()
+        }
     }
+
+
 }
+
+
 
 
 class UnitSelectedListener : AdapterView.OnItemSelectedListener {
@@ -178,7 +254,6 @@ class UnitSelectedListener : AdapterView.OnItemSelectedListener {
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
 
     }
 

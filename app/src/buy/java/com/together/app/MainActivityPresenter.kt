@@ -35,7 +35,7 @@ class MainActivityPresenter(private val disposable: CompositeDisposable,
             when (it.itemId) {
 
                 R.id.menu_orders -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
                         supportFragmentManager,
                         ProductsFragment(), ProductsFragment.TAG)
                     )
@@ -82,6 +82,8 @@ class MainActivityPresenter(private val disposable: CompositeDisposable,
             }.subscribe({
                 when (it) {
                     is Result.BuyerProfile -> {
+
+
 
                     }
                     is Unit -> {

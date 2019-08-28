@@ -63,7 +63,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         model.newProduct.observe(this, Observer {
             picasso.load(it.uri).into(image)
         })
-        model.editProduct.observe(viewLifecycleOwner, Observer {//todo do not listen and write
+        model.editProduct.observe(viewLifecycleOwner, Observer {// todo do not listen and write
             product_name.setText(it.productName)
             product_description.setText(it.productDescription)
             product_price.setText(it.pricePerUnit)

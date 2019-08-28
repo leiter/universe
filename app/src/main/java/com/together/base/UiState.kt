@@ -17,6 +17,15 @@ sealed class UiState {
         const val MOVED = 2
         const val REMOVED = 3
         const val UNDEFINED = -1
+        
+        const val KILO_GRAM = 0
+        const val GRAM = 1
+        const val PIECE = 2
+        const val BUNCH = 3
+        const val BOWL = 4
+        const val UNIT_UNDEFINED = -1
+
+
     }
 
     object LOGGEDOUT : UiState() {
@@ -42,19 +51,14 @@ sealed class UiState {
         var remoteImageUrl: String = "",
         var localImageUrl: String = "",
         var discount: Long = 0L,
+
+        var price: String = "",
+        var amount: String = "",
+
         override var mode: Int = MOVED
 
 
     ) : UiState()
-
-
-    data class ToBeBought(
-
-
-        override var id: String = "",
-        override var mode: Int = MOVED
-
-        ):UiState()
 
 
     data class NewProductImage(val uri: Uri)
@@ -118,6 +122,26 @@ sealed class UiState {
         var text: String = "",
         var photoUrl: String = "",
         override var mode: Int = MOVED
+
+    ) : UiState()
+
+    data class BasketItem(
+
+        var productId: Int = -1,
+        var productName: String = "",
+        var productDescription: String? = null,
+
+        var price: String = "",
+        var amount: String = "",
+
+        override var id: String = "",
+        override var mode: Int = MOVED
+    ): UiState()
+
+    data class Unit(
+        override var id: String = "",
+        override var mode: Int = UNIT_UNDEFINED,
+        var amount: String = ""
 
     ) : UiState()
 

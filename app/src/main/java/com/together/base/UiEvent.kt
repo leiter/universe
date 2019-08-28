@@ -43,14 +43,20 @@ sealed class UiEvent {
                                val fragment: Fragment,
                                val tag: String): UiEvent()
 
+    data class DialogFragment(val fragMange: FragmentManager,
+                               val fragment: Fragment,
+                               val tag: String): UiEvent()
+
     data class AddFragment(val fragMange: FragmentManager,
                            val fragment: Fragment,
                            val tag: String): UiEvent()
 
 
+    object BasketMinusOne : UiEvent()
 
+    data class RemoveBasketItem(val id: String ): UiEvent()
 
-
+    data class EditBasketItem(val id: String): UiEvent()
 
     data class PostProduct(var product: UiState.Article)
 

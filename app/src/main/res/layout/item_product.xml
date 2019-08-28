@@ -13,7 +13,7 @@
     <ImageButton
 
             android:src="@drawable/ic_info_outline"
-            android:id="@+id/product_info"
+            android:id="@+id/edit_order"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:padding="8dp"
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/product_info"
+            app:layout_constraintStart_toEndOf="@id/edit_order"
             />
 
     <TextView

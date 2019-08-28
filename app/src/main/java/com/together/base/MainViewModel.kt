@@ -54,23 +54,9 @@ class MainViewModel : ViewModel() {
         MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
     }
 
-    val profile : UiState.SellerProfile = UiState.SellerProfile()
-
     val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
-    val editProduct: MutableLiveData<UiState.Article> by lazy {
-        MutableLiveData<UiState.Article>().also {
-            it.value = UiState.Article()
-        }
-    }
-
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
-
-    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
-        MutableLiveData<MutableList<UiState.Market>>().also {
-            it.value = mutableListOf()
-        }
-    }
 
     val basket: MutableLiveData<MutableList<UiState.Article>> by lazy {
         MutableLiveData<MutableList<UiState.Article>>().also {
@@ -81,8 +67,19 @@ class MainViewModel : ViewModel() {
 
 
 
+    val profile : UiState.SellerProfile = UiState.SellerProfile()
 
+    val editProduct: MutableLiveData<UiState.Article> by lazy {
+        MutableLiveData<UiState.Article>().also {
+            it.value = UiState.Article()
+        }
+    }
 
+    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
+        MutableLiveData<MutableList<UiState.Market>>().also {
+            it.value = mutableListOf()
+        }
+    }
 
 
     override fun onCleared() {

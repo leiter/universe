@@ -17,6 +17,11 @@ sealed class Result {
         const val UNDEFINED = -1
     }
 
+    object Empty : Result() {
+        override var id: String = "No result"
+        override var mode: Int = UNDEFINED
+    }
+
     object LoggedOut : Result() {
         override var id: String = "loggedIn"
         override var mode: Int = UNDEFINED

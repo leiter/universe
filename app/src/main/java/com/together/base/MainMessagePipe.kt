@@ -57,6 +57,17 @@ object MainMessagePipe {
                     }
 
                 }
+                is UiEvent.DialogFragment -> {
+                    val f = it.fragMange.findFragmentByTag(it.tag)
+                    if (f == null) {
+                        it.fragment.exitTransition = Fade(Fade.MODE_OUT)
+                        it.fragment.enterTransition = Fade(Fade.MODE_IN)
+                        it.fragment.returnTransition = Fade(Fade.MODE_OUT)
+                        it.fragMange.beginTransaction()
+                            .replace(R.id.container, it.fragment, it.tag)
+                            .commit()
+                    }
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding3.view.clicks
@@ -60,10 +61,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        viewModel.loggedState.value = FireBaseAuth.isLoggedIn()
-//        disposable.add(presenter.setupDrawerNavigation(navigation_drawer, drawer_layout))
-//        disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
-
         disposable.add(log_out.clicks().subscribe {
             drawer_layout.closeDrawers()
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
@@ -83,6 +80,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        when {
+            drawer_layout.isDrawerOpen(GravityCompat.START) -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
+            supportFragmentManager.backStackEntryCount == 0 -> moveTaskToBack(true)
+            else -> super.onBackPressed()
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null && intent.action == packageName + LOGIN_ACTION) {
@@ -98,7 +106,9 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) { }
+            if (resultCode == Activity.RESULT_OK) {
+
+            }
         } else {
             moveTaskToBack(true)
         }
