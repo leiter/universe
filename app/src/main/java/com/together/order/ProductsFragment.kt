@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -104,19 +103,23 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
         add_product.setOnClickListener {
             putIntoBasket(model.presentedProduct.value!!)
-
         }
 
         val products = Database.providerArticles("Qx69mYNTkDMS55V2paSztcwEAPN2")  //todo
 
         disposable.add(products.getObservable<Result.Article>().subscribe {
+            val unitList = prepareUnitData(it)
+            val defaultUnit = unitList.find { it.name == "kg" }
+            val indexOfDefault = if (defaultUnit != null) unitList.indexOf(defaultUnit) else 0
+
             val e = UiState.Article(
                 id = it.id,
                 productName = it.productName,
                 productDescription = it.productDescription,
                 remoteImageUrl = it.imageUrl,
-                unit = it.unit,
-                pricePerUnit = it.pricePerUnit,
+                units = unitList,
+                unit = unitList[indexOfDefault].name,
+                pricePerUnit = unitList[indexOfDefault].price,
                 discount = it.discount,
                 mode = it.mode,
                 available = it.available
@@ -170,24 +173,37 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     }
 
     private fun setupSpinner(article: UiState.Article) {
-        val unit = article.unit.split(",")
-        val spinnerAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_list_item_1, unit)
+        val spinnerAdapter = UnitSpinnerAdapter(context!!, article.units)
         unit_picker.adapter = spinnerAdapter
-        unit_picker.onItemSelectedListener = UnitSelectedListener()
+        unit_picker.onItemSelectedListener = UnitSelectedListener(article.units)
     }
 
-    private fun prepareUnitData(article: UiState.Article): List<UiState.Unit>{
-        val unit = article.unit.split(",")
+    private fun prepareUnitData(article: Result.Article): List<UiState.Unit> {
+        val units = article.units
         val result = mutableListOf<UiState.Unit>()
-        unit.forEach {
-            val u = it.split(";")
-            var p = UiState.Unit()
-            result.add(p)
+        units.forEach {
+            val p = it.value.split(";")
+            val w: String = if (p.size > 1) p[1] else ""
+            val r = UiState.Unit(
+                name = it.key,
+                price = p[0],
+                averageWeight = w,
+                mode = map[it.key] ?: -1
+            )
+            result.add(r)
         }
         return result.toList()
 
-
     }
+
+
+    private val map = HashMap<String, Int>().apply {
+        put("kg", 0)
+        put("Stück", 1)
+        put("Bund", 2)
+        put("Schale", 3)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -232,7 +248,6 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
         } else {
             basket.add(p)
-
         }
 
         if (basket.size == 0) {
@@ -243,18 +258,16 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         }
     }
 
+    inner class UnitSelectedListener(val u: List<UiState.Unit>) : AdapterView.OnItemSelectedListener {
 
-}
+        override fun onNothingSelected(parent: AdapterView<*>?) {}
 
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-
-
-class UnitSelectedListener : AdapterView.OnItemSelectedListener {
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        }
 
     }
 
 }
+
+

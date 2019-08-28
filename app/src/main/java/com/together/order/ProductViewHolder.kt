@@ -10,9 +10,9 @@ class ArticleViewHolder(override val containerView: View?, private val click: Pr
 
     : RecyclerView.ViewHolder(containerView!!), LayoutContainer {
 
-    fun bindItem(position: Int,item: UiState.Article ) {
+    fun bindItem(position: Int, item: UiState.Article) {
         product_name.text = item.productName
-        val price = item.pricePerUnit + " €/" + item.unit
+        val price = item.pricePerUnit+ " €/" + item.unit
         product_price.text = price
         containerView?.setOnClickListener {
             click.clicked(item)

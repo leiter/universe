@@ -20,10 +20,10 @@
             android:layout_gravity="end"
             android:clickable="false"
             android:focusable="false"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:gravity="center"
             android:background="@drawable/batch_bg"
-            tools:text="2"
+            tools:text="22"
             android:textColor="#FFF"
             android:textSize="8sp"
             android:textStyle="bold"/>

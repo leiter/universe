@@ -6,12 +6,31 @@ import kotlinx.android.parcel.Parcelize
 
 
 
+enum class UnitNames(var unitName: String){
+
+    KILO_GRAM("kg"),
+    PIECE("Stück"),
+    BUNCH("Bund"),
+    BOWL("Schale"),
+    UNIT_UNDEFINED("n/a")
+
+
+}
+
+
 sealed class UiState {
 
     abstract var id: String
     abstract var mode: Int
 
-    companion object{
+    companion object {
+
+
+
+        init {
+
+        }
+
         const val ADDED = 0
         const val CHANGED = 1
         const val MOVED = 2
@@ -46,11 +65,13 @@ sealed class UiState {
         var productName: String = "",
         var productDescription: String? = null,
         var available: Boolean = false,
-        var unit: String = "",  // Bund, Stück, Kg,
-        var pricePerUnit: String = "",
+        var units: List<Unit> = emptyList(),
         var remoteImageUrl: String = "",
         var localImageUrl: String = "",
         var discount: Long = 0L,
+
+        var pricePerUnit: String = "",
+        var unit: String = "",
 
         var price: String = "",
         var amount: String = "",
@@ -125,23 +146,17 @@ sealed class UiState {
 
     ) : UiState()
 
-    data class BasketItem(
-
-        var productId: Int = -1,
-        var productName: String = "",
-        var productDescription: String? = null,
-
-        var price: String = "",
-        var amount: String = "",
-
-        override var id: String = "",
-        override var mode: Int = MOVED
-    ): UiState()
 
     data class Unit(
+
+        var name: String = "",
+        var price: String = "",
+        var averageWeight: String = "",
+
+
+
         override var id: String = "",
-        override var mode: Int = UNIT_UNDEFINED,
-        var amount: String = ""
+        override var mode: Int = UNIT_UNDEFINED
 
     ) : UiState()
 
