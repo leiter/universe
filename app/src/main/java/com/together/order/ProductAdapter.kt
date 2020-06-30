@@ -11,12 +11,19 @@ import com.together.base.UiState.Companion.REMOVED
 
 
 class ProductAdapter(private val click: ItemClicked,
-                     var data: MutableList<UiState.Article> = mutableListOf())
+                     var data: MutableList<UiState.Article> = mutableListOf()
+
+)
 
     : RecyclerView.Adapter<ArticleViewHolder>() {
 
     interface ItemClicked {
         fun clicked(item: UiState.Article)
+    }
+
+
+    fun showAll(showAll:Boolean){
+
     }
 
     fun addItem(item: UiState.Article) {

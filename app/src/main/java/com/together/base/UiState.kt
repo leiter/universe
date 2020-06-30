@@ -12,8 +12,7 @@ enum class UnitNames(var unitName: String){
     PIECE("Stück"),
     BUNCH("Bund"),
     BOWL("Schale"),
-    UNIT_UNDEFINED("n/a")
-
+    UNIT_UNDEFINED("n/a");
 
 }
 
@@ -24,12 +23,6 @@ sealed class UiState {
     abstract var mode: Int
 
     companion object {
-
-
-
-        init {
-
-        }
 
         const val ADDED = 0
         const val CHANGED = 1
@@ -43,7 +36,6 @@ sealed class UiState {
         const val BUNCH = 3
         const val BOWL = 4
         const val UNIT_UNDEFINED = -1
-
 
     }
 
@@ -77,7 +69,6 @@ sealed class UiState {
         var amount: String = "",
 
         override var mode: Int = MOVED
-
 
     ) : UiState()
 
@@ -152,8 +143,6 @@ sealed class UiState {
         var name: String = "",
         var price: String = "",
         var averageWeight: String = "",
-
-
 
         override var id: String = "",
         override var mode: Int = UNIT_UNDEFINED

@@ -64,9 +64,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-
-
-
     val profile : UiState.SellerProfile = UiState.SellerProfile()
 
     val editProduct: MutableLiveData<UiState.Article> by lazy {
@@ -80,7 +77,6 @@ class MainViewModel : ViewModel() {
             it.value = mutableListOf()
         }
     }
-
 
     override fun onCleared() {
         disposable.clear()

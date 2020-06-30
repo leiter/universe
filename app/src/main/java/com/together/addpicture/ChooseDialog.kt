@@ -31,14 +31,15 @@ class ChooseDialog : DialogFragment() {
         }
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    /*override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
         actionChannel.onNext(Action.CANCEL_ADD_PICTURE)
     }
+*/
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity!!)
-        val view = activity!!.layoutInflater.inflate(R.layout.choose_source, null as ViewGroup?)
+        val builder = AlertDialog.Builder(requireContext())
+        val view = requireActivity().layoutInflater.inflate(R.layout.choose_source, null as ViewGroup?)
         view.capture_image.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
         view.choose_image.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
         view.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }

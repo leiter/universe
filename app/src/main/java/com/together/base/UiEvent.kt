@@ -11,8 +11,8 @@ sealed class UiEvent {
 
     companion object {
         //   Drawer State Actions
-        const val OPEN = 0
-        const val LOCK_MODE_UNLOCKED = 1
+        const val OPEN_DRAWER = 0
+        const val DRAWER_UNLOCKED = 1
         const val LOCK_MODE_LOCKED_CLOSED = 2
     }
 

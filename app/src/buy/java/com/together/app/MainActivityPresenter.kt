@@ -76,7 +76,7 @@ class MainActivityPresenter(private val disposable: CompositeDisposable,
         disposable.add(Database.buyer().getSingleExists().flatMap {
                 when (it) {
                     true -> Database.buyer().getSingle<Result.BuyerProfile>()
-                    else -> Single.just(Unit)
+                    else -> Single.just(Result.Empty)
                 }
 
             }.subscribe({
@@ -84,10 +84,10 @@ class MainActivityPresenter(private val disposable: CompositeDisposable,
                     is Result.BuyerProfile -> {
 
 
-
                     }
-                    is Unit -> {
+                    is Result.Empty -> {
                         val buyer = Result.BuyerProfile()
+
                     }
 
                 }

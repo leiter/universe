@@ -5,7 +5,8 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.annotation.IntDef
 import com.firebase.ui.auth.AuthUI
-
+import com.together.base.UiState
+import com.together.repository.Result
 
 
 object TryIndef {
@@ -20,7 +21,58 @@ object TryIndef {
 
 }
 
+object DataHelper {
 
+    fun dataArticleToUi(item: Result.Article) : UiState.Article {
+        val unitList = prepareUnitData(item)
+        val defaultUnit = unitList.firstOrNull { it.name == "kg" }
+        val indexOfDefault = if (defaultUnit != null) unitList.indexOf(defaultUnit) else 0
+
+        return UiState.Article(
+
+            id = item.id,
+            productName = item.productName,
+            productDescription = item.productDescription,
+            remoteImageUrl = item.imageUrl,
+
+            units = unitList,
+
+            unit = unitList[indexOfDefault].name,
+            pricePerUnit = unitList[indexOfDefault].price,
+
+            discount = item.discount,
+            mode = item.mode,
+            available = item.available
+        )
+    }
+
+
+    private fun prepareUnitData(article: Result.Article): List<UiState.Unit> {
+        val units = article.units
+        val result = mutableListOf<UiState.Unit>()
+        units.forEach {
+            val p = it.value.split(";")
+            val w: String = if (p.size > 1) p[1] else ""
+            val r = UiState.Unit(
+                name = it.key,
+                price = p[0],
+                averageWeight = w,
+                mode = map[it.key] ?: -1
+            )
+            result.add(r)
+        }
+        return result.toList()
+
+    }
+
+    private val map = HashMap<String, Int>().apply {
+        put("kg", 0)
+        put("Stück", 1)
+        put("Bund", 2)
+        put("Schale", 3)
+    }
+
+}
 
 
 object AQ {
@@ -50,8 +102,5 @@ object AQ {
             .setIsSmartLockEnabled(false)
             .setAvailableProviders(providers).build()
     }
-
-
-
 
 }

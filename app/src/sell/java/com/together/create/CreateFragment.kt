@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
@@ -23,8 +22,10 @@ import com.together.order.ProductAdapter
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
+import com.together.utils.DataHelper
 import com.together.utils.FileUtil
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fake_toolbar.*
 import kotlinx.android.synthetic.main.fragment_create.*
@@ -89,20 +90,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         product_list.adapter = adapter
 
         val products = Database.articles()
-        disposable.add(products.getObservable<Result.Article>().subscribe {
-            val e = UiState.Article(
-                id = it.id,
-                productName = it.productName,
-                productDescription = it.productDescription,
-                remoteImageUrl = it.imageUrl,
-                unit = it.unit,
-                pricePerUnit = it.pricePerUnit,
-                discount = it.discount,
-                mode = it.mode,
-                available = it.available
-            )
-
-            adapter.addItem(e)
+        disposable.add(products.getObservable<Result.Article>().observeOn(AndroidSchedulers.mainThread()).subscribe {
+            adapter.addItem(DataHelper.dataArticleToUi(it))
             if(adapter.data.size==0){
                 empty_message.visibility = View.VISIBLE
             } else                 {
@@ -126,7 +115,6 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
     }
 
-
     override fun clicked(item: UiState.Article) {
         model.editProduct.value = item
     }
@@ -147,7 +135,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             .putFile(imageUri)
             .addOnSuccessListener {
 
-                it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
+                it.metadata?.reference?.downloadUrl?.addOnSuccessListener { imageUri ->
 
                     val uiState = model.editProduct.value!!
 
@@ -156,10 +144,9 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                         productId = -1,
                         productName = uiState.productName,
                         productDescription = uiState.productDescription,
-                        imageUrl = it.toString(),
+                        imageUrl = imageUri.toString(),
                         available = uiState.available,
-                        pricePerUnit = uiState.pricePerUnit,
-                        unit = uiState.unit,
+
                         discount = uiState.discount
                     )
                     Database.articles().push().setValue(result)

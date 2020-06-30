@@ -25,7 +25,7 @@ import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.sell.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), MainActivityView {

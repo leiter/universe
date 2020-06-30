@@ -7,6 +7,8 @@
 
 
     <string name="developer">General ERROR FIXME</string>
+    <string name="empty_basket_msg">Sie haben keine Produkte im Einkaufskorb.</string>
+
 
 
 </resources>

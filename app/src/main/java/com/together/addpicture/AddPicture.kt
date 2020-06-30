@@ -109,12 +109,14 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
             permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {         startPickIntent()       }
+        else activity.finish()
 
         if (permissions.size == 1 &&
             (requestCode == REQUEST_TAKE_PICTURE_PERMISSION || requestCode==65758) &&  //todo
             permissions[0] == Manifest.permission.CAMERA &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {         startCamera()       }
+        else activity.finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,9 +166,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     }
 
     private fun startPickImage() {
-        val granted =
-            ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
-        when (granted) {
+        when (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             PackageManager.PERMISSION_GRANTED -> startPickIntent()
             else -> {
                 ActivityCompat.requestPermissions(

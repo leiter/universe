@@ -44,6 +44,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
     private val presenter = ProductsPresenter(this)
 
+    private lateinit var picasso: Picasso
+
+
     override fun clicked(item: UiState.Article) {
         product_amount.setText("")
         val b = model.basket.value?.find { item.id == it.id }
@@ -72,6 +75,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
+
         model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
 
         model.presentedProduct.observe(viewLifecycleOwner, Observer {
@@ -83,9 +88,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
             products.clearFocus()
             setupSpinner(it)
 
-            val p = Picasso.Builder(context)
-                .downloader(OkHttp3Downloader(context)).build()
-            p.load(it.remoteImageUrl).error(R.drawable.obst_1)
+            picasso.load(it.remoteImageUrl)
+                .error(R.drawable.obst_1)
                 .into(product_image, object : Callback {
                     override fun onSuccess() {
                         load_image_progress.visibility = View.GONE
@@ -107,9 +111,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
         val products = Database.providerArticles("Qx69mYNTkDMS55V2paSztcwEAPN2")  //todo
 
-        disposable.add(products.getObservable<Result.Article>().subscribe {
+        disposable.add(products.getObservable<Result.Article>().observeOn(AndroidSchedulers.mainThread()).subscribe {
             val unitList = prepareUnitData(it)
-            val defaultUnit = unitList.find { it.name == "kg" }
+            val defaultUnit = unitList.firstOrNull { it.name == "kg" }
             val indexOfDefault = if (defaultUnit != null) unitList.indexOf(defaultUnit) else 0
 
             val e = UiState.Article(
@@ -117,7 +121,9 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
                 productName = it.productName,
                 productDescription = it.productDescription,
                 remoteImageUrl = it.imageUrl,
+
                 units = unitList,
+
                 unit = unitList[indexOfDefault].name,
                 pricePerUnit = unitList[indexOfDefault].price,
                 discount = it.discount,
@@ -136,8 +142,6 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
                 BasketFragment().show(fragmentManager, "Basket")
             else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(context!!, R.string.empty_basket_msg, Gravity.CENTER))
         }
-
-
 
         edit_products.setOnClickListener { presenter.startEditProducts() }
 
@@ -258,12 +262,12 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         }
     }
 
-    inner class UnitSelectedListener(val u: List<UiState.Unit>) : AdapterView.OnItemSelectedListener {
+    inner class UnitSelectedListener(private val unitList: List<UiState.Unit>) : AdapterView.OnItemSelectedListener {
 
         override fun onNothingSelected(parent: AdapterView<*>?) {}
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
+            map[unitList[position].name]
         }
 
     }

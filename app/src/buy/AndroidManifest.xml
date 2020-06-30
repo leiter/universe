@@ -5,5 +5,12 @@
     <uses-permission android:name="android.permission.CAMERA" tools:node="remove"/>
 
 
+    <application
+        tools:replace="icon"
+        android:icon="@mipmap/ic_launcher_buy"
+        >
+
+
+    </application>
 
 </manifest>
