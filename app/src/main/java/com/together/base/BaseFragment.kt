@@ -15,6 +15,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
     }
 
@@ -22,6 +23,5 @@ abstract class BaseFragment : Fragment() {
         super.onDestroyView()
         disposable.dispose()
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.together.profile
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +18,21 @@ import com.together.base.UiState
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getCompletable
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.rxkotlin.zipWith
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.sell.fragment_profile.*
 import java.util.concurrent.TimeUnit
 
-class ProfileFragment : BaseFragment() {
+class ProfileFragment : BaseFragment(), callMe {
 
     companion object {
         const val TAG = "ProfileFragment"
     }
+
+    private val channel = PublishSubject.create<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,30 +44,38 @@ class ProfileFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        disposable.addAll(post_profile.clicks().subscribe {
+        post_profile.setOnClickListener {
+            startIt().zipWith(channel.firstOrError()).subscribeOn(Schedulers.io()).subscribe({
+                Log.e("TTTTT", "Done sleeping");
 
-            val i = viewModel.profile
-            val r = Result.SellerProfile(
-                displayName = i.displayName,
-                firstName = i.firstName,
-                lastName = i.lastName,
-                street = i.street,
-                houseNumber = i.houseNumber,
-                city = i.city,
-                zipcode = i.zipcode
-            )
+            },{})
+        }
 
-            Database.profile().setValue(r).getCompletable().subscribe({ success ->
-                if (success) {
-                    MainActivity.reStart(context!!)
-                } else {
-                    Toast.makeText(context!!, "went wrong", Toast.LENGTH_SHORT).show()
-                }
-            }, {
-                Toast.makeText(context!!, "EEEEEEEEEEEEeee", Toast.LENGTH_SHORT).show()
-
-            })
-        },
+        disposable.addAll(
+//            post_profile.clicks().subscribe {
+//
+//            val i = viewModel.profile
+//            val r = Result.SellerProfile(
+//                displayName = i.displayName,
+//                firstName = i.firstName,
+//                lastName = i.lastName,
+//                street = i.street,
+//                houseNumber = i.houseNumber,
+//                city = i.city,
+//                zipcode = i.zipcode
+//            )
+//
+//            Database.profile().setValue(r).getCompletable().subscribe({ success ->
+//                if (success) {
+//                    MainActivity.reStart(context!!)
+//                } else {
+//                    Toast.makeText(context!!, "went wrong", Toast.LENGTH_SHORT).show()
+//                }
+//            }, {
+//                Toast.makeText(context!!, "EEEEEEEEEEEEeee", Toast.LENGTH_SHORT).show()
+//
+//            })
+//        },
 
             city.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.city = it.toString()
@@ -91,7 +107,7 @@ class ProfileFragment : BaseFragment() {
             },
 
             add_pickup_place.clicks().subscribe {
-                Dialogs().show(fragmentManager, "Frag")
+                Dialogs().show(requireFragmentManager(), "Frag")
             }
         )
 
@@ -106,7 +122,23 @@ class ProfileFragment : BaseFragment() {
     }
 
     val open: (UiState.Market) -> Unit
-        inline get() = { Dialogs.newInstance(Dialogs.EDIT_MARKET, it).show(fragmentManager, "Edit") }
+        inline get() = { Dialogs.newInstance(Dialogs.EDIT_MARKET, it).show(requireFragmentManager(), "Edit") }
+
+
+
+    fun startIt () : Single<Unit> {
+        call()
+        return Single.just(Unit)
+
+    }
+
+    override fun call() {
+        Thread.sleep((3000))
+        channel.onNext("Has been called")
+    }
 
 }
 
+interface callMe {
+    fun call()
+}

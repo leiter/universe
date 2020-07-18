@@ -6,7 +6,7 @@ import com.together.repository.auth.FireBaseAuth
 
 object Database {
 
-    private fun fire() = FirebaseDatabase.getInstance().reference
+    private fun fire() = FirebaseDatabase.getInstance()
 
     init {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
@@ -17,11 +17,11 @@ object Database {
     private const val ORDERS = "orders"
     private const val CLIENTS = "clients"
 
-    fun articles(): DatabaseReference = fire().child(ARTICLES).child(FireBaseAuth.getAuth()!!.uid!!)
-    fun profile(): DatabaseReference = fire().child(PROFILE).child(FireBaseAuth.getAuth()!!.uid!!)
-    fun orders(): DatabaseReference = fire().child(ORDERS).child(FireBaseAuth.getAuth()!!.uid!!)
-    fun buyer(): DatabaseReference = fire().child(CLIENTS).child(FireBaseAuth.getAuth()!!.uid!!)
-    fun providerArticles(providerId: String): DatabaseReference  = fire().child(ARTICLES).child(providerId)
+    fun articles(): DatabaseReference = fire().reference.child(ARTICLES).child(FireBaseAuth.getAuth()!!.uid!!)
+    fun profile(): DatabaseReference = fire().reference.child(PROFILE).child(FireBaseAuth.getAuth()!!.uid!!)
+    fun orders(): DatabaseReference = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth()!!.uid!!)
+    fun buyer(): DatabaseReference = fire().reference.child(CLIENTS).child(FireBaseAuth.getAuth()!!.uid!!)
+    fun providerArticles(providerId: String): DatabaseReference  = fire().reference.child(ARTICLES).child(providerId)
 
 
 

@@ -1,6 +1,5 @@
 package com.together.dialogs
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import kotlinx.android.synthetic.main.fragment_basket.*
-
 
 class BasketFragment : DialogFragment() {
 
@@ -39,7 +37,7 @@ class BasketFragment : DialogFragment() {
         if (dialog!=null){
             val w = ViewGroup.LayoutParams.MATCH_PARENT
             val h = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window?.setLayout(w,h)
+//            dialog.window?.setLayout(w,h)
         }
     }
 

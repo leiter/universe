@@ -37,8 +37,8 @@ object DataHelper {
 
             units = unitList,
 
-            unit = unitList[indexOfDefault].name,
-            pricePerUnit = unitList[indexOfDefault].price,
+            //unit = unitList[indexOfDefault].name,
+//            pricePerUnit = unitList[indexOfDefault].price,
 
             discount = item.discount,
             mode = item.mode,

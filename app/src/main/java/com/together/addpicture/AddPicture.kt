@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -118,6 +119,17 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         ) {         startCamera()       }
         else activity.finish()
     }
+    fun getPathFromURI(contentUri: Uri ): String {
+        var res: String? = null;
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor : Cursor = activity.contentResolver.query(contentUri, proj, "", null, "");
+        if (cursor.moveToFirst()) {
+            val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res!!
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
@@ -130,17 +142,17 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
                 MainMessagePipe.mainThreadMessage.onNext(image)
             } else if (requestCode == REQUEST_PIC_PICTURE) {
                 if (data != null) {
-                    val imageColumn = arrayOf(MediaStore.Images.Media.DATA)
-                    val id = data.data?.lastPathSegment!!.split(":")[1]
-                    val cursor = activity.contentResolver.query(
-                        getUri(),
-                        imageColumn,
-                        MediaStore.Images.Media._ID + "=" + id, null, null
-                    )
-                    cursor!!.moveToFirst()
-                    val uriString = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-                    cursor.close()
-                    fileUri = Uri.fromFile(File(uriString))
+//                    val imageColumn = arrayOf(MediaStore.Images.Media.DATA)
+//                    val id = data.data?.lastPathSegment!!
+//                    val cursor = activity.contentResolver.query(
+//                            getUri(),
+//                        imageColumn,
+//                        MediaStore.Images.Media._ID + "=" + id, null, null
+//                    )
+//                    cursor!!.moveToFirst()
+//                    val uriString = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+//                    cursor.close()
+                    fileUri = Uri.fromFile(File(getPathFromURI(data.data!!)))
                     val image = Result.NewImageCreated(fileUri)
                     MainMessagePipe.mainThreadMessage.onNext(image)
                 }

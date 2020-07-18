@@ -13,7 +13,6 @@ import com.together.base.UiState
 class UnitSpinnerAdapter(context: Context, var data: List<UiState.Unit>) :
     ArrayAdapter<UiState.Unit>(context, R.layout.item_unit, data) {
 
-
     @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_unit, parent, false)

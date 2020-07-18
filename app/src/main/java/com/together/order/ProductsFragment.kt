@@ -139,7 +139,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
         toolbar_end_2.setOnClickListener {
             if (model.basket.value!!.size > 0)
-                BasketFragment().show(fragmentManager, "Basket")
+                BasketFragment().show(requireFragmentManager(), "Basket")
             else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(context!!, R.string.empty_basket_msg, Gravity.CENTER))
         }
 
