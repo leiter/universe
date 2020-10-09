@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.transaction
 import com.together.R
 import com.together.app.MainActivity
-import kotlinx.android.synthetic.sell.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_login.*
 
 class LoginFragment : Fragment() {
 
@@ -22,9 +21,10 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         plus_one_button.setOnClickListener {
-            MainActivity.startLogin(context!!)
+            MainActivity.startLogin(requireActivity())
             it.visibility = View.GONE
-            fragmentManager!!.transaction { remove(this@LoginFragment) }
+            val fm = activity?.supportFragmentManager!!
+                fm.beginTransaction().remove(this@LoginFragment)
         }
     }
 }

@@ -49,9 +49,4 @@ class ProductAdapter(private val click: ItemClicked,
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         holder.bindItem(position, data[position])
     }
-
-
-//    private fun findItemIndex(item: UiState.Article): Int {
-//        return data.indexOf(item)
-//    }
 }

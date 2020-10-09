@@ -122,12 +122,12 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     fun getPathFromURI(contentUri: Uri ): String {
         var res: String? = null;
         val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor : Cursor = activity.contentResolver.query(contentUri, proj, "", null, "");
-        if (cursor.moveToFirst()) {
-            val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor.getString(column_index);
+        val cursor : Cursor? = activity.contentResolver.query(contentUri, proj, "", null, "");
+        if (cursor?.moveToFirst()!!) {
+            val column_index = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)!!
+            res = cursor?.getString(column_index);
         }
-        cursor.close();
+        cursor?.close();
         return res!!
     }
 
@@ -178,7 +178,8 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     }
 
     private fun startPickImage() {
-        when (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        when (ContextCompat.checkSelfPermission(activity,
+            Manifest.permission.READ_EXTERNAL_STORAGE)) {
             PackageManager.PERMISSION_GRANTED -> startPickIntent()
             else -> {
                 ActivityCompat.requestPermissions(

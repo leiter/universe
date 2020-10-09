@@ -8,12 +8,6 @@
     <color name="textColorMain">#FA9C4D</color>
 
 
-
-
-
-
-
-
     <!--pure colors-->
     <color name="brightGreen">#008577</color>
     <color name="darkGreen">#00574B</color>
@@ -21,6 +15,7 @@
     <color name="orange">#FA9C4D</color>
     <color name="black">@android:color/black</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="black_overlay">#66000000</color>
 
 
 </resources>

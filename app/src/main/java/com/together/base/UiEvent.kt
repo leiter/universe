@@ -3,6 +3,7 @@ package com.together.base
 import android.content.Context
 import android.net.Uri
 import android.view.Gravity
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
@@ -22,7 +23,8 @@ sealed class UiEvent {
     object LogOut : UiEvent()
 
     data class ShowToast(val context: Context, val msg: Int,
-                         var gravity: Int = Gravity.TOP) : UiEvent()
+                         val gravity: Int = Gravity.TOP,
+                         val length: Int = Toast.LENGTH_SHORT) : UiEvent()
 
     data class DrawerState(val gravity: Int) : UiEvent()
 

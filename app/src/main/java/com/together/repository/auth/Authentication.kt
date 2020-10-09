@@ -25,7 +25,8 @@ class AuthentificationImpl @Inject constructor(context: Context) : Authenticatio
     }
 
     override fun signIn(userEmail: String, password: String) {
-        firebaseAuth.signInWithEmailAndPassword(userEmail, password).addOnCompleteListener {
+        firebaseAuth.signInWithEmailAndPassword(userEmail, password)
+            .addOnCompleteListener {
 
         }
     }

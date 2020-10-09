@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import com.together.R
 import com.together.base.MainViewModel
 import com.together.base.UiState
-import kotlinx.android.synthetic.sell.fragment_dialogs.*
+import kotlinx.android.synthetic.main.fragment_dialogs.*
 
 
 class Dialogs : DialogFragment() {
@@ -21,7 +21,7 @@ class Dialogs : DialogFragment() {
     private lateinit var market: UiState.Market
 
     private val viewModel: MainViewModel by lazy {
-        ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+        ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class Dialogs : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.together.R.layout.fragment_dialogs, container, false)
+        return inflater.inflate(R.layout.fragment_dialogs, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,12 +78,9 @@ class Dialogs : DialogFragment() {
     private fun setup(text: EditText) {
         text.setOnClickListener {
             text.setText("")
-            TimePickerDialog(activity, object : TimePickerDialog.OnTimeSetListener {
-                override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                    text.setText("%02d:%02d Uhr".format(hourOfDay, minute))
-                }
-
-            }, 0, 0, true).show()
+            TimePickerDialog(activity,
+                TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                    text.setText("%02d:%02d Uhr".format(hourOfDay, minute)) }, 0, 0, true).show()
         }
     }
 

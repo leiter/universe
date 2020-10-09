@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.picasso.OkHttp3Downloader
@@ -60,8 +60,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
-        model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
-        model.newProduct.observe(this, Observer {
+        model = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        model.newProduct.observe(viewLifecycleOwner, Observer {
             picasso.load(it.uri).into(image)
         })
         model.editProduct.observe(viewLifecycleOwner, Observer {// todo do not listen and write
@@ -90,7 +90,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         product_list.adapter = adapter
 
         val products = Database.articles()
-        disposable.add(products.getObservable<Result.Article>().observeOn(AndroidSchedulers.mainThread()).subscribe {
+        disposable.add(products.getObservable<Result.Article>()
+            .observeOn(AndroidSchedulers.mainThread()).subscribe {
             adapter.addItem(DataHelper.dataArticleToUi(it))
             if(adapter.data.size==0){
                 empty_message.visibility = View.VISIBLE
@@ -105,7 +106,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         }
 
         manage_image.setOnClickListener {
-            UtilsActivity.startAddImage(activity!!)
+            UtilsActivity.startAddImage(requireActivity())
         }
 
         toolbar_start.setImageResource(R.drawable.ic_menu_hamburger)

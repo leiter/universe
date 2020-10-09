@@ -74,7 +74,6 @@ sealed class Result {
         override var mode: Int = UNDEFINED,
         var user: User = User(),
         var articles: List<Article> = emptyList()
-
     ) : Result()
 
 

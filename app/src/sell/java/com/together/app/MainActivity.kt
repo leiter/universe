@@ -10,6 +10,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding3.view.clicks
 import com.together.R
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     private val viewModel: MainViewModel by lazy {
-        ViewModelProviders.of(this).get(MainViewModel::class.java)
+        ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
     private val disposable = CompositeDisposable()
@@ -127,9 +128,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
                 }
                 is UiEvent.UnlockDrawer -> {
                     drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-
                 }
-
 //                is UiEvent.ReplaceFrag -> {
 //                    supportFragmentManager.beginTransaction()
 //                        .add(R.id.container,it.fragment,it.tag).commit()
