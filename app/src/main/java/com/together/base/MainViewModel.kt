@@ -26,7 +26,7 @@ class MainViewModel : ViewModel() {
                 is Result.NewImageCreated -> {
                     if (newProduct.value == null)
                         newProduct.value = UiState.NewProductImage(it.uri!!)
-                    newProduct.value = UiState.NewProductImage(it.uri!!)
+                    else newProduct.value = UiState.NewProductImage(it.uri!!)
                 }
 
 //                is Result.SellerProfile -> {

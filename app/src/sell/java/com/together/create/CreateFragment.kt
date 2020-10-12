@@ -197,9 +197,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         model.editProduct.value?.discount = NumberFormat.getInstance()
             .parse(product_discount.text.toString()).toLong()
         model.editProduct.value?.available = article_available.isChecked
-
     }
-
 
     private fun deleteArticle(id: String) {
         Database.articles().child(id).removeValue()

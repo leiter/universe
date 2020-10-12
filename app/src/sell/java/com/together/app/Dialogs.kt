@@ -28,7 +28,7 @@ class Dialogs : DialogFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             modeType = it.getInt(ARG_PARAM1)
-            if (modeType== EDIT_MARKET) {
+            if (modeType == EDIT_MARKET) {
                 market = it.getParcelable(ARG_PARAM2)!!
             }
         }

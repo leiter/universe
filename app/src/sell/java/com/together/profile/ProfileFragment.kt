@@ -6,24 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.Dialogs
-import com.together.app.MainActivity
 import com.together.base.BaseFragment
 import com.together.base.UiState
-import com.together.repository.Database
-import com.together.repository.Result
-import com.together.repository.storage.getCompletable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.sell.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.concurrent.TimeUnit
 
 class ProfileFragment : BaseFragment(), callMe {
@@ -45,8 +39,9 @@ class ProfileFragment : BaseFragment(), callMe {
         super.onViewCreated(view, savedInstanceState)
 
         post_profile.setOnClickListener {
-            startIt().zipWith(channel.firstOrError()).subscribeOn(Schedulers.io()).subscribe({
-                Log.e("TTTTT", "Done sleeping");
+            startIt().zipWith(channel.firstOrError()).subscribeOn(Schedulers.io())
+                .subscribe({
+                Log.e("TTTTT", "Done sleeping")
 
             },{})
         }
@@ -113,7 +108,7 @@ class ProfileFragment : BaseFragment(), callMe {
 
         viewModel.markets.observe(viewLifecycleOwner, Observer {
             places_list.removeAllViews()
-            val adapter = MarketAdapter(context!!, it, open)
+            val adapter = MarketAdapter(requireContext(), it, open)
             (0 until adapter.count).forEach { pos ->
                 val item = adapter.getView(pos, null, places_list)
                 places_list.addView(item)

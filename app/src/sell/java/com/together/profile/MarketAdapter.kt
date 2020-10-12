@@ -13,7 +13,7 @@ import com.together.base.UiState
 
 class MarketAdapter(context: Context,
                     private val markets: MutableList<UiState.Market>,
-                    val openDialog: (UiState.Market) -> Unit) :
+                    private val openDialog: (UiState.Market) -> Unit) :
     ArrayAdapter<UiState.Market>(context, R.layout.item_market, markets) {
 
     @SuppressLint("ViewHolder")

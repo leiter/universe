@@ -6,7 +6,7 @@ package cut.the.crap.datacore
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-interface DataInterface  {
+object DataInterface  {
 
 
 
