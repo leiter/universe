@@ -6,19 +6,24 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import com.together.base.MainMessagePipe
 import com.together.repository.Result
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
@@ -133,11 +138,13 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-
             val fileUri: Uri
-
             if (requestCode == REQUEST_TAKE_PICTURE) {
                 fileUri = FileProvider.getUriForFile(activity, activity.packageName, currentImageFile)
+                val orgBitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, fileUri)
+                rotateImageIfNeeded(orgBitmap, fileUri)?.compress(
+                    Bitmap.CompressFormat.PNG, 100, FileOutputStream(currentImageFile))
+                orgBitmap.recycle()
                 val image = Result.NewImageCreated(fileUri)
                 MainMessagePipe.mainThreadMessage.onNext(image)
             } else if (requestCode == REQUEST_PIC_PICTURE) {
@@ -160,6 +167,27 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
             }
         }
         activity.finish()
+    }
+
+    private fun rotateImageIfNeeded(img: Bitmap, selectedImg: Uri) : Bitmap? {
+        val inputStream = activity.contentResolver.openInputStream(selectedImg)
+        val ei : ExifInterface = if (Build.VERSION.SDK_INT > 23 && inputStream != null) {
+            ExifInterface(inputStream)
+        } else {
+            ExifInterface(selectedImg.path!!)
+        }
+        return when (ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)){
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90F)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img,180F)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img,270F)
+            else -> null
+        }
+    }
+
+    private fun rotateImage(bitMap: Bitmap, degree: Float) : Bitmap {
+        val m = Matrix(); m.postRotate(degree)
+        return Bitmap.createBitmap(bitMap,0,0,
+            bitMap.width, bitMap.height,m, true)
     }
 
     private fun createFile(context: Context, tmpName: String = someString()): File {
