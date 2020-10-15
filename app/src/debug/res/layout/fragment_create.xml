@@ -1,228 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".create.CreateFragment">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".create.CreateFragment">
 
     <include
-            android:id="@+id/toolbar"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            layout="@layout/fake_toolbar"/>
+        android:id="@+id/toolbar"
+        layout="@layout/fake_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
 
     <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginStart="16dp"
-            android:layout_width="244dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/product_name_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            >
+        android:id="@+id/product_name_layout"
+        android:layout_width="244dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/product_name"
-                android:lines="1"
-                android:maxLength="30"
-                android:hint="Produktname"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="244dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/product_description_layout"
-            app:layout_constraintStart_toStartOf="@id/product_name_layout"
-            app:layout_constraintTop_toBottomOf="@id/product_name_layout"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/product_description"
-                android:lines="1"
-                android:maxLength="30"
-                android:hint="Beschreibung"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="144dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/product_price_layout"
-            android:minWidth="250dp"
-            app:layout_constraintStart_toStartOf="@id/product_name_layout"
-            app:layout_constraintTop_toBottomOf="@id/product_description_layout">
-
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/product_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:inputType="numberDecimal"
-                android:digits="0123456789,."
-                android:maxLength="30"
-                android:hint="Preis pro Einheit"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/product_price_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/textInputLayout">
+            android:hint="Produktname"
+            android:lines="1"
+            android:maxLength="30" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_description_layout"
+        android:layout_width="244dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/product_name_layout"
+        app:layout_constraintTop_toBottomOf="@id/product_name_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/product_description_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:hint="Platz für einen ausführlichen Beschreibungtext"/>
+            android:id="@+id/product_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Beschreibung"
+            android:lines="1"
+            android:maxLength="30" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_price_layout"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content"
+        android:minWidth="250dp"
+        app:layout_constraintStart_toStartOf="@id/product_name_layout"
+        app:layout_constraintTop_toBottomOf="@id/product_description_layout">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789,."
+            android:hint="Preis pro Einheit"
+            android:inputType="numberDecimal"
+            android:lines="1"
+            android:maxLength="30" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
+        android:id="@+id/textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_description_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/product_price_unit_layout"
-            app:layout_constraintStart_toEndOf="@id/product_price_layout"
-            app:layout_constraintTop_toBottomOf="@id/product_description_layout"
-            app:layout_constraintEnd_toEndOf="@+id/product_description_layout">
+            android:hint="Platz für einen ausführlichen Beschreibungtext"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_price_unit_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/product_description_layout"
+        app:layout_constraintStart_toEndOf="@id/product_price_layout"
+        app:layout_constraintTop_toBottomOf="@id/product_description_layout">
 
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/product_price_unit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
+            android:id="@+id/product_price_unit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
 
-                android:maxLength="5"
-                android:gravity="center"
-                android:hint="Einheit z.B Kg"/>
+            android:hint="Einheit z.B Kg"
+            android:lines="1"
+            android:maxLength="5" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <ImageView
-            android:id="@+id/image"
-            android:scaleType="centerCrop"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@+id/product_name_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toEndOf="@+id/product_name_layout"
-            app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"/>
+        android:id="@+id/image"
+        android:clickable="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/product_name_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_name_layout" />
 
     <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="72dp"
-            android:layout_marginTop="16dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/product_discount_layout"
-            app:layout_constraintStart_toStartOf="@id/image"
-            app:layout_constraintTop_toBottomOf="@id/image"
-            >
+        android:id="@+id/product_discount_layout"
+
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/image"
+        app:layout_constraintTop_toBottomOf="@id/image">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/product_discount"
-                android:lines="1"
-                android:hint="Rabatt"/>
+            android:id="@+id/product_discount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Rabat"
+            android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
-            android:src="@drawable/ic_info_outline"
-            android:padding="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="12dp"
-            app:layout_constraintStart_toEndOf="@+id/product_discount_layout"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/article_available"
-            app:layout_constraintTop_toTopOf="@+id/article_available"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackground"
+        android:padding="16dp"
+        android:src="@drawable/ic_info_outline"
+        app:layout_constraintBottom_toBottomOf="@+id/article_available"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/product_discount_layout"
+        app:layout_constraintTop_toTopOf="@+id/article_available" />
 
     <androidx.appcompat.widget.SwitchCompat
-            android:layout_width="0dp"
-            android:textSize="16sp"
-            android:textColor="@color/brightGreen"
-            android:id="@+id/article_available"
-            android:checked="false"
-            android:text="Artikel ist verfügbar"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@+id/product_price_layout"
-            app:layout_constraintEnd_toEndOf="@+id/product_price_unit_layout"
-            app:layout_constraintTop_toTopOf="@+id/product_discount_layout"
-            app:layout_constraintBottom_toBottomOf="@+id/product_discount_layout"/>
-
-
+        android:id="@+id/article_available"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="Artikel ist verfügbar"
+        android:textColor="@color/brightGreen"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/product_discount_layout"
+        app:layout_constraintEnd_toEndOf="@+id/product_price_unit_layout"
+        app:layout_constraintStart_toStartOf="@+id/product_price_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_discount_layout" />
 
 
     <ImageButton
-            android:id="@+id/manage_image"
-            android:src="@drawable/ic_photo_camera"
-            android:background="?attr/selectableItemBackground"
-            app:layout_constraintTop_toTopOf="@+id/product_name_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/product_name_layout"
-            app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
-            android:scaleType="centerCrop"
-            android:layout_width="72dp"
-            android:layout_height="72dp"/>
+        android:id="@+id/manage_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="?attr/selectableItemBackground"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_photo_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/product_name_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_name_layout" />
 
     <TextView
-            android:id="@+id/empty_message"
-            app:layout_constraintTop_toBottomOf="@id/product_discount_layout"
-            android:visibility="visible"
-            android:text="Sie haben noch keine Produkte angelegt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/product_list"
-            app:layout_constraintStart_toStartOf="@+id/product_list"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/product_list"/>
+        android:id="@+id/empty_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Sie haben noch keine Produkte angelegt"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/product_list"
+        app:layout_constraintEnd_toEndOf="@+id/product_list"
+        app:layout_constraintStart_toStartOf="@+id/product_list"
+        app:layout_constraintTop_toBottomOf="@id/product_discount_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/product_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            tools:itemCount="14"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/item_product"
-            app:layout_constraintStart_toStartOf="@id/product_name_layout"
-            app:layout_constraintTop_toBottomOf="@id/product_discount_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
+        android:id="@+id/product_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/product_name_layout"
+        app:layout_constraintTop_toBottomOf="@id/product_discount_layout"
+        tools:itemCount="14"
+        tools:listitem="@layout/item_product" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_circle_outline_black_24dp"
-            android:id="@+id/create_fab"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+        android:id="@+id/create_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_add_circle_outline_black_24dp"
+        android:visibility="gone"
+        app:backgroundTint="@color/orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/save_changes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Änderungen Speichern"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

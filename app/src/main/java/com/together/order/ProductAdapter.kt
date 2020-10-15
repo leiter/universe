@@ -20,16 +20,12 @@ class ProductAdapter(private val click: ItemClicked,
         fun clicked(item: UiState.Article)
     }
 
-
-    fun showAll(showAll:Boolean){
-
-    }
-
     fun addItem(item: UiState.Article) {
         val index = data.indexOf(item)
-        when (item.mode) {
+
+        when (item._mode) {
             ADDED -> data.add(item)
-            REMOVED -> data.removeAt(index)
+            REMOVED -> data.removeAt(data.indexOf(data.filter { it._id == item._id }[0]))
             CHANGED -> {
                 data.removeAt(index)
                 data.add(index, item)

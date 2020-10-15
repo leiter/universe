@@ -18,7 +18,7 @@ class ChooseDialog : DialogFragment() {
     sealed class Action {
         object CHOOSE_PICTURE : Action()
         object TAKE_PICKTURE : Action()
-        class DELETE_PHOTO() : Action()  //path param
+        class DELETE_PHOTO : Action()  //path param
         object CANCEL_ADD_PICTURE : Action()
     }
 
@@ -31,11 +31,11 @@ class ChooseDialog : DialogFragment() {
         }
     }
 
-    /*override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         actionChannel.onNext(Action.CANCEL_ADD_PICTURE)
     }
-*/
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())

@@ -27,8 +27,19 @@ import com.together.utils.FileUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.debug.fragment_create.*
 import kotlinx.android.synthetic.main.fake_toolbar.*
-import kotlinx.android.synthetic.main.fragment_create.*
+import kotlinx.android.synthetic.main.fragment_create.article_available
+import kotlinx.android.synthetic.main.fragment_create.create_fab
+import kotlinx.android.synthetic.main.fragment_create.empty_message
+import kotlinx.android.synthetic.main.fragment_create.image
+import kotlinx.android.synthetic.main.fragment_create.manage_image
+import kotlinx.android.synthetic.main.fragment_create.product_description
+import kotlinx.android.synthetic.main.fragment_create.product_discount
+import kotlinx.android.synthetic.main.fragment_create.product_list
+import kotlinx.android.synthetic.main.fragment_create.product_name
+import kotlinx.android.synthetic.main.fragment_create.product_price
+import kotlinx.android.synthetic.main.fragment_create.product_price_unit
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -55,6 +66,8 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         const val TAG = "CreateFragment"
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -74,13 +87,15 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             model.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
         })
 
+
+        title.text = "Mein Angebot"
         toolbar_end_1.setImageResource(R.drawable.ic_edit_black)
         toolbar_end_1.visibility = View.VISIBLE
 
         toolbar_end_2.setImageResource(R.drawable.ic_delete)
         toolbar_end_2.visibility = View.VISIBLE
         toolbar_end_2.setOnClickListener {
-            val id = model.editProduct.value?.id
+            val id = model.editProduct.value?._id
             if (id != null) deleteArticle(id)
         }
 
@@ -105,6 +120,10 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             createBitmap(model.newProduct.value!!.uri)
         }
 
+        save_changes.setOnClickListener {
+            createBitmap(model.newProduct.value!!.uri)
+        }
+
         manage_image.setOnClickListener {
             UtilsActivity.startAddImage(requireActivity())
         }
@@ -120,6 +139,9 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         model.editProduct.value = item
     }
 
+    private fun toggleEdit() {
+
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -132,7 +154,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         writeToNewProduct()
         FirebaseStorage.getInstance()
             .reference
-            .child("images/${imageUri.lastPathSegment}")
+            .child("images/${System.currentTimeMillis()}_${imageUri.lastPathSegment}")
             .putFile(imageUri)
             .addOnSuccessListener {
 
@@ -152,7 +174,6 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                     )
                     Database.articles().push().setValue(result)
                 }
-
             }
 
     }
@@ -168,8 +189,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             val tmpFile = createTempFile()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
             tmpFile
-        }
-            .subscribe {
+        }.subscribe {
                 updateProduct(Uri.fromFile(it))
                 FileUtil.deleteFile(File(imageUri.path))
 
@@ -190,6 +210,11 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
     }
 
     private fun writeToNewProduct() {
+
+        val uiState = UiState.Article(
+            productName = product_name.text.toString(),
+            productDescription = product_description.text.toString()
+        )
         model.editProduct.value?.productName = product_name.text.toString()
         model.editProduct.value?.productDescription = product_description.text.toString()
         model.editProduct.value?.pricePerUnit = product_price.text.toString()

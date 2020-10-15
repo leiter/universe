@@ -40,7 +40,6 @@ sealed class UiEvent {
     data class ShowLicense (val context: Context) : UiEvent()
 
 
-
     data class ReplaceFragment(val fragMange: FragmentManager,
                                val fragment: Fragment,
                                val tag: String): UiEvent()

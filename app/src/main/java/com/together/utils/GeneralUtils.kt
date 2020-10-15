@@ -5,8 +5,12 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.annotation.IntDef
 import com.firebase.ui.auth.AuthUI
+import com.together.R
+import com.together.base.MainMessagePipe
+import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.repository.Result
+import kotlin.reflect.full.memberProperties
 
 
 object TryIndef {
@@ -30,7 +34,7 @@ object DataHelper {
 
         return UiState.Article(
 
-            id = item.id,
+            _id = item.id,
             productName = item.productName,
             productDescription = item.productDescription,
             remoteImageUrl = item.imageUrl,
@@ -41,23 +45,25 @@ object DataHelper {
 //            pricePerUnit = unitList[indexOfDefault].price,
 
             discount = item.discount,
-            mode = item.mode,
+            _mode = item.mode,
             available = item.available
         )
     }
 
 
     private fun prepareUnitData(article: Result.Article): List<UiState.Unit> {
-        val units = article.units
+        // units = "2,50:€:kg;0,50:€:Bund"
+        val units = article.units.split(";")
         val result = mutableListOf<UiState.Unit>()
         units.forEach {
-            val p = it.value.split(";")
+            val p = it.split(":")
             val w: String = if (p.size > 1) p[1] else ""
             val r = UiState.Unit(
-                name = it.key,
+                name = p[0],
                 price = p[0],
-                averageWeight = w,
-                mode = map[it.key] ?: -1
+                averageWeight = w
+//                ,
+//                mode = map[it.key] ?: -1
             )
             result.add(r)
         }
@@ -74,6 +80,20 @@ object DataHelper {
 
 }
 
+
+inline fun <reified T : UiState> errorActions(profile: T, action: () -> Unit)  : Boolean {
+    val toBeChecked =
+        T::class.memberProperties.filter { !it.name.startsWith("_") }
+    toBeChecked.forEach { prop ->
+        val p = prop.get(profile) as String
+        if(p.isEmpty()) {
+            action()
+//            MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(requireContext(), R.string.developer_error_hint))
+            return false
+        }
+    }
+    return true
+}
 
 object AQ {
 

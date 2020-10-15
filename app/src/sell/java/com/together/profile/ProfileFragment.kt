@@ -2,31 +2,29 @@ package com.together.profile
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.Dialogs
-import com.together.base.BaseFragment
-import com.together.base.UiState
-import io.reactivex.Single
-import io.reactivex.rxkotlin.zipWith
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
+import com.together.app.MainActivity
+import com.together.base.*
+import com.together.base.UiState.SellerProfile
+import com.together.repository.Database
+import com.together.repository.storage.getCompletable
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.full.memberProperties
 
-class ProfileFragment : BaseFragment(), callMe {
+class ProfileFragment : BaseFragment() {
 
     companion object {
         const val TAG = "ProfileFragment"
     }
-
-    private val channel = PublishSubject.create<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,52 +37,41 @@ class ProfileFragment : BaseFragment(), callMe {
         super.onViewCreated(view, savedInstanceState)
 
         post_profile.setOnClickListener {
-            startIt().zipWith(channel.firstOrError()).subscribeOn(Schedulers.io())
-                .subscribe({
-                Log.e("TTTTT", "Done sleeping")
+            val i = viewModel.profile
+            if (!errorHints(i)) return@setOnClickListener
+            val r = com.together.repository.Result.SellerProfile(
+                displayName = i.displayName,
+                firstName = i.firstName,
+                lastName = i.lastName,
+                street = i.street,
+                houseNumber = i.houseNumber,
+                city = i.city,
+                zipcode = i.zipcode
+            )
 
-            },{})
+            Database.profile().setValue(r).getCompletable().subscribe({ success ->
+                if (success) {
+                    MainActivity.reStart(requireContext())
+                } else {
+                    Toast.makeText(requireContext(), "went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }, {
+                Toast.makeText(requireContext(), "EEEEEEEEEEEEeee", Toast.LENGTH_SHORT).show()
+            })
         }
 
         disposable.addAll(
-//            post_profile.clicks().subscribe {
-//
-//            val i = viewModel.profile
-//            val r = Result.SellerProfile(
-//                displayName = i.displayName,
-//                firstName = i.firstName,
-//                lastName = i.lastName,
-//                street = i.street,
-//                houseNumber = i.houseNumber,
-//                city = i.city,
-//                zipcode = i.zipcode
-//            )
-//
-//            Database.profile().setValue(r).getCompletable().subscribe({ success ->
-//                if (success) {
-//                    MainActivity.reStart(context!!)
-//                } else {
-//                    Toast.makeText(context!!, "went wrong", Toast.LENGTH_SHORT).show()
-//                }
-//            }, {
-//                Toast.makeText(context!!, "EEEEEEEEEEEEeee", Toast.LENGTH_SHORT).show()
-//
-//            })
-//        },
+
 
             city.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.city = it.toString()
             },
-
             zipcode.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.zipcode = it.toString()
             },
-
             house.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.houseNumber = it.toString()
             },
-
-
             street.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.street = it.toString()
             }
@@ -92,23 +79,20 @@ class ProfileFragment : BaseFragment(), callMe {
             company_name.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.displayName = it.toString()
             },
-
             first_name.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.firstName = it.toString()
             },
-
             last_name.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.lastName = it.toString()
             },
-
             add_pickup_place.clicks().subscribe {
-                Dialogs().show(requireFragmentManager(), "Frag")
+                Dialogs().show(requireActivity().supportFragmentManager, "Frag")
             }
         )
 
         viewModel.markets.observe(viewLifecycleOwner, Observer {
             places_list.removeAllViews()
-            val adapter = MarketAdapter(requireContext(), it, open)
+            val adapter = MarketAdapter(requireContext(), it, openAddMarket)
             (0 until adapter.count).forEach { pos ->
                 val item = adapter.getView(pos, null, places_list)
                 places_list.addView(item)
@@ -116,24 +100,31 @@ class ProfileFragment : BaseFragment(), callMe {
         })
     }
 
-    val open: (UiState.Market) -> Unit
-        inline get() = { Dialogs.newInstance(Dialogs.EDIT_MARKET, it).show(requireFragmentManager(), "Edit") }
+    private val openAddMarket: (UiState.Market) -> Unit
+        inline get() = {
+            Dialogs.newInstance(Dialogs.EDIT_MARKET, it).show(
+                requireActivity().supportFragmentManager, "Edit"
+            )
+        }
 
-
-
-    fun startIt () : Single<Unit> {
-        call()
-        return Single.just(Unit)
-
+    private fun errorHints(profile: SellerProfile): Boolean {
+        val toBeChecked =
+            SellerProfile::class.memberProperties.filter {
+                !it.name.startsWith("_")
+            }
+        toBeChecked.forEach { prop ->
+            val p = prop.get(profile) as String
+            if (p.isEmpty()) {
+                MainMessagePipe.uiEvent.onNext(
+                    UiEvent.ShowToast(
+                        requireContext(),
+                        R.string.developer_error_hint
+                    )
+                )
+                return false
+            }
+        }
+        return true
     }
 
-    override fun call() {
-        Thread.sleep((3000))
-        channel.onNext("Has been called")
-    }
-
-}
-
-interface callMe {
-    fun call()
 }

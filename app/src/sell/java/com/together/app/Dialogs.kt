@@ -34,9 +34,11 @@ class Dialogs : DialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_dialogs, container, false)
     }
 
@@ -57,12 +59,15 @@ class Dialogs : DialogFragment() {
             )
 
             val items = viewModel.markets.value!!
-            items.add(market)
+            val s = items.indexOfFirst { it._id == market._id}
+            if (s > -1) {
+                items.removeAt(s)
+                items.add(s, market)
+            } else items.add(market)
             viewModel.markets.value = items
-
             dismiss()
         }
-        if(modeType== EDIT_MARKET){
+        if (modeType == EDIT_MARKET) {
             place_name.setText(market.name)
             street.setText(market.street)
             house.setText(market.houseNumber)
@@ -78,9 +83,13 @@ class Dialogs : DialogFragment() {
     private fun setup(text: EditText) {
         text.setOnClickListener {
             text.setText("")
-            TimePickerDialog(activity,
-                TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                    text.setText("%02d:%02d Uhr".format(hourOfDay, minute)) }, 0, 0, true).show()
+            TimePickerDialog(
+                activity,
+                TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                    text.setText("%02d:%02d Uhr".format(hourOfDay, minute))
+                },
+                0, 0, true
+            ).show()
         }
     }
 
@@ -103,6 +112,7 @@ class Dialogs : DialogFragment() {
         private const val ARG_PARAM1 = "operationMode"
         private const val ARG_PARAM2 = "marketToEdit"
 
+        const val CREATE_MARKET_TAG = "CREATE_MARKET_TAG"
 
         @JvmStatic
         fun newInstance(param1: Int = CREATE_MARKET, param2: UiState.Market? = null) =

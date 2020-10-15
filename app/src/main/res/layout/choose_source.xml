@@ -28,16 +28,17 @@
     <TextView
             android:id="@+id/choose_image"
             style="@style/AppTheme.ChooseSourceText"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Photo aus Gallerie"
+        android:enabled="false"
 
             />
 
     <TextView
             android:id="@+id/delete_image"
             style="@style/AppTheme.ChooseSourceText"
+        android:enabled="false"
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

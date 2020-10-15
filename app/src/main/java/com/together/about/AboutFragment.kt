@@ -22,7 +22,7 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         show_licences.setOnClickListener {
-            MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(context!!))
+            MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(requireContext()))
         }
         back_button.setOnClickListener { activity?.onBackPressed() }
     }

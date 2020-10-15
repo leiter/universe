@@ -19,8 +19,8 @@ enum class UnitNames(var unitName: String){
 
 sealed class UiState {
 
-    abstract var id: String
-    abstract var mode: Int
+    abstract var _id: String
+    abstract var _mode: Int
 
     companion object {
 
@@ -40,19 +40,19 @@ sealed class UiState {
     }
 
     object LOGGEDOUT : UiState() {
-        override var id = "StateLoggedOut"
-        override var mode: Int = MOVED
+        override var _id = "StateLoggedOut"
+        override var _mode: Int = MOVED
 
     }
 
     object BASE_AUTH : UiState() {
-        override var id = "StateLoggedIn"
-        override var mode: Int = MOVED
+        override var _id = "StateLoggedIn"
+        override var _mode: Int = MOVED
 
     }
 
     data class Article(
-        override var id: String = "",
+        override var _id: String = "",
         var productId: Int = -1,
         var productName: String = "",
         var productDescription: String? = null,
@@ -68,7 +68,7 @@ sealed class UiState {
         var price: String = "",
         var amount: String = "",
 
-        override var mode: Int = MOVED
+        override var _mode: Int = MOVED
 
     ) : UiState()
 
@@ -77,29 +77,27 @@ sealed class UiState {
 
     data class SellerProfile(
 
-        override var id: String = "",
+        override var _id: String = "",
 
         var displayName: String = "",
 
         var firstName: String = "",
         var lastName: String = "",
-
         var street: String = "",
         var houseNumber: String = "",
 
         var city: String = "",
         var zipcode: String = "",
 
-        var telephoneNumber: String = "",
+        var _telephoneNumber: String = "",
 
-        var lat: String = "",
-        var lng: String = "",
+        var _lat: String = "",
+        var _lng: String = "",
 
-        var urls: MutableList<String> = mutableListOf(),
+        var _urls: MutableList<String> = mutableListOf(),
 
-        var knownClientIds: MutableList<String> = mutableListOf(),
-        override var mode: Int = MOVED
-
+        var _knownClientIds: MutableList<String> = mutableListOf(),
+        override var _mode: Int = MOVED
 
     ) : UiState()
 
@@ -113,27 +111,27 @@ sealed class UiState {
                       var dayOfWeek: String,
                       var begin: String = "",
                       var end: String = "",
-                      override var id: String = "",
-                      override var mode: Int = MOVED
+                      override var _id: String = "",
+                      override var _mode: Int = MOVED
     ) : UiState(), Parcelable
 
 
     data class ChatMessage(
-        override var id: String = "",
+        override var _id: String = "",
         var creatorId: String = "",
         var name: String = "",
         var text: String = "",
         var photoUrl: String = "",
-        override var mode: Int = MOVED
+        override var _mode: Int = MOVED
 
     ) : UiState()
 
     data class PostAnyMessage(
-        override var id: String = "", var creatorId: String,
+        override var _id: String = "", var creatorId: String,
         var name: String = "",
         var text: String = "",
         var photoUrl: String = "",
-        override var mode: Int = MOVED
+        override var _mode: Int = MOVED
 
     ) : UiState()
 
@@ -144,8 +142,8 @@ sealed class UiState {
         var price: String = "",
         var averageWeight: String = "",
 
-        override var id: String = "",
-        override var mode: Int = UNIT_UNDEFINED
+        override var _id: String = "",
+        override var _mode: Int = UNIT_UNDEFINED
 
     ) : UiState()
 

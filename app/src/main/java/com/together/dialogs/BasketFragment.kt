@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,20 +27,11 @@ class BasketFragment : DialogFragment() {
 
     private val click : (UiState.Article) -> Unit
         inline get() = { input ->
-            val pos = adapter.data.indexOf(adapter.data.first { input.id == it.id })
-            viewModel.basket.value?.remove(viewModel.basket.value!!.first { it.id == input.id })
+            val pos = adapter.data.indexOf(adapter.data.first { input._id == it._id })
+            viewModel.basket.value?.remove(viewModel.basket.value!!.first { it._id == input._id })
             adapter.notifyItemRemoved(pos)
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
         }
-
-    override fun onStart() {
-        super.onStart()
-        if (dialog!=null){
-            val w = ViewGroup.LayoutParams.MATCH_PARENT
-            val h = ViewGroup.LayoutParams.MATCH_PARENT
-//            dialog.window?.setLayout(w,h)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +44,7 @@ class BasketFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         return inflater.inflate(R.layout.fragment_basket, container, false)
     }
 
@@ -61,7 +53,7 @@ class BasketFragment : DialogFragment() {
         val b = viewModel.basket.value!!
         adapter = BasketAdapter(b,click)
         order_basket.adapter = adapter
-        order_basket.layoutManager = LinearLayoutManager(context!!,RecyclerView.VERTICAL,false)
+        order_basket.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
 
     }
 

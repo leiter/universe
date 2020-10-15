@@ -13,7 +13,6 @@ class ToastProvider(private val toastData: UiEvent.ShowToast)  {
             //                val i =  Toast(toastData.context)
             //                i.apply {
             //                    setGravity(toastData.gravity,0,0)
-            //
             //                    duration = Toast.LENGTH_SHORT
             //                }
         }

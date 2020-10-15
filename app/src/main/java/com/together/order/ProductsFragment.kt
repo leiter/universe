@@ -9,7 +9,7 @@ import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.picasso.OkHttp3Downloader
@@ -49,7 +49,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
     override fun clicked(item: UiState.Article) {
         product_amount.setText("")
-        val b = model.basket.value?.find { item.id == it.id }
+        val b = model.basket.value?.find { item._id == it._id }
         if (b == null) {
             model.presentedProduct.value = item
         } else {
@@ -69,7 +69,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     }
 
     override fun giveFragmentManager(): FragmentManager {
-        return fragmentManager!!
+        return requireFragmentManager()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +77,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
-        model = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
+        model = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
         model.presentedProduct.observe(viewLifecycleOwner, Observer {
             title.text = it.productName
@@ -117,7 +117,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
             val indexOfDefault = if (defaultUnit != null) unitList.indexOf(defaultUnit) else 0
 
             val e = UiState.Article(
-                id = it.id,
+                _id = it.id,
                 productName = it.productName,
                 productDescription = it.productDescription,
                 remoteImageUrl = it.imageUrl,
@@ -127,7 +127,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
                 unit = unitList[indexOfDefault].name,
                 pricePerUnit = unitList[indexOfDefault].price,
                 discount = it.discount,
-                mode = it.mode,
+                _mode = it.mode,
                 available = it.available
             )
             adapter.addItem(e)
@@ -140,7 +140,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         toolbar_end_2.setOnClickListener {
             if (model.basket.value!!.size > 0)
                 BasketFragment().show(requireFragmentManager(), "Basket")
-            else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(context!!, R.string.empty_basket_msg, Gravity.CENTER))
+            else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(requireContext(), R.string.empty_basket_msg, Gravity.CENTER))
         }
 
         edit_products.setOnClickListener { presenter.startEditProducts() }
@@ -177,22 +177,22 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     }
 
     private fun setupSpinner(article: UiState.Article) {
-        val spinnerAdapter = UnitSpinnerAdapter(context!!, article.units)
+        val spinnerAdapter = UnitSpinnerAdapter(requireContext(), article.units)
         unit_picker.adapter = spinnerAdapter
         unit_picker.onItemSelectedListener = UnitSelectedListener(article.units)
     }
 
     private fun prepareUnitData(article: Result.Article): List<UiState.Unit> {
-        val units = article.units
+        // units = "2,50:€:kg;0,50:€:Bund"
+        val units = article.units.split(";")
         val result = mutableListOf<UiState.Unit>()
         units.forEach {
-            val p = it.value.split(";")
+            val p = it.split(":")
             val w: String = if (p.size > 1) p[1] else ""
             val r = UiState.Unit(
-                name = it.key,
-                price = p[0],
-                averageWeight = w,
-                mode = map[it.key] ?: -1
+                name = p[0],
+                price = p[1],
+                averageWeight = w
             )
             result.add(r)
         }
@@ -235,14 +235,14 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
             productId = product.productId,
             productName = product.productName,
             productDescription = product.productDescription,
-            id = product.id,
+            _id = product._id,
             amount = product_amount.text.toString(),
             price = price_amount.text.toString()
         )
         val basket = model.basket.value!!
         var inBasket = -1
         basket.forEachIndexed { index, basketItem ->
-            if (basketItem.id == p.id) {
+            if (basketItem._id == p._id) {
                 inBasket = index
             }
         }

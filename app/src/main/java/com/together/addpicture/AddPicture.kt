@@ -72,8 +72,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
 
     private fun startTakePicture() {
-        val granted = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
-        when (granted) {
+        when (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)) {
             PackageManager.PERMISSION_GRANTED -> startCamera()
             else -> ActivityCompat.requestPermissions(activity,
                 arrayOf(Manifest.permission.CAMERA),
@@ -122,7 +121,8 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     fun getPathFromURI(contentUri: Uri ): String {
         var res: String? = null;
         val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor : Cursor? = activity.contentResolver.query(contentUri, proj, "", null, "");
+        val cursor : Cursor? = activity.contentResolver.query(
+            contentUri, proj, "", null, "");
         if (cursor?.moveToFirst()!!) {
             val column_index = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)!!
             res = cursor?.getString(column_index);
@@ -152,8 +152,9 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 //                    cursor!!.moveToFirst()
 //                    val uriString = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
 //                    cursor.close()
-                    fileUri = Uri.fromFile(File(getPathFromURI(data.data!!)))
-                    val image = Result.NewImageCreated(fileUri)
+//                    fileUri = Uri.fromFile(File(getPathFromURI(data.data!!)))
+//                    val image = Result.NewImageCreated(fileUri)
+                    val image = Result.NewImageCreated(data.data)
                     MainMessagePipe.mainThreadMessage.onNext(image)
                 }
             }

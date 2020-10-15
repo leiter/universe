@@ -48,7 +48,7 @@
     <TextView
             android:id="@+id/title"
             tools:text="Linda"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:gravity="center"
             android:layout_toEndOf="@id/toolbar_start"
             android:layout_toStartOf="@id/toolbar_end_1"

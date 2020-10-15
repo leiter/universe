@@ -1,12 +1,12 @@
 <resources>
 
-    <string name="app_name">Iss Nah</string>
+<!--    <string name="app_name">Iss Nah</string>-->
     <string name="title_home">Angebot</string>
     <string name="title_dashboard">Erstellen</string>
     <string name="title_notifications">Unterhalten</string>
 
 
-    <string name="developer">General ERROR FIXME</string>
+    <string name="developer_error_hint">General ERROR FIXME</string>
     <string name="empty_basket_msg">Sie haben keine Produkte im Einkaufskorb.</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>

@@ -82,8 +82,5 @@ class MainViewModel : ViewModel() {
         disposable.clear()
         super.onCleared()
     }
-
-
-
 }
 
