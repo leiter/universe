@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,9 +41,7 @@ import kotlinx.android.synthetic.main.fragment_create.product_price
 import kotlinx.android.synthetic.main.fragment_create.product_price_unit
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.text.NumberFormat
-
 
 class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
@@ -113,7 +110,6 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             } else                 {
                 empty_message.visibility = View.GONE
             }
-
         })
 
         create_fab.setOnClickListener {
@@ -196,18 +192,6 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             })
     }
 
-    private fun getRotation(inputStream: InputStream): Int {
-        val exif = ExifInterface(inputStream)
-        val result = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
-        val rotation: Int
-        rotation = when (result) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> 90
-            ExifInterface.ORIENTATION_ROTATE_180 -> 180
-            ExifInterface.ORIENTATION_ROTATE_270 -> 270
-            else -> 0
-        }
-        return rotation
-    }
 
     private fun writeToNewProduct() {
 
