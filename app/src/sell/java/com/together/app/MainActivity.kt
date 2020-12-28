@@ -40,8 +40,6 @@ import kotlinx.android.synthetic.sell.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-
-
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
@@ -145,8 +143,6 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent != null && intent.action == packageName + LOGIN_ACTION) {
             startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
-        } else {
-            finish()
         }
     }
 

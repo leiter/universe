@@ -14,9 +14,8 @@ class MainViewModel : ViewModel() {
     init {
         // wire DataSource to UiState
 
-        disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
+        disposable.add( MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
-
                 is Result.LoggedOut ->
                     loggedState.value = UiState.LOGGEDOUT
 
@@ -44,10 +43,7 @@ class MainViewModel : ViewModel() {
 //                    )
 //                }
             }
-        }
-
-
-        )
+        })
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {
