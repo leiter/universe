@@ -20,11 +20,16 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import com.together.base.MainMessagePipe
 import com.together.repository.Result
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.util.*
 
 interface AddPicture {
@@ -40,6 +45,8 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     private lateinit var actions: PublishSubject<ChooseDialog.Action>
 
     private lateinit var currentImageFile: File
+
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun startAddPhoto(): Disposable {
 
@@ -141,12 +148,20 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
             val fileUri: Uri
             if (requestCode == REQUEST_TAKE_PICTURE) {
                 fileUri = FileProvider.getUriForFile(activity, activity.packageName, currentImageFile)
-                val orgBitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, fileUri)
-                rotateImageIfNeeded(orgBitmap, fileUri)?.compress(
-                    Bitmap.CompressFormat.PNG, 100, FileOutputStream(currentImageFile))
-                orgBitmap.recycle()
-                val image = Result.NewImageCreated(fileUri)
-                MainMessagePipe.mainThreadMessage.onNext(image)
+                compositeDisposable.add(Single.just(fileUri).subscribeOn(Schedulers.io()).map {
+                    val orgBitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, fileUri)
+                    rotateImageIfNeeded(orgBitmap, fileUri)?.compress(
+                        Bitmap.CompressFormat.PNG, 100, FileOutputStream(currentImageFile))
+                    orgBitmap.recycle()
+
+                }.observeOn(AndroidSchedulers.mainThread()).subscribe({
+                    val image = Result.NewImageCreated(fileUri)
+                    MainMessagePipe.mainThreadMessage.onNext(image)
+                    activity.finish()
+                }, {
+
+                }))
+
             } else if (requestCode == REQUEST_PIC_PICTURE) {
                 if (data != null) {
 //                    val imageColumn = arrayOf(MediaStore.Images.Media.DATA)
@@ -163,11 +178,27 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 //                    val image = Result.NewImageCreated(fileUri)
                     val image = Result.NewImageCreated(data.data)
                     MainMessagePipe.mainThreadMessage.onNext(image)
+                    activity.finish()
                 }
             }
         }
-        activity.finish()
     }
+
+
+
+    private fun getRotation(inputStream: InputStream): Int {
+        val exif = ExifInterface(inputStream)
+        val result = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+        val rotation: Int
+        rotation = when (result) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+        return rotation
+    }
+
 
     private fun rotateImageIfNeeded(img: Bitmap, selectedImg: Uri) : Bitmap? {
         val inputStream = activity.contentResolver.openInputStream(selectedImg)
@@ -195,7 +226,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         return currentImageFile
     }
 
-    private fun someString() = UUID.randomUUID().toString() + ".jpg"
+    private fun someString() = "${UUID.randomUUID()}.jpg"
 
     private fun startPickIntent() {
         val getIntent = Intent(Intent.ACTION_GET_CONTENT)
@@ -227,8 +258,6 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         }
         return MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     }
-
-
 }
 
 
