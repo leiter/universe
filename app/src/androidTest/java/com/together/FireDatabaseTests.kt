@@ -1,11 +1,9 @@
 package com.together
 
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.firebase.FirebaseApp
 import com.together.repository.storage.FireData
-import com.together.utils.IdleMessager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,8 +42,8 @@ class FireDatabaseTests {
 
     @Test
     fun getArticleList() {
-        val idlingResource = IdleMessager("getArticleList", thisIdleFunction)
-        IdlingRegistry.getInstance().register(idlingResource)
+//        val idlingResource = IdleMessager("getArticleList", thisIdleFunction)
+//        IdlingRegistry.getInstance().register(idlingResource)
 
 //        fire.getSupplyList(FirebaseDatabase.getInstance(app!!).reference)
 //        MainMessagePipe.mainThreadMessage.subscribe(

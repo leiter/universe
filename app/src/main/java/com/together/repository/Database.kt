@@ -6,7 +6,9 @@ import com.together.repository.auth.FireBaseAuth
 
 object Database {
 
-    private fun fire() = FirebaseDatabase.getInstance()
+    private fun fire() : FirebaseDatabase{
+       return FirebaseDatabase.getInstance()
+    }
 
     init {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
@@ -22,12 +24,6 @@ object Database {
     fun orders(): DatabaseReference = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth()!!.uid!!)
     fun buyer(): DatabaseReference = fire().reference.child(CLIENTS).child(FireBaseAuth.getAuth()!!.uid!!)
     fun providerArticles(providerId: String): DatabaseReference  = fire().reference.child(ARTICLES).child(providerId)
-
-
-
-
-
-
 
 
 }

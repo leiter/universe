@@ -101,9 +101,7 @@ sealed class Result {
         var lng: String = "",
 
         var markets: MutableList<Market> = mutableListOf(),
-
         var urls: MutableList<String> = mutableListOf(),
-
         var knownClientIds: MutableList<String> = mutableListOf()
 
     ) : Result()

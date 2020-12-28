@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
+import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
+import com.squareup.picasso.Picasso
 import com.together.R
 import com.together.app.Dialogs
 import com.together.app.MainActivity
@@ -16,6 +19,7 @@ import com.together.base.*
 import com.together.base.UiState.SellerProfile
 import com.together.repository.Database
 import com.together.repository.storage.getCompletable
+import kotlinx.android.synthetic.main.fragment_create.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.full.memberProperties
@@ -53,15 +57,23 @@ class ProfileFragment : BaseFragment() {
                 if (success) {
                     MainActivity.reStart(requireContext())
                 } else {
-                    Toast.makeText(requireContext(), "went wrong", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show()
                 }
             }, {
                 Toast.makeText(requireContext(), "EEEEEEEEEEEEeee", Toast.LENGTH_SHORT).show()
             })
         }
 
-        disposable.addAll(
+        phone_button.setOnClickListener {
+            UtilsActivity.startAddImage(requireActivity())
+        }
 
+        viewModel.newProduct.observe(viewLifecycleOwner, Observer {
+            Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
+                .load(it.uri).into(store_image)
+        })
+
+        disposable.addAll(
 
             city.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.city = it.toString()

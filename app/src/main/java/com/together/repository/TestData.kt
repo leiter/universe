@@ -30,9 +30,9 @@ object TestData {
             "Lovely vegetable.",
             true
         )
-
-
     )
+
+
 
     val userList = listOf(
         Result.User(displayName = "Marco", emailAddress = "mmaleiter@gmail.com"),
@@ -40,6 +40,15 @@ object TestData {
         Result.User(displayName = "Annabel", emailAddress = "")
     )
 
+    val sellerProfile = Result.SellerProfile(
+        displayName = "BodenSchätze",
+        firstName = "Eric",
+        lastName = "Dehn",
+        street = "Frankfurther Allee",
+        houseNumber = "27",
+        city = "Berlin",
+        zipcode = "14195"
+    )
 
     val orderList = listOf(
         Result.Order(

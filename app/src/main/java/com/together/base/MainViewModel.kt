@@ -38,8 +38,6 @@ class MainViewModel : ViewModel() {
 //                        lastName = it.lastName,
 //                        firstName = it.firstName,
 //                        displayName = it.displayName
-//
-//
 //                    )
 //                }
             }

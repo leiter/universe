@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     private val disposable = CompositeDisposable()
 
-
     companion object {
 
         const val LOGIN_REQUEST = 12
@@ -114,9 +113,7 @@ class MainActivity : AppCompatActivity() {
                     MainMessagePipe.uiEvent.onNext(
                         UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")
                     )
-//                    presenter.setLoggedOut(navigation_drawer, log_out)
                 }
-
             }
         })
 

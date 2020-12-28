@@ -88,6 +88,7 @@ fun DatabaseReference.getSingleExists(): Single<Boolean> {
                 emitter.onSuccess(i)
             }
         }
+
         addListenerForSingleValueEvent(listener)
         emitter.setCancellable {
             removeEventListener(listener)

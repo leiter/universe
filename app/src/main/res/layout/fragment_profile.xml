@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+    android:animateLayoutChanges="true"
         tools:context=".profile.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,13 +34,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/store_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_marginStart="16dp"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/company_name_layout"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title"
+                app:layout_constraintTop_toBottomOf="@id/store_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp">
 
@@ -54,7 +65,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/first_name_layout"
-                android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +83,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/last_name_layout"
-                android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +101,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/street_layout"
-                android:layout_marginStart="16dp"
                 android:layout_width="240dp"
                 app:layout_constraintHorizontal_bias="0"
                 android:layout_height="wrap_content"
@@ -117,7 +125,8 @@
                 app:layout_constraintStart_toEndOf="@id/street_layout"
                 app:layout_constraintTop_toBottomOf="@id/last_name_layout"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp">
+
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -131,7 +140,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/zipcode_layout"
-                android:layout_marginStart="16dp"
                 android:layout_width="144dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +162,8 @@
                 app:layout_constraintStart_toEndOf="@id/zipcode_layout"
                 app:layout_constraintTop_toBottomOf="@id/street_layout"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp">
+
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -176,6 +185,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="24dp"
+            android:layout_marginBottom="56dp"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="8dp"/>
 
@@ -183,6 +193,7 @@
                 android:id="@+id/places_list"
                 app:layout_constraintTop_toBottomOf="@id/add_pickup_place"
                 android:orientation ="vertical"
+            android:layout_marginTop="24dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
