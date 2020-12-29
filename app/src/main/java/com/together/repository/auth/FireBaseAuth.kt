@@ -1,6 +1,7 @@
 package com.together.repository.auth
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.together.base.MainMessagePipe
@@ -31,7 +32,7 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
         }
     }
 
-    fun loginWithCredentials(email: String, passWord: String) {
+    fun loginWithEmailAndPassWord(email: String, passWord: String) {
         createUserDisposable.dispose()
         createUserDisposable = getAuth()?.signInWithEmailAndPassword(email,passWord)!!
             .getCompletable().subscribe(
@@ -44,6 +45,20 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
                     MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
                 }
         )
+    }
+
+    fun loginWithGoogleCredentials(credentials: AuthCredential){
+
+        createUserDisposable = getAuth()!!.signInWithCredential(credentials)
+            .getCompletable().subscribe( {
+                if(it) {
+                    MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn)
+                } else MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
+
+            },{
+                // FIXME
+                MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
+            })
     }
 
     fun deleteAccount(){

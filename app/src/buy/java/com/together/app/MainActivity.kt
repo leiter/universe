@@ -36,6 +36,7 @@ import com.together.utils.hideIme
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.android.synthetic.buy.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -147,10 +148,7 @@ class MainActivity : AppCompatActivity() {
 
         }, {
             Log.e("EEEEE", "For debugging", it);
-        }
-        )
-        )
-
+        }))
 
         setupDrawerNavigation(navigation_drawer)
 

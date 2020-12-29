@@ -1,7 +1,7 @@
-package com.together.repository
+package com.together
 
 import com.together.base.UiState
-
+import com.together.repository.Result
 
 object TestData {
 
@@ -12,7 +12,8 @@ object TestData {
             0,
             "Banana",
             "Nice fruit to eat.",
-            true
+            true,
+            imageUrl =  "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp1309847000452879291.tmp?alt=media&token=7bfd74a2-30fa-48f8-b4ec-e0b6fc29fc57"
         ),
         Result.Article(
             "",
@@ -20,7 +21,9 @@ object TestData {
             1,
             "Apple",
             "Nice fruit to eat.",
-            false
+            false,
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp3425451583087693428.tmp?alt=media&token=1533803b-a0f4-486e-95ad-39a7abf06df1"
+
         ),
         Result.Article(
             "",
@@ -28,16 +31,26 @@ object TestData {
             2,
             "Potato",
             "Lovely vegetable.",
-            true
+            true,
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2F35e1cd8a-458b-4308-b4d1-2d0bbb8c3369.jpg?alt=media&token=f2a50556-fe36-4bfc-81e4-27ae2324bbd2"
         )
     )
 
 
 
     val userList = listOf(
-        Result.User(displayName = "Marco", emailAddress = "mmaleiter@gmail.com"),
-        Result.User(displayName = "Mandy", emailAddress = "marcoleiter@arcor.de"),
-        Result.User(displayName = "Annabel", emailAddress = "")
+        Result.User(
+            displayName = "Marco",
+            emailAddress = "mmaleiter@gmail.com"
+        ),
+        Result.User(
+            displayName = "Mandy Leiter",
+            emailAddress = "marcoleiter@arcor.de"
+        ),
+        Result.User(
+            displayName = "Annabel",
+            emailAddress = ""
+        )
     )
 
     val sellerProfile = Result.SellerProfile(
@@ -52,19 +65,17 @@ object TestData {
 
     val orderList = listOf(
         Result.Order(
-            id="",
+            id = "",
             user = userList[0],
-            articles = articleList),
+            articles = articleList
+        ),
         Result.Order(
-            id="",
+            id = "",
             user = userList[1],
-            articles = articleList)
+            articles = articleList
+        )
 
     )
-
-
-
-
 
     val uiArticleList = mutableListOf<UiState.Article>(
 //        UiState.Article(

@@ -1,12 +1,10 @@
 package com.together.dialogs
 
+import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
@@ -14,7 +12,6 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
-import kotlinx.android.synthetic.main.fragment_basket.*
 
 class BasketFragment : DialogFragment() {
 
@@ -25,37 +22,48 @@ class BasketFragment : DialogFragment() {
 
     lateinit var viewModel: MainViewModel
 
-    private val click : (UiState.Article) -> Unit
+    private val clickToDelete: (UiState.Article) -> Unit
         inline get() = { input ->
             val pos = adapter.data.indexOf(adapter.data.first { input._id == it._id })
             viewModel.basket.value?.remove(viewModel.basket.value!!.first { it._id == input._id })
             adapter.notifyItemRemoved(pos)
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
+            if (viewModel.basket.value?.size == 0) dismiss()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_basket, container, false)
-    }
+//    override fun onCreateView(inflater: LayoutInflater,
+//                              container: ViewGroup?,
+//                              savedInstanceState: Bundle?): View? {
+//        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+//        val la = inflater.inflate(R.layout.fragment_basket, container,false)
+//        val b = viewModel.basket.value!!
+//        adapter = BasketAdapter(b,click)
+//        val re = la.findViewById<RecyclerView>(R.id.order_basket)
+//        re.adapter = adapter
+//        re.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+//        return la
+//    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val layout = requireActivity().layoutInflater.inflate(R.layout.fragment_basket, null)
         val b = viewModel.basket.value!!
-        adapter = BasketAdapter(b,click)
-        order_basket.adapter = adapter
-        order_basket.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
-
+        adapter = BasketAdapter(b, clickToDelete)
+        val recyclerView = layout.findViewById<RecyclerView>(R.id.order_basket)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        return AlertDialog.Builder(requireActivity()).setView(layout).create()
     }
+
 
     companion object {
 

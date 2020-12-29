@@ -69,12 +69,13 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     }
 
     override fun giveFragmentManager(): FragmentManager {
-        return requireFragmentManager()
+        return requireActivity().supportFragmentManager
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        price_amount.setText("0,00€")
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
         model = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
@@ -109,7 +110,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
             putIntoBasket(model.presentedProduct.value!!)
         }
 
-        val products = Database.providerArticles("Qx69mYNTkDMS55V2paSztcwEAPN2")  //todo
+        val products = Database.providerArticles("FmfwB1HVmMdrVib6dqSXkWauOuP2")  //todo
 
         disposable.add(products.getObservable<Result.Article>().observeOn(AndroidSchedulers.mainThread()).subscribe {
             val unitList = prepareUnitData(it)
@@ -124,8 +125,8 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
                 units = unitList,
 
-                unit = unitList[indexOfDefault].name,
-                pricePerUnit = unitList[indexOfDefault].price,
+                unit = "sdfs",//unitList[indexOfDefault].name,
+                pricePerUnit = "sdfs",//unitList[indexOfDefault].price,
                 discount = it.discount,
                 _mode = it.mode,
                 available = it.available
@@ -139,7 +140,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
         toolbar_end_2.setOnClickListener {
             if (model.basket.value!!.size > 0)
-                BasketFragment().show(requireFragmentManager(), "Basket")
+                BasketFragment().show(requireActivity().supportFragmentManager, "Basket")
             else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(requireContext(), R.string.empty_basket_msg, Gravity.CENTER))
         }
 
@@ -151,10 +152,10 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
-                        val v = NumberFormat.getInstance().parse(it.toString())
+                        val v = NumberFormat.getInstance().parse(it.toString())!!
                         var i = v.toDouble() *
                                 NumberFormat.getInstance()
-                                    .parse(model.presentedProduct.value!!.pricePerUnit).toDouble()
+                                    .parse(model.presentedProduct.value!!.pricePerUnit)!!.toDouble()
                         i = Math.round(i * 100.0) / 100.0
                         val s = "%.2f€".format(i)
                         price_amount.setText(s)
@@ -177,25 +178,25 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     }
 
     private fun setupSpinner(article: UiState.Article) {
-        val spinnerAdapter = UnitSpinnerAdapter(requireContext(), article.units)
-        unit_picker.adapter = spinnerAdapter
-        unit_picker.onItemSelectedListener = UnitSelectedListener(article.units)
+//        val spinnerAdapter = UnitSpinnerAdapter(requireContext(), article.units)
+//        unit_picker.adapter = spinnerAdapter
+//        unit_picker.onItemSelectedListener = UnitSelectedListener(article.units)
     }
 
     private fun prepareUnitData(article: Result.Article): List<UiState.Unit> {
         // units = "2,50:€:kg;0,50:€:Bund"
         val units = article.units.split(";")
         val result = mutableListOf<UiState.Unit>()
-        units.forEach {
-            val p = it.split(":")
-            val w: String = if (p.size > 1) p[1] else ""
-            val r = UiState.Unit(
-                name = p[0],
-                price = p[1],
-                averageWeight = w
-            )
-            result.add(r)
-        }
+//        units.forEach {
+//            val p = it.split(":")
+//            val w: String = if (p.size > 1) p[1] else ""
+//            val r = UiState.Unit(
+//                name = p[0],
+//                price = p[1],
+//                averageWeight = w
+//            )
+//            result.add(r)
+//        }
         return result.toList()
 
     }

@@ -45,11 +45,9 @@ sealed class Result {
 
 
     data class NewImageCreated(
-
         var uri: Uri?,
         override var id: String = "",
         override var mode: Int = UNDEFINED
-
     ) : Result()
 
     data class User(
@@ -70,9 +68,7 @@ sealed class Result {
         var units: String = "",
         var imageUrl: String = "",
         var discount: Long = 0L
-
     ) : Result()
-
 
     data class Order(
         override var id: String = "",

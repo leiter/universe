@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.together.R
 import com.together.app.MainActivity
+import com.together.base.UtilsActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
 class LoginFragment : Fragment() {
@@ -17,14 +18,14 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         plus_one_button.setOnClickListener {
-            MainActivity.startLogin(requireActivity())
-            it.visibility = View.GONE
-            val fm = activity?.supportFragmentManager!!
-                fm.beginTransaction().remove(this@LoginFragment)
+            UtilsActivity.startGoogleSigning(requireContext())
+//            MainActivity.startLogin(requireActivity())
+//            it.visibility = View.GONE
+//            val fm = activity?.supportFragmentManager!!
+//                fm.beginTransaction().remove(this@LoginFragment)
         }
     }
 }

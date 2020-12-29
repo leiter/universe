@@ -4,20 +4,22 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.Auth
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
+import com.together.base.UtilsActivity
 import com.together.repository.Database
 import com.together.repository.Result
-import com.together.repository.TestData
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getCompletable
+import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.debug.activity_test_container.*
 import java.util.*
 
-class TestContainerActivity : AppCompatActivity() {
+class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -25,65 +27,69 @@ class TestContainerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_test_container)
         compositeDisposable.add(MainMessagePipe.mainThreadMessage.subscribe {
-            when (it) {
-                is Result.LoggedIn -> {
-                    testData.loginState = UiState.BASE_AUTH
-                    loading(false)
-                }
-                is Result.LoggedOut -> {
-                    testData.loginState = UiState.LOGGEDOUT
-                    loading(false)
-                }
-                is Result.AccountDeleted -> {
-                    testData.loginState = UiState.ACCOUNT_DELETED
-                    loading(false)
+            if (!testData.isGoogleAuth) {
+                when (it) {
+                    is Result.LoggedIn -> {
+                        testData.loginState = UiState.BASE_AUTH
+                        loading(false)
+                    }
+                    is Result.LoggedOut -> {
+                        testData.loginState = UiState.LOGGEDOUT
+                        loading(false)
+                    }
+                    is Result.AccountDeleted -> {
+                        testData.loginState = UiState.ACCOUNT_DELETED
+                        loading(false)
+                    }
                 }
             }
         })
-        testData.loginState = FireBaseAuth.isLoggedIn()
+        FirebaseAuth.getInstance().addAuthStateListener(this)
         setupClicks()
     }
 
     private fun setupClicks() {
         login.setOnClickListener {
             loading(true)
-            FireBaseAuth.loginWithCredentials(testData.emailAddress, testData.passWord)
+            FireBaseAuth.loginWithEmailAndPassWord(testData.emailAddress, testData.passWord)
         }
         create_account.setOnClickListener {
-            loading(true)
+            loading(true);
             FireBaseAuth.createAccount(testData.emailAddress, testData.passWord)
         }
-        logout.setOnClickListener {
-            loading(true)
-            FireBaseAuth.logOut()
-        }
+        logout.setOnClickListener { loading(true); FireBaseAuth.logOut() }
         upload_seller_profile.setOnClickListener { setupSellerProfile() }
         upload_products.setOnClickListener { uploadList() }
-        delete_user.setOnClickListener { loading(true)
-            FireBaseAuth.deleteAccount() }
+        delete_user.setOnClickListener { loading(true); FireBaseAuth.deleteAccount() }
+        login_google.setOnClickListener { loading(true); UtilsActivity.startGoogleSigning(this) }
     }
 
-
     private fun uploadList() {
+        Observable.fromIterable(testData.productList).map{
+            Observable.just(it).subscribeOn(Schedulers.io())
+        }.flatMap { it.map { article ->
+            Database.articles().push().setValue(article)} }
+            .subscribe()
 
     }
 
     private fun setupSellerProfile() {
         loading(true)
-        compositeDisposable.add(Database.profile()
-            .setValue(TestData.sellerProfile).getCompletable().subscribe({ success ->
-                if (success) {
+        compositeDisposable.add(
+            Database.profile()
+                .setValue(testData.sellerProfile)
+                .getCompletable().subscribe({ success ->
+                    if (success) {
+                        loading(false)
+                    } else {
+                        loading(false)
+                    }
+                }, {
                     loading(false)
-                } else {
-                    loading(false)
-                }
-            }, {
-                loading(false)
-                Toast.makeText(this, "EEEEEEEEEEEE", Toast.LENGTH_SHORT).show()
-            })
+                    Toast.makeText(this, "Exception happened", Toast.LENGTH_SHORT).show()
+                })
         )
     }
 
@@ -96,6 +102,13 @@ class TestContainerActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    override fun onAuthStateChanged(p0: FirebaseAuth) {
+        if (p0.currentUser != null) {
+            testData.loginState = UiState.BASE_AUTH
+        } else testData.loginState = UiState.LOGGEDOUT
+        loading(false)
+    }
+
 }
 
 
@@ -103,9 +116,13 @@ data class TestDataHolder(
     var emailAddress: String = generateEmail(),
     var passWord: String = "12345678",
     var loginState: UiState = FireBaseAuth.isLoggedIn(),
+    var isGoogleAuth: Boolean = false,
+    var sellerProfile: Result.SellerProfile = TestData.sellerProfile,
+    var productList: List<Result.Article> = TestData.articleList
+
+
 //    var exception: Throwable =
 )
-
 
 
 fun generateEmail(): String {
@@ -122,3 +139,4 @@ fun generateEmail(): String {
     }
     return stringBuilder.append("@arcor.de").toString()
 }
+

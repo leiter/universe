@@ -134,46 +134,46 @@
                 android:layout_marginStart="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:id="@+id/price_amount"
-                    android:lines="1"
-                    android:textColor="@color/price_text_color"
-                    android:textStyle="bold"
-                    android:text="0,00€"
-                    android:hint="Preis"/>
+                android:id="@+id/price_amount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:hint="Preis"
+                android:lines="1"
+                android:text="0,00€"
+                android:textColor="@color/price_text_color"
+                android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="72dp"
-                android:layout_marginTop="8dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/product_name_layout"
-                app:layout_constraintTop_toBottomOf="@id/price_name_layout"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintStart_toEndOf="@+id/product_image"
-                android:layout_marginStart="8dp">
+            android:id="@+id/product_name_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/price_name_layout"
+            app:layout_constraintStart_toStartOf="@+id/price_name_layout"
+            app:layout_constraintTop_toBottomOf="@id/price_name_layout">
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/product_amount"
-                    android:lines="1"
-                    android:inputType="numberDecimal"
-                    android:digits="0123456789,"
-                    android:hint="Menge"/>
+                android:id="@+id/product_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="0123456789,"
+                android:hint="Menge"
+                android:inputType="numberDecimal"
+                android:lines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Spinner
-                android:id="@+id/unit_picker"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/product_name_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/product_name_layout"
-                app:layout_constraintTop_toTopOf="@+id/product_name_layout"/>
+<!--        <Spinner-->
+<!--                android:id="@+id/unit_picker"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/product_name_layout"-->
+<!--            vi-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/product_name_layout"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/product_name_layout"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

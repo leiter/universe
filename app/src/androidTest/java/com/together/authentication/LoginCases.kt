@@ -23,5 +23,17 @@ class LoginCases : BaseTest() {
         Espresso.onView(withId(R.id.delete_user)).perform(click())
     }
 
-    
+    @Test
+    fun testGoogleAuth() {
+        val testData = activityRule.activity.testData
+        testData.isGoogleAuth = true
+        if(testData.loginState == UiState.BASE_AUTH){
+            Espresso.onView(withId(R.id.logout)).perform(click())
+        }
+        Espresso.onView(withId(R.id.login_google)).perform(click())
+        assertEquals(testData.loginState,UiState.BASE_AUTH)
+        Espresso.onView(withId(R.id.logout)).perform(click())
+        assertEquals(testData.loginState,UiState.LOGGEDOUT)
+    }
+
 }

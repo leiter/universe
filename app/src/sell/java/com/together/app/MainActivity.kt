@@ -85,8 +85,7 @@ class MainActivity : AppCompatActivity() {
                             setLoggedIn(navigation_drawer, log_out)
                             disposable.add(setupDrawerNavigation(navigation_drawer, drawer_layout))
                             MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-                                supportFragmentManager,CreateFragment(),CreateFragment.TAG))
-//                            disposable.add(presenter.setupBottomNavigation(navigation, supportFragmentManager))
+                                supportFragmentManager, CreateFragment(),CreateFragment.TAG))
                             disposable.add(
                                 log_out.clicks().subscribe {
                                     drawer_layout.closeDrawers()
@@ -196,19 +195,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    fun setLoggedOut(navigation_drawer: NavigationView, logOut : View) {
-//        val head = navigation_drawer.getHeaderView(0)!!
-//        head.findViewById<ImageView>(R.id.user_avatar).visibility = View.GONE
-//        head.findViewById<TextView>(R.id.user_email).text = ""
-//        head.findViewById<TextView>(R.id.user_name).text = ""
-//        val logIn = head.findViewById<Button>(R.id.log_in)
-//        logIn.visibility = View.VISIBLE
-//        logOut.visibility = View.GONE
-//        logIn.setOnClickListener {
-//            MainMessagePipe.uiEvent.onNext(UiEvent.LogIn(logIn.context))
-//        }
-//    }
-
     private fun setLoggedIn(navigation_drawer: NavigationView, logOut: View) {
         val user = FireBaseAuth.getAuth()!!.currentUser!!
         val head = navigation_drawer.getHeaderView(0)!!
@@ -219,7 +205,7 @@ class MainActivity : AppCompatActivity() {
         head.findViewById<TextView>(R.id.user_email).text = user.email
         head.findViewById<TextView>(R.id.user_name).text = user.displayName
 
-        if (user.photoUrl != null) {
+        user.photoUrl?.let {
             val p = Picasso.Builder(avatar.context).downloader(OkHttp3Downloader(avatar.context)).build()
             p.load(user.photoUrl).placeholder(R.drawable.ic_avatar_placeholder_24dp).into(avatar)
         }
