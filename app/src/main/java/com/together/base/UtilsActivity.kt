@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
 import com.together.R
 import com.together.addpicture.AddPicture
 import com.together.addpicture.AddPictureImpl
@@ -32,6 +33,7 @@ class UtilsActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         addPicture.onActivityResult(requestCode, resultCode, data)
     }
 

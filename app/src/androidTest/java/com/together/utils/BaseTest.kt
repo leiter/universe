@@ -32,8 +32,8 @@ abstract class BaseTest {
     @Volatile
     lateinit var waitForIt: IdleMessager
 
-    @get:Rule
-    var runTimeRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//    @get:Rule
+//    var runTimeRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
     var activityRule = ActivityTestRule(TestContainerActivity::class.java,true)

@@ -4,8 +4,6 @@ import android.net.Uri
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-
-
 enum class UnitNames(var unitName: String){
 
     KILO_GRAM("kg"),
@@ -43,6 +41,10 @@ sealed class UiState {
         override var _id = "StateLoggedOut"
         override var _mode: Int = MOVED
 
+    }
+    object ACCOUNT_DELETED : UiState() {
+        override var _id = "StateLoggedOut"
+        override var _mode: Int = MOVED
     }
 
     object BASE_AUTH : UiState() {

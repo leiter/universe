@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.Auth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
 import com.together.repository.Database
@@ -23,6 +25,7 @@ class TestContainerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_test_container)
         compositeDisposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
@@ -32,6 +35,10 @@ class TestContainerActivity : AppCompatActivity() {
                 }
                 is Result.LoggedOut -> {
                     testData.loginState = UiState.LOGGEDOUT
+                    loading(false)
+                }
+                is Result.AccountDeleted -> {
+                    testData.loginState = UiState.ACCOUNT_DELETED
                     loading(false)
                 }
             }
@@ -55,6 +62,8 @@ class TestContainerActivity : AppCompatActivity() {
         }
         upload_seller_profile.setOnClickListener { setupSellerProfile() }
         upload_products.setOnClickListener { uploadList() }
+        delete_user.setOnClickListener { loading(true)
+            FireBaseAuth.deleteAccount() }
     }
 
 

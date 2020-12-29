@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
 import com.together.repository.Result
+import com.together.repository.storage.getCompletable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 
@@ -43,6 +44,15 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
                     MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
                 }
         )
+    }
+
+    fun deleteAccount(){
+        createUserDisposable = getAuth()?.currentUser?.delete()!!.getCompletable().subscribe({
+
+        },{
+            // FIXME
+            MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
+        })
     }
 
     fun createAccount(email: String, passWord: String){

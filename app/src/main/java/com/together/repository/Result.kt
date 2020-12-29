@@ -30,6 +30,11 @@ sealed class Result {
         override var mode: Int = UNDEFINED
     }
 
+    object AccountDeleted : Result() {
+        override var id: String = "loggedOut"
+        override var mode: Int = UNDEFINED
+    }
+
     data class FireDatabaseError(
         override var id: String = "ERROR FIRE DATABASE",
         override var mode: Int = UNDEFINED,

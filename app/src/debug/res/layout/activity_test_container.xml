@@ -23,6 +23,14 @@
         android:text="login"
         app:layout_constraintBottom_toTopOf="@id/upload_products"
         app:layout_constraintStart_toStartOf="parent" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/delete_user"
+        android:layout_marginStart="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        app:layout_constraintBottom_toTopOf="@id/upload_products"
+        app:layout_constraintStart_toEndOf="@id/login" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/upload_seller_profile"
@@ -45,7 +53,7 @@
         android:layout_marginEnd="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="create Account"
+        android:text="create"
         app:layout_constraintEnd_toStartOf="@id/logout"
         app:layout_constraintBottom_toTopOf="@id/upload_seller_profile"  />
 
