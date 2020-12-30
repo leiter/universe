@@ -65,7 +65,8 @@ sealed class Result {
         var productName: String = "",
         var productDescription: String? = null,
         var available: Boolean = false,
-        var units: String = "",
+        var unit: String = "",
+        var price: Long = 0L,
         var imageUrl: String = "",
         var discount: Long = 0L
     ) : Result()
@@ -142,10 +143,6 @@ sealed class Result {
         val text: String = "",
         val photoUrl: String = ""
     ) : Result()
-
-
-
-
 
 }
 

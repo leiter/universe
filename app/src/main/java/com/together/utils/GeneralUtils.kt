@@ -5,9 +5,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.annotation.IntDef
 import com.firebase.ui.auth.AuthUI
-import com.together.R
-import com.together.base.MainMessagePipe
-import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.repository.Result
 import kotlin.reflect.full.memberProperties
@@ -53,7 +50,7 @@ object DataHelper {
 
     private fun prepareUnitData(article: Result.Article): List<UiState.Unit> {
         // units = "2,50:€:kg;0,50:€:Bund"
-        val units = article.units.split(";")
+        val units = article.unit.split(";")
         val result = mutableListOf<UiState.Unit>()
         units.forEach {
             val p = it.split(":")

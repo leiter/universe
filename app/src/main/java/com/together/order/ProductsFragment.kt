@@ -53,6 +53,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         if (b == null) {
             model.presentedProduct.value = item
         } else {
+            item.amountCount = b.amountCount
             item.amount = b.amount
             item.price = b.price
             model.presentedProduct.value = item
@@ -84,11 +85,10 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
             title.text = it.productName
             sub_title.text = it.productDescription
             load_image_progress.visibility = View.VISIBLE
-            price_amount.setText(it.price)
-            product_amount.setText(it.amount)
+            price_amount.setText(it.price.toString())
+            product_amount.setText(it.amountCount.toString())
             products.clearFocus()
-            setupSpinner(it)
-
+            product_amount.requestFocus()
             picasso.load(it.remoteImageUrl)
                 .error(R.drawable.obst_1)
                 .into(product_image, object : Callback {
@@ -113,20 +113,14 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         val products = Database.providerArticles("FmfwB1HVmMdrVib6dqSXkWauOuP2")  //todo
 
         disposable.add(products.getObservable<Result.Article>().observeOn(AndroidSchedulers.mainThread()).subscribe {
-            val unitList = prepareUnitData(it)
-            val defaultUnit = unitList.firstOrNull { it.name == "kg" }
-            val indexOfDefault = if (defaultUnit != null) unitList.indexOf(defaultUnit) else 0
-
             val e = UiState.Article(
                 _id = it.id,
                 productName = it.productName,
                 productDescription = it.productDescription,
                 remoteImageUrl = it.imageUrl,
 
-                units = unitList,
-
-                unit = "sdfs",//unitList[indexOfDefault].name,
-                pricePerUnit = "sdfs",//unitList[indexOfDefault].price,
+                unit = it.unit,
+                pricePerUnit = it.price.toString(),
                 discount = it.discount,
                 _mode = it.mode,
                 available = it.available
@@ -177,39 +171,6 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
 
     }
 
-    private fun setupSpinner(article: UiState.Article) {
-//        val spinnerAdapter = UnitSpinnerAdapter(requireContext(), article.units)
-//        unit_picker.adapter = spinnerAdapter
-//        unit_picker.onItemSelectedListener = UnitSelectedListener(article.units)
-    }
-
-    private fun prepareUnitData(article: Result.Article): List<UiState.Unit> {
-        // units = "2,50:€:kg;0,50:€:Bund"
-        val units = article.units.split(";")
-        val result = mutableListOf<UiState.Unit>()
-//        units.forEach {
-//            val p = it.split(":")
-//            val w: String = if (p.size > 1) p[1] else ""
-//            val r = UiState.Unit(
-//                name = p[0],
-//                price = p[1],
-//                averageWeight = w
-//            )
-//            result.add(r)
-//        }
-        return result.toList()
-
-    }
-
-
-    private val map = HashMap<String, Int>().apply {
-        put("kg", 0)
-        put("Stück", 1)
-        put("Bund", 2)
-        put("Schale", 3)
-    }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         disposable.clear()
@@ -232,14 +193,11 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
     }
 
     private fun putIntoBasket(product: UiState.Article) {
-        val p = UiState.Article(
-            productId = product.productId,
-            productName = product.productName,
-            productDescription = product.productDescription,
-            _id = product._id,
-            amount = product_amount.text.toString(),
-            price = price_amount.text.toString()
-        )
+       val p =  product.copy(
+            amount = product_amount.text.toString()+ " " + product.unit,
+            price = price_amount.text.toString(),
+            amountCount = java.lang.Long.parseLong(product_amount.text.toString()))
+//
         val basket = model.basket.value!!
         var inBasket = -1
         basket.forEachIndexed { index, basketItem ->
@@ -263,15 +221,7 @@ class ProductsFragment : Fragment(), ProductAdapter.ItemClicked, ProductView {
         }
     }
 
-    inner class UnitSelectedListener(private val unitList: List<UiState.Unit>) : AdapterView.OnItemSelectedListener {
 
-        override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            map[unitList[position].name]
-        }
-
-    }
 
 }
 

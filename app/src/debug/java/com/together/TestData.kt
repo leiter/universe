@@ -13,26 +13,76 @@ object TestData {
             "Banana",
             "Nice fruit to eat.",
             true,
-            imageUrl =  "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp1309847000452879291.tmp?alt=media&token=7bfd74a2-30fa-48f8-b4ec-e0b6fc29fc57"
+            imageUrl =  "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp1309847000452879291.tmp?alt=media&token=7bfd74a2-30fa-48f8-b4ec-e0b6fc29fc57",
+            price = 2.3.toLong(),
+            unit = "kg"
         ),
         Result.Article(
             "",
             -1,
             1,
-            "Apple",
-            "Nice fruit to eat.",
+            "Granny Smith",
+            "Leicht säuerlicher Apfel.",
             false,
-            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp3425451583087693428.tmp?alt=media&token=1533803b-a0f4-486e-95ad-39a7abf06df1"
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp3425451583087693428.tmp?alt=media&token=1533803b-a0f4-486e-95ad-39a7abf06df1",
+            price = 2.3.toLong(),
+            unit = "kg"
 
         ),
         Result.Article(
             "",
             -1,
             2,
-            "Potato",
-            "Lovely vegetable.",
+            "Linda Kartoffeln",
+            "Festkochende Kartoffel vom Hof Apfeltraum.",
             true,
-            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2F35e1cd8a-458b-4308-b4d1-2d0bbb8c3369.jpg?alt=media&token=f2a50556-fe36-4bfc-81e4-27ae2324bbd2"
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2F35e1cd8a-458b-4308-b4d1-2d0bbb8c3369.jpg?alt=media&token=f2a50556-fe36-4bfc-81e4-27ae2324bbd2",
+            price = 2.3.toLong(),
+            unit = "kg"
+        ),
+        Result.Article(
+            "",
+            -1,
+            3,
+            "Stangensellerie",
+            "Aus der Umgebung.",
+            true,
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp5874223768482947196.tmp?alt=media&token=a3ca5626-0ff4-473f-a289-a8cf090c82f5",
+            price = 2.9.toLong(),
+            unit = "Stück"
+        ),
+        Result.Article(
+            "",
+            -1,
+            4,
+            "Karotten",
+            "Vom Biohof Waldheide",
+            true,
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp2181782377258883824.tmp?alt=media&token=af827a2e-57ee-4542-9574-25e677c94ba8",
+            price = 3.69.toLong(),
+            unit = "Bund"
+        ),
+        Result.Article(
+            "",
+            -1,
+            5,
+            "Erdbeeren",
+            "Vom Biohof Waldheide",
+            true,
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp1145260240680560593.tmp?alt=media&token=0670c0da-e260-4d41-b5d8-1a119ea24a64",
+            price = 5.69.toLong(),
+            unit = "Schale"
+        ),
+        Result.Article(
+            "",
+            -1,
+            6,
+            "Knoblauch",
+            "Vom Biohof Waldheide",
+            true,
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp6508924231056424774.tmp?alt=media&token=00aae628-6dea-404c-bd7d-101de3ecdd4e",
+            price = 10.69.toLong(),
+            unit = "kg"
         )
     )
 

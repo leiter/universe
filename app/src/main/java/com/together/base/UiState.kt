@@ -3,6 +3,7 @@ package com.together.base
 import android.net.Uri
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.text.NumberFormat
 
 enum class UnitNames(var unitName: String){
 
@@ -40,7 +41,6 @@ sealed class UiState {
     object LOGGEDOUT : UiState() {
         override var _id = "StateLoggedOut"
         override var _mode: Int = MOVED
-
     }
     object ACCOUNT_DELETED : UiState() {
         override var _id = "StateLoggedOut"
@@ -50,7 +50,6 @@ sealed class UiState {
     object BASE_AUTH : UiState() {
         override var _id = "StateLoggedIn"
         override var _mode: Int = MOVED
-
     }
 
     data class Article(
@@ -63,16 +62,29 @@ sealed class UiState {
         var remoteImageUrl: String = "",
         var localImageUrl: String = "",
         var discount: Long = 0L,
-
+        var amount: String = "",
         var pricePerUnit: String = "",
         var unit: String = "",
-
+        var amountCount: Long = 0L,
         var price: String = "",
-        var amount: String = "",
+
 
         override var _mode: Int = MOVED
 
-    ) : UiState()
+    ) : UiState(){
+        var amountDisplay: String = "$amountCount $unit"
+//        var displayPrice: String = preparePrice()
+//        private fun preparePrice(): String {
+//            return if(amount.isNotEmpty()){
+//            val v = NumberFormat.getInstance().parse(amount)!!
+//            var i = amountCount *
+//                    NumberFormat.getInstance().parse(
+//                        pricePerUnit)!!.toDouble()
+//            i = Math.round(i * 100.0) / 100.0
+//            "%.2f€".format(i)}
+//            else "0,00€"
+//        }
+    }
 
 
     data class NewProductImage(val uri: Uri)
@@ -139,15 +151,11 @@ sealed class UiState {
 
 
     data class Unit(
-
         var name: String = "",
         var price: String = "",
         var averageWeight: String = "",
-
         override var _id: String = "",
         override var _mode: Int = UNIT_UNDEFINED
 
     ) : UiState()
-
-
 }
