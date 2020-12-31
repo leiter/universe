@@ -40,18 +40,6 @@ class BasketFragment : DialogFragment() {
         }
     }
 
-//    override fun onCreateView(inflater: LayoutInflater,
-//                              container: ViewGroup?,
-//                              savedInstanceState: Bundle?): View? {
-//        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-//        val la = inflater.inflate(R.layout.fragment_basket, container,false)
-//        val b = viewModel.basket.value!!
-//        adapter = BasketAdapter(b,click)
-//        val re = la.findViewById<RecyclerView>(R.id.order_basket)
-//        re.adapter = adapter
-//        re.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-//        return la
-//    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val layout = requireActivity().layoutInflater.inflate(R.layout.fragment_basket, null)
