@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,22 +20,16 @@ import com.together.order.ProductAdapter
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
-import com.together.utils.DataHelper
 import com.together.utils.FileUtil
+import com.together.utils.dataArticleToUi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.fake_toolbar.*
 import kotlinx.android.synthetic.main.fragment_create.*
 import java.io.File
 import java.io.FileOutputStream
-import java.text.NumberFormat
 
-class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
+class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
-    private val disposable = CompositeDisposable()
-
-    private lateinit var model: MainViewModel
 
     private lateinit var adapter: ProductAdapter
 
@@ -52,48 +45,35 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         const val TAG = "CreateFragment"
     }
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
 
-        model = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        model.newProduct.observe(viewLifecycleOwner, Observer {
+        viewModel.newProduct.observe(viewLifecycleOwner, Observer {
             picasso.load(it.uri).into(image)
         })
-        model.editProduct.observe(viewLifecycleOwner, Observer {// todo do not listen and write
+        viewModel.editProduct.observe(viewLifecycleOwner, Observer {
             product_name.setText(it.productName)
             product_description.setText(it.productDescription)
-            product_price.setText(it.pricePerUnit)
+            product_price.setText(it.price)
             product_price_unit.setText(it.unit)
             article_available.isChecked = it.available
-            product_discount.setText(it.discount.toString())
-            model.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
+            viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
         })
 
-
         title.text = "Mein Angebot"
-        toolbar_end_1.setImageResource(R.drawable.ic_edit_black)
-        toolbar_end_1.visibility = View.VISIBLE
 
-        toolbar_end_2.setImageResource(R.drawable.ic_delete)
-        toolbar_end_2.visibility = View.VISIBLE
-        toolbar_end_2.setOnClickListener {
-            val id = model.editProduct.value?._id
-            if (id != null) deleteArticle(id)
-        }
-
-        product_list.layoutManager = LinearLayoutManager(context)
+        toolbar_end_2.setOnClickListener { viewModel.deleteProduct() }
 
         adapter = ProductAdapter(this)
+        product_list.layoutManager = LinearLayoutManager(context)
         product_list.adapter = adapter
 
         val products = Database.articles()
         disposable.add(products.getObservable<Result.Article>()
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
-            adapter.addItem(DataHelper.dataArticleToUi(it))
+            adapter.addItem(it.dataArticleToUi())
             if(adapter.data.size==0){
                 empty_message.visibility = View.VISIBLE
             } else                 {
@@ -102,11 +82,11 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         })
 
         create_fab.setOnClickListener {
-            createBitmap(model.newProduct.value!!.uri)
+            createBitmap(viewModel.newProduct.value!!.uri)
         }
 
         save_changes.setOnClickListener {
-            createBitmap(model.newProduct.value!!.uri)
+            createBitmap(viewModel.newProduct.value!!.uri)
         }
 
         manage_image.setOnClickListener {
@@ -117,15 +97,10 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
         toolbar_start.setOnClickListener {
            MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
         }
-
     }
 
     override fun clicked(item: UiState.Article) {
-        model.editProduct.value = item
-    }
-
-    private fun toggleEdit() {
-
+        viewModel.editProduct.value = item
     }
 
     override fun onDestroyView() {
@@ -145,7 +120,7 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
 
                 it.metadata?.reference?.downloadUrl?.addOnSuccessListener { imageUri ->
 
-                    val uiState = model.editProduct.value!!
+                    val uiState = viewModel.editProduct.value!!
 
                     val result = Result.Article(
                         id = "",
@@ -154,10 +129,14 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
                         productDescription = uiState.productDescription,
                         imageUrl = imageUri.toString(),
                         available = uiState.available,
-
-                        discount = uiState.discount
+                        price = uiState.price.replace(",",".").toDouble(),
                     )
-                    Database.articles().push().setValue(result)
+                    if(uiState._id.isNotEmpty()) {
+                        val m = mutableMapOf( "price" to 7.8 as Any)
+                        Database.updateArticle(uiState._id).updateChildren(m)
+                    } else {
+                        Database.articles().push().setValue(result)
+                    }
                 }
             }
 
@@ -176,29 +155,20 @@ class CreateFragment : Fragment(), ProductAdapter.ItemClicked {
             tmpFile
         }.subscribe {
                 updateProduct(Uri.fromFile(it))
-                FileUtil.deleteFile(File(imageUri.path))
+            imageUri.path?.let { file -> FileUtil.deleteFile(File(file)) }
 
             })
     }
 
 
     private fun writeToNewProduct() {
-
-        val uiState = UiState.Article(
-            productName = product_name.text.toString(),
-            productDescription = product_description.text.toString()
-        )
-        model.editProduct.value?.productName = product_name.text.toString()
-        model.editProduct.value?.productDescription = product_description.text.toString()
-        model.editProduct.value?.pricePerUnit = product_price.text.toString()
-        model.editProduct.value?.unit = product_price_unit.text.toString()
-        model.editProduct.value?.discount = NumberFormat.getInstance()
-            .parse(product_discount.text.toString()).toLong()
-        model.editProduct.value?.available = article_available.isChecked
+        viewModel.editProduct.value?.productName = product_name.text.toString()
+        viewModel.editProduct.value?.productDescription = product_description.text.toString()
+        viewModel.editProduct.value?.pricePerUnit = product_price.text.toString()
+        viewModel.editProduct.value?.price = product_price.text.toString()
+        viewModel.editProduct.value?.unit = product_price_unit.text.toString()
+        viewModel.editProduct.value?.available = article_available.isChecked
     }
 
-    private fun deleteArticle(id: String) {
-        Database.articles().child(id).removeValue()
-    }
 
 }

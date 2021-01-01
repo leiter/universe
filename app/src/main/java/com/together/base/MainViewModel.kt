@@ -2,6 +2,7 @@ package com.together.base
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import io.reactivex.disposables.CompositeDisposable
@@ -70,6 +71,10 @@ class MainViewModel : ViewModel() {
         MutableLiveData<MutableList<UiState.Market>>().also {
             it.value = mutableListOf()
         }
+    }
+
+    fun deleteProduct(){
+        editProduct.value?.let {  Database.articles().child(it._id).removeValue() }
     }
 
     override fun onCleared() {

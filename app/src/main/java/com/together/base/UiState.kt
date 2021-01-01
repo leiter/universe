@@ -5,17 +5,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import java.text.NumberFormat
 
-enum class UnitNames(var unitName: String){
-
-    KILO_GRAM("kg"),
-    PIECE("Stück"),
-    BUNCH("Bund"),
-    BOWL("Schale"),
-    UNIT_UNDEFINED("n/a");
-
-}
-
-
 sealed class UiState {
 
     abstract var _id: String
@@ -28,12 +17,7 @@ sealed class UiState {
         const val MOVED = 2
         const val REMOVED = 3
         const val UNDEFINED = -1
-        
-        const val KILO_GRAM = 0
-        const val GRAM = 1
-        const val PIECE = 2
-        const val BUNCH = 3
-        const val BOWL = 4
+
         const val UNIT_UNDEFINED = -1
 
     }
@@ -58,34 +42,29 @@ sealed class UiState {
         var productName: String = "",
         var productDescription: String? = null,
         var available: Boolean = false,
-        var units: List<Unit> = emptyList(),
         var remoteImageUrl: String = "",
         var localImageUrl: String = "",
-        var discount: Long = 0L,
         var amount: String = "",
         var pricePerUnit: String = "",
         var unit: String = "",
-        var amountCount: Long = 0L,
+        var amountCount: Double = 0.0,
         var price: String = "",
-
+        var priceDigit: Double = 0.0,
 
         override var _mode: Int = MOVED
 
     ) : UiState(){
-        var amountDisplay: String = "$amountCount $unit"
-//        var displayPrice: String = preparePrice()
-//        private fun preparePrice(): String {
-//            return if(amount.isNotEmpty()){
-//            val v = NumberFormat.getInstance().parse(amount)!!
-//            var i = amountCount *
-//                    NumberFormat.getInstance().parse(
-//                        pricePerUnit)!!.toDouble()
-//            i = Math.round(i * 100.0) / 100.0
-//            "%.2f€".format(i)}
-//            else "0,00€"
-//        }
+        var amountDisplay: String = prepareAmountDisplay()
+        var amountCountDisplay: String = if(unit!="kg") amountCount.toString().split(".")[0] else amountCount.toString()
+        var priceDisplay: String = "%.2f€".format(priceDigit)
+        private fun prepareAmountDisplay(): String {
+            val amountStart: String
+            if (unit!="kg"){
+                amountStart = amountCount.toString().split(".")[0]
+            } else amountStart = amountCount.toString().replace(".",",")
+            return "$amountStart $unit"
+        }
     }
-
 
     data class NewProductImage(val uri: Uri)
 

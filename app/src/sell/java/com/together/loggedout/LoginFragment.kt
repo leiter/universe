@@ -21,11 +21,11 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         plus_one_button.setOnClickListener {
-            UtilsActivity.startGoogleSigning(requireContext())
-//            MainActivity.startLogin(requireActivity())
-//            it.visibility = View.GONE
-//            val fm = activity?.supportFragmentManager!!
-//                fm.beginTransaction().remove(this@LoginFragment)
+//            UtilsActivity.startGoogleSigning(requireContext())
+            MainActivity.startLogin(requireActivity())
+            it.visibility = View.GONE
+            val fm = activity?.supportFragmentManager!!
+                fm.beginTransaction().remove(this@LoginFragment)
         }
     }
 }

@@ -5,16 +5,79 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-
     android:clickable="true"
     android:focusable="true"
     tools:context=".create.CreateFragment">
 
-    <include
+    <RelativeLayout
         android:id="@+id/toolbar"
-        layout="@layout/fake_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="?attr/actionBarSize"
+        android:animateLayoutChanges="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/toolbar_start"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_menu_hamburger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <ImageButton
+            android:id="@+id/toolbar_end_2"
+            android:padding="16dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_delete"
+            android:layout_centerVertical="true"
+            android:visibility="visible"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/toolbar_end_1"
+            android:visibility="visible"
+            android:padding="16dp"
+
+            android:layout_toStartOf="@id/toolbar_end_2"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_edit_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/title"
+            tools:text="Linda"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_toEndOf="@id/toolbar_start"
+            android:layout_toStartOf="@id/toolbar_end_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/sub_title"
+            android:layout_toEndOf="@id/toolbar_start"
+            android:layout_toStartOf="@id/toolbar_end_1"
+            android:layout_below="@id/title"
+            android:gravity="center"
+            android:textColor="@color/black"
+            tools:text="Kartoffel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_name_layout"
@@ -127,7 +190,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_discount_layout"
-
+        android:visibility="invisible"
         android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

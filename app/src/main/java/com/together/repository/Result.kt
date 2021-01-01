@@ -66,7 +66,7 @@ sealed class Result {
         var productDescription: String? = null,
         var available: Boolean = false,
         var unit: String = "",
-        var price: Long = 0L,
+        var price: Double = 0.0,
         var imageUrl: String = "",
         var discount: Long = 0L
     ) : Result()

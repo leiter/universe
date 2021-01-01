@@ -11,8 +11,7 @@ import com.together.base.UiState.Companion.REMOVED
 
 
 class ProductAdapter(private val click: ItemClicked,
-                     var data: MutableList<UiState.Article> = mutableListOf()
-)
+                     var data: MutableList<UiState.Article> = mutableListOf())
 
     : RecyclerView.Adapter<ArticleViewHolder>() {
 
@@ -20,15 +19,21 @@ class ProductAdapter(private val click: ItemClicked,
         fun clicked(item: UiState.Article)
     }
 
+    // fixme use diffUtil
     fun addItem(item: UiState.Article) {
         val index = data.indexOf(item)
-
         when (item._mode) {
             ADDED -> data.add(item)
             REMOVED -> data.removeAt(data.indexOf(data.filter { it._id == item._id }[0]))
             CHANGED -> {
-                data.removeAt(index)
-                data.add(index, item)
+                if(index == -1) {
+                    val i = data.indexOf(data.filter { it._id == item._id }[0])
+                    data.removeAt(i)
+                    data.add(i, item)
+                } else {
+                    data.removeAt(index)
+                    data.add(index, item)
+                }
             }
         }
         notifyDataSetChanged()
@@ -43,6 +48,6 @@ class ProductAdapter(private val click: ItemClicked,
     override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
-        holder.bindItem(position, data[position])
+        holder.bindItem(data[position])
     }
 }
