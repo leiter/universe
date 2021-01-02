@@ -12,7 +12,7 @@ class ArticleViewHolder(override val containerView: View?,
 
     fun bindItem(item: UiState.Article) {
         product_name.text = item.productName
-        val price = item.price + "/" + item.unit
+        val price = item.pricePerUnit + "/" + item.unit
         product_price.text = price
         containerView?.setOnClickListener {
             click.clicked(item)

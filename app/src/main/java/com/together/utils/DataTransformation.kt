@@ -11,8 +11,8 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
         productDescription = this.productDescription,
         remoteImageUrl = this.imageUrl,
         unit = this.unit,
-        price = "%.2f€".format(this.price).replace(".",","),
         pricePerUnit = "%.2f€".format(this.price).replace(".",","),
+        priceDigit = this.price,
         _mode = this.mode,
         available = this.available
     )

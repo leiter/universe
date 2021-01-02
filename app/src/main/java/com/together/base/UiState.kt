@@ -26,6 +26,7 @@ sealed class UiState {
         override var _id = "StateLoggedOut"
         override var _mode: Int = MOVED
     }
+
     object ACCOUNT_DELETED : UiState() {
         override var _id = "StateLoggedOut"
         override var _mode: Int = MOVED
@@ -48,21 +49,26 @@ sealed class UiState {
         var pricePerUnit: String = "",
         var unit: String = "",
         var amountCount: Double = 0.0,
-        var price: String = "",
         var priceDigit: Double = 0.0,
 
         override var _mode: Int = MOVED
 
     ) : UiState(){
         var amountDisplay: String = prepareAmountDisplay()
-        var amountCountDisplay: String = if(unit!="kg") amountCount.toString().split(".")[0] else amountCount.toString()
-        var priceDisplay: String = "%.2f€".format(priceDigit)
+        var amountCountDisplay: String = if(unit!="kg") amountCount.toString().split(".")[0]
+                                        else amountCount.toString()
+        var priceDisplay: String = "0,00€"
+        get() { return "%.2f€".format((priceDigit*amountCount)); }
         private fun prepareAmountDisplay(): String {
             val amountStart: String
             if (unit!="kg"){
                 amountStart = amountCount.toString().split(".")[0]
             } else amountStart = amountCount.toString().replace(".",",")
             return "$amountStart $unit"
+        }
+        fun calculateAmountCountDisplay(): String {
+            return if(unit!="kg") amountCount.toString().split(".")[0]
+            else amountCount.toString()
         }
     }
 
@@ -135,6 +141,5 @@ sealed class UiState {
         var averageWeight: String = "",
         override var _id: String = "",
         override var _mode: Int = UNIT_UNDEFINED
-
     ) : UiState()
 }

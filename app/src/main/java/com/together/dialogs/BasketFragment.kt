@@ -1,12 +1,19 @@
 package com.together.dialogs
 
 import android.app.Dialog
+import android.content.res.Resources
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.theme.overlay.MaterialThemeOverlay
 import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
@@ -40,7 +47,6 @@ class BasketFragment : DialogFragment() {
         }
     }
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val layout = requireActivity().layoutInflater.inflate(R.layout.fragment_basket, null)
         val b = viewModel.basket.value!!
@@ -51,7 +57,6 @@ class BasketFragment : DialogFragment() {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         return AlertDialog.Builder(requireActivity()).setView(layout).create()
     }
-
 
     companion object {
 

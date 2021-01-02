@@ -13,11 +13,11 @@
         style="@style/Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/order_basket"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
         android:text="Bestellung senden"
         android:textColor="@color/white" />
-
 
     <TextView
         android:id="@+id/title"
@@ -34,11 +34,9 @@
         android:id="@+id/order_basket"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/send_order"
         android:layout_below="@id/title"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
+        tools:itemCount="6"
         tools:listitem="@layout/item_basket" />
-
 
 </RelativeLayout>

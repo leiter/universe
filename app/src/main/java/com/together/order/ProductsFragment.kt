@@ -36,14 +36,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
 
     override fun clicked(item: UiState.Article) {
-        product_amount.setText("")
+
         val b = viewModel.basket.value?.find { item._id == it._id }
         if (b == null) {
             viewModel.presentedProduct.value = item
         } else {
-            item.amountCount = b.amountCount
-            item.amount = b.amount
-            item.price = b.price
+//            item.amountCount = b.amountCount
+//            item.amount = b.amount
+//            item.price = b.price
             viewModel.presentedProduct.value = item
         }
     }
@@ -64,14 +64,12 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-
         viewModel.presentedProduct.observe(viewLifecycleOwner, Observer {
             title.text = it.productName
             sub_title.text = it.productDescription
             load_image_progress.visibility = View.VISIBLE
-            price_amount.setText(it.price)
             val amoutCountText = it.amountCountDisplay
-            product_amount.setText(amoutCountText)
+            product_amount.setText(it.calculateAmountCountDisplay())
             product_amount.setSelection(amoutCountText.length)
             products.clearFocus()
             product_amount.requestFocus()
@@ -122,7 +120,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
-
                         val v = NumberFormat.getInstance().parse(it.toString())!!
                         var i = v.toDouble() *
                                 NumberFormat.getInstance()
@@ -170,9 +167,11 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     }
 
     private fun putIntoBasket(product: UiState.Article) {
+        val amountCount = product_amount.text.toString().replace(",",".").toDouble()
+        product.amountCount = amountCount
        val p =  product.copy(
             amount = product_amount.text.toString()+ " " + product.unit,
-            amountCount = product_amount.text.toString().replace(",",".").toDouble()
+            amountCount = amountCount
        )
 
         val basket = viewModel.basket.value!!
