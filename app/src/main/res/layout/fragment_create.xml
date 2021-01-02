@@ -11,70 +11,80 @@
 
     <RelativeLayout
         android:id="@+id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:animateLayoutChanges="true"
         android:clickable="true"
         android:focusable="true"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:paddingBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/toolbar_start"
-            android:layout_centerVertical="true"
-            android:padding="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_menu_hamburger"
+            android:id="@+id/btn_drawer_open"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_menu_hamburger" />
 
 
         <ImageButton
-            android:id="@+id/toolbar_end_2"
-            android:padding="16dp"
+            android:id="@+id/btn_delete_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_delete"
             android:layout_centerVertical="true"
-            android:visibility="visible"
             android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_delete"
+            android:visibility="gone" />
 
         <ImageButton
-            android:id="@+id/toolbar_end_1"
-            android:visibility="visible"
-            android:padding="16dp"
-
-            android:layout_toStartOf="@id/toolbar_end_2"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_edit_black"
+            android:id="@+id/btn_edit_product"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_delete_product"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_edit_black"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/create_new_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_edit_product"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_add"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/title"
-            tools:text="Linda"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:layout_toEndOf="@id/toolbar_start"
-            android:layout_toStartOf="@id/toolbar_end_1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/create_new_product"
+            android:layout_toEndOf="@id/btn_drawer_open"
+            android:gravity="center"
+            android:textSize="24sp"
+            tools:text="Linda" />
 
         <TextView
             android:id="@+id/sub_title"
-            android:layout_toEndOf="@id/toolbar_start"
-            android:layout_toStartOf="@id/toolbar_end_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/title"
+            android:layout_toStartOf="@id/btn_edit_product"
+            android:layout_toEndOf="@id/btn_drawer_open"
             android:gravity="center"
             android:textColor="@color/black"
-            tools:text="Kartoffel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            tools:text="Kartoffel" />
 
     </RelativeLayout>
 
@@ -91,9 +101,11 @@
             android:id="@+id/product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:hint="Produktname"
             android:lines="1"
-            android:maxLength="30" />
+            android:maxLength="30"
+            android:textColor="@color/edit_text_text_color" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -107,6 +119,8 @@
             android:id="@+id/product_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
+            android:textColor="@color/edit_text_text_color"
             android:hint="Beschreibung"
             android:lines="1"
             android:maxLength="30" />
@@ -127,6 +141,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:digits="0123456789,."
+            android:enabled="false"
+            android:textColor="@color/edit_text_text_color"
             android:hint="Preis pro Einheit"
             android:inputType="numberDecimal"
             android:lines="1"
@@ -145,7 +161,7 @@
         app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/product_description_text"
+            android:id="@+id/product_ic_menu_hamburgerdescription_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Platz für einen ausführlichen Beschreibungtext"
@@ -166,8 +182,9 @@
             android:id="@+id/product_price_unit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:gravity="center"
-
+            android:textColor="@color/edit_text_text_color"
             android:hint="Einheit z.B Kg"
             android:lines="1"
             android:maxLength="5" />
@@ -176,12 +193,13 @@
 
     <ImageView
         android:id="@+id/image"
-        android:clickable="true"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -190,10 +208,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_discount_layout"
-        android:visibility="invisible"
         android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@id/image"
         app:layout_constraintTop_toBottomOf="@id/image">
 
@@ -238,6 +256,7 @@
         android:layout_height="72dp"
         android:background="?attr/selectableItemBackground"
         android:scaleType="centerCrop"
+        android:visibility="invisible"
         android:src="@drawable/ic_photo_camera"
         app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -248,10 +267,10 @@
         android:id="@+id/empty_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Sie haben noch keine Produkte angelegt"
+        android:textSize="24sp"
+        android:text="Sie haben noch keine \n   Produkte angelegt"
         android:visibility="visible"
+        android:lineSpacingMultiplier="1.4"
         app:layout_constraintBottom_toBottomOf="@+id/product_list"
         app:layout_constraintEnd_toEndOf="@+id/product_list"
         app:layout_constraintStart_toStartOf="@+id/product_list"
@@ -269,28 +288,43 @@
         tools:itemCount="14"
         tools:listitem="@layout/item_product" />
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-
         android:id="@+id/create_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_add_circle_outline_black_24dp"
+        android:src="@drawable/ic_add"
         android:visibility="gone"
-        app:backgroundTint="@color/orange"
+        app:backgroundTint="@color/brightGreen"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/empty_message" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/save_changes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Änderungen Speichern"
         android:layout_marginBottom="24dp"
+        android:visibility="invisible"
+        android:text="Änderungen Speichern"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/loading_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

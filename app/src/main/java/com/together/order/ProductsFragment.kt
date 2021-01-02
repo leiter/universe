@@ -41,9 +41,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         if (b == null) {
             viewModel.presentedProduct.value = item
         } else {
-//            item.amountCount = b.amountCount
-//            item.amount = b.amount
-//            item.price = b.price
             viewModel.presentedProduct.value = item
         }
     }
@@ -56,6 +53,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         arguments?.let { mode = it.getInt(MODE_PARAM) }
         return inflater.inflate(R.layout.main_order_fragment, container, false)
     }
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,8 +103,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             }
         })
 
-        toolbar_start.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
-        toolbar_end_2.setOnClickListener {
+        btn_drawer_open.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
+        btn_delete_product.setOnClickListener {
             if (viewModel.basket.value!!.size > 0)
                 BasketFragment().show(requireActivity().supportFragmentManager, "Basket")
             else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(requireContext(),

@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.picasso.OkHttp3Downloader
@@ -30,19 +29,28 @@ import java.io.FileOutputStream
 
 class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
-
     private lateinit var adapter: ProductAdapter
 
     private lateinit var picasso: Picasso
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_create, container, false)
     }
 
     companion object {
         const val TAG = "CreateFragment"
+    }
+
+    private fun makeEditable(edit: Boolean) {
+        product_description.isEnabled = edit
+        product_name.isEnabled = edit
+        product_price.isEnabled = edit
+        product_price_unit.isEnabled = edit
+        manage_image.isEnabled = edit
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,57 +64,47 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
         viewModel.editProduct.observe(viewLifecycleOwner, Observer {
             product_name.setText(it.productName)
             product_description.setText(it.productDescription)
-            product_price.setText(it.price)
+            product_price.setText(it.pricePerUnit)
             product_price_unit.setText(it.unit)
             article_available.isChecked = it.available
             viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
         })
 
-        title.text = "Mein Angebot"
-
-        toolbar_end_2.setOnClickListener { viewModel.deleteProduct() }
+        viewModel.blockingLoaderState.observe(viewLifecycleOwner, Observer {
+            if (it is UiState.LoadingDone) {
+                loading_indicator.visibility = View.GONE
+            } else {
+                loading_indicator.visibility = View.VISIBLE
+            }
+        })
 
         adapter = ProductAdapter(this)
         product_list.layoutManager = LinearLayoutManager(context)
         product_list.adapter = adapter
-
         val products = Database.articles()
         disposable.add(products.getObservable<Result.Article>()
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
-            adapter.addItem(it.dataArticleToUi())
-            if(adapter.data.size==0){
-                empty_message.visibility = View.VISIBLE
-            } else                 {
-                empty_message.visibility = View.GONE
-            }
-        })
+                adapter.addItem(it.dataArticleToUi())
+                if (adapter.data.size == 0) {
+                    empty_message.visibility = View.VISIBLE
+                } else {
+                    empty_message.visibility = View.GONE
+                }
+            })
 
-        create_fab.setOnClickListener {
-            createBitmap(viewModel.newProduct.value!!.uri)
-        }
+        save_changes.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
 
-        save_changes.setOnClickListener {
-            createBitmap(viewModel.newProduct.value!!.uri)
-        }
+        btn_delete_product.setOnClickListener { viewModel.deleteProduct() }
 
-        manage_image.setOnClickListener {
-            UtilsActivity.startAddImage(requireActivity())
-        }
+        create_fab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
 
-        toolbar_start.setImageResource(R.drawable.ic_menu_hamburger)
-        toolbar_start.setOnClickListener {
-           MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
-        }
+        manage_image.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
+
+        btn_drawer_open.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START)) }
     }
 
     override fun clicked(item: UiState.Article) {
         viewModel.editProduct.value = item
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        MainMessagePipe.uiEvent.onNext(UiEvent.UnlockDrawer)
-        disposable.clear()
     }
 
     private fun updateProduct(imageUri: Uri) {
@@ -123,16 +121,16 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
                     val uiState = viewModel.editProduct.value!!
 
                     val result = Result.Article(
-                        id = "",
-                        productId = -1,
                         productName = uiState.productName,
                         productDescription = uiState.productDescription,
                         imageUrl = imageUri.toString(),
+                        unit = product_price_unit.toString(),
                         available = uiState.available,
-                        price = uiState.price.replace(",",".").toDouble(),
+                        price = uiState.pricePerUnit.replace("€", "")
+                            .replace(",", ".").toDouble()
                     )
-                    if(uiState._id.isNotEmpty()) {
-                        val m = mutableMapOf( "price" to 7.8 as Any)
+                    if (uiState._id.isNotEmpty()) {
+                        val m = mutableMapOf("price" to 7.8 as Any)
                         Database.updateArticle(uiState._id).updateChildren(m)
                     } else {
                         Database.articles().push().setValue(result)
@@ -154,10 +152,10 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
             tmpFile
         }.subscribe {
-                updateProduct(Uri.fromFile(it))
+            updateProduct(Uri.fromFile(it))
             imageUri.path?.let { file -> FileUtil.deleteFile(File(file)) }
 
-            })
+        })
     }
 
 
@@ -165,7 +163,6 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
         viewModel.editProduct.value?.productName = product_name.text.toString()
         viewModel.editProduct.value?.productDescription = product_description.text.toString()
         viewModel.editProduct.value?.pricePerUnit = product_price.text.toString()
-        viewModel.editProduct.value?.price = product_price.text.toString()
         viewModel.editProduct.value?.unit = product_price_unit.text.toString()
         viewModel.editProduct.value?.available = article_available.isChecked
     }

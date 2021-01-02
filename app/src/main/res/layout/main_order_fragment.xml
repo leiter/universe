@@ -21,7 +21,7 @@
             android:layout_height="wrap_content">
 
         <ImageButton
-                android:id="@+id/toolbar_start"
+                android:id="@+id/btn_drawer_open"
 
                 android:layout_centerVertical="true"
                 android:padding="8dp"
@@ -33,7 +33,7 @@
 
         <include
                 layout="@layout/batch_it"
-                android:id="@+id/toolbar_end_2"
+                android:id="@+id/btn_delete_product"
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/ic_menu_hamburger"
                 android:layout_centerVertical="true"
@@ -50,8 +50,8 @@
                 android:textSize="24dp"
                 android:gravity="center"
                 android:layout_centerHorizontal="true"
-                android:layout_toEndOf="@id/toolbar_start"
-                android:layout_toStartOf="@id/toolbar_end_2"
+                android:layout_toEndOf="@id/btn_drawer_open"
+                android:layout_toStartOf="@id/btn_delete_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

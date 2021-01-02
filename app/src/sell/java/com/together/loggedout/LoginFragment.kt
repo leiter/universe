@@ -5,12 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.together.R
 import com.together.app.MainActivity
+import com.together.base.BaseFragment
+import com.together.base.UiState
 import com.together.base.UtilsActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -24,8 +27,13 @@ class LoginFragment : Fragment() {
 //            UtilsActivity.startGoogleSigning(requireContext())
             MainActivity.startLogin(requireActivity())
             it.visibility = View.GONE
-            val fm = activity?.supportFragmentManager!!
-                fm.beginTransaction().remove(this@LoginFragment)
+            viewModel.loggedState.observe(viewLifecycleOwner, Observer {
+                if(it is UiState.LOGGEDOUT){
+                    plus_one_button.visibility = View.VISIBLE
+                } else {
+                    plus_one_button.visibility = View.GONE
+                }
+            })
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
+import com.together.repository.storage.getCompletable
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -45,6 +46,10 @@ class MainViewModel : ViewModel() {
         })
     }
 
+    val blockingLoaderState: MutableLiveData<UiState> by lazy {
+        MutableLiveData<UiState>().also { it.value = UiState.LoadingDone }
+    }
+
     val loggedState: MutableLiveData<UiState> by lazy {
         MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
     }
@@ -74,7 +79,21 @@ class MainViewModel : ViewModel() {
     }
 
     fun deleteProduct(){
-        editProduct.value?.let {  Database.articles().child(it._id).removeValue() }
+        blockingLoaderState.value = UiState.Loading
+        editProduct.value?.let {  Database.articles().child(it._id).removeValue()
+            .getCompletable().subscribe({success ->
+                if(success) {
+                    blockingLoaderState.value = UiState.LoadingDone
+                }else {
+                    blockingLoaderState.value = UiState.LoadingDone
+
+                }
+            }, {
+                blockingLoaderState.value = UiState.LoadingDone
+
+            })
+
+        }
     }
 
     override fun onCleared() {

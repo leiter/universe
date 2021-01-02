@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import com.firebase.ui.auth.AuthUI
+import com.together.R
 import com.together.base.UiState
 import com.together.repository.Result
 import kotlin.reflect.full.memberProperties
@@ -35,6 +36,7 @@ object AQ {
         return AuthUI.getInstance()
             .createSignInIntentBuilder()
             .setIsSmartLockEnabled(false)
+            .setTheme(R.style.AppTheme)
             .setAvailableProviders(providers).build()
     }
 

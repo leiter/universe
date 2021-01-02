@@ -22,6 +22,16 @@ sealed class UiState {
 
     }
 
+
+
+    object Loading : UiState() {
+        override var _id = "StateLoggedOut"
+        override var _mode: Int = MOVED
+    }
+    object LoadingDone : UiState() {
+        override var _id = "StateLoggedOut"
+        override var _mode: Int = MOVED
+    }
     object LOGGEDOUT : UiState() {
         override var _id = "StateLoggedOut"
         override var _mode: Int = MOVED
