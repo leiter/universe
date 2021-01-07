@@ -7,10 +7,7 @@
 
     <application
         tools:replace="icon"
-        android:icon="@mipmap/ic_launcher_buy"
-        >
-
-
+        android:icon="@mipmap/ic_launcher_buy">
     </application>
 
 </manifest>

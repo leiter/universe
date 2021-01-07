@@ -4,10 +4,13 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.storage.FirebaseStorage
@@ -57,7 +60,6 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
         super.onViewCreated(view, savedInstanceState)
 
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
-
         viewModel.newProduct.observe(viewLifecycleOwner, Observer {
             picasso.load(it.uri).into(image)
         })
@@ -67,7 +69,14 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
             product_price.setText(it.pricePerUnit)
             product_price_unit.setText(it.unit)
             article_available.isChecked = it.available
-            viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
+            if(it.remoteImageUrl.isEmpty()){
+                change_picture.visibility = View.GONE
+            } else {
+                viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
+//                change_picture.visibility = View.VISIBLE
+            }
+
+
         })
 
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, Observer {
@@ -78,6 +87,9 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
             }
         })
 
+        create_new_product.visibility = View.VISIBLE
+        create_new_product.setOnClickListener { makeEditable(true) }
+
         adapter = ProductAdapter(this)
         product_list.layoutManager = LinearLayoutManager(context)
         product_list.adapter = adapter
@@ -87,12 +99,22 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 adapter.addItem(it.dataArticleToUi())
                 if (adapter.data.size == 0) {
                     empty_message.visibility = View.VISIBLE
+                    val msg = requireActivity().findViewById<TextView>(R.id.empty_message)
+                    msg.setOnClickListener {
+                        makeEditable(true)
+                    }
+                    msg.isFocusable = false
+                    msg.isClickable = false
+
                 } else {
                     empty_message.visibility = View.GONE
                 }
             })
 
-        save_changes.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
+        save_changes.setOnClickListener {
+            Log.e("TTTTT", "For debugging");
+            createBitmap(viewModel.newProduct.value!!.uri)
+        }
 
         btn_delete_product.setOnClickListener { viewModel.deleteProduct() }
 
@@ -110,6 +132,25 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
     private fun updateProduct(imageUri: Uri) {
 
         writeToNewProduct()
+
+        val uiState = viewModel.editProduct.value!!
+
+        val result = Result.Article(
+            productName = uiState.productName,
+            productDescription = uiState.productDescription,
+            imageUrl = imageUri.toString(),
+            unit = product_price_unit.toString(),
+            available = uiState.available,
+            price = uiState.pricePerUnit.replace("€", "")
+                .replace(",", ".").toDouble()
+        )
+        if (uiState._id.isNotEmpty()) {
+            val m = mutableMapOf("price" to 7.8 as Any)
+            Database.updateArticle(uiState._id).updateChildren(m)
+        } else {
+            Database.articles().push().setValue(result)
+        }
+        return
         FirebaseStorage.getInstance()
             .reference
             .child("images/${System.currentTimeMillis()}_${imageUri.lastPathSegment}")
@@ -137,7 +178,6 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
                     }
                 }
             }
-
     }
 
 
@@ -154,7 +194,6 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
         }.subscribe {
             updateProduct(Uri.fromFile(it))
             imageUri.path?.let { file -> FileUtil.deleteFile(File(file)) }
-
         })
     }
 

@@ -113,6 +113,9 @@ object TestData {
         zipcode = "14195"
     )
 
+
+
+
     val orderList = listOf(
         Result.Order(
             id = "",
@@ -124,7 +127,6 @@ object TestData {
             user = userList[1],
             articles = articleList
         )
-
     )
 
     val uiArticleList = mutableListOf<UiState.Article>(

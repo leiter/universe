@@ -1,6 +1,8 @@
 package com.together.repository
 
 import android.net.Uri
+import com.google.firebase.database.PropertyName
+import com.google.gson.annotations.SerializedName
 
 sealed class Result {
 
@@ -62,13 +64,17 @@ sealed class Result {
         override var id: String = "",
         override var mode: Int = UNDEFINED,
         var productId: Int = -1,
+
         var productName: String = "",
         var productDescription: String? = null,
         var available: Boolean = false,
         var unit: String = "",
         var price: Double = 0.0,
         var imageUrl: String = "",
-        var discount: Long = 0L
+        var discount: Long = 0L,
+
+//         @get:PropertyName("adsfg")
+//        val fuckck:String =  "Fuck"
     ) : Result()
 
     data class Order(
@@ -85,6 +91,7 @@ sealed class Result {
 
         override var id: String = "",
         override var mode: Int = UNDEFINED,
+
 
         var displayName: String = "",
 

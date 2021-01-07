@@ -21,6 +21,20 @@
         <item name="android:layout_height">600dp</item>
     </style>
 
+    <style name="MyDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <!-- Fill the screen -->
+        <item name="android:layout_width">match_parent</item>
+
+        <!-- No backgrounds, titles or window float -->
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+
+        <!-- Just to prove it's working -->
+        <item name="android:background">#ffffff</item>
+    </style>
+
+
     <style name="ButtonText" parent="TextAppearance.AppCompat.Widget.Button.Colored">
         <item name="android:textColor">@color/white</item>
 

@@ -1,19 +1,14 @@
 package com.together.dialogs
 
 import android.app.Dialog
-import android.content.res.Resources
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.theme.overlay.MaterialThemeOverlay
 import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
@@ -55,9 +50,23 @@ class BasketFragment : DialogFragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        return AlertDialog.Builder(requireActivity()).setView(layout).create()
+        return AlertDialog.Builder(requireActivity(),R.style.MyDialogTheme).setView(layout).create()
     }
 
+    override fun onResume() {
+        super.onResume()
+//        val lp = WindowManager.LayoutParams()
+//        lp.copyFrom(dialog!!.window!!.attributes)
+//        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+//        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+//
+//        dialog!!.window!!.attributes = lp
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
     companion object {
 
         private const val ARG_PARAM1 = "param1"

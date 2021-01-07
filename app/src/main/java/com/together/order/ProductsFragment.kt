@@ -66,8 +66,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             title.text = it.productName
             sub_title.text = it.productDescription
             load_image_progress.visibility = View.VISIBLE
-            val amoutCountText = it.amountCountDisplay
-            product_amount.setText(it.calculateAmountCountDisplay())
+            val amoutCountText = it.calculateAmountCountDisplay()
+            product_amount.setText(amoutCountText)
             product_amount.setSelection(amoutCountText.length)
             products.clearFocus()
             product_amount.requestFocus()
