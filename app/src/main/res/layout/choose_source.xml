@@ -21,14 +21,14 @@
         android:text="Fotomachen" />
 
     <TextView
-        android:id="@+id/choose_image"
+        android:id="@+id/btn_write_msg"
         style="@style/AppTheme.ChooseSourceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Photo aus Gallerie" />
 
     <TextView
-        android:id="@+id/delete_image"
+        android:id="@+id/btn_show_info"
         style="@style/AppTheme.ChooseSourceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

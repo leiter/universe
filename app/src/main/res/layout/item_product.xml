@@ -39,7 +39,6 @@
             tools:text="2.93€"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:padding="16dp"
-
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"

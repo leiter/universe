@@ -60,11 +60,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:layout_centerHorizontal="true"
-            android:maxLines="1"
             android:layout_marginStart="96dp"
             android:layout_marginEnd="96dp"
             android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="1"
             android:textColor="@color/black"
             tools:text="Kartoffel" />
 
@@ -114,15 +114,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:backgroundTint="@color/brightGreen"
-
             android:src="@drawable/ic_add_shopping_cart_black"
             android:visibility="visible"
+            app:backgroundTint="@color/brightGreen"
             app:layout_constraintBottom_toBottomOf="@+id/product_amount_layout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/product_amount_layout" />
+            app:layout_constraintStart_toEndOf="@+id/product_amount_layout"
+            app:tint="@color/white" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -185,19 +184,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Suche"
-                android:paddingEnd="64dp"
-                android:lines="1" />
+                android:lines="1"
+                android:paddingEnd="64dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
 
-            android:src="@drawable/ic_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/search_products_layout"
-            android:paddingEnd="20dp"
             android:paddingTop="20dp"
+            android:paddingEnd="20dp"
             android:paddingBottom="20dp"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="@+id/search_products_layout"
             app:layout_constraintEnd_toEndOf="@+id/search_products_layout"
             app:layout_constraintTop_toTopOf="@+id/search_products_layout" />
 

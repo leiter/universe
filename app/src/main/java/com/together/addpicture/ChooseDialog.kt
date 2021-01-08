@@ -41,9 +41,9 @@ class ChooseDialog : DialogFragment() {
         val builder = AlertDialog.Builder(requireContext())
         val view = requireActivity().layoutInflater.inflate(R.layout.choose_source, null as ViewGroup?)
         view.capture_image.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
-        view.choose_image.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
+        view.btn_write_msg.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
         view.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
-        view.delete_image.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO()); dismiss() }
+        view.btn_show_info.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO()); dismiss() }
         builder.setView(view)
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)
