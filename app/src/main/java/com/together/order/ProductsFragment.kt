@@ -1,6 +1,8 @@
 package com.together.order
 
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +18,13 @@ import com.squareup.picasso.Picasso
 import com.together.R
 import com.together.base.*
 import com.together.dialogs.BasketFragment
+import com.together.dialogs.ManageDialog
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import com.together.utils.dataArticleToUi
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.batch_it.*
 import kotlinx.android.synthetic.main.main_order_fragment.*
 import java.text.NumberFormat
@@ -29,11 +33,11 @@ import java.util.concurrent.TimeUnit
 class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
     private lateinit var adapter: ProductAdapter
+    private lateinit var productData: List<UiState.Article>
 
     private var mode: Int? = null
 
     private lateinit var picasso: Picasso
-
 
     override fun clicked(item: UiState.Article) {
 
@@ -53,7 +57,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         arguments?.let { mode = it.getInt(MODE_PARAM) }
         return inflater.inflate(R.layout.main_order_fragment, container, false)
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,20 +99,44 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
         disposable.add(products.getObservable<Result.Article>()
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
-            val e = it.dataArticleToUi()
-            adapter.addItem(e)
-            if (adapter.data.size == 1) {
-                viewModel.presentedProduct.value = adapter.data[0]
-            }
-        })
+                val e = it.dataArticleToUi()
+                adapter.addItem(e)
+                if (adapter.data.size == 1) {
+                    viewModel.presentedProduct.value = adapter.data[0]
+                }
+            })
 
-        btn_drawer_open.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.OpenDrawer) }
+        btn_manage.setOnClickListener {
+            ManageDialog().show(requireActivity().supportFragmentManager,"ManageDialog")
+        }
         btn_delete_product.setOnClickListener {
             if (viewModel.basket.value!!.size > 0)
                 BasketFragment().show(requireActivity().supportFragmentManager, "Basket")
-            else MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(requireContext(),
-                R.string.empty_basket_msg, Gravity.CENTER))
+            else MainMessagePipe.uiEvent.onNext(
+                UiEvent.ShowToast(
+                    requireContext(),
+                    R.string.empty_basket_msg, Gravity.CENTER
+                )
+            )
         }
+
+        Handler().postDelayed({
+            disposable.add(
+                product_search.textChanges()
+                    .debounce(400, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .map { searchTerm ->
+                        if (!::productData.isInitialized){
+                            productData = adapter.data.toMutableList()
+                        }
+                        productData.filter {
+                            it.productName.startsWith(searchTerm,ignoreCase = true)
+                        }
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { filtered -> adapter.setFilteredList(filtered.toMutableList()) }
+            )
+        },1000L)
 
 
         disposable.add(
@@ -121,7 +148,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                         val v = NumberFormat.getInstance().parse(it.toString())!!
                         var i = v.toDouble() *
                                 NumberFormat.getInstance()
-                                    .parse(viewModel.presentedProduct.value!!.pricePerUnit)!!.toDouble()
+                                    .parse(viewModel.presentedProduct.value!!.pricePerUnit)!!
+                                    .toDouble()
                         i = Math.round(i * 100.0) / 100.0
                         val s = "%.2f€".format(i)
                         price_amount.setText(s)
@@ -143,11 +171,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        disposable.clear()
-    }
-
     companion object {
 
         const val TAG: String = "ProductsFragment"
@@ -165,12 +188,25 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     }
 
     private fun putIntoBasket(product: UiState.Article) {
-        val amountCount = product_amount.text.toString().replace(",",".").toDouble()
+        val inputText = product_amount.text.toString()
+        if(inputText.isEmpty()|| inputText.isBlank()){
+            MainMessagePipe.uiEvent.onNext(
+                UiEvent.ShowToast(requireContext(), R.string.product_amount_empty, Gravity.CENTER)
+            )
+            return
+        }
+        val amountCount = inputText.replace(",", ".").toDouble()
+        if (amountCount == 0.0) {
+            MainMessagePipe.uiEvent.onNext(
+                UiEvent.ShowToast(requireContext(), R.string.product_amount_is_null, Gravity.CENTER)
+            )
+            return
+        }
         product.amountCount = amountCount
-       val p =  product.copy(
-            amount = product_amount.text.toString()+ " " + product.unit,
+        val p = product.copy(
+            amount = product_amount.text.toString() + " " + product.unit,
             amountCount = amountCount
-       )
+        )
 
         val basket = viewModel.basket.value!!
         var inBasket = -1

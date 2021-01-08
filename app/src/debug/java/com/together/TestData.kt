@@ -26,7 +26,8 @@ object TestData {
             false,
             imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp3425451583087693428.tmp?alt=media&token=1533803b-a0f4-486e-95ad-39a7abf06df1",
             price = 2.3,
-            unit = "kg"
+            unit = "kg",
+            category = "Apfel"
 
         ),
         Result.Article(
@@ -38,7 +39,8 @@ object TestData {
             true,
             imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2F35e1cd8a-458b-4308-b4d1-2d0bbb8c3369.jpg?alt=media&token=f2a50556-fe36-4bfc-81e4-27ae2324bbd2",
             price = 2.3,
-            unit = "kg"
+            unit = "kg",
+            category = "Kartoffel"
         ),
         Result.Article(
             "",
@@ -60,7 +62,8 @@ object TestData {
             true,
             imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp2181782377258883824.tmp?alt=media&token=af827a2e-57ee-4542-9574-25e677c94ba8",
             price = 3.69,
-            unit = "Bund"
+            unit = "Bund",
+
         ),
         Result.Article(
             "",
@@ -71,7 +74,8 @@ object TestData {
             true,
             imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp1145260240680560593.tmp?alt=media&token=0670c0da-e260-4d41-b5d8-1a119ea24a64",
             price = 5.69,
-            unit = "Schale"
+            unit = "Schale",
+            category = "Obst"
         ),
         Result.Article(
             "",
@@ -82,7 +86,8 @@ object TestData {
             true,
             imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp6508924231056424774.tmp?alt=media&token=00aae628-6dea-404c-bd7d-101de3ecdd4e",
             price = 10.69,
-            unit = "kg"
+            unit = "kg",
+            category = "Gemüse"
         )
     )
 
@@ -112,9 +117,6 @@ object TestData {
         city = "Berlin",
         zipcode = "14195"
     )
-
-
-
 
     val orderList = listOf(
         Result.Order(
@@ -186,7 +188,6 @@ object TestData {
 //            "2,30",
 //            "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/4_obst.png?alt=media&token=186ac0b8-c7df-4294-9ad0-0675ed4a49de"
 //        )
-
     )
 
 }

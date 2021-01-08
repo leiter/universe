@@ -39,6 +39,11 @@ class ProductAdapter(private val click: ItemClicked,
         notifyDataSetChanged()
     }
 
+    fun setFilteredList(list:MutableList<UiState.Article>) {
+        data = list
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         return ArticleViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_product, parent, false), click

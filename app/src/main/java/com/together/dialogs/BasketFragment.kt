@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,9 +17,6 @@ import com.together.base.UiEvent
 import com.together.base.UiState
 
 class BasketFragment : DialogFragment() {
-
-    private var param1: String? = null
-    private var param2: String? = null
 
     private lateinit var adapter: BasketAdapter
 
@@ -36,16 +34,13 @@ class BasketFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val layout = requireActivity().layoutInflater.inflate(R.layout.fragment_basket, null)
         val b = viewModel.basket.value!!
         adapter = BasketAdapter(b, clickToDelete)
+        layout.findViewById<TextView>(R.id.basket_sum).text = calculatePurchaseSum(b)
         val recyclerView = layout.findViewById<RecyclerView>(R.id.order_basket)
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
@@ -53,32 +48,11 @@ class BasketFragment : DialogFragment() {
         return AlertDialog.Builder(requireActivity(),R.style.MyDialogTheme).setView(layout).create()
     }
 
-    override fun onResume() {
-        super.onResume()
-//        val lp = WindowManager.LayoutParams()
-//        lp.copyFrom(dialog!!.window!!.attributes)
-//        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-//        lp.height = WindowManager.LayoutParams.MATCH_PARENT
-//
-//        dialog!!.window!!.attributes = lp
+    private fun calculatePurchaseSum(list:MutableList<UiState.Article>) : String {
+        var sum = 0.0
+        list.forEach { sum += it.amountCount*it.priceDigit }
+        return "Gesamtpreis    %.2f€".format(sum)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-    }
-    companion object {
-
-        private const val ARG_PARAM1 = "param1"
-        private const val ARG_PARAM2 = "param2"
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BasketFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

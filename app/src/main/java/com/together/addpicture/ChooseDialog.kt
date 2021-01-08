@@ -48,7 +48,5 @@ class ChooseDialog : DialogFragment() {
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)
         return dialog
-
     }
-
 }

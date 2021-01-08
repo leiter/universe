@@ -1,8 +1,6 @@
 package com.together.repository
 
 import android.net.Uri
-import com.google.firebase.database.PropertyName
-import com.google.gson.annotations.SerializedName
 
 sealed class Result {
 
@@ -72,6 +70,7 @@ sealed class Result {
         var price: Double = 0.0,
         var imageUrl: String = "",
         var discount: Long = 0L,
+        var category: String = ""
 
 //         @get:PropertyName("adsfg")
 //        val fuckck:String =  "Fuck"

@@ -10,6 +10,8 @@
     <string name="empty_basket_msg">Sie haben keine Produkte im Einkaufskorb.</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="product_amount_is_null">Bitte fügen sie eine Mengen größer Null ein.</string>
+    <string name="product_amount_empty">Bitte geben sie eine Mengenangabe ein.</string>
 
 
 </resources>

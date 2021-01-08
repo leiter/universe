@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/btn_drawer_open"
+            android:id="@+id/btn_manage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@id/create_new_product"
-            android:layout_toEndOf="@id/btn_drawer_open"
+            android:layout_toEndOf="@id/btn_manage"
             android:gravity="center"
             android:textSize="24sp"
             tools:text="Linda" />
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:layout_toStartOf="@id/btn_edit_product"
-            android:layout_toEndOf="@id/btn_drawer_open"
+            android:layout_toEndOf="@id/btn_manage"
             android:gravity="center"
             android:textColor="@color/black"
             tools:text="Kartoffel" />
@@ -90,7 +90,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/product_name_layout"
+        android:id="@+id/product_amount_layout"
         android:layout_width="244dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -112,8 +112,8 @@
         android:id="@+id/product_description_layout"
         android:layout_width="244dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/product_name_layout"
-        app:layout_constraintTop_toBottomOf="@id/product_name_layout">
+        app:layout_constraintStart_toStartOf="@id/product_amount_layout"
+        app:layout_constraintTop_toBottomOf="@id/product_amount_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/product_description"
@@ -132,7 +132,7 @@
         android:layout_width="144dp"
         android:layout_height="wrap_content"
         android:minWidth="250dp"
-        app:layout_constraintStart_toStartOf="@id/product_name_layout"
+        app:layout_constraintStart_toStartOf="@id/product_amount_layout"
         app:layout_constraintTop_toBottomOf="@id/product_description_layout">
 
 
@@ -203,8 +203,8 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/product_name_layout"
-        app:layout_constraintTop_toTopOf="@+id/product_name_layout" />
+        app:layout_constraintStart_toEndOf="@+id/product_amount_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_amount_layout" />
     <ImageButton
         android:id="@+id/change_picture"
         android:visibility="gone"
@@ -268,8 +268,8 @@
         android:src="@drawable/ic_photo_camera"
         app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/product_name_layout"
-        app:layout_constraintTop_toTopOf="@+id/product_name_layout" />
+        app:layout_constraintStart_toEndOf="@+id/product_amount_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_amount_layout" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -279,7 +279,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/product_name_layout"
+        app:layout_constraintStart_toStartOf="@id/product_amount_layout"
         app:layout_constraintTop_toBottomOf="@id/product_discount_layout"
         tools:itemCount="14"
         tools:listitem="@layout/item_product" />
@@ -295,7 +295,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/product_name_layout"
+        app:layout_constraintStart_toStartOf="@id/product_amount_layout"
         app:layout_constraintTop_toBottomOf="@id/product_discount_layout" />
 
 

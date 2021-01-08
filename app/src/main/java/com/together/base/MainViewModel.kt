@@ -29,19 +29,6 @@ class MainViewModel : ViewModel() {
                         newProduct.value = UiState.NewProductImage(it.uri!!)
                     else newProduct.value = UiState.NewProductImage(it.uri!!)
                 }
-
-//                is Result.SellerProfile -> {
-//                    profile = UiState.SellerProfile(
-//                        id = it.id,
-//                        houseNumber = it.houseNumber,
-//                        street = it.street,
-//                        zipcode = it.zipcode,
-//                        city = it.city,
-//                        lastName = it.lastName,
-//                        firstName = it.firstName,
-//                        displayName = it.displayName
-//                    )
-//                }
             }
         })
     }
@@ -86,13 +73,10 @@ class MainViewModel : ViewModel() {
                     blockingLoaderState.value = UiState.LoadingDone
                 }else {
                     blockingLoaderState.value = UiState.LoadingDone
-
                 }
             }, {
                 blockingLoaderState.value = UiState.LoadingDone
-
             })
-
         }
     }
 

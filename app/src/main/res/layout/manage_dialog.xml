@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:visibility="gone"
+        style="@style/AppTheme.ChooseSourceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:text=""
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/btn_profile"
+        style="@style/AppTheme.ChooseSourceText"
+        android:drawableStart="@drawable/ic_menu_manage"
+        android:drawablePadding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mein Profil" />
+
+    <TextView
+        android:id="@+id/choose_image"
+        style="@style/AppTheme.ChooseSourceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_message"
+        android:drawablePadding="24dp"
+        android:text="Nachricht schreiben (SMS)" />
+
+    <TextView
+        android:id="@+id/delete_image"
+        style="@style/AppTheme.ChooseSourceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Bild löschen" />
+
+    <TextView
+        android:id="@+id/btn_log_out"
+        style="@style/AppTheme.ChooseSourceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_logout"
+        android:drawablePadding="24dp"
+        android:text="Ausloggen" />
+
+
+</LinearLayout>

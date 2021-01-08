@@ -4,20 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.navigation.NavigationView
-import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.material.itemSelections
 import com.jakewharton.rxbinding3.view.clicks
-import com.squareup.picasso.Picasso
 import com.together.R
 
 import com.together.about.AboutFragment
@@ -25,18 +20,11 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
+import com.together.loggedout.LoginFragment
 import com.together.order.ProductsFragment
-import com.together.repository.Database
-import com.together.repository.Result
-import com.together.repository.auth.FireBaseAuth
-import com.together.repository.storage.getSingle
-import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
-import com.together.utils.hideIme
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.android.synthetic.buy.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -63,36 +51,40 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.loggedState.observe(this, Observer {
             when (it) {
 
                 is UiState.BASE_AUTH ->
-                    setLoggedIn(navigation_drawer, log_out)
+                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+                        supportFragmentManager,
+                        ProductsFragment(), ProductsFragment.TAG)
+                    )
+//                    setLoggedIn(navigation_drawer, log_out)
 
                 is UiState.LOGGEDOUT -> {
-                    setLoggedOut(navigation_drawer, log_out)
+                    setLoggedOut(navigation_drawer, btn_log_out)
                 }
             }
         })
 
-        disposable.add(log_out.clicks().subscribe {
+        disposable.add(btn_log_out.clicks().subscribe {
             drawer_layout.closeDrawers()
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         })
 
-        disposable.add(MainMessagePipe.uiEvent.subscribe {
-            when(it) {
-                is UiEvent.OpenDrawer -> {
-                    container.hideIme()
-                    drawer_layout.openDrawer(navigation_drawer)
-                }
-                is UiEvent.CloseDrawer -> {
-                    drawer_layout.closeDrawers()
-                }
-            }
-        })
+//        disposable.add(MainMessagePipe.uiEvent.subscribe {
+//            when(it) {
+//                is UiEvent.OpenDrawer -> {
+//                    container.hideIme()
+//                    drawer_layout.openDrawer(navigation_drawer)
+//                }
+//                is UiEvent.CloseDrawer -> {
+//                    drawer_layout.closeDrawers()
+//                }
+//            }
+//        })
 
     }
 
@@ -123,62 +115,67 @@ class MainActivity : AppCompatActivity() {
 
 
     fun setLoggedIn(navigation_drawer: NavigationView, logOut: View) {
+        MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+            supportFragmentManager,
+            ProductsFragment(), ProductsFragment.TAG)
+        )
 
-        val user = FireBaseAuth.getAuth()!!.currentUser!!
-
-        disposable.add(Database.buyer().getSingleExists().flatMap {
-            when (it) {
-                true -> Database.buyer().getSingle<Result.BuyerProfile>()
-                else -> Single.just(Result.Empty)
-            }
-
-        }.subscribe({
-            when (it) {
-                is Result.BuyerProfile -> {
-
-
-                }
-                is Result.Empty -> {
-                    val buyer = Result.BuyerProfile()
-
-                }
-
-            }
-
-
-        }, {
-            Log.e("EEEEE", "For debugging", it);
-        }))
-
-        setupDrawerNavigation(navigation_drawer)
-
-        val head = navigation_drawer.getHeaderView(0)!!
-        val avatar = head.findViewById<ImageView>(R.id.user_avatar)
-        head.findViewById<Button>(R.id.log_in).visibility = View.GONE
-        avatar.visibility = View.VISIBLE
-        logOut.visibility = View.VISIBLE
-        head.findViewById<TextView>(R.id.user_email).text = user.email
-        head.findViewById<TextView>(R.id.user_name).text = user.displayName
-
-        if (user.photoUrl != null) {
-            val p = Picasso.Builder(avatar.context).downloader(OkHttp3Downloader(avatar.context)).build()
-            p.load(user.photoUrl).placeholder(R.drawable.ic_avatar_placeholder_24dp).into(avatar)
-        }
+//        val user = FireBaseAuth.getAuth()!!.currentUser!!
+//        disposable.add(Database.buyer().getSingleExists().flatMap {
+//            when (it) {
+//                true -> Database.buyer().getSingle<Result.BuyerProfile>()
+//                else -> Single.just(Result.Empty)
+//            }
+//
+//        }.subscribe({
+//            when (it) {
+//                is Result.BuyerProfile -> {
+//
+//
+//                }
+//                is Result.Empty -> {
+//                    val buyer = Result.BuyerProfile()
+//
+//                }
+//
+//            }
+//        }, {
+//            Log.e("EEEEE", "For debugging", it);
+//        }))
+//
+//        setupDrawerNavigation(navigation_drawer)
+//
+//        val head = navigation_drawer.getHeaderView(0)!!
+//        val avatar = head.findViewById<ImageView>(R.id.user_avatar)
+//        head.findViewById<Button>(R.id.log_in).visibility = View.GONE
+//        avatar.visibility = View.VISIBLE
+//        logOut.visibility = View.VISIBLE
+//        head.findViewById<TextView>(R.id.user_email).text = user.email
+//        head.findViewById<TextView>(R.id.user_name).text = user.displayName
+//
+//        if (user.photoUrl != null) {
+//            val p = Picasso.Builder(avatar.context).downloader(OkHttp3Downloader(avatar.context)).build()
+//            p.load(user.photoUrl).placeholder(R.drawable.ic_avatar_placeholder_24dp).into(avatar)
+//        }
     }
 
 
     fun setLoggedOut(navigation_drawer: NavigationView, logOut: View) {
-        val head = navigation_drawer.getHeaderView(0)!!
-        head.findViewById<ImageView>(R.id.user_avatar).visibility = View.GONE
-        head.findViewById<ImageView>(R.id.user_avatar).setImageDrawable(null)
-        head.findViewById<TextView>(R.id.user_email).text = ""
-        head.findViewById<TextView>(R.id.user_name).text = ""
-        val logIn = head.findViewById<Button>(R.id.log_in)
-        logIn.visibility = View.VISIBLE
-        logOut.visibility = View.GONE
-        logIn.setOnClickListener {
-            MainMessagePipe.uiEvent.onNext(UiEvent.LogIn(logIn.context))
-        }
+        MainMessagePipe.uiEvent.onNext(
+            UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")
+        )
+//        val head = navigation_drawer.getHeaderView(0)!!
+//        head.findViewById<ImageView>(R.id.user_avatar).visibility = View.GONE
+//        head.findViewById<ImageView>(R.id.user_avatar).setImageDrawable(null)
+//        head.findViewById<TextView>(R.id.user_email).text = ""
+//        head.findViewById<TextView>(R.id.user_name).text = ""
+//        val logIn = head.findViewById<Button>(R.id.log_in)
+//        logIn.visibility = View.VISIBLE
+//        logOut.visibility = View.GONE
+//        logIn.setOnClickListener {
+//            MainMessagePipe.uiEvent.onNext(UiEvent.LogIn(logIn.context))
+//        }
+
 
 
     }

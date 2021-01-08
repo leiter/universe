@@ -3,7 +3,6 @@ package com.together.base
 import android.net.Uri
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import java.text.NumberFormat
 
 sealed class UiState {
 
@@ -78,7 +77,7 @@ sealed class UiState {
         }
         fun calculateAmountCountDisplay(): String {
             return if(unit!="kg") amountCount.toString().split(".")[0]
-            else amountCount.toString()
+            else amountCount.toString().replace(".",",")
         }
     }
 
@@ -125,31 +124,5 @@ sealed class UiState {
     ) : UiState(), Parcelable
 
 
-    data class ChatMessage(
-        override var _id: String = "",
-        var creatorId: String = "",
-        var name: String = "",
-        var text: String = "",
-        var photoUrl: String = "",
-        override var _mode: Int = MOVED
 
-    ) : UiState()
-
-    data class PostAnyMessage(
-        override var _id: String = "", var creatorId: String,
-        var name: String = "",
-        var text: String = "",
-        var photoUrl: String = "",
-        override var _mode: Int = MOVED
-
-    ) : UiState()
-
-
-    data class Unit(
-        var name: String = "",
-        var price: String = "",
-        var averageWeight: String = "",
-        override var _id: String = "",
-        override var _mode: Int = UNIT_UNDEFINED
-    ) : UiState()
 }
