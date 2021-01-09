@@ -29,9 +29,15 @@ class MainViewModel : ViewModel() {
                         newProduct.value = UiState.NewProductImage(it.uri!!)
                     else newProduct.value = UiState.NewProductImage(it.uri!!)
                 }
+                is Result.SmsMessage -> {
+                    smsMessageText = it.message
+                }
             }
         })
     }
+
+    var smsMessageText = ""
+    var telephoneNumber = "01782884137"
 
     val blockingLoaderState: MutableLiveData<UiState> by lazy {
         MutableLiveData<UiState>().also { it.value = UiState.LoadingDone }

@@ -14,9 +14,9 @@ interface Authentication {
 
 }
 
-class AuthentificationImpl @Inject constructor(context: Context) : Authentication {
+class AuthenticationImpl @Inject constructor(context: Context) : Authentication {
 
-    var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override fun createUser(userEmail: String, password: String) {
         firebaseAuth.createUserWithEmailAndPassword(userEmail, password)
@@ -27,7 +27,6 @@ class AuthentificationImpl @Inject constructor(context: Context) : Authenticatio
     override fun signIn(userEmail: String, password: String) {
         firebaseAuth.signInWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener {
-
         }
     }
 

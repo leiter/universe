@@ -42,7 +42,7 @@
         tools:itemCount="6"
         tools:listitem="@layout/item_basket" />
     <TextView
-        android:text="12,94€"
+        tools:text="12,94€"
         android:textSize="24sp"
         android:textStyle="bold"
         android:id="@+id/basket_sum"

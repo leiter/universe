@@ -2,8 +2,6 @@ package com.together.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -27,6 +25,8 @@ class BasketFragment : DialogFragment() {
             val pos = adapter.data.indexOf(adapter.data.first { input._id == it._id })
             viewModel.basket.value?.remove(viewModel.basket.value!!.first { it._id == input._id })
             adapter.notifyItemRemoved(pos)
+            val basketSum = dialog!!.findViewById<TextView>(R.id.basket_sum)
+            basketSum.text = calculatePurchaseSum(viewModel.basket.value!!)
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
             if (viewModel.basket.value?.size == 0) dismiss()
         }
@@ -45,14 +45,12 @@ class BasketFragment : DialogFragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        return AlertDialog.Builder(requireActivity(),R.style.MyDialogTheme).setView(layout).create()
+        return AlertDialog.Builder(requireActivity(), R.style.MyDialogTheme).setView(layout).create()
     }
 
-    private fun calculatePurchaseSum(list:MutableList<UiState.Article>) : String {
+    private fun calculatePurchaseSum(list: MutableList<UiState.Article>): String {
         var sum = 0.0
-        list.forEach { sum += it.amountCount*it.priceDigit }
+        list.forEach { sum += it.amountCount * it.priceDigit }
         return "Gesamtpreis    %.2f€".format(sum)
     }
-
-
 }

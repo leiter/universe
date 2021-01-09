@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/products"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 
     <RelativeLayout
         android:id="@+id/toolbar"
@@ -15,11 +15,9 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"
-        android:padding="4dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        >
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_manage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +37,6 @@
             android:layout_centerVertical="true"
             android:layout_gravity="end"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_menu_hamburger"
             android:visibility="visible" />
 
         <TextView
@@ -50,7 +47,7 @@
             android:layout_toStartOf="@id/btn_delete_product"
             android:layout_toEndOf="@id/btn_manage"
             android:gravity="center"
-            android:textSize="24dp"
+            android:textSize="24sp"
             tools:text="Linda" />
 
         <TextView
@@ -129,7 +126,7 @@
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             app:boxBackgroundColor="@color/white"
             app:layout_constraintStart_toEndOf="@+id/product_image"
@@ -169,6 +166,19 @@
                 android:lines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <ImageView
+            android:id="@+id/btn_product_amount_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingEnd="4dp"
+            android:src="@drawable/ic_clear"
+            app:layout_constraintBottom_toBottomOf="@+id/product_amount_layout"
+            app:layout_constraintEnd_toEndOf="@+id/product_amount_layout"
+            app:layout_constraintTop_toTopOf="@+id/product_amount_layout" />
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/search_products_layout"
             android:layout_width="0dp"
@@ -189,7 +199,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-
+            android:id="@+id/btn_product_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="20dp"

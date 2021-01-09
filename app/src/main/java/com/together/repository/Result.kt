@@ -57,6 +57,8 @@ sealed class Result {
         var emailAddress: String = ""
     ) : Result()
 
+    data class SmsMessage(val message: String)
+
 
     data class Article(
         override var id: String = "",
@@ -80,7 +82,8 @@ sealed class Result {
         override var id: String = "",
         override var mode: Int = UNDEFINED,
         var user: User = User(),
-        var articles: List<Article> = emptyList()
+        var articles: List<Article> = emptyList(),
+
     ) : Result()
 
 
@@ -139,16 +142,11 @@ sealed class Result {
         var dayOfWeek: String,
         var begin: String = "",
         var end: String = ""
-    )
+    ) : Result() {
+        override var id: String = ""
+        override var mode: Int = UNDEFINED
 
-    data class ChatMessage(
-        override var id: String = "",
-        override var mode: Int = UNDEFINED,
-        val creatorId: String = "",
-        val name: String = "",
-        val text: String = "",
-        val photoUrl: String = ""
-    ) : Result()
+    }
 
 }
 

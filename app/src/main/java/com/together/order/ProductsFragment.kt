@@ -2,12 +2,12 @@ package com.together.order
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.method.DigitsKeyListener
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,8 +34,12 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
     private lateinit var adapter: ProductAdapter
     private lateinit var productData: List<UiState.Article>
+    private val focusChangeHandler = FocusListener()
 
     private var mode: Int? = null
+
+    private val digitsWithComma  = DigitsKeyListener.getInstance("0123456789,")
+    private val digitsWithOutComma  = DigitsKeyListener.getInstance("0123456789")
 
     private lateinit var picasso: Picasso
 
@@ -65,7 +69,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-        viewModel.presentedProduct.observe(viewLifecycleOwner, Observer {
+        viewModel.presentedProduct.observe(viewLifecycleOwner, {
             title.text = it.productName
             sub_title.text = it.productDescription
             load_image_progress.visibility = View.VISIBLE
@@ -120,6 +124,9 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             )
         }
 
+        product_search.onFocusChangeListener = focusChangeHandler
+        product_amount.onFocusChangeListener = focusChangeHandler
+
         Handler().postDelayed({
             disposable.add(
                 product_search.textChanges()
@@ -145,6 +152,11 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
+                        if(it.contains(",")||viewModel.presentedProduct.value!!.unit!="kg" ){
+                            product_amount.keyListener = digitsWithOutComma
+                        } else {
+                            product_amount.keyListener = digitsWithComma
+                        }
                         val v = NumberFormat.getInstance().parse(it.toString())!!
                         var i = v.toDouble() *
                                 NumberFormat.getInstance()
@@ -168,20 +180,38 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 }
             }
         })
-
     }
 
     companion object {
-
         const val TAG: String = "ProductsFragment"
         const val MODE_PARAM = "mode"
-        const val BUYER = 0
-        const val SELLER = 1
+    }
 
-        fun newInstance(mode: Int): ProductsFragment {
-            return ProductsFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(MODE_PARAM, mode)
+    inner class FocusListener : View.OnFocusChangeListener {
+        override fun onFocusChange(p0: View?, p1: Boolean) {
+            if(p0?.id==R.id.product_search){
+                if(p1){
+                    btn_product_search.setImageResource(R.drawable.ic_clear)
+                    btn_product_search.isClickable = true
+                    btn_product_search.setOnClickListener{
+                        product_search.setText("")
+                    }
+                } else {
+                    btn_product_search.setImageResource(R.drawable.ic_search)
+                    btn_product_search.setOnClickListener(null)
+                    btn_product_search.isClickable = false
+                }
+            }
+
+            if(p0?.id==R.id.product_amount){
+                if(p1){
+                    btn_product_amount_clear.setImageResource(R.drawable.ic_clear)
+                    btn_product_amount_clear.setOnClickListener{
+                        product_amount.setText("")
+                    }
+                } else {
+                    btn_product_amount_clear.setImageBitmap(null)
+                    btn_product_amount_clear.setOnClickListener(null)
                 }
             }
         }
@@ -198,7 +228,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         val amountCount = inputText.replace(",", ".").toDouble()
         if (amountCount == 0.0) {
             MainMessagePipe.uiEvent.onNext(
-                UiEvent.ShowToast(requireContext(), R.string.product_amount_is_null, Gravity.CENTER)
+                UiEvent.ShowToast(requireContext(),
+                    R.string.product_amount_is_null, Gravity.CENTER)
             )
             return
         }

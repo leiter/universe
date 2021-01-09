@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/badge"
-    android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/badge"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackgroundBorderless">
 
     <ImageView
-            android:id="@+id/badge_button"
-            android:padding="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_shopping_cart_black_24dp"/>
+        android:id="@+id/badge_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:src="@drawable/ic_shopping_cart_black_24dp" />
 
     <TextView
-            android:id="@+id/badge_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:clickable="false"
-            android:focusable="false"
-            android:visibility="visible"
-            android:gravity="center"
-            android:background="@drawable/batch_bg"
-            tools:text="22"
-            android:text="0"
-            android:textColor="#FFF"
-            android:textSize="8sp"
-            android:textStyle="bold"/>
+        android:id="@+id/badge_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/batch_bg"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="#FFF"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        tools:text="22" />
 
 </FrameLayout>

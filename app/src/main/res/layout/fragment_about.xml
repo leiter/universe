@@ -1,51 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".about.AboutFragment">
-
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".about.AboutFragment">
 
     <FrameLayout
-            android:id="@+id/title_bar"
-            android:background="@color/brightGreen"
-            app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="24dp"
+        android:background="@color/brightGreen"
+        app:layout_constraintTop_toTopOf="parent">
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
         <ImageView
-                android:src="@drawable/ic_arrow_back"
-                android:padding="24dp"
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <ImageView
+            android:id="@+id/btn_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="24dp"
+            android:src="@drawable/ic_settings" />
 
     </FrameLayout>
 
 
     <TextView
-            android:id="@+id/about_disclaimer"
-            app:layout_constraintTop_toBottomOf="@id/title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:lineSpacingExtra="8.5dp"
-            android:text="@string/about_disclaimer"
-            />
+        android:id="@+id/about_disclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:lineSpacingExtra="8.5dp"
+        android:text="@string/about_disclaimer"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
     <com.google.android.material.button.MaterialButton
-            android:id="@+id/show_licences"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:backgroundTint="@color/brightGreen"
-            app:cornerRadius="72dp"
-            android:text="Lizenzen anzeigen"
-            android:textColor="@color/white"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+        android:id="@+id/show_licences"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:backgroundTint="@color/brightGreen"
+        android:text="Angebote anzeigen"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:cornerRadius="72dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
