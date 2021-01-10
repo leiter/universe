@@ -22,6 +22,7 @@ sealed class UiState {
     }
 
 
+    data class LoadingProgress(val progressViewId: Int, val show: Boolean)
 
     object Loading : UiState() {
         override var _id = "StateLoggedOut"

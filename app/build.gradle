@@ -121,6 +121,7 @@ dependencies {
     implementation 'com.jakewharton.rxbinding3:rxbinding-material:3.0.0-alpha2'
 
     implementation "com.squareup.picasso:picasso:2.5.2"
+    implementation "com.squareup.okhttp3:okhttp:3.10.0"
     implementation "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
 
     testImplementation 'junit:junit:4.13'

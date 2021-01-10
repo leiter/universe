@@ -3,7 +3,6 @@ package com.together.order
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.DigitsKeyListener
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +22,7 @@ import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import com.together.utils.dataArticleToUi
+import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.batch_it.*
@@ -66,8 +66,12 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         price_amount.setText("0,00€")
-        picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
+//        picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
+        viewModel.imageLoadingProgress.observe(viewLifecycleOwner,{
+            load_image_progress.visibility = View.GONE
+        })
 
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
             title.text = it.productName
@@ -78,17 +82,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             product_amount.setSelection(amoutCountText.length)
             products.clearFocus()
             product_amount.requestFocus()
-            picasso.load(it.remoteImageUrl)
-                .error(R.drawable.obst_1)
-                .into(product_image, object : Callback {
-                    override fun onSuccess() {
-                        load_image_progress.visibility = View.GONE
-                    }
-
-                    override fun onError() {
-                        load_image_progress.visibility = View.GONE
-                    }
-                })
+            requireContext().loadImage(product_image,it.remoteImageUrl)
         })
 
         article_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -127,7 +121,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         product_search.onFocusChangeListener = focusChangeHandler
         product_amount.onFocusChangeListener = focusChangeHandler
 
-        Handler().postDelayed({
+        Handler().postDelayed({ // fixme use complete loading data
             disposable.add(
                 product_search.textChanges()
                     .debounce(400, TimeUnit.MILLISECONDS)
@@ -193,9 +187,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 if(p1){
                     btn_product_search.setImageResource(R.drawable.ic_clear)
                     btn_product_search.isClickable = true
-                    btn_product_search.setOnClickListener{
-                        product_search.setText("")
-                    }
+                    btn_product_search.setOnClickListener{ product_search.setText("") }
                 } else {
                     btn_product_search.setImageResource(R.drawable.ic_search)
                     btn_product_search.setOnClickListener(null)
@@ -206,9 +198,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             if(p0?.id==R.id.product_amount){
                 if(p1){
                     btn_product_amount_clear.setImageResource(R.drawable.ic_clear)
-                    btn_product_amount_clear.setOnClickListener{
-                        product_amount.setText("")
-                    }
+                    btn_product_amount_clear.setOnClickListener{ product_amount.setText("") }
                 } else {
                     btn_product_amount_clear.setImageBitmap(null)
                     btn_product_amount_clear.setOnClickListener(null)

@@ -73,7 +73,9 @@
         android:layout_width="match_parent"
         android:layout_height="244dp"
         android:layout_below="@id/toolbar"
-        android:background="@color/textColorMain">
+        android:background="@color/textColorMain"
+
+        >
 
         <ImageView
             android:id="@+id/product_image"

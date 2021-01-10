@@ -29,13 +29,17 @@ class MainViewModel : ViewModel() {
                         newProduct.value = UiState.NewProductImage(it.uri!!)
                     else newProduct.value = UiState.NewProductImage(it.uri!!)
                 }
-                is Result.SmsMessage -> {
-                    smsMessageText = it.message
+                is Result.ImageLoaded -> {
+                    imageLoadingProgress.value = UiState.LoadingProgress(it.progressId, it.show)
                 }
+
             }
         })
     }
 
+    val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
+        it.value = UiState.LoadingProgress(-1, false)
+    }
     var smsMessageText = ""
     var telephoneNumber = "01782884137"
 

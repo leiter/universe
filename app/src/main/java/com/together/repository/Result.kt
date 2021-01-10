@@ -15,6 +15,11 @@ sealed class Result {
         const val UNDEFINED = -1
     }
 
+    data class ImageLoaded(val progressId: Int, val show:Boolean) : Result() {
+        override var id: String = "No result"
+        override var mode: Int = UNDEFINED
+    }
+
     object Empty : Result() {
         override var id: String = "No result"
         override var mode: Int = UNDEFINED
@@ -54,17 +59,16 @@ sealed class Result {
         override var id: String = "",
         override var mode: Int = UNDEFINED,
         var displayName: String = "",
-        var emailAddress: String = ""
-    ) : Result()
+        var emailAddress: String = "",
+        var telephoneNumber: String = "",
 
-    data class SmsMessage(val message: String)
+    ) : Result()
 
 
     data class Article(
         override var id: String = "",
         override var mode: Int = UNDEFINED,
         var productId: Int = -1,
-
         var productName: String = "",
         var productDescription: String? = null,
         var available: Boolean = false,
@@ -72,7 +76,8 @@ sealed class Result {
         var price: Double = 0.0,
         var imageUrl: String = "",
         var discount: Long = 0L,
-        var category: String = ""
+        var category: String = "",
+        var detailInfo: String = ""
 
 //         @get:PropertyName("adsfg")
 //        val fuckck:String =  "Fuck"
@@ -139,7 +144,7 @@ sealed class Result {
         var houseNumber: String = "",
         var city: String = "",
         var zipcode: String = "",
-        var dayOfWeek: String,
+        var dayOfWeek: String = "",
         var begin: String = "",
         var end: String = ""
     ) : Result() {
