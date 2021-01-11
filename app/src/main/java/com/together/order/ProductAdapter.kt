@@ -12,7 +12,6 @@ import com.together.base.UiState.Companion.REMOVED
 
 class ProductAdapter(private val click: ItemClicked,
                      var data: MutableList<UiState.Article> = mutableListOf())
-
     : RecyclerView.Adapter<ArticleViewHolder>() {
 
     interface ItemClicked {
@@ -24,10 +23,10 @@ class ProductAdapter(private val click: ItemClicked,
         val index = data.indexOf(item)
         when (item._mode) {
             ADDED -> data.add(item)
-            REMOVED -> data.removeAt(data.indexOf(data.filter { it._id == item._id }[0]))
+            REMOVED -> data.removeAt(data.indexOf(data.first { it._id == item._id }))
             CHANGED -> {
                 if(index == -1) {
-                    val i = data.indexOf(data.filter { it._id == item._id }[0])
+                    val i = data.indexOf(data.first { it._id == item._id })
                     data.removeAt(i)
                     data.add(i, item)
                 } else {
@@ -55,4 +54,5 @@ class ProductAdapter(private val click: ItemClicked,
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         holder.bindItem(data[position])
     }
+
 }

@@ -1,8 +1,6 @@
 package com.together.utils
 
 import android.content.Context
-import android.net.Uri
-import android.telecom.Call
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -28,7 +26,7 @@ fun Context.loadImage(imageView: ImageView, url: String){
         .into(imageView, object : Callback {
             override fun onSuccess() {
                 MainMessagePipe.mainThreadMessage.onNext(
-                    Result.ImageLoaded(R.id.load_image_progress, false))
+                    Result.ImageLoaded(R.id.pr_load_image_progress, false))
             }
 
             override fun onError() {
@@ -38,12 +36,12 @@ fun Context.loadImage(imageView: ImageView, url: String){
                     .into(imageView, object : Callback {
                         override fun onSuccess() {
                             MainMessagePipe.mainThreadMessage.onNext(
-                                Result.ImageLoaded(R.id.load_image_progress,false))
+                                Result.ImageLoaded(R.id.pr_load_image_progress,false))
                         }
 
                         override fun onError() {
                             MainMessagePipe.mainThreadMessage.onNext(
-                                Result.ImageLoaded(R.id.load_image_progress,false))
+                                Result.ImageLoaded(R.id.pr_load_image_progress,false))
                         }
 
                     }) // Maybe add callback again.

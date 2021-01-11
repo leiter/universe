@@ -70,13 +70,13 @@ sealed class Result {
         override var mode: Int = UNDEFINED,
         var productId: Int = -1,
         var productName: String = "",
-        var productDescription: String? = null,
         var available: Boolean = false,
         var unit: String = "",
         var price: Double = 0.0,
+        var weighPerPiece: Double = 0.0,
         var imageUrl: String = "",
-        var discount: Long = 0L,
         var category: String = "",
+        var searchTerms: String= "",
         var detailInfo: String = ""
 
 //         @get:PropertyName("adsfg")

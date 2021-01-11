@@ -10,7 +10,6 @@ sealed class UiState {
     abstract var _mode: Int
 
     companion object {
-
         const val ADDED = 0
         const val CHANGED = 1
         const val MOVED = 2
@@ -18,30 +17,29 @@ sealed class UiState {
         const val UNDEFINED = -1
     }
 
-
     data class LoadingProgress(val progressViewId: Int, val show: Boolean)
 
     object Loading : UiState() {
         override var _id = "StateLoggedOut"
-        override var _mode: Int = MOVED
+        override var _mode: Int = UNDEFINED
     }
     object LoadingDone : UiState() {
         override var _id = "StateLoggedOut"
-        override var _mode: Int = MOVED
+        override var _mode: Int = UNDEFINED
     }
     object LOGGEDOUT : UiState() {
         override var _id = "StateLoggedOut"
-        override var _mode: Int = MOVED
+        override var _mode: Int = UNDEFINED
     }
 
     object ACCOUNT_DELETED : UiState() {
         override var _id = "StateLoggedOut"
-        override var _mode: Int = MOVED
+        override var _mode: Int = UNDEFINED
     }
 
     object BASE_AUTH : UiState() {
         override var _id = "StateLoggedIn"
-        override var _mode: Int = MOVED
+        override var _mode: Int = UNDEFINED
     }
 
     data class Article(
@@ -58,16 +56,16 @@ sealed class UiState {
         var priceDigit: Double = 0.0,
         var category: String = "",
         var detailInfo: String = "",
+        var searchTerms: String = "",
+        var weightPerPiece: Double = 0.0,
+
 
         override var _id: String = "",
-        override var _mode: Int = MOVED
+        override var _mode: Int = UNDEFINED
 
     ) : UiState(){
         var amountDisplay: String = prepareAmountDisplay()
-        var amountCountDisplay: String = if(unit!="kg") amountCount.toString().split(".")[0]
-                                        else amountCount.toString()
-        var priceDisplay: String = "0,00€"
-        get() { return "%.2f€".format((priceDigit*amountCount)); }
+        val priceDisplay: String get() { return "%.2f€".format((priceDigit*amountCount)); }
         private fun prepareAmountDisplay(): String {
             val amountStart: String
             if (unit!="kg"){
@@ -105,7 +103,7 @@ sealed class UiState {
         var _urls: MutableList<String> = mutableListOf(),
 
         var _knownClientIds: MutableList<String> = mutableListOf(),
-        override var _mode: Int = MOVED
+        override var _mode: Int = UNDEFINED
 
     ) : UiState()
 
@@ -115,12 +113,12 @@ sealed class UiState {
                       var street: String = "",
                       var houseNumber: String = "",
                       var city: String = "",
-                      var zipcode: String = "",
+                      var zipCode: String = "",
                       var dayOfWeek: String,
                       var begin: String = "",
                       var end: String = "",
                       override var _id: String = "",
-                      override var _mode: Int = MOVED
+                      override var _mode: Int = UNDEFINED
     ) : UiState(), Parcelable
 
 

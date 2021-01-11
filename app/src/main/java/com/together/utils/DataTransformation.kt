@@ -8,7 +8,6 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
     return UiState.Article(
         _id = this.id,
         productName = this.productName,
-        productDescription = this.productDescription,
         remoteImageUrl = this.imageUrl,
         unit = this.unit,
         pricePerUnit = "%.2f€".format(this.price).replace(".",","),
@@ -16,7 +15,10 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
         _mode = this.mode,
         available = this.available,
         category = this.category,
-        detailInfo = this.detailInfo
+        detailInfo = this.detailInfo,
+        searchTerms = "${this.searchTerms},${this.category}",
+        weightPerPiece = this.weighPerPiece,
+        productId = this.productId
     )
 }
 
@@ -27,7 +29,6 @@ inline fun <reified T : UiState> errorActions(profile: T, action: () -> Unit)  :
         val p = prop.get(profile) as String
         if(p.isEmpty()) {
             action()
-//            MainMessagePipe.uiEvent.onNext(UiEvent.ShowToast(requireContext(), R.string.developer_error_hint))
             return false
         }
     }
