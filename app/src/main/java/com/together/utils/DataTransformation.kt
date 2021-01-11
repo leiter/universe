@@ -14,7 +14,9 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
         pricePerUnit = "%.2f€".format(this.price).replace(".",","),
         priceDigit = this.price,
         _mode = this.mode,
-        available = this.available
+        available = this.available,
+        category = this.category,
+        detailInfo = this.detailInfo
     )
 }
 

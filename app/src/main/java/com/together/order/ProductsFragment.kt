@@ -10,10 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.widget.textChanges
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import com.together.R
 import com.together.base.*
 import com.together.dialogs.BasketFragment
@@ -41,8 +38,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     private val digitsWithComma  = DigitsKeyListener.getInstance("0123456789,")
     private val digitsWithOutComma  = DigitsKeyListener.getInstance("0123456789")
 
-    private lateinit var picasso: Picasso
-
     override fun clicked(item: UiState.Article) {
 
         val b = viewModel.basket.value?.find { item._id == it._id }
@@ -66,7 +61,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         price_amount.setText("0,00€")
-//        picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
+        btn_menu_search.setOnClickListener {
+            title.visibility = View.INVISIBLE
+            tv_search_products_layout.visibility = View.VISIBLE
+            btn_menu_search.setImageResource(R.drawable.ic_clear)
+            btn_menu_search.setOnClickListener{ tv_search_products_layout.setText("") }
+            tv_search_products_layout.requestFocus()
+        }
+
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,{
@@ -74,8 +76,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         })
 
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
-            title.text = it.productName
-            sub_title.text = it.productDescription
+//            title.text = it.productName
+//            sub_title.text = it.productDescription
             load_image_progress.visibility = View.VISIBLE
             val amoutCountText = it.calculateAmountCountDisplay()
             product_amount.setText(amoutCountText)
@@ -118,12 +120,13 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             )
         }
 
+        tv_search_products_layout.onFocusChangeListener = focusChangeHandler
         product_search.onFocusChangeListener = focusChangeHandler
         product_amount.onFocusChangeListener = focusChangeHandler
 
         Handler().postDelayed({ // fixme use complete loading data
             disposable.add(
-                product_search.textChanges()
+                tv_search_products_layout.textChanges()
                     .debounce(400, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .map { searchTerm ->
@@ -202,6 +205,23 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 } else {
                     btn_product_amount_clear.setImageBitmap(null)
                     btn_product_amount_clear.setOnClickListener(null)
+                }
+            }
+
+            if(p0?.id == R.id.tv_search_products_layout){
+                if(p1){
+                    btn_menu_search.setImageResource(R.drawable.ic_clear_48)
+                    btn_menu_search.setOnClickListener{ tv_search_products_layout.setText("") }
+
+                } else {
+                    tv_search_products_layout.visibility = View.INVISIBLE
+                    title.visibility = View.VISIBLE
+                    btn_menu_search.setImageResource(R.drawable.ic_search_48)
+                    btn_menu_search.setOnClickListener {
+                        title.visibility = View.INVISIBLE
+                        tv_search_products_layout.visibility = View.VISIBLE
+                        tv_search_products_layout.requestFocus()
+                    }
                 }
             }
         }

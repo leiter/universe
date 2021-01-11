@@ -16,9 +16,6 @@ sealed class UiState {
         const val MOVED = 2
         const val REMOVED = 3
         const val UNDEFINED = -1
-
-        const val UNIT_UNDEFINED = -1
-
     }
 
 
@@ -48,7 +45,6 @@ sealed class UiState {
     }
 
     data class Article(
-        override var _id: String = "",
         var productId: Int = -1,
         var productName: String = "",
         var productDescription: String? = null,
@@ -60,7 +56,10 @@ sealed class UiState {
         var unit: String = "",
         var amountCount: Double = 0.0,
         var priceDigit: Double = 0.0,
+        var category: String = "",
+        var detailInfo: String = "",
 
+        override var _id: String = "",
         override var _mode: Int = MOVED
 
     ) : UiState(){
