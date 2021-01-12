@@ -9,12 +9,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import com.jakewharton.rxbinding3.view.clicks
 import com.together.R
+import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.loggedout.LoginFragment
 import com.together.order.ProductsFragment
+import com.together.splash.SplashScreenFragment
 import com.together.utils.AQ
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.buy.activity_main.*
@@ -45,26 +47,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.loggedState.observe(this, {
-            when (it) {
+        MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+            supportFragmentManager,
+            SplashScreenFragment(), AboutFragment.TAG))
 
-                is UiState.BASE_AUTH ->
-                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-                        supportFragmentManager,
-                        ProductsFragment(), ProductsFragment.TAG)
-                    )
 
-                is UiState.LOGGEDOUT -> {
-                    MainMessagePipe.uiEvent.onNext(
-                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
-                    )
-                }
-            }
-        })
 
-        disposable.add(btn_log_out.clicks().subscribe {
-            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
-        })
+//        viewModel.loggedState.observe(this, {
+//            when (it) {
+//
+//                is UiState.BASE_AUTH ->
+//                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+//                        supportFragmentManager,
+//                        ProductsFragment(), ProductsFragment.TAG)
+//                    )
+//
+//                is UiState.LOGGEDOUT -> {
+//                    MainMessagePipe.uiEvent.onNext(
+//                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
+//                    )
+//                }
+//            }
+//        })
+//
+//        disposable.add(btn_log_out.clicks().subscribe {
+//            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
+//        })
 
     }
 

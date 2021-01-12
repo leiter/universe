@@ -60,7 +60,8 @@ object TestData {
             price = 2.9,
             unit = "Stück",
             category = "Stangensellerie",
-            detailInfo = "Aus der Umgebung. Die Kartoffeln wurden in dem Biohof Wizenau bei Buxdehude nach den Anforderungen des europäischen Biosiegels angebaut."
+            detailInfo = "Aus der Umgebung. Die Kartoffeln wurden in dem Biohof Wizenau bei Buxdehude nach den Anforderungen des europäischen Biosiegels angebaut.",
+            weighPerPiece = 1.0
         ),
         Result.Article(
             "",
@@ -72,8 +73,8 @@ object TestData {
             price = 3.69,
             unit = "Bund",
             category = "Karotten",
-            detailInfo = "Vom Biohof Waldheide. Die Karotten wurden in dem Biohof Wizenau bei Buxdehude nach den Anforderungen des europäischen Biosiegels angebaut."
-
+            detailInfo = "Vom Biohof Waldheide. Die Karotten wurden in dem Biohof Wizenau bei Buxdehude nach den Anforderungen des europäischen Biosiegels angebaut.",
+            weighPerPiece = 1.0
         ),
         Result.Article(
             "",
@@ -85,7 +86,8 @@ object TestData {
             price = 5.69,
             unit = "Schale",
             category = "Erdbeeren",
-            detailInfo = "Vom Biohof Waldheide. Die Erdbeeren stammen aus Friedenau vom Hof Bio Müller. Bei der Aufzucht wurden keinerlei Insektiziede verwendet."
+            detailInfo = "Vom Biohof Waldheide. Die Erdbeeren stammen aus Friedenau vom Hof Bio Müller. Bei der Aufzucht wurden keinerlei Insektiziede verwendet.",
+            weighPerPiece = 1.0
         ),
         Result.Article(
             "",
@@ -139,7 +141,6 @@ object TestData {
             category = "Apfel",
             detailInfo = "Süß-sauerer Apfel. Die Äpfel wurden in Stralsund geerntet und sind mit dem europäischen Biosiegel versehen. Die Äpfel wurden nicht gespritzt und auch nicht gewachst.",
             weighPerPiece = 0.098
-
         ),
     )
 
@@ -163,7 +164,7 @@ object TestData {
         )
     )
 
-    val marketListItems = listOf(
+    private val marketListItems = listOf(
         Result.Market(
             name = "Wochenmarkt Onkel Toms Hütte",
             street = "Onkel-Tom-Straße",

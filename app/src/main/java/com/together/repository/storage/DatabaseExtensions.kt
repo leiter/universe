@@ -56,7 +56,7 @@ inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T>
 
 }
 
-fun DatabaseReference.getSingle(child: String): Single<Boolean> {
+fun DatabaseReference.getSingle(): Single<Boolean> {
     return Single.create { emitter ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -64,8 +64,8 @@ fun DatabaseReference.getSingle(child: String): Single<Boolean> {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                val i = p0.hasChild(child)
-                emitter.onSuccess(i)
+                // Make some test
+                emitter.onSuccess(true)
             }
         }
         addListenerForSingleValueEvent(listener)

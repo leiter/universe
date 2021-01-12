@@ -13,6 +13,9 @@ class MainViewModel : ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
+    lateinit var productData: List<UiState.Article>
+
+
     init {
         // wire DataSource to UiState
 
@@ -41,7 +44,7 @@ class MainViewModel : ViewModel() {
         it.value = UiState.LoadingProgress(-1, false)
     }
     var smsMessageText = ""
-    var telephoneNumber = "01782884137"
+    var telephoneNumber = "01786021638"
 
     val blockingLoaderState: MutableLiveData<UiState> by lazy {
         MutableLiveData<UiState>().also { it.value = UiState.LoadingDone }

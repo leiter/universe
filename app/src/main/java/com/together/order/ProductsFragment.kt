@@ -33,18 +33,19 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     private lateinit var adapter: ProductAdapter
     private lateinit var productData: List<UiState.Article>
     private val focusChangeHandler = FocusListener()
-    private val digitsWithComma  = DigitsKeyListener.getInstance("0123456789,")
-    private val digitsWithOutComma  = DigitsKeyListener.getInstance("0123456789")
-    private var itemIndexScrollTo: Int  = -1
+    private val digitsWithComma = DigitsKeyListener.getInstance("0123456789,")
+    private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
+    private var itemIndexScrollTo: Int = -1
 
-    override fun clicked(item: UiState.Article) { viewModel.presentedProduct.value = item
-        if (!::productData.isInitialized){
+    override fun clicked(item: UiState.Article) {
+        viewModel.presentedProduct.value = item
+        if (!::productData.isInitialized) {
             productData = adapter.data.toMutableList()
         }
         itemIndexScrollTo = productData.lastIndexOf(item)
         Handler().postDelayed({
-            ( article_list.layoutManager!! as LinearLayoutManager)
-                .scrollToPositionWithOffset(itemIndexScrollTo,0)
+            (article_list.layoutManager!! as LinearLayoutManager)
+                .scrollToPositionWithOffset(itemIndexScrollTo, 0)
         }, 1000L)
     }
 
@@ -65,7 +66,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             et_menu_search_products.requestFocus()
         }
 
-        viewModel.imageLoadingProgress.observe(viewLifecycleOwner,{ pr_load_image_progress.visibility = View.GONE })
+        viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
+            { pr_load_image_progress.visibility = View.GONE })
 
         viewModel.presentedProduct.observe(viewLifecycleOwner, { setPresentedProduct(it) })
 
@@ -73,7 +75,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         adapter = ProductAdapter(this)
         article_list.adapter = adapter
 
-        fab_add_product.setOnClickListener { putIntoBasket(viewModel.presentedProduct.value!!) }
+        fab_add_product.setOnClickListener { putIntoBasket() }
 
         val products = Database.providerArticles("FmfwB1HVmMdrVib6dqSXkWauOuP2")  //todo
 
@@ -87,13 +89,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             })
 
         btn_menu_manage.setOnClickListener {
-            ManageDialog().show(requireActivity().supportFragmentManager,"ManageDialog")
+            ManageDialog().show(requireActivity().supportFragmentManager, "ManageDialog")
         }
         btn_menu_shopping_cart.setOnClickListener {
             if (viewModel.basket.value!!.size > 0)
                 BasketFragment().show(requireActivity().supportFragmentManager, "Basket")
             else MainMessagePipe.uiEvent.onNext(
-                UiEvent.ShowToast(requireContext(),
+                UiEvent.ShowToast(
+                    requireContext(),
                     R.string.empty_basket_msg, Gravity.CENTER
                 )
             )
@@ -103,8 +106,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         et_product_amount.onFocusChangeListener = focusChangeHandler
 
         btn_activate_counter.setOnClickListener { clickActivateCounter() }
-        btn_plus.setOnClickListener { clickPlus() }
-        btn_minus.setOnClickListener { clickMinus() }
+        btn_plus.setOnClickListener { clickPlusOrMinus(true) }
+        btn_minus.setOnClickListener { clickPlusOrMinus(false) }
 
         Handler().postDelayed({ // fixme use complete loading data
             disposable.add(
@@ -112,19 +115,21 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                     .debounce(400, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .map { searchTerm ->
-                        if (!::productData.isInitialized){
+                        if (!::productData.isInitialized) {
                             productData = adapter.data.toMutableList()
                         }
                         productData.filter {
-                            it.productName.startsWith(searchTerm,ignoreCase = true) ||
-                                    it.searchTerms.matches(".*$searchTerm.*"
-                                        .toRegex(RegexOption.IGNORE_CASE))
+                            it.productName.startsWith(searchTerm, ignoreCase = true) ||
+                                    it.searchTerms.matches(
+                                        ".*$searchTerm.*"
+                                            .toRegex(RegexOption.IGNORE_CASE)
+                                    )
                         }
                     }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { filtered -> adapter.setFilteredList(filtered.toMutableList()) }
             )
-        },1000L)
+        }, 1000L)
 
         disposable.add(
             et_product_amount.textChanges()
@@ -132,14 +137,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
-                        if(it.contains(",")||viewModel.presentedProduct.value!!.unit!="kg" ){
+                        if (it.contains(",") || inFocus().unit != "kg") {
                             et_product_amount.keyListener = digitsWithOutComma
                         } else {
                             et_product_amount.keyListener = digitsWithComma
                         }
                         val v = NumberFormat.getInstance().parse(it.toString())!!
-                        viewModel.presentedProduct.value!!.amountCount = v.toDouble()
-                        tv_price_amount.setText(viewModel.presentedProduct.value!!.priceDisplay)
+                        inFocus().amountCount = v.toDouble()
+                        tv_price_amount.setText(inFocus().priceDisplay)
                     } else {
                         tv_price_amount.setText("0,00€")
                     }
@@ -155,19 +160,21 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         })
     }
 
-    private fun clickMinus() {
-        val newVal = Integer.parseInt(tv_counter.text.toString()) - 1
-        if(newVal==0){
-            btn_activate_counter.visibility = View.VISIBLE
-            counter.visibility = View.INVISIBLE
-            tv_counter.text = "0"
-            return
-        }
-        tv_counter.text = newVal.toString()
+    private fun inFocus(): UiState.Article {
+        return viewModel.presentedProduct.value!!
     }
 
-    private fun clickPlus() {
-        val newVal = Integer.parseInt(tv_counter.text.toString()) + 1
+    private fun clickPlusOrMinus(isPlus: Boolean) {
+        val toAdd = if (isPlus) 1 else -1
+        var newVal = inFocus().pieceCounter + toAdd
+        if (newVal <= 0) {
+            btn_activate_counter.visibility = View.VISIBLE
+            counter.visibility = View.INVISIBLE
+            newVal = 0
+        }
+        inFocus().pieceCounter = newVal
+        val v = inFocus().calculateAmountCountDisplay()
+        et_product_amount.setText(v)
         tv_counter.text = newVal.toString()
     }
 
@@ -175,43 +182,65 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         const val TAG: String = "ProductsFragment"
     }
 
-    private fun clickActivateCounter(){
+    private fun clickActivateCounter() {
         btn_activate_counter.visibility = View.INVISIBLE
         counter.visibility = View.VISIBLE
-        tv_counter.text = "1"
+        val amountStr = et_product_amount.text.toString()
+        val isEmpty = inFocus().amountCount == 0.0 || amountStr.isEmpty()
+        if (isEmpty) {
+            inFocus().pieceCounter = 1
+            et_product_amount.setText(inFocus().calculateAmountCountDisplay())
+            tv_counter.text = "1"
+        } else {
+            val a = (amountStr.replace(",",".")
+                .toDouble()/inFocus().weightPerPiece).toInt() + 1
+            inFocus().pieceCounter = a
+            et_product_amount.setText(inFocus().calculateAmountCountDisplay())
+            tv_counter.text = a.toString()
+        }
     }
 
-    private fun setPresentedProduct(product:UiState.Article){
+    private fun setPresentedProduct(product: UiState.Article) {
         btn_activate_counter.visibility = View.VISIBLE
         counter.visibility = View.INVISIBLE
         tv_product_category.text = product.category
         tv_product_name.text = product.productName
         pr_load_image_progress.visibility = View.VISIBLE
+        tv_estimated_weight.text = product.getWeightText()
         val amountCountText = product.calculateAmountCountDisplay()
         et_product_amount.setText(amountCountText)
         et_product_amount.setSelection(amountCountText.length)
         products.clearFocus()
         et_product_amount.requestFocus()
-        requireContext().loadImage(iv_product_image,product.remoteImageUrl)
+        requireContext().loadImage(iv_product_image, product.remoteImageUrl)
     }
 
     inner class FocusListener : View.OnFocusChangeListener {
         override fun onFocusChange(p0: View?, p1: Boolean) {
-            if(p0?.id==R.id.et_product_amount){
-                if(p1){
+            if (p0?.id == R.id.et_product_amount) {
+                if (p1) {
                     btn_product_amount_clear.setImageResource(R.drawable.ic_clear)
-                    btn_product_amount_clear.setOnClickListener{ et_product_amount.setText("") }
+                    btn_product_amount_clear.setOnClickListener {
+                        et_product_amount.setText("")
+                        btn_activate_counter.visibility = View.VISIBLE
+                        counter.visibility = View.INVISIBLE
+                        inFocus().pieceCounter = 0
+                        inFocus().amountCount = 0.0
+                    }
                 } else {
                     btn_product_amount_clear.setImageBitmap(null)
                     btn_product_amount_clear.setOnClickListener(null)
                 }
             }
 
-            if(p0?.id == R.id.et_menu_search_products){
-                if(p1){
-                    btn_menu_search.setImageDrawable(ResourcesCompat.getDrawable(
-                        resources,R.drawable.search_icon, requireActivity().theme ))
-                    btn_menu_search.setOnClickListener{ et_menu_search_products.setText("") }
+            if (p0?.id == R.id.et_menu_search_products) {
+                if (p1) {
+                    btn_menu_search.setImageDrawable(
+                        ResourcesCompat.getDrawable(
+                            resources, R.drawable.search_icon, requireActivity().theme
+                        )
+                    )
+                    btn_menu_search.setOnClickListener { et_menu_search_products.setText("") }
 
                 } else {
                     et_menu_search_products.visibility = View.INVISIBLE
@@ -228,9 +257,10 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         }
     }
 
-    private fun putIntoBasket(product: UiState.Article) {
+    private fun putIntoBasket() {
+        val product = inFocus()
         val inputText = et_product_amount.text.toString()
-        if(inputText.isEmpty()|| inputText.isBlank()){
+        if (inputText.isEmpty() || inputText.isBlank()) {
             MainMessagePipe.uiEvent.onNext(
                 UiEvent.ShowToast(requireContext(), R.string.product_amount_empty, Gravity.CENTER)
             )
@@ -239,8 +269,10 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         val amountCount = inputText.replace(",", ".").toDouble()
         if (amountCount == 0.0) {
             MainMessagePipe.uiEvent.onNext(
-                UiEvent.ShowToast(requireContext(),
-                    R.string.product_amount_is_null, Gravity.CENTER)
+                UiEvent.ShowToast(
+                    requireContext(),
+                    R.string.product_amount_is_null, Gravity.CENTER
+                )
             )
             return
         }

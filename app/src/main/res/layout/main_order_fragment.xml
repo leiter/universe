@@ -73,8 +73,6 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_search_48"
             android:visibility="visible" />
-
-
     </RelativeLayout>
 
 
@@ -84,7 +82,6 @@
         android:layout_height="244dp"
         android:layout_below="@id/toolbar"
         android:background="#667A5012">
-
 
         <ImageView
             android:id="@+id/iv_product_image"
@@ -126,6 +123,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             app:boxBackgroundColor="@color/white"
+            android:hint="Preis"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_product_image"
             >
@@ -135,18 +133,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:enabled="false"
-                android:textColorHint="@color/fab_green"
-                android:hint="Preis"
                 android:lines="1"
+                android:textColorHint="@color/price_text_color"
+                android:textColor="@color/price_text_color"
                 android:text="0,00€"
-                android:textColor="@color/edit_text_text_color"
                 android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_product_category"
             android:layout_width="0dp"
-            android:text="Stangensellerie"
+            tools:text="Stangensellerie"
             android:textStyle="bold"
             android:lines="1"
             android:textSize="24sp"
@@ -159,7 +156,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_product_name"
             android:layout_width="0dp"
-            android:text="Linda Kartoffel"
+            tools:text="Linda Kartoffel"
             android:textStyle="bold"
             android:lines="3"
             android:textSize="14sp"
@@ -232,7 +229,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:lines="1"
-            android:text="Ca. 30g pro Stück"
+            tools:text="Ca. 30g pro Stück"
             android:textColor="@color/fab_green"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/et_product_amount_layout"

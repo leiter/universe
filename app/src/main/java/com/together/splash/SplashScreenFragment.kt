@@ -90,7 +90,7 @@ class SplashScreenFragment : Fragment() {
     }
 
     private fun  loadSplash(): Bitmap {
-        val imageStream: InputStream = this.resources.openRawResource(R.raw.tomato)
+        val imageStream: InputStream = this.resources.openRawResource(R.raw.banner)
         return BitmapFactory.decodeStream(imageStream)
     }
 

@@ -20,6 +20,7 @@ import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.repository.Result
+import com.together.splash.SplashScreenFragment
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.manage_dialog.view.*
 
@@ -37,7 +38,12 @@ class ManageDialog : DialogFragment() {
         val builder = AlertDialog.Builder(requireContext())
         val view =
             requireActivity().layoutInflater.inflate(R.layout.manage_dialog, null as ViewGroup?)
-        view.btn_profile.setOnClickListener { ; dismiss() }
+        view.btn_profile.setOnClickListener {
+            MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+                requireActivity().supportFragmentManager,
+                SplashScreenFragment(), AboutFragment.TAG))
+
+            ; dismiss() }
         view.btn_write_msg.setOnClickListener { showWriteMessage(true) }
         view.btn_show_info.setOnClickListener {
             MainMessagePipe.uiEvent.onNext(
@@ -92,6 +98,7 @@ class ManageDialog : DialogFragment() {
             permissions[0]==Manifest.permission.SEND_SMS  &&
             grantResults[0] ==PackageManager.PERMISSION_GRANTED){
             sendSms()
+            dismiss()
         }
     }
 
@@ -103,6 +110,7 @@ class ManageDialog : DialogFragment() {
                 val parts = smsManager.divideMessage(viewModel.smsMessageText)
                 smsManager.sendMultipartTextMessage(viewModel.telephoneNumber, null,
                     parts,null, null)
+                dismiss()
             }
             else -> {
                 requestPermissions(arrayOf(Manifest.permission.SEND_SMS), REQUEST_CODE_PERMISSION)

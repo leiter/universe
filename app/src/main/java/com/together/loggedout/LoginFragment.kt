@@ -27,8 +27,8 @@ class LoginFragment : BaseFragment() {
 //            UtilsActivity.startGoogleSigning(requireContext())
             MainActivity.startLogin(requireActivity())
             it.visibility = View.GONE
-            viewModel.loggedState.observe(viewLifecycleOwner, Observer {
-                if(it is UiState.LOGGEDOUT){
+            viewModel.loggedState.observe(viewLifecycleOwner, Observer { uiState ->
+                if(uiState is UiState.LOGGEDOUT){
                     plus_one_button.visibility = View.VISIBLE
                 } else {
                     plus_one_button.visibility = View.GONE

@@ -59,23 +59,41 @@ sealed class UiState {
         var searchTerms: String = "",
         var weightPerPiece: Double = 0.0,
 
-
         override var _id: String = "",
         override var _mode: Int = UNDEFINED
 
     ) : UiState(){
+        var pieceCounter: Int = 0
+        set(value) {
+            field = value
+            amountCount = pieceCounter.toDouble()*weightPerPiece
+        }
         var amountDisplay: String = prepareAmountDisplay()
-        val priceDisplay: String get() { return "%.2f€".format((priceDigit*amountCount)); }
+        val priceDisplay: String get() { return "%.2f€".format((priceDigit*amountCount)).replace(".",","); }
         private fun prepareAmountDisplay(): String {
-            val amountStart: String
-            if (unit!="kg"){
-                amountStart = amountCount.toString().split(".")[0]
-            } else amountStart = amountCount.toString().replace(".",",")
+            val amountStart: String = if (unit!="kg"){
+                amountCount.toString().split(".")[0]
+            } else amountCount.toString().replace(".",",")
             return "$amountStart $unit"
         }
         fun calculateAmountCountDisplay(): String {
             return if(unit!="kg") amountCount.toString().split(".")[0]
-            else amountCount.toString().replace(".",",")
+            else "%.3f".format(amountCount).replace(".",",")
+        }
+        fun getWeightText(): String{
+            return if(unit!="kg") "" else {
+                val result: String
+                result = when {
+                    weightPerPiece>=1 -> {
+                        "Ca. ${this.weightPerPiece}kg pro Stück."
+                    }
+                    else -> {
+                        val s = (this.weightPerPiece*1000).toString().split(".")[0]
+                        "Ca. ${s}g pro Stück."
+                    }
+                }
+                result
+            }
         }
     }
 
