@@ -47,32 +47,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
-            supportFragmentManager,
-            SplashScreenFragment(), AboutFragment.TAG))
+//        MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+//            supportFragmentManager,
+//            SplashScreenFragment(), AboutFragment.TAG))
 
 
 
-//        viewModel.loggedState.observe(this, {
-//            when (it) {
-//
-//                is UiState.BASE_AUTH ->
-//                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-//                        supportFragmentManager,
-//                        ProductsFragment(), ProductsFragment.TAG)
-//                    )
-//
-//                is UiState.LOGGEDOUT -> {
-//                    MainMessagePipe.uiEvent.onNext(
-//                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
-//                    )
-//                }
-//            }
-//        })
-//
-//        disposable.add(btn_log_out.clicks().subscribe {
-//            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
-//        })
+        viewModel.loggedState.observe(this, {
+            when (it) {
+
+                is UiState.BASE_AUTH ->
+                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+                        supportFragmentManager,
+                        ProductsFragment(), ProductsFragment.TAG)
+                    )
+
+                is UiState.LOGGEDOUT -> {
+                    MainMessagePipe.uiEvent.onNext(
+                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
+                    )
+                }
+            }
+        })
+
+        disposable.add(btn_log_out.clicks().subscribe {
+            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
+        })
 
     }
 

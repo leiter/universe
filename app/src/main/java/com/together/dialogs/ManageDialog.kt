@@ -108,7 +108,7 @@ class ManageDialog : DialogFragment() {
             true -> {
                 val smsManager = SmsManager.getDefault()
                 val parts = smsManager.divideMessage(viewModel.smsMessageText)
-                smsManager.sendMultipartTextMessage(viewModel.telephoneNumber, null,
+                smsManager.sendMultipartTextMessage(viewModel.sellerProfile._telephoneNumber, null,
                     parts,null, null)
                 dismiss()
             }

@@ -13,7 +13,6 @@ import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getCompletable
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.debug.activity_test_container.*
@@ -78,7 +77,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
     private fun setupSellerProfile() {
         loading(true)
         compositeDisposable.add(
-            Database.profile()
+            Database.sellerProfile()
                 .setValue(testData.sellerProfile)
                 .getCompletable().subscribe({ success ->
                     if (success) {

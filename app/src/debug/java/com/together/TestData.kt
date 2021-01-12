@@ -17,7 +17,7 @@ object TestData {
             unit = "kg",
             category = "Bananen",
             detailInfo = "Demeter Biobananen. Die Bananen stammen aus Peru und sind nach Vorgaben der Demeter angebaut.",
-            searchTerms = "Bananen",
+            searchTerms = "Banane,",
             weighPerPiece = 0.130
 
         ),
@@ -47,7 +47,7 @@ object TestData {
             unit = "kg",
             category = "Kartoffel",
             detailInfo = "Festkochende Kartoffel vom Hof Apfeltraum. Die Kartoffeln wurden in dem Biohof Wizenau bei Buxdehude nach den Anforderungen des europäischen Biosiegels angebaut.",
-            searchTerms = "Kartoffel",
+            searchTerms = "Kartoffel,Kartoffeln",
             weighPerPiece = 0.060
         ),
         Result.Article(
@@ -74,7 +74,8 @@ object TestData {
             unit = "Bund",
             category = "Karotten",
             detailInfo = "Vom Biohof Waldheide. Die Karotten wurden in dem Biohof Wizenau bei Buxdehude nach den Anforderungen des europäischen Biosiegels angebaut.",
-            weighPerPiece = 1.0
+            weighPerPiece = 1.0,
+            searchTerms = "Möhren,Möhre,Karotte,Karotten,"
         ),
         Result.Article(
             "",
@@ -87,7 +88,8 @@ object TestData {
             unit = "Schale",
             category = "Erdbeeren",
             detailInfo = "Vom Biohof Waldheide. Die Erdbeeren stammen aus Friedenau vom Hof Bio Müller. Bei der Aufzucht wurden keinerlei Insektiziede verwendet.",
-            weighPerPiece = 1.0
+            weighPerPiece = 1.0,
+            searchTerms = "Erdbeere"
         ),
         Result.Article(
             "",
@@ -113,7 +115,8 @@ object TestData {
             unit = "kg",
             category = "Kartoffeln",
             detailInfo = "Festkochende Kartoffel vom Hof Apfeltraum. Die Kartoffeln wurden in dem Biohof Wizenau bei Buxdehude nach den Anforderungen des europäischen Biosiegels angebaut.",
-            weighPerPiece = 0.090
+            weighPerPiece = 0.090,
+            searchTerms = "Kartoffel,"
         ),
         Result.Article(
             "",
@@ -126,7 +129,8 @@ object TestData {
             unit = "kg",
             category = "Apfel",
             detailInfo = "Saftig und sauer. Die Äpfel wurden in Stralsund geerntet und sind mit dem europäischen Biosiegel versehen. Die Äpfel wurden nicht gespritzt und auch nicht gewachst.",
-            weighPerPiece = 0.115
+            weighPerPiece = 0.115,
+            searchTerms = "Äpfel,"
 
         ),
         Result.Article(
@@ -140,13 +144,10 @@ object TestData {
             unit = "kg",
             category = "Apfel",
             detailInfo = "Süß-sauerer Apfel. Die Äpfel wurden in Stralsund geerntet und sind mit dem europäischen Biosiegel versehen. Die Äpfel wurden nicht gespritzt und auch nicht gewachst.",
-            weighPerPiece = 0.098
+            weighPerPiece = 0.098,
+            searchTerms = "Äpfel"
         ),
     )
-
-
-
-
 
 
     val userList = listOf(
@@ -158,10 +159,6 @@ object TestData {
             displayName = "Mandy Leiter",
             emailAddress = "marcoleiter@arcor.de"
         ),
-        Result.User(
-            displayName = "Annabel",
-            emailAddress = ""
-        )
     )
 
     private val marketListItems = listOf(
@@ -198,7 +195,7 @@ object TestData {
         city = "Berlin",
         zipcode = "14195",
         telephoneNumber = "01786021638",
-        markets = mutableListOf(marketListItems[0],marketListItems[1])
+        markets = mutableListOf(marketListItems[0],marketListItems[1]),
     )
 
 

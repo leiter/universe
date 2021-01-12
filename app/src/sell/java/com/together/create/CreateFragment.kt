@@ -137,7 +137,6 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
         val result = Result.Article(
             productName = uiState.productName,
-            productDescription = uiState.productDescription,
             imageUrl = imageUri.toString(),
             unit = product_price_unit.toString(),
             available = uiState.available,
@@ -163,7 +162,6 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
                     val result = Result.Article(
                         productName = uiState.productName,
-                        productDescription = uiState.productDescription,
                         imageUrl = imageUri.toString(),
                         unit = product_price_unit.toString(),
                         available = uiState.available,

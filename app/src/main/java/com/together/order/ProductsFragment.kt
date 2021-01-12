@@ -12,13 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
-import com.together.base.*
+import com.together.base.BaseFragment
+import com.together.base.MainMessagePipe
+import com.together.base.UiEvent
+import com.together.base.UiState
 import com.together.dialogs.BasketFragment
 import com.together.dialogs.ManageDialog
-import com.together.repository.Database
-import com.together.repository.Result
-import com.together.repository.storage.getObservable
-import com.together.utils.dataArticleToUi
 import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -60,6 +59,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         btn_menu_search.setOnClickListener {
             tv_menu_title.visibility = View.INVISIBLE
             et_menu_search_products.visibility = View.VISIBLE
@@ -77,21 +77,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
         fab_add_product.setOnClickListener { putIntoBasket() }
 
-        val products = Database.providerArticles("FmfwB1HVmMdrVib6dqSXkWauOuP2")  //todo
+        viewModel.productList.observe(viewLifecycleOwner, {
+            adapter.setFilteredList(it.toMutableList())
+        })
 
-        disposable.add(products.getObservable<Result.Article>()
-            .observeOn(AndroidSchedulers.mainThread()).subscribe {
-                val e = it.dataArticleToUi()
-                adapter.addItem(e)
-                if (adapter.data.size == 1) {
-                    viewModel.presentedProduct.value = adapter.data[0]
-                }
-            })
-
-        btn_menu_manage.setOnClickListener {
+        btn_manage_profile.setOnClickListener {
             ManageDialog().show(requireActivity().supportFragmentManager, "ManageDialog")
         }
-        btn_menu_shopping_cart.setOnClickListener {
+        btn_show_basket.setOnClickListener {
             if (viewModel.basket.value!!.size > 0)
                 BasketFragment().show(requireActivity().supportFragmentManager, "Basket")
             else MainMessagePipe.uiEvent.onNext(
@@ -103,37 +96,34 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         }
 
         et_menu_search_products.onFocusChangeListener = focusChangeHandler
+
         et_product_amount.onFocusChangeListener = focusChangeHandler
 
         btn_activate_counter.setOnClickListener { clickActivateCounter() }
         btn_plus.setOnClickListener { clickPlusOrMinus(true) }
         btn_minus.setOnClickListener { clickPlusOrMinus(false) }
 
-        Handler().postDelayed({ // fixme use complete loading data
-            disposable.add(
-                et_menu_search_products.textChanges()
-                    .debounce(400, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .map { searchTerm ->
-                        if (!::productData.isInitialized) {
-                            productData = adapter.data.toMutableList()
-                        }
-                        productData.filter {
-                            it.productName.startsWith(searchTerm, ignoreCase = true) ||
-                                    it.searchTerms.matches(
-                                        ".*$searchTerm.*"
-                                            .toRegex(RegexOption.IGNORE_CASE)
-                                    )
-                        }
+        disposable.add(
+            et_menu_search_products.textChanges().skipInitialValue()
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .map { searchTerm ->
+                    if (!::productData.isInitialized) {
+                        productData = adapter.data.toMutableList()
                     }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { filtered -> adapter.setFilteredList(filtered.toMutableList()) }
-            )
-        }, 1000L)
+                    productData.filter {
+                        it.productName.startsWith(searchTerm, ignoreCase = true) ||
+                                it.searchTerms.matches(
+                                    ".*$searchTerm.*".toRegex(RegexOption.IGNORE_CASE))
+                    }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { filtered -> adapter.setFilteredList(filtered.toMutableList()) }
+        )
 
         disposable.add(
             et_product_amount.textChanges()
-                .debounce(400, TimeUnit.MILLISECONDS)
+                .debounce(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
@@ -192,8 +182,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             et_product_amount.setText(inFocus().calculateAmountCountDisplay())
             tv_counter.text = "1"
         } else {
-            val a = (amountStr.replace(",",".")
-                .toDouble()/inFocus().weightPerPiece).toInt() + 1
+            val a = (amountStr.replace(",", ".")
+                .toDouble() / inFocus().weightPerPiece).toInt() + 1
             inFocus().pieceCounter = a
             et_product_amount.setText(inFocus().calculateAmountCountDisplay())
             tv_counter.text = a.toString()
@@ -219,6 +209,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         override fun onFocusChange(p0: View?, p1: Boolean) {
             if (p0?.id == R.id.et_product_amount) {
                 if (p1) {
+                    btn_activate_counter.visibility = View.VISIBLE
+                    counter.visibility = View.INVISIBLE
                     btn_product_amount_clear.setImageResource(R.drawable.ic_clear)
                     btn_product_amount_clear.setOnClickListener {
                         et_product_amount.setText("")

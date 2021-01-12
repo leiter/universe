@@ -7,6 +7,7 @@ import com.together.repository.Result.Companion.ADDED
 import com.together.repository.Result.Companion.CHANGED
 import com.together.repository.Result.Companion.MOVED
 import com.together.repository.Result.Companion.REMOVED
+import com.together.repository.Result.Companion.UNDEFINED
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -47,16 +48,12 @@ inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T>
                 i.mode = REMOVED
                 emitter.onNext(i)
             }
-
         })
-
         emitter.setCancellable { removeEventListener(listener) }
-
     }
-
 }
 
-fun DatabaseReference.getSingle(): Single<Boolean> {
+inline fun <reified T : Result> DatabaseReference.getSingle(): Single<T> {
     return Single.create { emitter ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -64,14 +61,14 @@ fun DatabaseReference.getSingle(): Single<Boolean> {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                // Make some test
-                emitter.onSuccess(true)
+                val i = p0.getValue(T::class.java)!!
+                i.id = p0.key ?: ""
+                i.mode = UNDEFINED
+                emitter.onSuccess(i)
             }
         }
         addListenerForSingleValueEvent(listener)
-        emitter.setCancellable {
-            removeEventListener(listener)
-        }
+        emitter.setCancellable { removeEventListener(listener) }
     }
 
 }

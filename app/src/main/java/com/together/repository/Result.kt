@@ -15,7 +15,7 @@ sealed class Result {
         const val UNDEFINED = -1
     }
 
-    data class ImageLoaded(val progressId: Int, val show:Boolean) : Result() {
+    data class ImageLoaded(val progressId: Int, val show: Boolean) : Result() {
         override var id: String = "No result"
         override var mode: Int = UNDEFINED
     }
@@ -56,14 +56,17 @@ sealed class Result {
     ) : Result()
 
     data class User(
-        override var id: String = "",
-        override var mode: Int = UNDEFINED,
+        var uId: String = "",
         var displayName: String = "",
         var emailAddress: String = "",
         var telephoneNumber: String = "",
+        var photoUrl:String = "",
 
-    ) : Result()
+        ) : Result() {
+        override var id: String = ""
+        override var mode: Int = UNDEFINED
 
+    }
 
     data class Article(
         override var id: String = "",
@@ -76,7 +79,7 @@ sealed class Result {
         var weighPerPiece: Double = 0.0,
         var imageUrl: String = "",
         var category: String = "",
-        var searchTerms: String= "",
+        var searchTerms: String = "",
         var detailInfo: String = ""
 
 //         @get:PropertyName("adsfg")
@@ -87,11 +90,12 @@ sealed class Result {
         override var id: String = "",
         override var mode: Int = UNDEFINED,
         var user: User = User(),
+        var createdDate: Long = 0L,
+        var marketId: String = "",
+        var dueDate: Long = 0L,
         var articles: List<Article> = emptyList(),
 
-    ) : Result()
-
-
+        ) : Result()
 
 
     data class SellerProfile(

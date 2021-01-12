@@ -71,7 +71,7 @@ class Dialogs : DialogFragment() {
             place_name.setText(market.name)
             street.setText(market.street)
             house.setText(market.houseNumber)
-            zipcode.setText(market.zipcode)
+            zipcode.setText(market.zipCode)
             city.setText(market.city)
             weekdays.setText(market.dayOfWeek)
             begin.setText(market.begin)

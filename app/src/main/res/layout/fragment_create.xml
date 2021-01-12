@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/btn_menu_manage"
+            android:id="@+id/btn_drawer_open"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -32,7 +32,7 @@
 
 
         <ImageButton
-            android:id="@+id/btn_menu_shopping_cart"
+            android:id="@+id/btn_delete_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/btn_menu_shopping_cart"
+            android:layout_toStartOf="@id/btn_delete_product"
             android:background="?attr/selectableItemBackground"
             android:padding="16dp"
             android:src="@drawable/ic_edit_black"
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@id/create_new_product"
-            android:layout_toEndOf="@id/btn_menu_manage"
+            android:layout_toEndOf="@id/btn_drawer_open"
             android:gravity="center"
             android:textSize="24sp"
             tools:text="Linda" />
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_menu_title"
             android:layout_toStartOf="@id/btn_edit_product"
-            android:layout_toEndOf="@id/btn_menu_manage"
+            android:layout_toEndOf="@id/btn_drawer_open"
             android:gravity="center"
             android:textColor="@color/black"
             tools:text="Kartoffel" />

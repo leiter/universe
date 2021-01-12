@@ -19,7 +19,7 @@
         >
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btn_menu_manage"
+            android:id="@+id/btn_manage_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -28,7 +28,7 @@
             android:src="@drawable/ic_mange_account_circle" />
 
         <include
-            android:id="@+id/btn_menu_shopping_cart"
+            android:id="@+id/btn_show_basket"
             layout="@layout/batch_it"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -40,13 +40,16 @@
 
         <TextView
             android:id="@+id/tv_menu_title"
+            android:textAllCaps="true"
+            android:typeface="serif"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/btn_menu_manage"
+            android:layout_toEndOf="@id/btn_manage_profile"
             android:layout_toStartOf="@id/btn_menu_search"
             android:gravity="center"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:text="Bodenschätze" />
 
         <EditText
@@ -61,14 +64,14 @@
             android:gravity="center"
             android:layout_height="match_parent"
             android:layout_toStartOf="@id/btn_menu_search"
-            android:layout_toEndOf="@id/btn_menu_manage"
+            android:layout_toEndOf="@id/btn_manage_profile"
             />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_menu_search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_toStartOf="@+id/btn_menu_shopping_cart"
+            android:layout_toStartOf="@+id/btn_show_basket"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_search_48"

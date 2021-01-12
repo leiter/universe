@@ -31,10 +31,11 @@
         android:text="2.93€" />
 
     <TextView
+
         android:id="@+id/et_product_amount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:singleLine="true"

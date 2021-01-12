@@ -22,6 +22,27 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
     )
 }
 
+fun Result.SellerProfile.dataSellerToUi() : UiState.SellerProfile {
+    return UiState.SellerProfile(
+
+        _id = this.id,
+        displayName = this.displayName,
+        firstName = this.firstName,
+        lastName = this.lastName,
+        street = this.street,
+        houseNumber = this.houseNumber,
+        city = this.city,
+        zipcode = this.zipcode,
+        _telephoneNumber = this.telephoneNumber,
+        _knownClientIds = this.knownClientIds
+
+
+    )
+}
+
+
+
+
 inline fun <reified T : UiState> errorActions(profile: T, action: () -> Unit)  : Boolean {
     val toBeChecked =
         T::class.memberProperties.filter { !it.name.startsWith("_") }
