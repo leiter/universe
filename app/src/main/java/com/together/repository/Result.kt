@@ -1,6 +1,7 @@
 package com.together.repository
 
 import android.net.Uri
+import java.util.*
 
 sealed class Result {
 
@@ -150,9 +151,10 @@ sealed class Result {
         var zipcode: String = "",
         var dayOfWeek: String = "",
         var begin: String = "",
-        var end: String = ""
+        var end: String = "",
+        var dayIndex: Int = UNDEFINED
     ) : Result() {
-        override var id: String = ""
+        override var id: String = UUID.randomUUID().toString()
         override var mode: Int = UNDEFINED
 
     }

@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -51,24 +52,27 @@ class MainActivity : AppCompatActivity() {
 //            supportFragmentManager,
 //            SplashScreenFragment(), AboutFragment.TAG))
 
+        MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+            supportFragmentManager,
+            ProductsFragment(), ProductsFragment.TAG)
+        )
 
-
-        viewModel.loggedState.observe(this, {
-            when (it) {
-
-                is UiState.BASE_AUTH ->
-                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-                        supportFragmentManager,
-                        ProductsFragment(), ProductsFragment.TAG)
-                    )
-
-                is UiState.LOGGEDOUT -> {
-                    MainMessagePipe.uiEvent.onNext(
-                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
-                    )
-                }
-            }
-        })
+//        viewModel.loggedState.observe(this, {
+//            when (it) {
+//
+//                is UiState.BASE_AUTH ->
+//                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+//                        supportFragmentManager,
+//                        ProductsFragment(), ProductsFragment.TAG)
+//                    )
+//
+//                is UiState.LOGGEDOUT -> {
+//                    MainMessagePipe.uiEvent.onNext(
+//                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
+//                    )
+//                }
+//            }
+//        })
 
         disposable.add(btn_log_out.clicks().subscribe {
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)

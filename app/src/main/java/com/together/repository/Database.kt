@@ -13,7 +13,7 @@ object Database {
     }
 
     private const val ARTICLES = "articles"
-    private const val PROFILE = "profile"
+    private const val SELLER_PROFILE = "seller_profile"
     private const val ORDERS = "orders"
     private const val CLIENTS = "clients"
 
@@ -23,7 +23,7 @@ object Database {
         .child(FireBaseAuth.getAuth()!!.uid!!).child(id)
 
     fun sellerProfile(seller: Boolean = false): DatabaseReference {
-        val result = fire().reference.child(PROFILE)
+        val result = fire().reference.child(SELLER_PROFILE)
         return if (seller) result.child(FireBaseAuth.getAuth()!!.uid!!) else result
     }
 

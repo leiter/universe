@@ -2,6 +2,7 @@ package com.together
 
 import com.together.base.UiState
 import com.together.repository.Result
+import java.util.*
 
 object TestData {
 
@@ -170,7 +171,9 @@ object TestData {
             city = "Berlin",
             begin = "12:00",
             end = "18:30",
-            dayOfWeek = "Donnerstag"
+            dayOfWeek = "Donnerstag",
+            dayIndex = Calendar.THURSDAY
+
         ),
         Result.Market(
             name = "Ökomarkt im Hansaviertel",
@@ -180,10 +183,9 @@ object TestData {
             city = "Berlin",
             begin = "12:00",
             end = "18:30",
-            dayOfWeek = "Freitag"
+            dayOfWeek = "Freitag",
+            dayIndex = Calendar.FRIDAY
         )
-
-
     )
 
     val sellerProfile = Result.SellerProfile(

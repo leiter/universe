@@ -24,7 +24,6 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
 
 fun Result.SellerProfile.dataSellerToUi() : UiState.SellerProfile {
     return UiState.SellerProfile(
-
         _id = this.id,
         displayName = this.displayName,
         firstName = this.firstName,
@@ -34,11 +33,29 @@ fun Result.SellerProfile.dataSellerToUi() : UiState.SellerProfile {
         city = this.city,
         zipcode = this.zipcode,
         _telephoneNumber = this.telephoneNumber,
-        _knownClientIds = this.knownClientIds
-
-
+        _knownClientIds = this.knownClientIds,
+        marketList = this.markets.map { it.dataMarketToUi() }.toMutableList()
     )
 }
+
+
+fun Result.Market.dataMarketToUi() : UiState.Market {
+    return UiState.Market(
+        _id = this.id,
+        marketId = this.id,
+        name = this.name,
+        street = this.street,
+        houseNumber = this.houseNumber,
+        city = this.city,
+        zipCode = this.zipcode,
+        dayOfWeek = this.dayOfWeek,
+        begin = this.begin,
+        end = this.end,
+        dayIndicator = this.dayIndex
+    )
+}
+
+
 
 
 

@@ -44,7 +44,7 @@ fun Context.loadImage(imageView: ImageView, url: String){
                                 Result.ImageLoaded(R.id.pr_load_image_progress,false))
                         }
 
-                    }) // Maybe add callback again.
+                    })
             }
 
         })

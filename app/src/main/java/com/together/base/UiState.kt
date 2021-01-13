@@ -23,10 +23,12 @@ sealed class UiState {
         override var _id = "StateLoggedOut"
         override var _mode: Int = UNDEFINED
     }
+
     object LoadingDone : UiState() {
         override var _id = "StateLoggedOut"
         override var _mode: Int = UNDEFINED
     }
+
     object LOGGEDOUT : UiState() {
         override var _id = "StateLoggedOut"
         override var _mode: Int = UNDEFINED
@@ -62,33 +64,38 @@ sealed class UiState {
         override var _id: String = "",
         override var _mode: Int = UNDEFINED
 
-    ) : UiState(){
+    ) : UiState() {
         var pieceCounter: Int = 0
-        set(value) {
-            field = value
-            amountCount = pieceCounter.toDouble()*weightPerPiece
-        }
+            set(value) {
+                field = value
+                amountCount = pieceCounter.toDouble() * weightPerPiece
+            }
         var amountDisplay: String = prepareAmountDisplay()
-        val priceDisplay: String get() { return "%.2f€".format((priceDigit*amountCount)).replace(".",","); }
+        val priceDisplay: String
+            get() {
+                return "%.2f€".format((priceDigit * amountCount)).replace(".", ","); }
+
         private fun prepareAmountDisplay(): String {
-            val amountStart: String = if (unit!="kg"){
+            val amountStart: String = if (unit != "kg") {
                 amountCount.toString().split(".")[0]
-            } else amountCount.toString().replace(".",",")
+            } else amountCount.toString().replace(".", ",")
             return "$amountStart $unit"
         }
+
         fun calculateAmountCountDisplay(): String {
-            return if(unit!="kg") amountCount.toString().split(".")[0]
-            else "%.3f".format(amountCount).replace(".",",")
+            return if (unit != "kg") amountCount.toString().split(".")[0]
+            else "%.3f".format(amountCount).replace(".", ",")
         }
-        fun getWeightText(): String{
-            return if(unit!="kg") "" else {
+
+        fun getWeightText(): String {
+            return if (unit != "kg") "" else {
                 val result: String
                 result = when {
-                    weightPerPiece>=1 -> {
+                    weightPerPiece >= 1 -> {
                         "Ca. ${this.weightPerPiece}kg pro Stück."
                     }
                     else -> {
-                        val s = (this.weightPerPiece*1000).toString().split(".")[0]
+                        val s = (this.weightPerPiece * 1000).toString().split(".")[0]
                         "Ca. ${s}g pro Stück."
                     }
                 }
@@ -100,45 +107,44 @@ sealed class UiState {
     data class NewProductImage(val uri: Uri)
 
     data class SellerProfile(
-
         override var _id: String = "",
 
         var displayName: String = "",
-
         var firstName: String = "",
         var lastName: String = "",
         var street: String = "",
         var houseNumber: String = "",
-
         var city: String = "",
         var zipcode: String = "",
-
         var _telephoneNumber: String = "",
 
         var _lat: String = "",
         var _lng: String = "",
 
+        var marketList: MutableList<Market> = mutableListOf(),
         var _urls: MutableList<String> = mutableListOf(),
-
         var _knownClientIds: MutableList<String> = mutableListOf(),
-        override var _mode: Int = UNDEFINED
 
-    ) : UiState()
+        ) : UiState() {
+        override var _mode: Int = UNDEFINED
+    }
 
 
     @Parcelize
-    data class Market(var name: String = "",
-                      var street: String = "",
-                      var houseNumber: String = "",
-                      var city: String = "",
-                      var zipCode: String = "",
-                      var dayOfWeek: String,
-                      var begin: String = "",
-                      var end: String = "",
-                      override var _id: String = "",
-                      override var _mode: Int = UNDEFINED
+    data class Market(
+        var marketId: String = "",
+        var name: String = "",
+        var street: String = "",
+        var houseNumber: String = "",
+        var city: String = "",
+        var zipCode: String = "",
+        var dayOfWeek: String,
+        var begin: String = "",
+        var end: String = "",
+        var dayIndicator: Int = UNDEFINED,
+        override var _id: String = "",
+        override var _mode: Int = UNDEFINED
     ) : UiState(), Parcelable
-
 
 
 }

@@ -1,60 +1,226 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".dialogs.BasketFragment"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:orientation="vertical"
-    android:paddingBottom="24dp"
-    tools:context="com.together.dialogs.BasketFragment">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/send_order"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/order_basket"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/fab_green"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="72dp"
-        android:text="Bestellung senden"
-        android:textColor="@color/white" />
-
-
-
-    <TextView
-        android:id="@+id/tv_menu_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:gravity="center"
-        android:text="Bestellung"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/order_basket"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/appointment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_menu_title"
-        android:layout_marginTop="24dp"
-        tools:itemCount="6"
-        tools:listitem="@layout/item_basket" />
-    <TextView
-        tools:text="12,94€"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:id="@+id/basket_sum"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:layout_width="wrap_content"
+        android:minHeight="384dp"
+        android:padding="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_set_appointment"
+            android:text="Fertig"
+            android:backgroundTint="@color/fab_green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/ck_set_reminder"
+            android:text="Im Kalender speichern"
+            android:textColor="@color/fab_green"
+            android:buttonTint="@color/fab_green"
+            style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_set_appointment" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/btn_hide_appointment"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="Abholung"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_hide_appointment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_market_select"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:tabMode="fixed"
+            app:tabIndicator="@null"
+            app:layout_constraintEnd_toStartOf="@+id/btn_hansa"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_uncle"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:visibility="gone"
+            android:lines="3"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="16dp"
+
+            android:text="Wochenmarkt Onkel Toms Hütte"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_hansa"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hansa"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:lines="3"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@id/btn_uncle"
+            android:text="Ökomarkt im Hansaviertel"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_uncle"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_date_container"
+            android:layout_width="0dp"
+            android:visibility="visible"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_change_appointment_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tl_market_select"
+            app:tabBackground="@drawable/tab_layout_background"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/white" />
+
+        <TimePicker
+            android:id="@+id/tp_set_appointment"
+            android:layout_width="0dp"
+            android:layout_height="144dp"
+            android:timePickerMode="spinner"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_change_appointment_time"
+            app:layout_constraintEnd_toStartOf="@+id/btn_change_appointment_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_change_appointment_time" />
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btn_change_appointment_time"
+            android:src="@drawable/ic_appointment_time"
+            app:layout_constraintTop_toTopOf="@id/tl_date_container"
+            app:layout_constraintBottom_toBottomOf="@id/tl_date_container"
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/btn_hide_appointment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="16dp"
+            android:src="@drawable/ic_clear_green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/order_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/order_basket"
-        />
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:paddingBottom="24dp"
+        tools:context="com.together.dialogs.BasketFragment">
 
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/send_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/order_basket"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="72dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/fab_green"
+            android:text="Bestellung senden"
+            android:textColor="@color/white" />
 
-</RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_menu_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Bestellung"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_show_appointment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_menu_title"
+            android:layout_alignBottom="@id/tv_menu_title"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="16dp"
+            android:src="@drawable/ic_appoint" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/order_basket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_menu_title"
+            android:layout_marginTop="24dp"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_basket" />
+
+        <TextView
+            android:id="@+id/basket_sum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/order_basket"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="12,94€" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>
