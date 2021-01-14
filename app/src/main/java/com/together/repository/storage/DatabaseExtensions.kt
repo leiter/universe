@@ -70,7 +70,27 @@ inline fun <reified T : Result> DatabaseReference.getSingle(): Single<T> {
         addListenerForSingleValueEvent(listener)
         emitter.setCancellable { removeEventListener(listener) }
     }
+}
 
+
+inline fun <reified T : Result> DatabaseReference.getSingleValue(): Single<T> {
+    return Single.create { emitter ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val i = p0.getValue(T::class.java)!!
+                emitter.onSuccess(i)
+            }
+        }
+
+        addListenerForSingleValueEvent(listener)
+        emitter.setCancellable {
+            removeEventListener(listener)
+        }
+    }
 }
 
 fun DatabaseReference.getSingleExists(): Single<Boolean> {
@@ -94,8 +114,7 @@ fun DatabaseReference.getSingleExists(): Single<Boolean> {
 
 }
 
-
-inline fun <reified T> Query.getSingle(): Single<T> {
+fun Query.getSingle(): Single<DataSnapshot> {
     return Single.create { emitter ->
 
         val valueEventListener = object : ValueEventListener {
@@ -104,7 +123,7 @@ inline fun <reified T> Query.getSingle(): Single<T> {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                emitter.onSuccess(p0.getValue(T::class.java)!!)
+                emitter.onSuccess(p0)
             }
         }
         addListenerForSingleValueEvent(valueEventListener)

@@ -23,6 +23,7 @@ import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.utils.toDateString
+import kotlinx.android.synthetic.main.fragment_basket.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,8 +37,8 @@ class BasketFragment : DialogFragment() {
 
     private lateinit var viewModel: MainViewModel
     private val calendar: Calendar = Calendar.getInstance()
-
-    private var showingTimePicker : Boolean = false
+    private var showingTimePicker: Boolean = false
+    lateinit var days: Array<Date>
 
     private val clickToDelete: (UiState.Article) -> Unit
         inline get() = { input ->
@@ -55,22 +56,27 @@ class BasketFragment : DialogFragment() {
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
     }
 
-    private val timeClicker: (View) -> Unit = { btn ->
-        val d = if (showingTimePicker) ResourcesCompat.getDrawable(
-            resources,R.drawable.ic_appointment_time,requireActivity().theme)
-        else ResourcesCompat.getDrawable(resources,R.drawable.ic_add, requireActivity().theme)
-        (btn as AppCompatImageButton).setImageDrawable(d)
-        if(showingTimePicker){
+    private fun showSetTime(show: Boolean) {
+        val d = if (show) ResourcesCompat.getDrawable(
+            resources, R.drawable.ic_appointment_time, requireActivity().theme)
+                else ResourcesCompat.getDrawable(resources, R.drawable.ic_add, requireActivity().theme)
+        timeSelector.setImageDrawable(d)
+        dialog!!.btn_change_appointment_time.setImageDrawable(d)
+    }
+
+    private val timeClicker: (View) -> Unit = {
+        showSetTime(showingTimePicker)
+        if (showingTimePicker) {
+            updatePickUptime(timePicker.currentHour, timePicker.currentMinute)
             dateContainer.visibility = View.VISIBLE
             marketContainer.visibility = View.VISIBLE
             timePicker.visibility = View.INVISIBLE
-            timePicker.currentHour
-            timePicker.currentMinute
-
+            dialog!!.btn_cancel_appointment_time.visibility = View.GONE
         } else {
             dateContainer.visibility = View.INVISIBLE
             marketContainer.visibility = View.INVISIBLE
             timePicker.visibility = View.VISIBLE
+            dialog!!.btn_cancel_appointment_time.visibility = View.VISIBLE
         }
 
 
@@ -90,10 +96,6 @@ class BasketFragment : DialogFragment() {
 
         setupMarketButtons()
 
-        val hansa = layout.findViewById<MaterialButton>(R.id.btn_hansa)
-        hansa.setOnClickListener { showDates(Calendar.FRIDAY) }
-        val uncle = layout.findViewById<MaterialButton>(R.id.btn_uncle)
-        uncle.setOnClickListener { showDates(Calendar.THURSDAY) }
 
 
         val hideAppointment = layout.findViewById<ImageButton>(R.id.btn_hide_appointment)
@@ -101,6 +103,20 @@ class BasketFragment : DialogFragment() {
 
         val appointment = layout.findViewById<ImageButton>(R.id.btn_show_appointment)
         appointment.setOnClickListener { showFinalizeDate(true) }
+
+        val cancelSetTime =
+            layout.findViewById<AppCompatImageButton>(R.id.btn_cancel_appointment_time)
+        cancelSetTime.setOnClickListener {
+            dateContainer.visibility = View.VISIBLE
+            marketContainer.visibility = View.VISIBLE
+            timePicker.visibility = View.INVISIBLE
+            val g = ResourcesCompat.getDrawable(
+                resources, R.drawable.ic_appointment_time, requireActivity().theme
+            )
+            it.visibility = View.GONE
+            dialog!!.btn_change_appointment_time.setImageDrawable(g)
+            showingTimePicker = false
+        }
 
         val b = viewModel.basket.value!!
         adapter = BasketAdapter(b, clickToDelete)
@@ -131,15 +147,26 @@ class BasketFragment : DialogFragment() {
                 val i = viewModel.sellerProfile.marketList[marketContainer.selectedTabPosition]
                 showDates(i.dayIndicator)
             }
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val i = viewModel.sellerProfile.marketList[marketContainer.selectedTabPosition]
                 showDates(i.dayIndicator)
             }
-
         })
+    }
+
+    private fun updatePickUptime(hour: Int, minute: Int) {
+        val newArray = ArrayList<Date>(3)
+        days.forEachIndexed { index, date ->
+            calendar.time = date
+            calendar.set(Calendar.HOUR_OF_DAY, hour)
+            calendar.set(Calendar.MINUTE, minute)
+            newArray.add(index, calendar.time)
+        }
+        val i = viewModel.sellerProfile.marketList[marketContainer.selectedTabPosition]
+        showDates(i.dayIndicator, newArray.toTypedArray())
     }
 
     private fun showFinalizeDate(show: Boolean) {
@@ -162,9 +189,8 @@ class BasketFragment : DialogFragment() {
         }
     }
 
-
-    private fun showDates(targetDay: Int) {
-        val days = getDays(targetDay)
+    private fun showDates(targetDay: Int, newDays: Array<Date>? = null) {
+        days = newDays ?: getDays(targetDay)
         dateContainer.removeAllTabs()
         days.forEach {
             val f = dateContainer.newTab()

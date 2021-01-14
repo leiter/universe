@@ -1,21 +1,27 @@
 package com.together.base
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.database.DataSnapshot
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getCompletable
 import com.together.repository.storage.getObservable
 import com.together.repository.storage.getSingle
+import com.together.repository.storage.getSingleValue
 import com.together.utils.dataArticleToUi
 import com.together.utils.dataSellerToUi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-fun MutableList<UiState.Article>.addItem(item: UiState.Article,productData: MutableLiveData<MutableList<UiState.Article>>) {
+fun MutableList<UiState.Article>.addItem(
+    item: UiState.Article,
+    productData: MutableLiveData<MutableList<UiState.Article>>
+) {
     val index = indexOf(item)
     when (item._mode) {
         UiState.ADDED -> add(item)
@@ -43,15 +49,16 @@ class MainViewModel : ViewModel() {
         MutableLiveData(emptyList<UiState.Article>().toMutableList())
 
     val productList: LiveData<MutableList<UiState.Article>>
-    get() { return productData }
+        get() {
+            return productData
+        }
 
     lateinit var sellerProfile: UiState.SellerProfile
 
 
-
     init {
 
-        disposable.add( MainMessagePipe.mainThreadMessage.subscribe {
+        disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
                 is Result.LoggedOut ->
                     loggedState.value = UiState.LOGGEDOUT
@@ -72,27 +79,43 @@ class MainViewModel : ViewModel() {
             }
         })
 
-        val productNode = Database.providerArticles("FmfwB1HVmMdrVib6dqSXkWauOuP2")
+//        disposable.add(Database.sellerProfile(true).getSingle<Result.SellerProfile>()
+//            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                sellerProfile = it.dataSellerToUi() }
+//                ,{it.printStackTrace()})
+//        )
+
+        disposable.add(
+            Database.sellerProfile("").limitToFirst(1).getSingle().toObservable()
+                .subscribeOn(Schedulers.io())
+                .map { it.children.first().key!! }
+                .flatMap { Database.sellerProfile(it,true).getSingle<Result.SellerProfile>().toObservable() }
+                .flatMap { sellerProfile = it.dataSellerToUi();
+                    Database.providerArticles(it.sellerId).getObservable<Result.Article>() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    val e = it.dataArticleToUi()
+                    productData.value?.addItem(e, productData)
+                    if (productData.value?.size == 1) {
+                        presentedProduct.value = productData.value!![0]
+                    }
+                }, { it.printStackTrace() },
+                    { Log.e("Rx", "Completable called.");})
+        )
+    }
+
+    private fun setupArticles(sellerId: String) {
+        val productNode = Database.providerArticles(sellerId)
+
 //        disposable.add(productNode.getSingle().subscribe({ Log.e("TTTTT", "For debugging");},{}))
         disposable.add(productNode
             .getObservable<Result.Article>().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
-                val e = it.dataArticleToUi()
-                productData.value?.addItem(e,productData)
-                if (productData.value?.size == 1) {
-                    presentedProduct.value = productData.value!![0]
-                }
+
             })
-
-
-        disposable.add(Database.sellerProfile().getSingle<Result.SellerProfile>()
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                sellerProfile = it.dataSellerToUi() }
-                ,{it.printStackTrace()})
-        )
-
     }
+
 
     val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
         it.value = UiState.LoadingProgress(-1, false)
@@ -117,7 +140,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    val profile : UiState.SellerProfile = UiState.SellerProfile()
+    val profile: UiState.SellerProfile = UiState.SellerProfile()
 
     val editProduct: MutableLiveData<UiState.Article> by lazy {
         MutableLiveData<UiState.Article>().also {
@@ -131,18 +154,19 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun deleteProduct(){
+    fun deleteProduct() {
         blockingLoaderState.value = UiState.Loading
-        editProduct.value?.let {  Database.articles().child(it._id).removeValue()
-            .getCompletable().subscribe({success ->
-                if(success) {
+        editProduct.value?.let {
+            Database.articles().child(it._id).removeValue()
+                .getCompletable().subscribe({ success ->
+                    if (success) {
+                        blockingLoaderState.value = UiState.LoadingDone
+                    } else {
+                        blockingLoaderState.value = UiState.LoadingDone
+                    }
+                }, {
                     blockingLoaderState.value = UiState.LoadingDone
-                }else {
-                    blockingLoaderState.value = UiState.LoadingDone
-                }
-            }, {
-                blockingLoaderState.value = UiState.LoadingDone
-            })
+                })
         }
     }
 

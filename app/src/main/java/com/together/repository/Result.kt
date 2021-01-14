@@ -120,6 +120,8 @@ sealed class Result {
 
         var lat: String = "",
         var lng: String = "",
+        var sellerId: String = "",
+
 
         var markets: MutableList<Market> = mutableListOf(),
         var urls: MutableList<String> = mutableListOf(),

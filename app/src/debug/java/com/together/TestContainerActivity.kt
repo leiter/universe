@@ -77,7 +77,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
     private fun setupSellerProfile() {
         loading(true)
         compositeDisposable.add(
-            Database.sellerProfile()
+            Database.sellerProfile(FireBaseAuth.getAuth()!!.currentUser!!.uid)
                 .setValue(testData.sellerProfile)
                 .getCompletable().subscribe({ success ->
                     if (success) {
