@@ -14,6 +14,9 @@ import com.together.base.UtilsActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
 class LoginFragment : BaseFragment() {
+    companion object {
+        const val TAG = "LoginFragment"
+    }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,

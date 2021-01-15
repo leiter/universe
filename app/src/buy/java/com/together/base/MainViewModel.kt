@@ -55,6 +55,7 @@ class MainViewModel : ViewModel() {
 
     val uiTasks: LiveData<out UiState> = MutableLiveData()
 
+    // load separately
     lateinit var sellerProfile: UiState.SellerProfile
 
     var buyerProfile = UiState.BuyerProfile()
@@ -85,13 +86,14 @@ class MainViewModel : ViewModel() {
         disposable.add(
             Database.sellerProfile("").limitToFirst(1).getSingle().toObservable()
                 .subscribeOn(Schedulers.io())
-                .map { it.children.first().key!! }
-                .flatMap { uid ->
-                    Database.sellerProfile(uid).getSingle<Result.SellerProfile>().toObservable()
-                        .concatMap {
-                            sellerProfile = it.dataSellerToUi()
-                            Database.providerArticles(uid).getObservable<Result.Article>()
-                        }
+                .map {
+                    val sellerId = it.children.first().key!!
+                    sellerProfile = it.child(sellerId)
+                        .getValue(Result.SellerProfile::class.java)!!.dataSellerToUi()
+                    sellerId
+                }
+                .flatMap {
+                    Database.providerArticles(it).getObservable<Result.Article>()
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -122,7 +124,9 @@ class MainViewModel : ViewModel() {
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {
-        MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
+        MutableLiveData<UiState>().also {
+            it.value = FireBaseAuth.isLoggedIn()
+        }
     }
 
     val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()

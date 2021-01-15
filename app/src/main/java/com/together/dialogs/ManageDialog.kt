@@ -5,10 +5,9 @@ import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.telephony.SmsManager
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
@@ -19,15 +18,17 @@ import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
-import com.together.repository.Result
+import com.together.base.UiState
+import com.together.databinding.ManageDialogBinding
+import com.together.loggedout.LoginFragment
 import com.together.splash.SplashScreenFragment
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.manage_dialog.view.*
 
 class ManageDialog : DialogFragment() {
 
     lateinit var viewModel: MainViewModel
     lateinit var disposable: Disposable
+    lateinit var viewBinding: ManageDialogBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,17 +36,74 @@ class ManageDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(requireContext())
-        val view =
-            requireActivity().layoutInflater.inflate(R.layout.manage_dialog, null as ViewGroup?)
-        view.btn_profile.setOnClickListener {
-            MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
-                requireActivity().supportFragmentManager,
-                SplashScreenFragment(), AboutFragment.TAG))
 
-            ; dismiss() }
-        view.btn_write_msg.setOnClickListener { showWriteMessage(true) }
-        view.btn_show_info.setOnClickListener {
+        val builder = AlertDialog.Builder(requireContext())
+        viewBinding = ManageDialogBinding.inflate(LayoutInflater.from(requireContext()))
+
+        disposable = viewBinding.messageText.textChanges().subscribe {
+            viewModel.smsMessageText = it.toString()
+        }
+
+        builder.setView(viewBinding.root)
+        val dialog = builder.create()
+        dialog.setCanceledOnTouchOutside(true)
+        return dialog
+    }
+
+    private val clickProfileWhileLoggedOut: (View) -> Unit = {
+        MainMessagePipe.uiEvent.onNext(
+            UiEvent.AddFragment(
+                requireActivity().supportFragmentManager,
+                LoginFragment(), LoginFragment.TAG
+            )
+        )
+        dismiss()
+    }
+
+    private val clickProfileWhileLoggedIn: (View) -> Unit = {
+        MainMessagePipe.uiEvent.onNext(
+            UiEvent.AddFragment(
+                requireActivity().supportFragmentManager,
+                SplashScreenFragment(), AboutFragment.TAG
+            )
+        )
+        dismiss()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        viewModel.loggedState.observe(viewLifecycleOwner, {
+
+            when (it) {
+                is UiState.LOGGEDOUT -> {
+                    viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedOut)
+                    viewBinding.btnLogOut.setOnClickListener(clickProfileWhileLoggedOut)
+                    viewBinding.btnLogOut.setText(R.string.login_btn_text)
+                }
+
+                is UiState.BASE_AUTH -> {
+                    viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedIn)
+                    viewBinding.btnLogOut.setOnClickListener {
+                        MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
+                    viewBinding.btnLogOut.setText(R.string.about_disclaimer)
+
+                    viewBinding.btnLogOut.setOnClickListener {
+                        MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
+                    viewBinding.btnLogOut.setText(R.string.logout_btn_text)
+                }
+
+            }
+        })
+
+        viewBinding.btnSendMessage.setOnClickListener { sendSms() }
+        viewBinding.btnWriteMsg.setOnClickListener { showWriteMessage(true) }
+        viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
+
+        viewBinding.btnShowInfo.setOnClickListener {
             MainMessagePipe.uiEvent.onNext(
                 UiEvent.AddFragment(
                     requireActivity().supportFragmentManager,
@@ -53,39 +111,30 @@ class ManageDialog : DialogFragment() {
                 )
             ); dismiss()
         }
-        view.btn_log_out.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
-        view.btn_cancel.setOnClickListener { showWriteMessage(false) }
-        disposable = view.message_text.textChanges().subscribe {
-            viewModel.smsMessageText = it.toString()
-        }
-        view.btn_send_message.setOnClickListener {
-            sendSms()
-        }
-        builder.setView(view)
-        val dialog = builder.create()
-        dialog.setCanceledOnTouchOutside(true)
-        return dialog
+
+        return viewBinding.root
     }
 
-    private fun showWriteMessage(show: Boolean) {
-        val d = dialog!!
 
-        if (!show) {
-            d.findViewById<RelativeLayout>(R.id.message_container).visibility =
-                if (show) View.VISIBLE else View.GONE
-        }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//        view.btn_log_out.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
+
+    }
+
+
+    private fun showWriteMessage(show: Boolean) {
+
+        if (!show) { viewBinding.messageContainer.visibility = View.GONE }
 
         val visible = if (!show) View.VISIBLE else View.GONE
-        d.findViewById<TextView>(R.id.btn_profile).visibility = visible
-        d.findViewById<TextView>(R.id.btn_write_msg).visibility = visible
-        d.findViewById<TextView>(R.id.btn_show_info).visibility = visible
-        d.findViewById<TextView>(R.id.btn_log_out).visibility = visible
+        viewBinding.btnProfile.visibility = visible
+        viewBinding.btnWriteMsg.visibility = visible
+        viewBinding.btnShowInfo.visibility = visible
+        viewBinding.btnLogOut.visibility = visible
 
-        if (!show) { return }
-
-        d.findViewById<RelativeLayout>(R.id.message_container).visibility =
-            if (show) View.VISIBLE else View.GONE
-
+        if (show) { viewBinding.messageContainer.visibility = View.VISIBLE }
     }
 
     override fun onRequestPermissionsResult(
@@ -94,22 +143,27 @@ class ManageDialog : DialogFragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode== REQUEST_CODE_PERMISSION &&
-            permissions[0]==Manifest.permission.SEND_SMS  &&
-            grantResults[0] ==PackageManager.PERMISSION_GRANTED){
+        if (requestCode == REQUEST_CODE_PERMISSION &&
+            permissions[0] == Manifest.permission.SEND_SMS &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
             sendSms()
             dismiss()
         }
     }
 
-    private fun sendSms(){
-        when(ActivityCompat.checkSelfPermission(requireContext(),
-            Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+    private fun sendSms() {
+        when (ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.SEND_SMS
+        ) == PackageManager.PERMISSION_GRANTED) {
             true -> {
                 val smsManager = SmsManager.getDefault()
                 val parts = smsManager.divideMessage(viewModel.smsMessageText)
-                smsManager.sendMultipartTextMessage(viewModel.sellerProfile._telephoneNumber, null,
-                    parts,null, null)
+                smsManager.sendMultipartTextMessage(
+                    viewModel.sellerProfile._telephoneNumber, null,
+                    parts, null, null
+                )
                 dismiss()
             }
             else -> {
@@ -125,6 +179,7 @@ class ManageDialog : DialogFragment() {
 
     companion object {
         const val REQUEST_CODE_PERMISSION = 10
+        const val TAG = "ManageDialog"
     }
-
 }
+

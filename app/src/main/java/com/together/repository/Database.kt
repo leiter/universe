@@ -22,7 +22,7 @@ object Database {
     fun updateArticle(id: String): DatabaseReference = fire().reference.child(ARTICLES)
         .child(FireBaseAuth.getAuth()!!.uid!!).child(id)
 
-    fun     sellerProfile(sellerId: String, seller: Boolean = false): DatabaseReference {
+    fun sellerProfile(sellerId: String, seller: Boolean = false): DatabaseReference {
         val result = fire().reference.child(SELLER_PROFILE)
         if(sellerId.isNotEmpty()) result.child(sellerId)
         return if (seller) result.child(FireBaseAuth.getAuth()!!.uid!!) else result

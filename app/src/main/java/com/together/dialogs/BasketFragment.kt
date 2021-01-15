@@ -1,7 +1,6 @@
 package com.together.dialogs
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -36,7 +35,7 @@ class BasketFragment : DialogFragment() {
     private lateinit var viewModel: MainViewModel
     private val calendar: Calendar = Calendar.getInstance()
     private var showingTimePicker: Boolean = false
-    lateinit var days: Array<Date>
+    private lateinit var days: Array<Date>
 
     private val clickToDelete: (UiState.Article) -> Unit
         inline get() = { input ->
@@ -158,9 +157,9 @@ class BasketFragment : DialogFragment() {
     private fun updatePickUptime(hour: Int, minute: Int) {
         val newArray = ArrayList<Date>(3)
         val date =  dateContainer.selectedTabPosition
-        days.forEachIndexed { index, date ->
+        days.forEachIndexed { index, day ->
             calendar.clear()
-            calendar.time = date
+            calendar.time = day
             calendar.set(Calendar.HOUR_OF_DAY, hour)
             calendar.set(Calendar.MINUTE, minute)
             calendar.set(Calendar.SECOND, 0)

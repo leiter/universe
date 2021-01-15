@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:text="Mein Profil" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btn_write_msg"
         style="@style/AppTheme.ChooseSourceText"
         android:textColor="@color/colorPrimaryDark"
@@ -83,7 +83,7 @@
         android:drawablePadding="24dp"
         android:text="Nachricht schreiben (SMS)" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btn_show_info"
         style="@style/AppTheme.ChooseSourceText"
         android:textColor="@color/colorPrimaryDark"
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:text="Infos anzeigen" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btn_log_out"
         style="@style/AppTheme.ChooseSourceText"
         android:textColor="@color/colorPrimaryDark"
@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_logout"
         android:drawablePadding="24dp"
-        android:text="Ausloggen" />
+        android:text="@string/logout_btn_text" />
 
 
 
