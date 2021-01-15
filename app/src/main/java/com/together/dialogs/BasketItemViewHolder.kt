@@ -14,7 +14,6 @@ class BasketItemViewHolder(override val containerView: View?) : RecyclerView.Vie
         val amount = item.amountDisplay
         et_product_amount.text = amount
         product_name.text = item.productName
-//        product_category.text = item.productDescription
         product_price.text = item.priceDisplay
     }
 }

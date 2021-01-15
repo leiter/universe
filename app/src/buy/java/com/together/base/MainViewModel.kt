@@ -53,8 +53,13 @@ class MainViewModel : ViewModel() {
             return productData
         }
 
+    val uiTasks: LiveData<out UiState> = MutableLiveData()
+
     lateinit var sellerProfile: UiState.SellerProfile
 
+    var buyerProfile = UiState.BuyerProfile()
+
+    var order = UiState.Order()
 
     init {
 
@@ -74,25 +79,20 @@ class MainViewModel : ViewModel() {
                 is Result.ImageLoaded -> {
                     imageLoadingProgress.value = UiState.LoadingProgress(it.progressId, it.show)
                 }
-
-
             }
         })
-
-//        disposable.add(Database.sellerProfile(true).getSingle<Result.SellerProfile>()
-//            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                sellerProfile = it.dataSellerToUi() }
-//                ,{it.printStackTrace()})
-//        )
 
         disposable.add(
             Database.sellerProfile("").limitToFirst(1).getSingle().toObservable()
                 .subscribeOn(Schedulers.io())
                 .map { it.children.first().key!! }
-                .flatMap { Database.sellerProfile(it,true).getSingle<Result.SellerProfile>().toObservable() }
-                .flatMap { sellerProfile = it.dataSellerToUi();
-                    Database.providerArticles(it.sellerId).getObservable<Result.Article>() }
+                .flatMap { uid ->
+                    Database.sellerProfile(uid).getSingle<Result.SellerProfile>().toObservable()
+                        .concatMap {
+                            sellerProfile = it.dataSellerToUi()
+                            Database.providerArticles(uid).getObservable<Result.Article>()
+                        }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     val e = it.dataArticleToUi()
@@ -101,21 +101,16 @@ class MainViewModel : ViewModel() {
                         presentedProduct.value = productData.value!![0]
                     }
                 }, { it.printStackTrace() },
-                    { Log.e("Rx", "Completable called.");})
+                    { Log.e("Rx", "Complete called."); })
         )
     }
 
-    private fun setupArticles(sellerId: String) {
-        val productNode = Database.providerArticles(sellerId)
-
-//        disposable.add(productNode.getSingle().subscribe({ Log.e("TTTTT", "For debugging");},{}))
-        disposable.add(productNode
-            .getObservable<Result.Article>().subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe {
-
-            })
+    fun sendOrder() {
+        if (loggedState.value == UiState.LOGGEDOUT) {
+            loggedState.value = UiState.LOGIN_REQUIRED
+            return
+        }
     }
-
 
     val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
         it.value = UiState.LoadingProgress(-1, false)
@@ -137,36 +132,6 @@ class MainViewModel : ViewModel() {
     val basket: MutableLiveData<MutableList<UiState.Article>> by lazy {
         MutableLiveData<MutableList<UiState.Article>>().also {
             it.value = mutableListOf()
-        }
-    }
-
-    val profile: UiState.SellerProfile = UiState.SellerProfile()
-
-    val editProduct: MutableLiveData<UiState.Article> by lazy {
-        MutableLiveData<UiState.Article>().also {
-            it.value = UiState.Article()
-        }
-    }
-
-    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
-        MutableLiveData<MutableList<UiState.Market>>().also {
-            it.value = mutableListOf()
-        }
-    }
-
-    fun deleteProduct() {
-        blockingLoaderState.value = UiState.Loading
-        editProduct.value?.let {
-            Database.articles().child(it._id).removeValue()
-                .getCompletable().subscribe({ success ->
-                    if (success) {
-                        blockingLoaderState.value = UiState.LoadingDone
-                    } else {
-                        blockingLoaderState.value = UiState.LoadingDone
-                    }
-                }, {
-                    blockingLoaderState.value = UiState.LoadingDone
-                })
         }
     }
 

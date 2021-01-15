@@ -57,22 +57,28 @@ class MainActivity : AppCompatActivity() {
             ProductsFragment(), ProductsFragment.TAG)
         )
 
-//        viewModel.loggedState.observe(this, {
-//            when (it) {
-//
-//                is UiState.BASE_AUTH ->
+
+
+        viewModel.loggedState.observe(this, {
+            when (it) {
+
+                is UiState.BASE_AUTH -> {}
 //                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
 //                        supportFragmentManager,
 //                        ProductsFragment(), ProductsFragment.TAG)
 //                    )
-//
-//                is UiState.LOGGEDOUT -> {
+
+                is UiState.LOGIN_REQUIRED -> startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+
+
+
+                is UiState.LOGGEDOUT -> {
 //                    MainMessagePipe.uiEvent.onNext(
 //                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
 //                    )
-//                }
-//            }
-//        })
+                }
+            }
+        })
 
         disposable.add(btn_log_out.clicks().subscribe {
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)

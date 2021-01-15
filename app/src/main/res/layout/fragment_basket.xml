@@ -25,7 +25,7 @@
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/ck_set_reminder"
-            android:text="Im Kalender speichern"
+            android:text="Markt und Uhrzeit merken"
             android:textColor="@color/fab_green"
             android:buttonTint="@color/fab_green"
             style="@style/Widget.AppCompat.CompoundButton.CheckBox"
@@ -52,7 +52,6 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_market_select"
-            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -68,7 +67,6 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_date_container"
             android:layout_width="0dp"
-            android:visibility="visible"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
 
@@ -91,6 +89,8 @@
             app:layout_constraintEnd_toStartOf="@+id/btn_change_appointment_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_change_appointment_time" />
+
+
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_change_appointment_time"
             android:src="@drawable/ic_appointment_time"
@@ -104,7 +104,7 @@
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_cancel_appointment_time"
             android:src="@drawable/ic_clear_green"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="@id/tl_date_container"
             app:layout_constraintBottom_toBottomOf="@id/tl_date_container"
             android:padding="16dp"

@@ -1,27 +1,25 @@
 package com.together.dialogs
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.TimePicker
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
+import com.together.utils.setDrawable
 import com.together.utils.toDateString
 import kotlinx.android.synthetic.main.fragment_basket.*
 import java.util.*
@@ -57,11 +55,9 @@ class BasketFragment : DialogFragment() {
     }
 
     private fun showSetTime(show: Boolean) {
-        val d = if (show) ResourcesCompat.getDrawable(
-            resources, R.drawable.ic_appointment_time, requireActivity().theme)
-                else ResourcesCompat.getDrawable(resources, R.drawable.ic_add, requireActivity().theme)
-        timeSelector.setImageDrawable(d)
-        dialog!!.btn_change_appointment_time.setImageDrawable(d)
+        val dd = if (show) R.drawable.ic_appointment_time
+        else R.drawable.ic_check
+        requireActivity().setDrawable(dd, timeSelector)
     }
 
     private val timeClicker: (View) -> Unit = {
@@ -78,10 +74,7 @@ class BasketFragment : DialogFragment() {
             timePicker.visibility = View.VISIBLE
             dialog!!.btn_cancel_appointment_time.visibility = View.VISIBLE
         }
-
-
         showingTimePicker = !showingTimePicker
-
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -94,9 +87,9 @@ class BasketFragment : DialogFragment() {
         timePicker = layout.findViewById(R.id.tp_set_appointment)
         timePicker.setIs24HourView(true)
 
+
         setupMarketButtons()
-
-
+        alterTimePicker()
 
         val hideAppointment = layout.findViewById<ImageButton>(R.id.btn_hide_appointment)
         hideAppointment.setOnClickListener { showFinalizeDate(false) }
@@ -110,11 +103,8 @@ class BasketFragment : DialogFragment() {
             dateContainer.visibility = View.VISIBLE
             marketContainer.visibility = View.VISIBLE
             timePicker.visibility = View.INVISIBLE
-            val g = ResourcesCompat.getDrawable(
-                resources, R.drawable.ic_appointment_time, requireActivity().theme
-            )
             it.visibility = View.GONE
-            dialog!!.btn_change_appointment_time.setImageDrawable(g)
+            requireActivity().setDrawable(R.drawable.ic_appointment_time, timeSelector)
             showingTimePicker = false
         }
 
@@ -125,8 +115,16 @@ class BasketFragment : DialogFragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        return AlertDialog.Builder(requireActivity(), R.style.MyDialogTheme).setView(layout)
-            .create()
+        return AlertDialog.Builder(requireActivity(), R.style.MyDialogTheme)
+            .setView(layout).create()
+    }
+
+    private fun alterTimePicker() {
+        val defaultMarket = viewModel.sellerProfile.marketList[0]
+        val i = (timePicker as FrameLayout).children.iterator().next()
+        val hourPicker = (i.touchables[0].parent as NumberPicker)
+        hourPicker.minValue = defaultMarket.begin.split(":")[0].toInt()
+        hourPicker.maxValue = defaultMarket.end.split(":")[0].toInt() -1
     }
 
     private fun calculatePurchaseSum(list: MutableList<UiState.Article>): String {
@@ -159,14 +157,18 @@ class BasketFragment : DialogFragment() {
 
     private fun updatePickUptime(hour: Int, minute: Int) {
         val newArray = ArrayList<Date>(3)
+        val date =  dateContainer.selectedTabPosition
         days.forEachIndexed { index, date ->
+            calendar.clear()
             calendar.time = date
             calendar.set(Calendar.HOUR_OF_DAY, hour)
             calendar.set(Calendar.MINUTE, minute)
+            calendar.set(Calendar.SECOND, 0)
             newArray.add(index, calendar.time)
         }
         val i = viewModel.sellerProfile.marketList[marketContainer.selectedTabPosition]
-        showDates(i.dayIndicator, newArray.toTypedArray())
+        showDates(i.dayIndicator, newArray.toTypedArray(),date)
+
     }
 
     private fun showFinalizeDate(show: Boolean) {
@@ -189,13 +191,16 @@ class BasketFragment : DialogFragment() {
         }
     }
 
-    private fun showDates(targetDay: Int, newDays: Array<Date>? = null) {
+    private fun showDates(targetDay: Int, newDays: Array<Date>? = null, selectPos: Int = -1) {
         days = newDays ?: getDays(targetDay)
         dateContainer.removeAllTabs()
         days.forEach {
             val f = dateContainer.newTab()
             f.text = it.toDateString()
             dateContainer.addTab(f)
+        }
+        if(selectPos > -1 && selectPos < dateContainer.tabCount) {
+            dateContainer.getTabAt(selectPos)?.select()
         }
     }
 

@@ -31,7 +31,7 @@ fun Result.SellerProfile.dataSellerToUi() : UiState.SellerProfile {
         street = this.street,
         houseNumber = this.houseNumber,
         city = this.city,
-        zipcode = this.zipcode,
+        zipCode = this.zipcode,
         _telephoneNumber = this.telephoneNumber,
         _knownClientIds = this.knownClientIds,
         marketList = this.markets.map { it.dataMarketToUi() }.toMutableList()

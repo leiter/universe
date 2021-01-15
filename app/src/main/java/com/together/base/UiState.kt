@@ -2,6 +2,7 @@ package com.together.base
 
 import android.net.Uri
 import android.os.Parcelable
+import com.together.repository.Result
 import kotlinx.android.parcel.Parcelize
 
 sealed class UiState {
@@ -30,6 +31,11 @@ sealed class UiState {
     }
 
     object LOGGEDOUT : UiState() {
+        override var _id = "StateLoggedOut"
+        override var _mode: Int = UNDEFINED
+    }
+
+    object LOGIN_REQUIRED : UiState() {
         override var _id = "StateLoggedOut"
         override var _mode: Int = UNDEFINED
     }
@@ -78,7 +84,7 @@ sealed class UiState {
         private fun prepareAmountDisplay(): String {
             val amountStart: String = if (unit != "kg") {
                 amountCount.toString().split(".")[0]
-            } else amountCount.toString().replace(".", ",")
+            } else "%.3f".format(amountCount).replace(".", ",")
             return "$amountStart $unit"
         }
 
@@ -106,16 +112,40 @@ sealed class UiState {
 
     data class NewProductImage(val uri: Uri)
 
+    data class Order(
+        override var _id: String = "",
+        override var _mode: Int = Result.UNDEFINED,
+        var user: Result.User = Result.User(),
+        var createdDate: Long = 0L,
+        var marketId: String = "",
+        var pickUpDate: Long = 0L,
+        var articles: List<Result.Article> = emptyList(),
+        ) : UiState()
+
+    data class BuyerProfile(
+
+        override var _id: String = "",
+        override var _mode: Int = Result.UNDEFINED,
+
+        var displayName: String = "",
+
+        var emailAddress: String = "",
+
+        var contactIds: MutableList<String> = mutableListOf(), // int is to order 10 100 1000
+
+        var sellerIds: MutableList<String> = mutableListOf() // int is to order 10 100 1000
+
+    ) : UiState()
+
     data class SellerProfile(
         override var _id: String = "",
-
         var displayName: String = "",
         var firstName: String = "",
         var lastName: String = "",
         var street: String = "",
         var houseNumber: String = "",
         var city: String = "",
-        var zipcode: String = "",
+        var zipCode: String = "",
         var _telephoneNumber: String = "",
 
         var _lat: String = "",

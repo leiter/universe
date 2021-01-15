@@ -159,15 +159,29 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_product_name"
             android:layout_width="0dp"
-            tools:text="Linda Kartoffel"
-            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:lines="3"
             android:textSize="14sp"
-            android:layout_marginTop="8dp"
-            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/btn_product_amount_clear"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_price_name_layout"
-            app:layout_constraintTop_toBottomOf="@id/tv_product_category"/>
+            app:layout_constraintStart_toEndOf="@id/btn_show_detail_info"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_category"
+            tools:text="Linda Kartoffel" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btn_show_detail_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_info_outline"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_product_name"
+
+            app:layout_constraintStart_toEndOf="@id/iv_product_image"
+            app:layout_constraintTop_toTopOf="@id/tv_product_name" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_product_amount_layout"
