@@ -11,6 +11,7 @@
         android:id="@+id/appointment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:minHeight="384dp"
         android:padding="16dp">
 
@@ -51,7 +52,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tl_market_select"
+            android:id="@+id/tl_market_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -59,7 +60,6 @@
             app:tabBackground="@drawable/tab_layout_background"
             app:tabSelectedTextColor="@color/white"
             app:tabIndicator="@null"
-            app:layout_constraintEnd_toStartOf="@+id/btn_hansa"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             />
@@ -73,7 +73,7 @@
             android:layout_marginEnd="32dp"
             app:layout_constraintEnd_toStartOf="@+id/btn_change_appointment_time"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tl_market_select"
+            app:layout_constraintTop_toBottomOf="@id/tl_market_container"
             app:tabBackground="@drawable/tab_layout_background"
             app:tabSelectedTextColor="@color/white"
             app:tabMode="scrollable"

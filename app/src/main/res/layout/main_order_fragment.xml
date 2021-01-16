@@ -65,7 +65,8 @@
             android:layout_height="match_parent"
             android:layout_toStartOf="@id/btn_menu_search"
             android:layout_toEndOf="@id/btn_manage_profile"
-            />
+            android:inputType="text"
+            android:importantForAutofill="no" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_menu_search"
@@ -212,7 +213,8 @@
             android:src="@drawable/ic_clear"
             app:layout_constraintBottom_toBottomOf="@+id/et_product_amount_layout"
             app:layout_constraintEnd_toEndOf="@+id/et_product_amount_layout"
-            app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout" />
+            app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout"
+            tools:ignore="RtlSymmetry" />
 
 
         <ImageButton

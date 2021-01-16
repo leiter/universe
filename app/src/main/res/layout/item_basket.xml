@@ -28,7 +28,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/edit_order"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="2.93€" />
+        android:text="2.93€"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
 

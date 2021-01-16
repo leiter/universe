@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-
+                onBackPressed()
             }
         } else {
             moveTaskToBack(true)

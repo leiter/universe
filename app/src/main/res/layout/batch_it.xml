@@ -28,6 +28,7 @@
         android:textColor="#FFF"
         android:textSize="8sp"
         android:textStyle="bold"
-        tools:text="22" />
+        tools:text="22"
+        tools:ignore="SmallSp" />
 
 </FrameLayout>
