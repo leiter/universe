@@ -5,15 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.R
 import com.together.base.UiState
+import com.together.databinding.ItemBasketBinding
 
 class BasketAdapter(var data: MutableList<UiState.Article>,
-                    private val clickToDelete: (product: UiState.Article) -> Unit) : RecyclerView.Adapter<BasketItemViewHolder>() {
+                    private val clickToDelete: (product: UiState.Article) -> Unit)
+    : RecyclerView.Adapter<BasketItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BasketItemViewHolder {
-        return BasketItemViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_basket, parent, false)
-        )
+        val binding = ItemBasketBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return BasketItemViewHolder(binding)
     }
 
     override fun getItemCount(): Int {

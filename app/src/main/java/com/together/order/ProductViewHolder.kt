@@ -1,20 +1,19 @@
 package com.together.order
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.together.base.UiState
-import kotlinx.android.extensions.LayoutContainer
+import com.together.databinding.ItemProductBinding
 import kotlinx.android.synthetic.main.item_product.*
 
-class ArticleViewHolder(override val containerView: View?,
+class ArticleViewHolder(private val binding: ItemProductBinding,
                         private val click: ProductAdapter.ItemClicked)
-    : RecyclerView.ViewHolder(containerView!!), LayoutContainer {
+    : RecyclerView.ViewHolder(binding.root) {
 
     fun bindItem(item: UiState.Article) {
-        product_name.text = item.productName
+        binding.productName.text = item.productName
         val price = item.pricePerUnit + "/" + item.unit
-        product_price.text = price
-        containerView?.setOnClickListener {
+        binding.productPrice.text = price
+        binding.root.setOnClickListener {
             click.clicked(item)
         }
     }

@@ -1,19 +1,16 @@
 package com.together.dialogs
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.together.base.UiState
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_basket.*
+import com.together.databinding.ItemBasketBinding
 
-class BasketItemViewHolder(override val containerView: View?) : RecyclerView.ViewHolder(containerView!!),
-    LayoutContainer {
+class BasketItemViewHolder(private val binding: ItemBasketBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindItem(item: UiState.Article, clickToDelete: (product: UiState.Article) -> Unit) {
-        edit_order.setOnClickListener { clickToDelete(item) }
+        binding.editOrder.setOnClickListener { clickToDelete(item) }
         val amount = item.amountDisplay
-        et_product_amount.text = amount
-        product_name.text = item.productName
-        product_price.text = item.priceDisplay
+        binding.etProductAmount.text = amount
+        binding.productName.text = item.productName
+        binding.productPrice.text = item.priceDisplay
     }
 }

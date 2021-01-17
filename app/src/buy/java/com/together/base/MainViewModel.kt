@@ -131,7 +131,7 @@ class MainViewModel : ViewModel() {
 
     val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
-    val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
+    private val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
 
     val basket: MutableLiveData<MutableList<UiState.Article>> by lazy {
         MutableLiveData<MutableList<UiState.Article>>().also {
