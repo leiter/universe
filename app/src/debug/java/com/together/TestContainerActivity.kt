@@ -11,7 +11,7 @@ import com.together.base.UtilsActivity
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.repository.storage.getCompletable
+import com.together.repository.storage.getSingle
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -56,7 +56,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
         }
         create_account.setOnClickListener {
             loading(true);
-            FireBaseAuth.createAccount(testData.emailAddress, testData.passWord)
+            FireBaseAuth.createAccountWithEmailAndPassword(testData.emailAddress, testData.passWord)
         }
         logout.setOnClickListener { loading(true); FireBaseAuth.logOut() }
         upload_seller_profile.setOnClickListener { setupSellerProfile() }
@@ -77,9 +77,9 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
     private fun setupSellerProfile() {
         loading(true)
         compositeDisposable.add(
-            Database.sellerProfile(FireBaseAuth.getAuth()!!.currentUser!!.uid)
+            Database.sellerProfile(FireBaseAuth.getAuth().currentUser!!.uid)
                 .setValue(testData.sellerProfile)
-                .getCompletable().subscribe({ success ->
+                .getSingle().subscribe({ success ->
                     if (success) {
                         loading(false)
                     } else {

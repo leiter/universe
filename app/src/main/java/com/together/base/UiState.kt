@@ -56,7 +56,7 @@ sealed class UiState {
         var productDescription: String? = null,
         var available: Boolean = false,
         var remoteImageUrl: String = "",
-        var localImageUrl: String = "",
+        var isSelected: Boolean = false,
         var amount: String = "",
         var pricePerUnit: String = "",
         var unit: String = "",
@@ -119,7 +119,7 @@ sealed class UiState {
         var createdDate: Long = 0L,
         var marketId: String = "",
         var pickUpDate: Long = 0L,
-        var articles: List<Result.Article> = emptyList(),
+        var articles: List<Article> = emptyList(),
         ) : UiState()
 
     data class BuyerProfile(
@@ -131,9 +131,16 @@ sealed class UiState {
 
         var emailAddress: String = "",
 
-        var contactIds: MutableList<String> = mutableListOf(), // int is to order 10 100 1000
+        var contactIds: MutableList<String> = mutableListOf(),
 
-        var sellerIds: MutableList<String> = mutableListOf() // int is to order 10 100 1000
+        var sellerIds: MutableList<String> = mutableListOf(),
+
+        var providerId: String =  "",
+        var isAnonymous: Boolean = true,
+        var photoUrl: String = "",
+        var phoneNumber: String = ""
+
+
 
     ) : UiState()
 

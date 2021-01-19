@@ -4,19 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.database.DataSnapshot
-import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.repository.storage.getCompletable
-import com.together.repository.storage.getObservable
-import com.together.repository.storage.getSingle
-import com.together.repository.storage.getSingleValue
 import com.together.utils.dataArticleToUi
 import com.together.utils.dataSellerToUi
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
 fun MutableList<UiState.Article>.addItem(
     item: UiState.Article,
@@ -41,7 +33,8 @@ fun MutableList<UiState.Article>.addItem(
 }
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
+    ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
@@ -60,10 +53,8 @@ class MainViewModel : ViewModel() {
 
     var buyerProfile = UiState.BuyerProfile()
 
-    var order = UiState.Order()
 
     init {
-
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
                 is Result.LoggedOut ->
@@ -84,18 +75,7 @@ class MainViewModel : ViewModel() {
         })
 
         disposable.add(
-            Database.sellerProfile("").limitToFirst(1).getSingle().toObservable()
-                .subscribeOn(Schedulers.io())
-                .map {
-                    val sellerId = it.children.first().key!!
-                    sellerProfile = it.child(sellerId)
-                        .getValue(Result.SellerProfile::class.java)!!.dataSellerToUi()
-                    sellerId
-                }
-                .flatMap {
-                    Database.providerArticles(it).getObservable<Result.Article>()
-                }
-                .observeOn(AndroidSchedulers.mainThread())
+            dataRepository.setupProductConnection()
                 .subscribe({
                     val e = it.dataArticleToUi()
                     productData.value?.addItem(e, productData)
@@ -104,6 +84,11 @@ class MainViewModel : ViewModel() {
                     }
                 }, { it.printStackTrace() },
                     { Log.e("Rx", "Complete called."); })
+
+        )
+        disposable.add(dataRepository.setupProviderConnection()
+            .subscribe({ sellerProfile = it.dataSellerToUi() },
+                { it.printStackTrace() })
         )
     }
 

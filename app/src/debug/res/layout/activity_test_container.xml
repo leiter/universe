@@ -55,6 +55,21 @@
         android:text="Logout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/upload_seller_profile"  />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/loginAnon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LoginAnon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/logout"  />
+    
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/migrateAnon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MigrateAnon"
+        app:layout_constraintEnd_toStartOf="@id/loginAnon"
+        app:layout_constraintBottom_toTopOf="@id/logout"  />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/create_account"

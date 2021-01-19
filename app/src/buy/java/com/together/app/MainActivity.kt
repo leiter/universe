@@ -48,16 +48,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-//        MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
-//            supportFragmentManager,
-//            SplashScreenFragment(), AboutFragment.TAG))
 
         MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
             supportFragmentManager,
             ProductsFragment(), ProductsFragment.TAG)
         )
-
-
 
         viewModel.loggedState.observe(this, {
             when (it) {
@@ -68,7 +63,9 @@ class MainActivity : AppCompatActivity() {
 //                        ProductsFragment(), ProductsFragment.TAG)
 //                    )
 
-                is UiState.LOGIN_REQUIRED -> startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+                is UiState.LOGIN_REQUIRED ->
+                    startActivityForResult(
+                        AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
 
 
 

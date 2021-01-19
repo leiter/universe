@@ -7,9 +7,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
 import com.together.repository.Result
-import com.together.repository.storage.getCompletable
+import com.together.repository.storage.getSingle
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CancellationException
+import java.lang.NullPointerException
 
 
 object FireBaseAuth : FirebaseAuth.AuthStateListener {
@@ -18,27 +20,39 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
         FirebaseAuth.getInstance().addAuthStateListener(this)
     }
 
-    lateinit var createUserDisposable: Disposable
+    private lateinit var createUserDisposable: Disposable
 
-    var userProfile: Result.BuyerProfile = Result.BuyerProfile()
-
-    fun getAuth(): FirebaseAuth? {
+    fun getAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
     fun isLoggedIn(): UiState {
-        return when (getAuth()?.currentUser != null) {
+        return when (getAuth().currentUser != null) {
             true -> UiState.BASE_AUTH
             else -> UiState.LOGGEDOUT
         }
     }
 
+    fun loginAnonymously(){
+        createUserDisposable = getAuth().signInAnonymously().getSingle().subscribe(
+            {
+                if(it.user!= null) {
+                    MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn(it.user!!))
+                } else MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
+            },{
+                // FIXME
+                MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
+            }
+        )
+
+    }
+
     fun loginWithEmailAndPassWord(email: String, passWord: String) {
         createUserDisposable.dispose()
-        createUserDisposable = getAuth()?.signInWithEmailAndPassword(email,passWord)!!
-            .getCompletable().subscribe(
+        createUserDisposable = getAuth().signInWithEmailAndPassword(email,passWord)
+            .getSingle().subscribe(
             {
-                if(it) {
-                    MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn)
+                if(it.user!= null) {
+                    MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn(it.user!!))
                 } else MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
             },{
                     // FIXME
@@ -48,11 +62,10 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
     }
 
     fun loginWithGoogleCredentials(credentials: AuthCredential){
-
-        createUserDisposable = getAuth()!!.signInWithCredential(credentials)
-            .getCompletable().subscribe( {
-                if(it) {
-                    MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn)
+        createUserDisposable = getAuth().signInWithCredential(credentials)
+            .getSingle().subscribe( {
+                if(it.user!=null) {
+                    MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn(it.user!!))
                 } else MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
 
             },{
@@ -62,7 +75,8 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
     }
 
     fun deleteAccount(){
-        createUserDisposable = getAuth()?.currentUser?.delete()!!.getCompletable().subscribe({
+        createUserDisposable = getAuth().currentUser?.delete()!!.getSingle()
+            .subscribe({
 
         },{
             // FIXME
@@ -70,19 +84,23 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
         })
     }
 
-    fun createAccount(email: String, passWord: String){
+    fun createAccountWithEmailAndPassword(email: String, passWord: String, migrateAnonymous: Boolean= false){
         createUserDisposable =
-            getAuth()?.createUserWithEmailAndPassword(email,passWord)?.getCompletable()?.subscribe(
+            getAuth().createUserWithEmailAndPassword(email,passWord).getSingle()
+                .map {
+                if (migrateAnonymous) getAuth().currentUser!!.linkWithCredential(it.credential!!)
+                it
+            }.subscribe(
                 {
-                    if(it) {
-                        MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn)
+                    if(it != null && it.user != null) {
+                        MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn(it.user!!))
                     } else MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
 
                 },{
                     // FIXME
                     MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
                 }
-            )!!
+            )
     }
 
     override fun onAuthStateChanged(p0: FirebaseAuth) {
@@ -90,19 +108,17 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
         if (user == null) {
             MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
         } else {
-            MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn)
+            MainMessagePipe.mainThreadMessage.onNext(Result.LoggedIn(user))
         }
     }
 
-    fun logOut(){
-        getAuth()?.signOut()
-    }
+    fun logOut() { getAuth().signOut() }
 
-
-    fun Task<AuthResult>.getCompletable(): Single<Boolean> {
+    private fun Task<AuthResult>.getSingle(): Single<AuthResult> {
         return Single.create { emitter ->
-            addOnCompleteListener { emitter.onSuccess(true) }
-            addOnCanceledListener { emitter.onSuccess(false) }
+            addOnCompleteListener { it.result?.let { result -> emitter.onSuccess(result)}
+                ?: emitter.onError(it.exception?: NullPointerException("AuthResult is null")) }
+            addOnCanceledListener { emitter.onError(exception ?: CancellationException("Task was cancelled")) }
             addOnFailureListener { emitter.onError(it) }
         }
 

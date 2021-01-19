@@ -3,10 +3,12 @@ package com.together.order
 import androidx.recyclerview.widget.RecyclerView
 import com.together.base.UiState
 import com.together.databinding.ItemProductBinding
-import kotlinx.android.synthetic.main.item_product.*
 
-class ArticleViewHolder(private val binding: ItemProductBinding,
-                        private val click: ProductAdapter.ItemClicked)
+
+class ArticleViewHolder(
+    private val binding: ItemProductBinding,
+    private val click: ProductAdapter.ItemClicked
+)
     : RecyclerView.ViewHolder(binding.root) {
 
     fun bindItem(item: UiState.Article) {

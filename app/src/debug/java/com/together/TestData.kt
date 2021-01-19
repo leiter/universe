@@ -207,12 +207,12 @@ object TestData {
         Result.Order(
             id = "",
             user = userList[0],
-            articles = articleList
+//            articles = articleList
         ),
         Result.Order(
             id = "",
             user = userList[1],
-            articles = articleList
+//            articles = articleList
         )
     )
 

@@ -1,6 +1,7 @@
 package com.together.repository
 
 import android.net.Uri
+import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
 sealed class Result {
@@ -31,7 +32,7 @@ sealed class Result {
         override var mode: Int = UNDEFINED
     }
 
-    object LoggedIn : Result() {
+    data class LoggedIn(val currentUser: FirebaseUser) : Result() {
         override var id: String = "loggedOut"
         override var mode: Int = UNDEFINED
     }
@@ -57,12 +58,10 @@ sealed class Result {
     ) : Result()
 
     data class User(
-        var uId: String = "",
         var displayName: String = "",
         var emailAddress: String = "",
         var telephoneNumber: String = "",
         var photoUrl:String = "",
-
         ) : Result() {
         override var id: String = ""
         override var mode: Int = UNDEFINED
@@ -82,10 +81,20 @@ sealed class Result {
         var category: String = "",
         var searchTerms: String = "",
         var detailInfo: String = ""
-
 //         @get:PropertyName("adsfg")
 //        val fuckck:String =  "Fuck"
     ) : Result()
+
+    data class OrderedProduct(
+        override var id: String,
+        override var mode: Int = UNDEFINED,
+        var productId: Int = -1,
+        var productName: String = "",
+        var unit: String = "",
+        var price: Double = 0.0,
+
+
+        ): Result()
 
     data class Order(
         override var id: String = "",
@@ -94,9 +103,9 @@ sealed class Result {
         var createdDate: Long = 0L,
         var marketId: String = "",
         var dueDate: Long = 0L,
-        var articles: List<Article> = emptyList(),
-
+        var articles: List<OrderedProduct> = emptyList(),
         ) : Result()
+
 
 
     data class SellerProfile(

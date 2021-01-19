@@ -132,7 +132,7 @@ fun Query.getSingle(): Single<DataSnapshot> {
 
 }
 
-fun Task<Void>.getCompletable(): Single<Boolean> {
+fun Task<Void>.getSingle(): Single<Boolean> {
     return Single.create { emitter ->
         addOnCompleteListener { emitter.onSuccess(true) }
         addOnCanceledListener { emitter.onSuccess(false) }

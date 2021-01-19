@@ -3,11 +3,9 @@
        android:shape="ring"
         android:innerRadius="0dp"
        android:useLevel="false"
-       android:thickness="8dp"
+       android:thickness="8dp">
 
-        >
-
-    <solid android:color="@color/brightGreen"/>
+    <solid android:color="@color/fab_green"/>
 
     <padding
             android:right="4dp"
