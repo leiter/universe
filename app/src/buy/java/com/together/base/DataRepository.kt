@@ -6,6 +6,7 @@ import com.together.repository.storage.getObservable
 import com.together.repository.storage.getSingle
 import com.together.utils.dataSellerToUi
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -13,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 interface DataRepository {
     fun setupProductConnection(): Observable<Result.Article>
     fun setupProviderConnection(): Observable<Result.SellerProfile>
+    fun sendOrder(order: Result.Order): Single<Boolean>
 }
 
 class DataRepositoryImpl : DataRepository {
@@ -31,6 +33,11 @@ class DataRepositoryImpl : DataRepository {
                 val sellerId = it.children.first().key!!
                 it.child(sellerId).getValue(Result.SellerProfile::class.java)!!
             }.observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun sendOrder(order: Result.Order): Single<Boolean> {
+        return Database.orders().setValue(order)
+            .getSingle().subscribeOn(Schedulers.io())
     }
 
 

@@ -31,6 +31,7 @@ object AQ {
 
     fun getFirebaseUIStarter(): Intent {
         val providers = listOf(
+            AuthUI.IdpConfig.AnonymousBuilder().build(),
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build())
         return AuthUI.getInstance()

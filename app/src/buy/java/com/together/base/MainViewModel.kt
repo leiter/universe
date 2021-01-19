@@ -9,6 +9,7 @@ import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
 import com.together.utils.dataSellerToUi
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 
 fun MutableList<UiState.Article>.addItem(
     item: UiState.Article,
@@ -46,22 +47,29 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             return productData
         }
 
+    var buyerProfile = UiState.BuyerProfile()
+
     val uiTasks: LiveData<out UiState> = MutableLiveData()
 
-    // load separately
-    lateinit var sellerProfile: UiState.SellerProfile
+    private val order = Result.Order()
 
-    var buyerProfile = UiState.BuyerProfile()
+    lateinit var days: Array<Date>
+
+    lateinit var sellerProfile: UiState.SellerProfile
 
 
     init {
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
-                is Result.LoggedOut ->
+                is Result.LoggedOut -> {
                     loggedState.value = UiState.LOGGEDOUT
+                    FireBaseAuth.loginAnonymously()
+                }
 
-                is Result.LoggedIn ->
+                is Result.LoggedIn -> {
                     loggedState.value = UiState.BASE_AUTH
+                    setupDataStreams()
+                }
 
                 is Result.NewImageCreated -> {
                     if (newProduct.value == null)
@@ -69,11 +77,16 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     else newProduct.value = UiState.NewProductImage(it.uri!!)
                 }
                 is Result.ImageLoaded -> {
-                    imageLoadingProgress.value = UiState.LoadingProgress(it.progressId, it.show)
+                    imageLoadingProgress.value =
+                        UiState.LoadingProgress(it.progressId, it.show)
                 }
             }
         })
 
+
+    }
+
+    private fun setupDataStreams() {
         disposable.add(
             dataRepository.setupProductConnection()
                 .subscribe({
@@ -127,6 +140,11 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     override fun onCleared() {
         disposable.clear()
         super.onCleared()
+    }
+
+    fun setTimeDateForOrder(market: UiState.Market, date: Date) {
+        order.dueDate = date.time
+        order.marketId = market._id
     }
 }
 

@@ -8,6 +8,7 @@ import android.telephony.SmsManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
@@ -28,7 +29,7 @@ class ManageDialog : DialogFragment() {
 
     lateinit var viewModel: MainViewModel
     lateinit var disposable: Disposable
-    lateinit var viewBinding: ManageDialogBinding
+    private lateinit var viewBinding: ManageDialogBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,13 +90,8 @@ class ManageDialog : DialogFragment() {
                     viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedIn)
                     viewBinding.btnLogOut.setOnClickListener {
                         MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
-                    viewBinding.btnLogOut.setText(R.string.about_disclaimer)
-
-                    viewBinding.btnLogOut.setOnClickListener {
-                        MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
                     viewBinding.btnLogOut.setText(R.string.logout_btn_text)
                 }
-
             }
         })
 
@@ -114,15 +110,6 @@ class ManageDialog : DialogFragment() {
 
         return viewBinding.root
     }
-
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        view.btn_log_out.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
-
-    }
-
 
     private fun showWriteMessage(show: Boolean) {
 
@@ -158,6 +145,12 @@ class ManageDialog : DialogFragment() {
             Manifest.permission.SEND_SMS
         ) == PackageManager.PERMISSION_GRANTED) {
             true -> {
+                if(viewModel.smsMessageText.isBlank()||
+                    viewModel.smsMessageText.isEmpty()){
+                    Toast.makeText(requireContext(),
+                        "Bitte text eingeben.",Toast.LENGTH_SHORT).show()
+                    return
+                }
                 val smsManager = SmsManager.getDefault()
                 val parts = smsManager.divideMessage(viewModel.smsMessageText)
                 smsManager.sendMultipartTextMessage(
@@ -167,7 +160,8 @@ class ManageDialog : DialogFragment() {
                 dismiss()
             }
             else -> {
-                requestPermissions(arrayOf(Manifest.permission.SEND_SMS), REQUEST_CODE_PERMISSION)
+                requestPermissions(
+                    arrayOf(Manifest.permission.SEND_SMS), REQUEST_CODE_PERMISSION)
             }
         }
     }

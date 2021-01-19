@@ -42,7 +42,6 @@ fun Result.SellerProfile.dataSellerToUi() : UiState.SellerProfile {
 fun Result.Market.dataMarketToUi() : UiState.Market {
     return UiState.Market(
         _id = this.id,
-        marketId = this.id,
         name = this.name,
         street = this.street,
         houseNumber = this.houseNumber,
@@ -54,6 +53,12 @@ fun Result.Market.dataMarketToUi() : UiState.Market {
         dayIndicator = this.dayIndex
     )
 }
+
+//fun UiState.Article.toOrderedItem() : Result.OrderedProduct {
+//    return Result.OrderedProduct(
+//
+//    )
+//}
 
 
 

@@ -119,7 +119,7 @@ sealed class UiState {
         var createdDate: Long = 0L,
         var marketId: String = "",
         var pickUpDate: Long = 0L,
-        var articles: List<Article> = emptyList(),
+        var productList: List<Article> = emptyList(),
         ) : UiState()
 
     data class BuyerProfile(
@@ -139,8 +139,6 @@ sealed class UiState {
         var isAnonymous: Boolean = true,
         var photoUrl: String = "",
         var phoneNumber: String = ""
-
-
 
     ) : UiState()
 
@@ -169,7 +167,7 @@ sealed class UiState {
 
     @Parcelize
     data class Market(
-        var marketId: String = "",
+
         var name: String = "",
         var street: String = "",
         var houseNumber: String = "",

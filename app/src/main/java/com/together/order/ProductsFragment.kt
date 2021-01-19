@@ -34,15 +34,12 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
     private var itemIndexScrollTo: Int = -1
     private lateinit var viewBinding: MainOrderFragmentBinding
-    private var selectedPosition = 0
 
     override fun clicked(item: UiState.Article) {
         viewModel.presentedProduct.value = item
         if (!::productData.isInitialized) {
             productData = adapter.data.toMutableList()
         }
-        selectedPosition = adapter.data.indexOf(adapter.data.first { it._id == item._id })
-        adapter.notifyItemChanged(selectedPosition)
         itemIndexScrollTo = productData.lastIndexOf(item)
         Handler().postDelayed({
             (viewBinding.articleList.layoutManager!! as LinearLayoutManager)

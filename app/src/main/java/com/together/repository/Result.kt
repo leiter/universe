@@ -92,6 +92,8 @@ sealed class Result {
         var productName: String = "",
         var unit: String = "",
         var price: Double = 0.0,
+        var amount: String,
+        var piecesCount: Int = -1
 
 
         ): Result()
@@ -131,7 +133,6 @@ sealed class Result {
         var lng: String = "",
         var sellerId: String = "",
 
-
         var markets: MutableList<Market> = mutableListOf(),
         var urls: MutableList<String> = mutableListOf(),
         var knownClientIds: MutableList<String> = mutableListOf()
@@ -148,7 +149,6 @@ sealed class Result {
         var emailAddress: String = "",
 
         var contactIds: MutableList<String> = mutableListOf(), // int is to order 10 100 1000
-
         var sellerIds: MutableList<String> = mutableListOf() // int is to order 10 100 1000
 
     ) : Result()
