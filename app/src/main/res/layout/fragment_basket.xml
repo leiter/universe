@@ -134,13 +134,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:orientation="vertical"
         android:paddingBottom="24dp"
-        tools:context="com.together.dialogs.BasketFragment">
+        >
 
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/send_order"
+            android:id="@+id/btn_send_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/order_basket"
@@ -156,6 +155,7 @@
             android:id="@+id/tv_menu_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -176,11 +176,38 @@
             android:padding="16dp"
             android:src="@drawable/ic_appoint" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_market_name"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_menu_title"
+            android:layout_alignStart="@id/tv_menu_title"
+            android:lines="1"
+            android:text="Wochenmarkt Onkel Toms Hütte" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_maret_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_market_name"
+            android:layout_alignStart="@+id/tv_market_name"
+            android:lines="1"
+            android:text="Do, 25.06.2021 ca. 15:00 Uhr" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_below="@id/tv_maret_date"
+            android:layout_marginTop="8dp"
+            android:background="@color/fab_green"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_basket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_menu_title"
+            android:layout_below="@id/divider"
             android:layout_marginTop="24dp"
             tools:itemCount="6"
             tools:listitem="@layout/item_basket" />

@@ -135,7 +135,6 @@ class ManageDialog : DialogFragment() {
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
             sendSms()
-            dismiss()
         }
     }
 

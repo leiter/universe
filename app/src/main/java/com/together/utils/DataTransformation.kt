@@ -54,11 +54,19 @@ fun Result.Market.dataMarketToUi() : UiState.Market {
     )
 }
 
-//fun UiState.Article.toOrderedItem() : Result.OrderedProduct {
-//    return Result.OrderedProduct(
-//
-//    )
-//}
+fun UiState.Article.toOrderedItem() : Result.OrderedProduct {
+    return Result.OrderedProduct(
+        id= _id,
+        productId = productId,
+        unit = unit,
+        productName = productName,
+        price = priceDigit,
+        amount = amountDisplay,
+        piecesCount = pieces
+
+
+    )
+}
 
 
 

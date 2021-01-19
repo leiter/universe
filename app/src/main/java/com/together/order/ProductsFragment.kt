@@ -54,7 +54,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     ): View {
         viewBinding = MainOrderFragmentBinding.inflate(
             LayoutInflater.from(requireContext()),container,false)
-
         viewBinding.btnActivateCounter.setOnClickListener { clickActivateCounter() }
         viewBinding.counter.btnPlus.setOnClickListener { clickPlusOrMinus(true) }
         viewBinding.counter.btnMinus.setOnClickListener { clickPlusOrMinus(false) }
@@ -72,7 +71,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         }
 
         adapter = ProductAdapter(this)
-        viewBinding.articleList.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        viewBinding.articleList.layoutManager = LinearLayoutManager(context,
+            RecyclerView.VERTICAL, false)
         viewBinding.articleList.adapter = adapter
 
         return viewBinding.root
@@ -83,9 +83,16 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
-            { viewBinding.prLoadImageProgress.visibility = View.GONE })
+            { viewBinding.prLoadImageProgress.visibility = View.GONE }
 
-        viewModel.presentedProduct.observe(viewLifecycleOwner, { setPresentedProduct(it) })
+        )
+
+        viewModel.presentedProduct.observe(viewLifecycleOwner, {
+            setPresentedProduct(it);
+            viewBinding.blocking.visibility = View.GONE
+            viewBinding.tvMenuTitle.text = "BODENSCHÄTZE"
+            viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
+        })
 
         viewModel.productList.observe(viewLifecycleOwner, {
             adapter.setFilteredList(it.toMutableList())

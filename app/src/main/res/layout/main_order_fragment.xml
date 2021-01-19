@@ -36,7 +36,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="end"
             android:layout_marginEnd="8dp"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tv_menu_title"
@@ -49,8 +49,7 @@
             android:layout_toEndOf="@id/btn_manage_profile"
             android:layout_toStartOf="@id/btn_menu_search"
             android:gravity="center"
-            android:textSize="22sp"
-            android:text="Bodenschätze" />
+            android:textSize="22sp" />
 
         <EditText
             android:id="@+id/et_menu_search_products"
@@ -270,5 +269,17 @@
         app:stackFromEnd="true"
         tools:itemCount="12"
         tools:listitem="@layout/item_product" />
+
+    <FrameLayout
+        android:id="@+id/blocking"
+        android:background="@drawable/splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_marginTop="96dp"
+            android:layout_gravity="center|top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
 
 </RelativeLayout>

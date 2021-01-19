@@ -1,12 +1,23 @@
 package com.together.utils
 
+import com.together.base.UiState
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
-fun getDays(targetDay: Int): Array<Date> {
+private const val time = "HH:mm"
+private val format = SimpleDateFormat(time, Locale.GERMANY)
+
+fun getDays(market: UiState.Market): Array<Date> {
     val calendar  = Calendar.getInstance()
+    val b = format.parse(market.begin)
+    val e = format.parse(market.end)
     calendar.time = Date()
-    while (calendar.get(Calendar.DAY_OF_WEEK) != targetDay) {
+    val midTime = (b.hours+e.hours) *0.5
+    calendar.set(Calendar.HOUR_OF_DAY,midTime.toInt())
+    calendar.set(Calendar.MINUTE,0)
+    while (calendar.get(Calendar.DAY_OF_WEEK) != market.dayIndicator) {
         calendar.add(Calendar.DATE, 1)
     }
     val result = ArrayList<Date>(3)

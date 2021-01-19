@@ -1,6 +1,7 @@
 package com.together.dialogs
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ import com.together.base.UiState
 import com.together.databinding.FragmentBasketBinding
 import com.together.utils.alterPickUptime
 import com.together.utils.getDays
-import com.together.utils.setDrawable
 import com.together.utils.toDateString
 import kotlinx.android.synthetic.main.fragment_basket.*
 import java.util.*
@@ -58,8 +58,8 @@ class BasketFragment : DialogFragment() {
         showSetTime(showingTimePicker)
         if (showingTimePicker) {
             updatePickUptime(
-                viewBinding.tpSetAppointment.currentHour,
-                viewBinding.tpSetAppointment.currentMinute
+//                viewBinding.tpSetAppointment.currentHour,
+//                viewBinding.tpSetAppointment.currentMinute
             )
             viewBinding.tlDateContainer.visibility = View.VISIBLE
             viewBinding.tlMarketContainer.visibility = View.VISIBLE
@@ -80,8 +80,8 @@ class BasketFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        viewBinding.btnSendOrder.setOnClickListener { viewModel.sendOrder() }
         viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
-        viewBinding.btnSetAppointment.setOnClickListener {}
         viewBinding.btnHideAppointment.setOnClickListener { showFinalizeDate(false) }
         viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
         viewBinding.btnCancelAppointmentTime.setOnClickListener {
@@ -94,16 +94,20 @@ class BasketFragment : DialogFragment() {
         }
         viewBinding.tpSetAppointment.setIs24HourView(true)
         viewBinding.btnSetAppointment.setOnClickListener {
-            val selectedIndex = viewBinding.tlMarketContainer.selectedTabPosition
-            val date = viewModel.days[selectedIndex]
-            val market = viewModel.sellerProfile.marketList[selectedIndex]
-            viewModel.setTimeDateForOrder(market, date)
+           setPaceAndDateForOrder()
             showFinalizeDate(false)
-
         }
         setupMarketButtons()
+        setPaceAndDateForOrder()
         alterTimePicker()
         return viewBinding.root
+    }
+
+    private fun setPaceAndDateForOrder() {
+        val selectedIndex = viewBinding.tlMarketContainer.selectedTabPosition
+        val date = viewModel.days[selectedIndex]
+        val market = viewModel.sellerProfile.marketList[selectedIndex]
+        viewModel.setTimeDateForOrder(market, date)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -124,8 +128,12 @@ class BasketFragment : DialogFragment() {
         val defaultMarket = viewModel.sellerProfile.marketList[0]
         val i = (viewBinding.tpSetAppointment as FrameLayout).children.iterator().next()
         val hourPicker = (i.touchables[0].parent as NumberPicker)
+        val minutePicker = (i.touchables[1].parent as NumberPicker)
         hourPicker.minValue = defaultMarket.begin.split(":")[0].toInt()
         hourPicker.maxValue = defaultMarket.end.split(":")[0].toInt() - 1
+        minutePicker.minValue = 0
+        minutePicker.maxValue = 3
+        minutePicker.displayedValues = arrayOf("00","15","30","45")
     }
 
     private fun calculatePurchaseSum(list: MutableList<UiState.Article>): String {
@@ -135,40 +143,48 @@ class BasketFragment : DialogFragment() {
     }
 
     private fun setupMarketButtons() {
-        viewModel.sellerProfile.marketList.forEach {
+        val marketList = viewModel.sellerProfile.marketList
+        marketList.forEach {
             val m = viewBinding.tlMarketContainer.newTab()
             m.text = it.name
             viewBinding.tlMarketContainer.addTab(m)
         }
-        showDates(Calendar.THURSDAY)
+        showDates(marketList[0])
         viewBinding.tlMarketContainer.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val i =
+                val market =
                     viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
-                showDates(i.dayIndicator)
+                showDates(market)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                val i =
+                val market =
                     viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
-                showDates(i.dayIndicator)
+                showDates(market)
             }
         })
     }
 
-    private fun updatePickUptime(hour: Int, minute: Int) {
+    @Suppress("DEPRECATION")
+    private fun updatePickUptime() {
+        val (hour, minute) = if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            Pair(viewBinding.tpSetAppointment.currentHour,
+                viewBinding.tpSetAppointment.currentMinute)
+        } else {
+            Pair(viewBinding.tpSetAppointment.hour,
+                viewBinding.tpSetAppointment.minute )
+        }
         val newArray = alterPickUptime(viewModel.days, hour, minute)
         val date = viewBinding.tlDateContainer.selectedTabPosition
-        val i = viewModel.sellerProfile.marketList[
+        val market = viewModel.sellerProfile.marketList[
                 viewBinding.tlMarketContainer.selectedTabPosition]
-        showDates(i.dayIndicator, newArray.toTypedArray(), date)
+        showDates(market, newArray.toTypedArray(), date)
     }
 
     private fun showFinalizeDate(show: Boolean) {
-
         if (!show) {
             viewBinding.appointmentContainer.visibility = View.GONE
         } else {
@@ -180,8 +196,8 @@ class BasketFragment : DialogFragment() {
         }
     }
 
-    private fun showDates(targetDay: Int, newDays: Array<Date>? = null, selectPos: Int = -1) {
-        viewModel.days = newDays ?: getDays(targetDay)
+    private fun showDates(market: UiState.Market, newDays: Array<Date>? = null, selectPos: Int = -1) {
+        viewModel.days = newDays ?: getDays(market)
         viewBinding.tlDateContainer.removeAllTabs()
         viewModel.days.forEach {
             val f = viewBinding.tlDateContainer.newTab()

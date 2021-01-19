@@ -8,6 +8,7 @@ import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
 import com.together.utils.dataSellerToUi
+import com.together.utils.toOrderedItem
 import io.reactivex.disposables.CompositeDisposable
 import java.util.*
 
@@ -68,6 +69,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
                 is Result.LoggedIn -> {
                     loggedState.value = UiState.BASE_AUTH
+
                     setupDataStreams()
                 }
 
@@ -82,8 +84,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
             }
         })
-
-
     }
 
     private fun setupDataStreams() {
@@ -110,6 +110,12 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             loggedState.value = UiState.LOGIN_REQUIRED
             return
         }
+        order.sellerId = sellerProfile._id
+        order.createdDate = System.currentTimeMillis()
+        order.articles = basket.value?.map {
+            it.toOrderedItem()
+        }!!
+        dataRepository.sendOrder(order)
     }
 
     val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
@@ -143,7 +149,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     fun setTimeDateForOrder(market: UiState.Market, date: Date) {
-        order.dueDate = date.time
+        order.pickUpDate = date.time
         order.marketId = market._id
     }
 }

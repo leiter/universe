@@ -94,8 +94,6 @@ sealed class Result {
         var price: Double = 0.0,
         var amount: String,
         var piecesCount: Int = -1
-
-
         ): Result()
 
     data class Order(
@@ -103,8 +101,9 @@ sealed class Result {
         override var mode: Int = UNDEFINED,
         var user: User = User(),
         var createdDate: Long = 0L,
+        var sellerId: String = "",
         var marketId: String = "",
-        var dueDate: Long = 0L,
+        var pickUpDate: Long = 0L,
         var articles: List<OrderedProduct> = emptyList(),
         ) : Result()
 
@@ -114,7 +113,6 @@ sealed class Result {
 
         override var id: String = "",
         override var mode: Int = UNDEFINED,
-
 
         var displayName: String = "",
 
@@ -145,7 +143,6 @@ sealed class Result {
         override var mode: Int = UNDEFINED,
 
         var displayName: String = "",
-
         var emailAddress: String = "",
 
         var contactIds: MutableList<String> = mutableListOf(), // int is to order 10 100 1000

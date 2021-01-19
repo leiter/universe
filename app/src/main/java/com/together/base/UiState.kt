@@ -66,7 +66,7 @@ sealed class UiState {
         var detailInfo: String = "",
         var searchTerms: String = "",
         var weightPerPiece: Double = 0.0,
-
+        var pieces: Int = 0,
         override var _id: String = "",
         override var _mode: Int = UNDEFINED
 
@@ -74,7 +74,8 @@ sealed class UiState {
         var pieceCounter: Int = 0
             set(value) {
                 field = value
-                amountCount = pieceCounter.toDouble() * weightPerPiece
+                pieces = value
+                amountCount = value.toDouble() * weightPerPiece
             }
         var amountDisplay: String = prepareAmountDisplay()
         val priceDisplay: String

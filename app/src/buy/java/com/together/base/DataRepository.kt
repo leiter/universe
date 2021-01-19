@@ -31,13 +31,14 @@ class DataRepositoryImpl : DataRepository {
             .subscribeOn(Schedulers.io())
             .map {
                 val sellerId = it.children.first().key!!
-                it.child(sellerId).getValue(Result.SellerProfile::class.java)!!
+                val sellerProfile = it.child(sellerId).getValue(Result.SellerProfile::class.java)!!
+                sellerProfile.id = sellerId
+                sellerProfile
             }.observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun sendOrder(order: Result.Order): Single<Boolean> {
-        return Database.orders().setValue(order)
-            .getSingle().subscribeOn(Schedulers.io())
+        return Database.orders().push().setValue(order).getSingle().subscribeOn(Schedulers.io())
     }
 
 
