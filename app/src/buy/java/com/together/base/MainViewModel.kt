@@ -105,6 +105,10 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         )
     }
 
+    fun resetAmountCount(id: String){
+        productData.value?.first { it._id ==id }?.pieceCounter =0
+    }
+
     fun sendOrder() {
         if (loggedState.value == UiState.LOGGEDOUT) {
             loggedState.value = UiState.LOGIN_REQUIRED

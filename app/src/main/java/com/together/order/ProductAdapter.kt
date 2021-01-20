@@ -31,4 +31,5 @@ class ProductAdapter(private val click: ItemClicked,
         holder.bindItem(data[position])
     }
 
+
 }

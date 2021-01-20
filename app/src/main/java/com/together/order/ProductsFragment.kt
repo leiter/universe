@@ -34,6 +34,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
     private var itemIndexScrollTo: Int = -1
     private lateinit var viewBinding: MainOrderFragmentBinding
+    private var selectedItemIndex = -1
 
     override fun clicked(item: UiState.Article) {
         viewModel.presentedProduct.value = item
@@ -41,10 +42,18 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             productData = adapter.data.toMutableList()
         }
         itemIndexScrollTo = productData.lastIndexOf(item)
-        Handler().postDelayed({
-            (viewBinding.articleList.layoutManager!! as LinearLayoutManager)
-                .scrollToPositionWithOffset(itemIndexScrollTo, 0)
-        }, 1000L)
+        if(selectedItemIndex>-1){
+            adapter.data[selectedItemIndex].isSelected = false
+            adapter.notifyItemChanged(selectedItemIndex)
+        }
+        selectedItemIndex = productData.indexOfFirst { it._id == item._id }
+
+        productData[selectedItemIndex].isSelected = true
+        adapter.notifyItemChanged(selectedItemIndex)
+//        Handler().postDelayed({
+//            (viewBinding.articleList.layoutManager!! as LinearLayoutManager)
+//                .scrollToPositionWithOffset(itemIndexScrollTo, 0)
+//        }, 1000L)
     }
 
     override fun onCreateView(
@@ -121,6 +130,11 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                     if (!::productData.isInitialized) {
                         productData = adapter.data.toMutableList()
                     }
+                    if(searchTerm.isNotEmpty()){
+                        productData.forEach { it.isSelected = false }
+                        selectedItemIndex=-1
+                    }
+
                     productData.filter {
                         it.productName.startsWith(searchTerm, ignoreCase = true) ||
                                 it.searchTerms.matches(

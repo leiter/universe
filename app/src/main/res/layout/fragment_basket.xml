@@ -4,7 +4,7 @@
     tools:context=".dialogs.BasketFragment"
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -129,26 +129,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/order_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="16dp"
-        android:paddingBottom="24dp"
-        >
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_send_order"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/order_basket"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="72dp"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/fab_green"
-            android:text="Bestellung senden"
-            android:textColor="@color/white" />
+        android:paddingBottom="24dp">
 
 
         <TextView
@@ -163,6 +149,7 @@
             android:text="Bestellung"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -174,42 +161,52 @@
             android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="16dp"
-            android:src="@drawable/ic_appoint" />
+            android:src="@drawable/ic_appoint"
+            app:layout_constraintBottom_toBottomOf="@id/tv_menu_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_menu_title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_market_name"
-            android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_menu_title"
-            android:layout_alignStart="@id/tv_menu_title"
+            android:layout_marginTop="8dp"
             android:lines="1"
-            android:text="Wochenmarkt Onkel Toms Hütte" />
+            android:text="Wochenmarkt Onkel Toms Hütte"
+            app:layout_constraintStart_toStartOf="@id/tv_menu_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_menu_title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_maret_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_market_name"
-            android:layout_alignStart="@+id/tv_market_name"
             android:lines="1"
-            android:text="Do, 25.06.2021 ca. 15:00 Uhr" />
+            android:text="Do, 25.06.2021 ca. 15:00 Uhr"
+            app:layout_constraintStart_toStartOf="@+id/tv_market_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_market_name" />
 
         <View
             android:id="@+id/divider"
-            android:layout_below="@id/tv_maret_date"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
             android:layout_marginTop="8dp"
             android:background="@color/fab_green"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_maret_date" />
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_basket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/divider"
             android:layout_marginTop="24dp"
-            tools:itemCount="6"
+            app:layout_constrainedHeight="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/basket_sum"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            tools:itemCount="16"
             tools:listitem="@layout/item_basket" />
 
         <TextView
@@ -222,9 +219,28 @@
             android:layout_marginEnd="20dp"
             android:textSize="24sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/order_basket"
+            app:layout_constraintBottom_toTopOf="@id/btn_send_order"
             tools:text="12,94€" />
 
-    </RelativeLayout>
 
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_send_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/order_basket"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/fab_green"
+            android:text="Bestellung senden"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/basket_sum" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

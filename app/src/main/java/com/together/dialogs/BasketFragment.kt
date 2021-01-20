@@ -38,6 +38,7 @@ class BasketFragment : DialogFragment() {
         inline get() = { input ->
             val pos = adapter.data.indexOf(adapter.data.first { input._id == it._id })
             viewModel.basket.value?.remove(viewModel.basket.value!!.first { it._id == input._id })
+            viewModel.resetAmountCount(input._id)
             adapter.notifyItemRemoved(pos)
             viewBinding.basketSum.text = calculatePurchaseSum(viewModel.basket.value!!)
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
