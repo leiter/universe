@@ -8,6 +8,7 @@ import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
 import com.together.utils.dataSellerToUi
+import com.together.utils.toAppointmentTime
 import com.together.utils.toOrderedItem
 import io.reactivex.disposables.CompositeDisposable
 import java.util.*
@@ -57,6 +58,25 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     lateinit var days: Array<Date>
 
     lateinit var sellerProfile: UiState.SellerProfile
+
+    var marketIndex: Int = 0
+    set(value) {
+        field = value
+        if (::sellerProfile.isInitialized){
+            marketText.value = sellerProfile.marketList[value].name
+        }
+    }
+
+    var dateIndex: Int = 0
+        set(value) {
+            field = value
+            if (::days.isInitialized){
+                dayText.value = days[value].toAppointmentTime()
+            }
+        }
+
+    val marketText: MutableLiveData<String> = MutableLiveData()
+    val dayText: MutableLiveData<String> = MutableLiveData()
 
 
     init {
