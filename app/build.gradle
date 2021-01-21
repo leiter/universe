@@ -44,6 +44,14 @@ android {
             keyAlias "androiddebugkey"
             storePassword "android"
         }
+        release {
+            Properties p = new Properties()
+            p.load( new FileInputStream(file("../../erere")))
+            storeFile file(p["storeFile"])
+            storePassword p["storePassword"]
+            keyAlias p["keyAlias"]
+            keyPassword p["keyPassword"]
+        }
     }
 
     compileOptions {
@@ -68,6 +76,8 @@ android {
         buy {
             dimension = "basic"
             applicationIdSuffix ".buy"
+            versionCode 2
+            signingConfig signingConfigs.release
         }
     }
 }

@@ -18,7 +18,7 @@ import com.together.app.MainActivity
 import com.together.base.*
 import com.together.base.UiState.SellerProfile
 import com.together.repository.Database
-import com.together.repository.storage.getCompletable
+import com.together.repository.storage.getSingle
 import kotlinx.android.synthetic.main.fragment_create.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.concurrent.TimeUnit
@@ -50,10 +50,10 @@ class ProfileFragment : BaseFragment() {
                 street = i.street,
                 houseNumber = i.houseNumber,
                 city = i.city,
-                zipcode = i.zipcode
+                zipcode = i.zipCode
             )
 
-            Database.profile().setValue(r).getCompletable().subscribe({ success ->
+            Database.sellerProfile("",true).setValue(r).getSingle().subscribe({ success ->
                 if (success) {
                     MainActivity.reStart(requireContext())
                 } else {
@@ -79,7 +79,7 @@ class ProfileFragment : BaseFragment() {
                 viewModel.profile.city = it.toString()
             },
             zipcode.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
-                viewModel.profile.zipcode = it.toString()
+                viewModel.profile.zipCode = it.toString()
             },
             house.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.houseNumber = it.toString()

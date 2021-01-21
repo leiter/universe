@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             when (it) {
 
                 is UiState.BASE_AUTH -> {
-                    Database.profile().getSingleExists().subscribe({ exists ->
+                    Database.sellerProfile("", true).getSingleExists().subscribe({ exists ->
                         if (exists) {
                             setLoggedIn(navigation_drawer, log_out)
                             disposable.add(setupDrawerNavigation(navigation_drawer, drawer_layout))

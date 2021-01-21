@@ -1,7 +1,6 @@
 package com.together.order
 
 import android.os.Bundle
-import android.os.Handler
 import android.text.method.DigitsKeyListener
 import android.view.Gravity
 import android.view.LayoutInflater
