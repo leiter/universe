@@ -27,14 +27,9 @@ import io.reactivex.disposables.Disposable
 
 class ManageDialog : DialogFragment() {
 
-    lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModel()
     lateinit var disposable: Disposable
     private lateinit var viewBinding: ManageDialogBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 

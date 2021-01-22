@@ -22,7 +22,7 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
     )
 }
 
-fun Result.SellerProfile.dataSellerToUi() : UiState.SellerProfile {
+fun Result.SellerProfile.uiSellerToData() : UiState.SellerProfile {
     return UiState.SellerProfile(
         _id = this.id,
         displayName = this.displayName,
@@ -34,12 +34,27 @@ fun Result.SellerProfile.dataSellerToUi() : UiState.SellerProfile {
         zipCode = this.zipcode,
         _telephoneNumber = this.telephoneNumber,
         _knownClientIds = this.knownClientIds,
-        marketList = this.markets.map { it.dataMarketToUi() }.toMutableList()
+        marketList = this.markets.map { it.uiMarketToData() }.toMutableList()
+    )
+}
+fun UiState.SellerProfile.uiSellerToData() : Result.SellerProfile {
+    return Result.SellerProfile(
+        id = this._id,
+        displayName = this.displayName,
+        firstName = this.firstName,
+        lastName = this.lastName,
+        street = this.street,
+        houseNumber = this.houseNumber,
+        city = this.city,
+        zipcode = this.zipCode,
+        telephoneNumber = this._telephoneNumber,
+        knownClientIds = this._knownClientIds,
+        markets = this.marketList.map { it.uiMarketToData() }.toMutableList()
     )
 }
 
 
-fun Result.Market.dataMarketToUi() : UiState.Market {
+fun Result.Market.uiMarketToData() : UiState.Market {
     return UiState.Market(
         _id = this.id,
         name = this.name,
@@ -51,6 +66,21 @@ fun Result.Market.dataMarketToUi() : UiState.Market {
         begin = this.begin,
         end = this.end,
         dayIndicator = this.dayIndex
+    )
+}
+
+fun UiState.Market.uiMarketToData() : Result.Market {
+    return Result.Market(
+        id = this._id,
+        name = this.name,
+        street = this.street,
+        houseNumber = this.houseNumber,
+        city = this.city,
+        zipcode = this.zipCode,
+        dayOfWeek = this.dayOfWeek,
+        begin = this.begin,
+        end = this.end,
+        dayIndex = this.dayIndicator
     )
 }
 

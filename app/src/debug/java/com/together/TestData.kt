@@ -162,7 +162,7 @@ object TestData {
         ),
     )
 
-    private val marketListItems = listOf(
+   val marketListItems = listOf(
         Result.Market(
             name = "Wochenmarkt Onkel Toms Hütte",
             street = "Onkel-Tom-Straße",

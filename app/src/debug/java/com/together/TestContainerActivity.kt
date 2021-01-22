@@ -77,7 +77,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
     private fun setupSellerProfile() {
         loading(true)
         compositeDisposable.add(
-            Database.sellerProfile(FireBaseAuth.getAuth().currentUser!!.uid)
+            Database.sellerProfile("",true)
                 .setValue(testData.sellerProfile)
                 .getSingle().subscribe({ success ->
                     if (success) {
@@ -87,6 +87,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
                     }
                 }, {
                     loading(false)
+                    it.printStackTrace()
                     Toast.makeText(this, "Exception happened", Toast.LENGTH_SHORT).show()
                 })
         )

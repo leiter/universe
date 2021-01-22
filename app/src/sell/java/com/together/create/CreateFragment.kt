@@ -4,43 +4,62 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.storage.FirebaseStorage
-import com.jakewharton.picasso.OkHttp3Downloader
-import com.squareup.picasso.Picasso
-import com.together.R
 import com.together.base.*
+import com.together.base.UiEvent.Companion.DELETE_PRODUCT
+import com.together.databinding.FragmentCreateBinding
 import com.together.order.ProductAdapter
 import com.together.repository.Database
 import com.together.repository.Result
-import com.together.repository.storage.getObservable
 import com.together.utils.FileUtil
-import com.together.utils.dataArticleToUi
+import com.together.utils.loadImage
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.fragment_create.*
+import io.reactivex.rxkotlin.addTo
 import java.io.File
 import java.io.FileOutputStream
 
 class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
     private lateinit var adapter: ProductAdapter
-
-    private lateinit var picasso: Picasso
+    private var vB: FragmentCreateBinding? = null
+    private val viewBinding: FragmentCreateBinding
+        get() = vB!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_create, container, false)
+    ): View {
+        vB = FragmentCreateBinding.inflate(inflater, container, false)
+
+        adapter = ProductAdapter(this)
+
+        with(viewBinding) {
+
+            saveChanges.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
+
+            btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
+
+            createFab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
+
+            manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
+
+            btnDrawerOpen.setOnClickListener {
+                MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
+            }
+
+            createNewProduct.visibility = View.VISIBLE
+            createNewProduct.setOnClickListener { makeEditable(true) }
+
+            productList.layoutManager = LinearLayoutManager(context)
+            productList.adapter = adapter
+        }
+        return viewBinding.root
     }
 
     companion object {
@@ -48,80 +67,62 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
     }
 
     private fun makeEditable(edit: Boolean) {
-        product_description.isEnabled = edit
-        product_name.isEnabled = edit
-        product_price.isEnabled = edit
-        product_price_unit.isEnabled = edit
-        manage_image.isEnabled = edit
+        viewBinding.productDescription.isEnabled = edit
+        viewBinding.productName.isEnabled = edit
+        viewBinding.productPrice.isEnabled = edit
+        viewBinding.productPriceUnit.isEnabled = edit
+        viewBinding.manageImage.isEnabled = edit
+    }
+
+    private fun resetProduct() {
+        viewBinding.productDescription.setText("")
+        viewBinding.productName.setText("")
+        viewBinding.productPrice.setText("")
+        viewBinding.productPriceUnit.setText("")
+        viewBinding.image.setImageBitmap(null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        picasso = Picasso.Builder(context).downloader(OkHttp3Downloader(context)).build()
-        viewModel.newProduct.observe(viewLifecycleOwner, Observer {
-            picasso.load(it.uri).into(image)
+        viewModel.newProduct.observe(viewLifecycleOwner, {
+            requireContext().loadImage(viewBinding.image, it.uri.toString())
         })
-        viewModel.editProduct.observe(viewLifecycleOwner, Observer {
-            product_name.setText(it.productName)
-            product_description.setText(it.productDescription)
-            product_price.setText(it.pricePerUnit)
-            product_price_unit.setText(it.unit)
-            article_available.isChecked = it.available
-            if(it.remoteImageUrl.isEmpty()){
-                change_picture.visibility = View.GONE
+        viewModel.editProduct.observe(viewLifecycleOwner, {
+            makeEditable(false)
+            viewBinding.productName.setText(it.productName)
+            viewBinding.productDescription.setText(it.productDescription)
+            viewBinding.productPrice.setText(it.pricePerUnit)
+            viewBinding.productPriceUnit.setText(it.unit)
+            viewBinding.articleAvailable.isChecked = it.available
+            if (it.remoteImageUrl.isEmpty()) {
+                viewBinding.changePicture.visibility = View.GONE
             } else {
                 viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
-//                change_picture.visibility = View.VISIBLE
-            }
-
-
-        })
-
-        viewModel.blockingLoaderState.observe(viewLifecycleOwner, Observer {
-            if (it is UiState.LoadingDone) {
-                loading_indicator.visibility = View.GONE
-            } else {
-                loading_indicator.visibility = View.VISIBLE
+//                viewBinding.changePicture.visibility = View.VISIBLE
             }
         })
 
-        create_new_product.visibility = View.VISIBLE
-        create_new_product.setOnClickListener { makeEditable(true) }
-
-        adapter = ProductAdapter(this)
-        product_list.layoutManager = LinearLayoutManager(context)
-        product_list.adapter = adapter
-        val products = Database.articles()
-        disposable.add(products.getObservable<Result.Article>()
-            .observeOn(AndroidSchedulers.mainThread()).subscribe {
-                adapter.addItem(it.dataArticleToUi())
-                if (adapter.data.size == 0) {
-                    empty_message.visibility = View.VISIBLE
-                    val msg = requireActivity().findViewById<TextView>(R.id.empty_message)
-                    msg.setOnClickListener {
-                        makeEditable(true)
-                    }
-                    msg.isFocusable = false
-                    msg.isClickable = false
-
-                } else {
-                    empty_message.visibility = View.GONE
+        viewModel.blockingLoaderState.observe(viewLifecycleOwner, {
+            if (it is UiEvent.LoadingDone) {
+                viewBinding.loadingIndicator.visibility = View.GONE
+                if (it.indicator == DELETE_PRODUCT) {
+                    resetProduct()
                 }
-            })
 
-        save_changes.setOnClickListener {
-            Log.e("TTTTT", "For debugging");
-            createBitmap(viewModel.newProduct.value!!.uri)
-        }
+            } else {
+                viewBinding.loadingIndicator.visibility = View.VISIBLE
+            }
+        })
 
-        btn_delete_product.setOnClickListener { viewModel.deleteProduct() }
-
-        create_fab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
-
-        manage_image.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
-
-        btn_drawer_open.setOnClickListener { MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START)) }
+        viewModel.productList.observe(viewLifecycleOwner, {
+            if (it.size > 0) {
+                viewBinding.emptyMessage.visibility = View.GONE
+                adapter.setFilteredList(it.toMutableList())
+            } else {
+                viewBinding.emptyMessage.visibility = View.VISIBLE
+            }
+        })
     }
 
     override fun clicked(item: UiState.Article) {
@@ -137,7 +138,7 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
         val result = Result.Article(
             productName = uiState.productName,
             imageUrl = imageUri.toString(),
-            unit = product_price_unit.toString(),
+            unit = viewBinding.productPriceUnit.text.toString(),
             available = uiState.available,
             price = uiState.pricePerUnit.replace("€", "")
                 .replace(",", ".").toDouble()
@@ -162,7 +163,7 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
                     val result = Result.Article(
                         productName = uiState.productName,
                         imageUrl = imageUri.toString(),
-                        unit = product_price_unit.toString(),
+                        unit = viewBinding.productPriceUnit.toString(),
                         available = uiState.available,
                         price = uiState.pricePerUnit.replace("€", "")
                             .replace(",", ".").toDouble()
@@ -179,29 +180,36 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
 
     private fun createBitmap(imageUri: Uri) {
-        disposable.add(Observable.just(Any()).map {
+        Observable.just(Any()).map {
             val bitmap: Bitmap = Bitmap.createBitmap(
-                image.width, image.height, Bitmap.Config.ARGB_8888
+                viewBinding.image.width, viewBinding.image.height,
+                Bitmap.Config.ARGB_8888
             )
             val canvas = Canvas(bitmap)
-            image.draw(canvas)
-            val tmpFile = createTempFile()
+            viewBinding.image.draw(canvas)
+            val tmpFile = File.createTempFile("img", "trash")
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
             tmpFile
         }.subscribe {
             updateProduct(Uri.fromFile(it))
             imageUri.path?.let { file -> FileUtil.deleteFile(File(file)) }
-        })
+        }.addTo(disposable)
     }
 
 
     private fun writeToNewProduct() {
-        viewModel.editProduct.value?.productName = product_name.text.toString()
-        viewModel.editProduct.value?.productDescription = product_description.text.toString()
-        viewModel.editProduct.value?.pricePerUnit = product_price.text.toString()
-        viewModel.editProduct.value?.unit = product_price_unit.text.toString()
-        viewModel.editProduct.value?.available = article_available.isChecked
+        viewModel.editProduct.value?.productName = viewBinding.productName.text.toString()
+        viewModel.editProduct.value?.productDescription =
+            viewBinding.productDescription.text.toString()
+        viewModel.editProduct.value?.pricePerUnit = viewBinding.productPrice.text.toString()
+        viewModel.editProduct.value?.unit = viewBinding.productPriceUnit.text.toString()
+        viewModel.editProduct.value?.available = viewBinding.articleAvailable.isChecked
     }
 
+    override fun onDestroyView() {
+        vB = null
+        disposable.clear()
+        super.onDestroyView()
+    }
 
 }

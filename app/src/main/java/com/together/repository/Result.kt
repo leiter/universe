@@ -160,9 +160,9 @@ sealed class Result {
         var dayOfWeek: String = "",
         var begin: String = "",
         var end: String = "",
-        var dayIndex: Int = UNDEFINED
-    ) : Result() {
+        var dayIndex: Int = UNDEFINED,
         override var id: String = UUID.randomUUID().toString()
+    ) : Result() {
         override var mode: Int = UNDEFINED
 
     }

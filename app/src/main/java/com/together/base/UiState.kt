@@ -20,15 +20,7 @@ sealed class UiState {
 
     data class LoadingProgress(val progressViewId: Int, val show: Boolean)
 
-    object Loading : UiState() {
-        override var _id = "StateLoggedOut"
-        override var _mode: Int = UNDEFINED
-    }
 
-    object LoadingDone : UiState() {
-        override var _id = "StateLoggedOut"
-        override var _mode: Int = UNDEFINED
-    }
 
     object LOGGEDOUT : UiState() {
         override var _id = "StateLoggedOut"
@@ -168,7 +160,6 @@ sealed class UiState {
 
     @Parcelize
     data class Market(
-
         var name: String = "",
         var street: String = "",
         var houseNumber: String = "",

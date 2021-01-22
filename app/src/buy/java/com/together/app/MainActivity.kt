@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.buy.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
     private val disposable = CompositeDisposable()
 
@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
             supportFragmentManager,

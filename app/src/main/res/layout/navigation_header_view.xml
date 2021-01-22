@@ -8,7 +8,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         >
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/user_avatar"
             android:src="@drawable/ic_avatar_placeholder_24dp"
             app:layout_constraintStart_toStartOf="parent"

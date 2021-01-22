@@ -31,7 +31,7 @@ class BasketFragment : DialogFragment() {
 
     private lateinit var viewBinding: FragmentBasketBinding
     private lateinit var adapter: BasketAdapter
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModel()
     private var showingTimePicker: Boolean = false
 
     private val clickToDelete: (UiState.Article) -> Unit
@@ -44,11 +44,6 @@ class BasketFragment : DialogFragment() {
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
             if (viewModel.basket.value?.size == 0) dismiss()
         }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-    }
 
     private fun showSetTime(show: Boolean) {
         val d = if (show) R.drawable.ic_appointment_time else R.drawable.ic_check

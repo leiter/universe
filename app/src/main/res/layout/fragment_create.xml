@@ -40,8 +40,7 @@
             android:layout_gravity="end"
             android:background="?attr/selectableItemBackground"
             android:padding="16dp"
-            android:src="@drawable/ic_delete"
-            android:visibility="invisible" />
+            android:src="@drawable/ic_delete" />
 
         <ImageButton
             android:id="@+id/btn_edit_product"
@@ -51,8 +50,7 @@
             android:layout_toStartOf="@id/btn_delete_product"
             android:background="?attr/selectableItemBackground"
             android:padding="16dp"
-            android:src="@drawable/ic_edit_black"
-            android:visibility="invisible" />
+            android:src="@drawable/ic_edit_black"/>
 
         <ImageButton
             android:id="@+id/create_new_product"
@@ -62,8 +60,7 @@
             android:layout_toStartOf="@id/btn_edit_product"
             android:background="?attr/selectableItemBackground"
             android:padding="16dp"
-            android:src="@drawable/ic_add"
-            android:visibility="invisible" />
+            android:src="@drawable/ic_add" />
 
         <TextView
             android:id="@+id/tv_menu_title"

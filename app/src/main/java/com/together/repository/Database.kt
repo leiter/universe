@@ -9,7 +9,7 @@ object Database {
     private fun fire() : FirebaseDatabase { return FirebaseDatabase.getInstance() }
 
     init {
-//        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+//        fire().setPersistenceEnabled(true)
     }
 
     private const val ARTICLES = "articles"
@@ -29,8 +29,8 @@ object Database {
     }
 
     fun orders(): DatabaseReference = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
-    fun buyer(): DatabaseReference = fire().reference.child(CLIENTS).child(FireBaseAuth.getAuth().uid!!)
     fun providerArticles(providerId: String): DatabaseReference  = fire().reference.child(ARTICLES).child(providerId)
+    fun buyer(): DatabaseReference = fire().reference.child(CLIENTS).child(FireBaseAuth.getAuth().uid!!)
 
 
 }

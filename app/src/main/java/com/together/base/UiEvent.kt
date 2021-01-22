@@ -15,6 +15,10 @@ sealed class UiEvent {
         const val OPEN_DRAWER = 0
         const val DRAWER_UNLOCKED = 1
         const val LOCK_MODE_LOCKED_CLOSED = 2
+
+        const val UNDEFINED = -1
+        const val DELETE_PRODUCT = 1
+        const val UPLOAD_PRODUCT = 2
     }
 
 
@@ -28,6 +32,9 @@ sealed class UiEvent {
 
     data class DrawerState(val gravity: Int) : UiEvent()
 
+    object Loading : UiEvent()
+    data class LoadingDone(val indicator: Int) : UiEvent()
+    object ShowCreateFragment : UiEvent()
 
     object OpenDrawer : UiEvent()
 

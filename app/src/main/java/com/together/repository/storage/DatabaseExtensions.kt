@@ -49,6 +49,7 @@ inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T>
                 emitter.onNext(i)
             }
         })
+
         emitter.setCancellable { removeEventListener(listener) }
     }
 }
