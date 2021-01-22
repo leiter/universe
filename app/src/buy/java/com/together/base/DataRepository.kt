@@ -4,7 +4,6 @@ import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.storage.getObservable
 import com.together.repository.storage.getSingle
-import com.together.utils.dataSellerToUi
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

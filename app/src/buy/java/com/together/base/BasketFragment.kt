@@ -1,4 +1,4 @@
-package com.together.dialogs
+package com.together.base
 
 import android.app.Dialog
 import android.os.Build
@@ -11,16 +11,13 @@ import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.together.R
-import com.together.base.MainMessagePipe
-import com.together.base.MainViewModel
-import com.together.base.UiEvent
-import com.together.base.UiState
 import com.together.databinding.FragmentBasketBinding
+import com.together.dialogs.BasketAdapter
 import com.together.utils.alterPickUptime
 import com.together.utils.getDays
 import com.together.utils.toDateString
@@ -31,7 +28,7 @@ class BasketFragment : DialogFragment() {
 
     private lateinit var viewBinding: FragmentBasketBinding
     private lateinit var adapter: BasketAdapter
-    private val viewModel: MainViewModel by viewModel()
+    private val viewModel: MainViewModel by viewModels ({ requireParentFragment() })
     private var showingTimePicker: Boolean = false
 
     private val clickToDelete: (UiState.Article) -> Unit

@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
@@ -27,7 +28,7 @@ import io.reactivex.disposables.Disposable
 
 class ManageDialog : DialogFragment() {
 
-    private val viewModel: MainViewModel by viewModel()
+    private val viewModel: MainViewModel by viewModels()
     lateinit var disposable: Disposable
     private lateinit var viewBinding: ManageDialogBinding
 

@@ -16,7 +16,7 @@ import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.databinding.MainOrderFragmentBinding
-import com.together.dialogs.BasketFragment
+import com.together.base.BasketFragment
 import com.together.dialogs.ManageDialog
 import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -108,7 +108,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
         viewBinding.btnShowBasket.badge.setOnClickListener {
             if (viewModel.basket.value!!.size > 0)
-                BasketFragment().show(requireActivity().supportFragmentManager, "Basket")
+                BasketFragment().show(childFragmentManager, "Basket")
             else MainMessagePipe.uiEvent.onNext(
                 UiEvent.ShowToast(
                     requireContext(),

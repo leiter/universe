@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.utils.dataArticleToUi
-import com.together.utils.dataSellerToUi
-import com.together.utils.toAppointmentTime
-import com.together.utils.toOrderedItem
+import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable
 import java.util.*
 
@@ -89,7 +86,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
                 is Result.LoggedIn -> {
                     loggedState.value = UiState.BASE_AUTH
-
                     setupDataStreams()
                 }
 
@@ -107,6 +103,10 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     private fun setupDataStreams() {
+        disposable.add(dataRepository.setupProviderConnection()
+            .subscribe({ sellerProfile = it.dataToUiSeller() },
+                { it.printStackTrace() })
+        )
         disposable.add(
             dataRepository.setupProductConnection()
                 .subscribe({
@@ -119,10 +119,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     { Log.e("Rx", "Complete called."); })
 
         )
-        disposable.add(dataRepository.setupProviderConnection()
-            .subscribe({ sellerProfile = it.dataSellerToUi() },
-                { it.printStackTrace() })
-        )
+
     }
 
     fun resetAmountCount(id: String){
@@ -147,8 +144,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
     var smsMessageText = ""
 
-    val blockingLoaderState: MutableLiveData<UiState> by lazy {
-        MutableLiveData<UiState>().also { it.value = UiState.LoadingDone }
+    val blockingLoaderState: MutableLiveData<UiEvent> by lazy {
+        MutableLiveData<UiEvent>().also { it.value = UiEvent.LoadingDone(-1) }
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {

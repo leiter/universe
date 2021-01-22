@@ -22,7 +22,7 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
     )
 }
 
-fun Result.SellerProfile.uiSellerToData() : UiState.SellerProfile {
+fun Result.SellerProfile.dataToUiSeller() : UiState.SellerProfile {
     return UiState.SellerProfile(
         _id = this.id,
         displayName = this.displayName,
