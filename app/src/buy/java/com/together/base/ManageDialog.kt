@@ -80,7 +80,6 @@ class ManageDialog : DialogFragment() {
             }
         })
 
-//        viewBinding.btnSendMessage.setOnClickListener { sendSms() }
         viewBinding.btnWriteMsg.setOnClickListener { showWriteMessage(true) }
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
 
@@ -105,47 +104,6 @@ class ManageDialog : DialogFragment() {
         viewBinding.btnLogOut.visibility = visible
         if (show) { viewBinding.messageContainer.visibility = View.VISIBLE }
     }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == REQUEST_CODE_PERMISSION &&
-//            permissions[0] == Manifest.permission.SEND_SMS &&
-//            grantResults[0] == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            sendSms()
-//        }
-//    }
-
-//    private fun sendSms() {
-//        when (ActivityCompat.checkSelfPermission(
-//            requireContext(),
-//            Manifest.permission.SEND_SMS
-//        ) == PackageManager.PERMISSION_GRANTED) {
-//            true -> {
-//                if(viewModel.smsMessageText.isBlank()||
-//                    viewModel.smsMessageText.isEmpty()){
-//                    Toast.makeText(requireContext(),
-//                        "Bitte text eingeben.",Toast.LENGTH_SHORT).show()
-//                    return
-//                }
-//                val smsManager = SmsManager.getDefault()
-//                val parts = smsManager.divideMessage(viewModel.smsMessageText)
-//                smsManager.sendMultipartTextMessage(
-//                    viewModel.sellerProfile._telephoneNumber, null,
-//                    parts, null, null
-//                )
-//                dismiss()
-//            }
-//            else -> {
-//                requestPermissions(
-//                    arrayOf(Manifest.permission.SEND_SMS), REQUEST_CODE_PERMISSION)
-//            }
-//        }
-//    }
 
     override fun onDestroyView() {
         disposable.dispose()
