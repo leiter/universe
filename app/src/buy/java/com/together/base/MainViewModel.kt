@@ -8,6 +8,7 @@ import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import java.util.*
 
 fun MutableList<UiState.Article>.addItem(
@@ -36,6 +37,7 @@ fun MutableList<UiState.Article>.addItem(
 class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
     ViewModel() {
 
+    var orderMessage: String = ""
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     private val productData: MutableLiveData<MutableList<UiState.Article>> =
@@ -127,16 +129,16 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     fun sendOrder() {
-        if (loggedState.value == UiState.LOGGEDOUT) {
-            loggedState.value = UiState.LOGIN_REQUIRED
-            return
-        }
+        blockingLoaderState.value = UiEvent.Loading
+        order.message = orderMessage
         order.sellerId = sellerProfile._id
         order.createdDate = System.currentTimeMillis()
-        order.articles = basket.value?.map {
-            it.toOrderedItem()
-        }!!
-        dataRepository.sendOrder(order)
+        order.articles = basket.value?.map { it.toOrderedItem() }!!
+        dataRepository.sendOrder(order).subscribe({
+            blockingLoaderState.value = UiEvent.LoadingDone(0)
+        },{
+            blockingLoaderState.value =UiEvent.LoadingDone(0)
+        }).addTo(disposable)
     }
 
     val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
@@ -145,7 +147,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     var smsMessageText = ""
 
     val blockingLoaderState: MutableLiveData<UiEvent> by lazy {
-        MutableLiveData<UiEvent>().also { it.value = UiEvent.LoadingDone(-1) }
+        MutableLiveData<UiEvent>().also { it.value = UiEvent.LoadingNeutral }
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {

@@ -1,26 +1,16 @@
-package com.together.dialogs
+package com.together.base
 
-import android.Manifest
 import android.app.Dialog
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.telephony.SmsManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.about.AboutFragment
-import com.together.base.MainMessagePipe
-import com.together.base.MainViewModel
-import com.together.base.UiEvent
-import com.together.base.UiState
 import com.together.databinding.ManageDialogBinding
 import com.together.loggedout.LoginFragment
 import com.together.splash.SplashScreenFragment
@@ -40,7 +30,6 @@ class ManageDialog : DialogFragment() {
         disposable = viewBinding.messageText.textChanges().subscribe {
             viewModel.smsMessageText = it.toString()
         }
-
         builder.setView(viewBinding.root)
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)
@@ -108,15 +97,12 @@ class ManageDialog : DialogFragment() {
     }
 
     private fun showWriteMessage(show: Boolean) {
-
         if (!show) { viewBinding.messageContainer.visibility = View.GONE }
-
         val visible = if (!show) View.VISIBLE else View.GONE
         viewBinding.btnProfile.visibility = visible
         viewBinding.btnWriteMsg.visibility = visible
         viewBinding.btnShowInfo.visibility = visible
         viewBinding.btnLogOut.visibility = visible
-
         if (show) { viewBinding.messageContainer.visibility = View.VISIBLE }
     }
 

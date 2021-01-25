@@ -79,6 +79,27 @@
             app:tabMode="scrollable"
             />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_message_layout"
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tl_date_container"
+            app:layout_constraintBottom_toTopOf="@id/ck_set_reminder"
+            app:boxBackgroundColor="@color/white"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_message"
+                android:minLines="3"
+                android:hint="Nachricht hinzufügen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <TimePicker
             android:id="@+id/tp_set_appointment"
             android:layout_width="0dp"
@@ -241,6 +262,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/basket_sum" />
 
+        <include
+            android:id="@+id/progress"
+            layout="@layout/item_blocking_progress"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </LinearLayout>

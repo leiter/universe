@@ -23,8 +23,10 @@ class App : Application(){
         val picassoBuild = Picasso.Builder(this)
             .downloader(OkHttp3Downloader(this, Long.MAX_VALUE))
             .build()
-        picassoBuild.setIndicatorsEnabled(true)
-        if(BuildConfig.DEBUG) picassoBuild.isLoggingEnabled = true
+        if(BuildConfig.DEBUG) {
+            picassoBuild.isLoggingEnabled = true
+//            picassoBuild.setIndicatorsEnabled(true)
+        }
         Picasso.setSingletonInstance(picassoBuild)
     }
 }

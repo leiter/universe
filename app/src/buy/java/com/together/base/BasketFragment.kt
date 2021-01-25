@@ -15,13 +15,15 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.databinding.FragmentBasketBinding
 import com.together.dialogs.BasketAdapter
 import com.together.utils.alterPickUptime
 import com.together.utils.getDays
 import com.together.utils.toDateString
-import kotlinx.android.synthetic.main.fragment_basket.*
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import java.util.*
 
 class BasketFragment : DialogFragment() {
@@ -30,6 +32,8 @@ class BasketFragment : DialogFragment() {
     private lateinit var adapter: BasketAdapter
     private val viewModel: MainViewModel by viewModels ({ requireParentFragment() })
     private var showingTimePicker: Boolean = false
+    private val disposable = CompositeDisposable()
+    private val minuteSteps = 15
 
     private val clickToDelete: (UiState.Article) -> Unit
         inline get() = { input ->
@@ -54,12 +58,12 @@ class BasketFragment : DialogFragment() {
             viewBinding.tlDateContainer.visibility = View.VISIBLE
             viewBinding.tlMarketContainer.visibility = View.VISIBLE
             viewBinding.tpSetAppointment.visibility = View.INVISIBLE
-            dialog!!.btn_cancel_appointment_time.visibility = View.GONE
+            viewBinding.btnCancelAppointmentTime.visibility = View.GONE
         } else {
             viewBinding.tlDateContainer.visibility = View.INVISIBLE
             viewBinding.tlMarketContainer.visibility = View.INVISIBLE
             viewBinding.tpSetAppointment.visibility = View.VISIBLE
-            dialog!!.btn_cancel_appointment_time.visibility = View.VISIBLE
+            viewBinding.btnCancelAppointmentTime.visibility = View.VISIBLE
         }
         showingTimePicker = !showingTimePicker
     }
@@ -87,7 +91,7 @@ class BasketFragment : DialogFragment() {
             setPaceAndDateForOrder()
             showFinalizeDate(false)
         }
-
+        viewBinding.etMessage.setText(viewModel.orderMessage)
         return viewBinding.root
     }
 
@@ -95,6 +99,8 @@ class BasketFragment : DialogFragment() {
         val selectedIndex = viewBinding.tlMarketContainer.selectedTabPosition
         val date = viewModel.days[viewBinding.tlDateContainer.selectedTabPosition]
         val market = viewModel.sellerProfile.marketList[selectedIndex]
+        viewModel.dateIndex = viewBinding.tlDateContainer.selectedTabPosition
+        viewModel.marketIndex = selectedIndex
         viewModel.setTimeDateForOrder(market, date)
     }
 
@@ -117,16 +123,26 @@ class BasketFragment : DialogFragment() {
         setupMarketButtons()
         setPaceAndDateForOrder()
         alterTimePicker()
-        viewModel.dayText.observe(viewLifecycleOwner, {
-            viewBinding.tvMarketDate.text = it
-        })
-        viewModel.marketText.observe(viewLifecycleOwner, {
-            viewBinding.tvMarketName.text = it
+        viewBinding.etMessage.textChanges().skipInitialValue().subscribe {
+            viewModel.orderMessage = it.toString()
+        }.addTo(disposable)
+        viewModel.marketText.observe(viewLifecycleOwner, { viewBinding.tvMarketName.text = it })
+        viewModel.dayText.observe(viewLifecycleOwner, { viewBinding.tvMarketDate.text = it })
+        viewModel.blockingLoaderState.observe(viewLifecycleOwner, {uiEvent ->
+            when(uiEvent) {
+                is UiEvent.LoadingDone -> {
+                    viewBinding.progress.loadingIndicator.visibility = View.GONE
+                    viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                    dismiss()
+                }
+                is UiEvent.Loading -> viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
+                else -> viewBinding.progress.loadingIndicator.visibility = View.GONE
+            }
         })
     }
 
     private fun alterTimePicker() {
-        val defaultMarket = viewModel.sellerProfile.marketList[0]
+        val defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex]
         val i = (viewBinding.tpSetAppointment as FrameLayout).children.iterator().next()
         val hourPicker = (i.touchables[0].parent as NumberPicker)
         val minutePicker = (i.touchables[1].parent as NumberPicker)
@@ -150,25 +166,23 @@ class BasketFragment : DialogFragment() {
             m.text = it.name
             viewBinding.tlMarketContainer.addTab(m)
         }
-        showDates(marketList[0])
-        viewModel.marketIndex = 0
-        viewModel.dateIndex = 0
+        showDates(marketList[viewModel.marketIndex])
+
         viewBinding.tlMarketContainer.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val market =
                     viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
-                showDates(market)
+                showDates(market,null,viewModel.dateIndex)
             }
-
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val market =
                     viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
-                showDates(market)
+                viewBinding.tlDateContainer.getTabAt(viewModel.dateIndex)?.select()
+                showDates(market,null,viewModel.dateIndex)
             }
         })
         viewBinding.tlDateContainer.addOnTabSelectedListener(object :
@@ -176,13 +190,12 @@ class BasketFragment : DialogFragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewModel.dateIndex = viewBinding.tlDateContainer.selectedTabPosition
             }
-
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 viewModel.dateIndex = viewBinding.tlDateContainer.selectedTabPosition
             }
         })
+        viewBinding.tlMarketContainer.getTabAt(viewModel.marketIndex)?.select()
     }
 
     @Suppress("DEPRECATION")
@@ -190,12 +203,12 @@ class BasketFragment : DialogFragment() {
         val (hour, minute) = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             Pair(
                 viewBinding.tpSetAppointment.currentHour,
-                viewBinding.tpSetAppointment.currentMinute * 15
+                viewBinding.tpSetAppointment.currentMinute * minuteSteps
             )
         } else {
             Pair(
                 viewBinding.tpSetAppointment.hour,
-                viewBinding.tpSetAppointment.minute * 15
+                viewBinding.tpSetAppointment.minute * minuteSteps
             )
         }
         val newArray = alterPickUptime(viewModel.days, hour, minute)
@@ -233,5 +246,10 @@ class BasketFragment : DialogFragment() {
             viewBinding.tlDateContainer.getTabAt(selectPos)?.select()
             viewModel.dateIndex = selectPos
         }
+    }
+
+    override fun onDestroyView() {
+        disposable.clear()
+        super.onDestroyView()
     }
 }

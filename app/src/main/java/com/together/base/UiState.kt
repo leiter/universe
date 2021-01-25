@@ -1,6 +1,7 @@
 package com.together.base
 
 import android.net.Uri
+import android.os.Message
 import android.os.Parcelable
 import com.together.repository.Result
 import kotlinx.android.parcel.Parcelize
@@ -112,6 +113,7 @@ sealed class UiState {
         var createdDate: Long = 0L,
         var marketId: String = "",
         var pickUpDate: Long = 0L,
+        var message: String = "",
         var productList: List<Article> = emptyList(),
         ) : UiState()
 

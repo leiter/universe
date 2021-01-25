@@ -33,6 +33,7 @@ sealed class UiEvent {
     data class DrawerState(val gravity: Int) : UiEvent()
 
     object Loading : UiEvent()
+    object LoadingNeutral : UiEvent()
     data class LoadingDone(val indicator: Int) : UiEvent()
     object ShowCreateFragment : UiEvent()
 

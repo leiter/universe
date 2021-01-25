@@ -6,21 +6,18 @@ import com.together.repository.auth.FireBaseAuth
 
 object Database {
 
-    private fun fire() : FirebaseDatabase { return FirebaseDatabase.getInstance() }
-
-    init {
-//        fire().setPersistenceEnabled(true)
-    }
-
     private const val ARTICLES = "articles"
     private const val SELLER_PROFILE = "seller_profile"
     private const val ORDERS = "orders"
     private const val CLIENTS = "clients"
 
-    fun articles(): DatabaseReference = fire().reference.child(ARTICLES).child(FireBaseAuth.getAuth().uid!!)
+    private fun fire() : FirebaseDatabase { return FirebaseDatabase.getInstance() }
 
-    fun updateArticle(id: String): DatabaseReference = fire().reference.child(ARTICLES)
-        .child(FireBaseAuth.getAuth().uid!!).child(id)
+    init {
+        fire().setPersistenceEnabled(true)
+    }
+
+    fun articles(): DatabaseReference = fire().reference.child(ARTICLES).child(FireBaseAuth.getAuth().uid!!)
 
     fun sellerProfile(sellerId: String, seller: Boolean = false): DatabaseReference {
         val result = fire().reference.child(SELLER_PROFILE)
@@ -31,6 +28,8 @@ object Database {
     fun orders(): DatabaseReference = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
     fun providerArticles(providerId: String): DatabaseReference  = fire().reference.child(ARTICLES).child(providerId)
     fun buyer(): DatabaseReference = fire().reference.child(CLIENTS).child(FireBaseAuth.getAuth().uid!!)
+    fun updateArticle(id: String): DatabaseReference = fire().reference.child(ARTICLES)
+        .child(FireBaseAuth.getAuth().uid!!).child(id)
 
 
 }
