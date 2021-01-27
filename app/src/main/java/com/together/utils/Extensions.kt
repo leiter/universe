@@ -52,9 +52,7 @@ fun Context.loadImage(imageView: ImageView, url: String){
                             MainMessagePipe.mainThreadMessage.onNext(
                                 Result.ImageLoaded(R.id.pr_load_image_progress,false))
                         }
-
                     })
             }
-
         })
 }

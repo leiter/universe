@@ -57,7 +57,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     val uiTasks: LiveData<out UiState> = MutableLiveData()
 
-    val order = Result.Order()
+    var order = UiState.Order()
 
     lateinit var days: Array<Date>
 
@@ -96,7 +96,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     )
                     buyerProfile = user
                     loggedState.value = UiState.BaseAuth(user)
-                    disposable.clear()
                     setupDataStreams()
                 }
 
@@ -114,22 +113,20 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     private fun setupDataStreams() {
-        disposable.add(
-            dataRepository.setupProviderConnection()
-                .subscribe({ sellerProfile = it.dataToUiSeller() },
-                    { it.printStackTrace() })
-        )
-        disposable.add(
-            dataRepository.setupProductConnection()
-                .subscribe({
-                    val e = it.dataArticleToUi()
-                    productData.addItem(e)
-                    if (productData.value?.size == 1) {
-                        presentedProduct.value = productData.value!![0]
-                    }
-                }, { it.printStackTrace() },
-                    { Log.e("Rx", "Complete called."); })
-        )
+
+        dataRepository.setupProviderConnection()
+            .subscribe({ sellerProfile = it.dataToUiSeller() },
+                { it.printStackTrace() }).addTo(disposable)
+
+        dataRepository.setupProductConnection()
+            .subscribe({
+                val e = it.dataArticleToUi()
+                productData.addItem(e)
+                if (productData.value?.size == 1) {
+                    presentedProduct.value = productData.value!![0]
+                }
+            }, { it.printStackTrace() },
+                { Log.e("Rx", "Complete called."); }).addTo(disposable)
     }
 
     fun resetAmountCount(id: String) {
@@ -138,11 +135,11 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun sendOrder() {
         blockingLoaderState.value = UiEvent.Loading
-        order.message = orderMessage
-        order.sellerId = sellerProfile._id
         order.createdDate = System.currentTimeMillis()
-        order.articles = basket.value?.map { it.toOrderedItem() }!!
-        dataRepository.sendOrder(order).subscribe({
+        val sendOrder: Result.Order = order.uiOrderToData()
+        sendOrder.sellerId = sellerProfile._id
+        sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
+        dataRepository.sendOrder(sendOrder).subscribe({
             blockingLoaderState.value = UiEvent.LoadingDone(0)
         }, {
             blockingLoaderState.value = UiEvent.LoadingDone(-1)
@@ -187,7 +184,10 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun loadOrders() {
         dataRepository.loadOrders().subscribe({ listOfOrders ->
-            oldOrders.value = listOfOrders.map { it.dataToUiOrder() }
+            oldOrders.value = listOfOrders.map {
+                it.dataToUiOrder()
+            }
+            Log.e("TTTTT", "For debugging");
         }, {
             it
         }).addTo(disposable)

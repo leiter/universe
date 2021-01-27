@@ -47,3 +47,4 @@ fun alterPickUptime(days: Array<Date>, hour: Int, minute: Int): ArrayList<Date> 
     }
     return newArray
 }
+

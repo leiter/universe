@@ -75,14 +75,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         viewBinding.fabAddProduct.setOnClickListener { putIntoBasket() }
 
         viewBinding.btnManageProfile.setOnClickListener {
-            ManageDialog().show(requireActivity().supportFragmentManager, "ManageDialog")
+            ManageDialog().show(childFragmentManager, ManageDialog.TAG)
         }
 
         adapter = ProductAdapter(this)
         viewBinding.articleList.layoutManager = LinearLayoutManager(context,
             RecyclerView.VERTICAL, false)
         viewBinding.articleList.adapter = adapter
-
+        viewBinding.blocking.visibility = View.VISIBLE
         return viewBinding.root
     }
 
@@ -90,13 +90,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
             { viewBinding.prLoadImageProgress.visibility = View.GONE }
 
         )
 
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
-            setPresentedProduct(it);
+            setPresentedProduct(it)
             viewBinding.blocking.visibility = View.GONE
             viewBinding.tvMenuTitle.text = "BODENSCHÄTZE"
             viewBinding.btnShowBasket.badge.visibility = View.VISIBLE

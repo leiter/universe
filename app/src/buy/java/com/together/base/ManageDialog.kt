@@ -8,17 +8,19 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.about.AboutFragment
 import com.together.databinding.ManageDialogBinding
 import com.together.loggedout.LoginFragment
 import com.together.profile.ClientProfileFragment
+import com.together.utils.createBasketUDate
 import io.reactivex.disposables.Disposable
 
 class ManageDialog : DialogFragment() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels({requireParentFragment()})
     lateinit var disposable: Disposable
     private lateinit var viewBinding: ManageDialogBinding
 
@@ -56,11 +58,22 @@ class ManageDialog : DialogFragment() {
         dismiss()
     }
 
+    private val clickToOpenOrder: (UiState.Order) -> Unit  = {
+            viewModel.order = it
+        val neList = viewModel.productList.value!!.toMutableSet().toList()
+            viewModel.basket.value = createBasketUDate(neList,it)
+            BasketFragment().show(requireParentFragment().childFragmentManager, BasketFragment.TAG)
+            dismiss()
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        viewBinding.rvOldOrders.layoutManager = LinearLayoutManager(requireContext())
+
 
         viewModel.loggedState.observe(viewLifecycleOwner, {
 
@@ -82,6 +95,11 @@ class ManageDialog : DialogFragment() {
             }
         })
 
+        viewModel.oldOrders.observe(viewLifecycleOwner, {
+            viewBinding.rvOldOrders.adapter = OldOrdersAdapter(it, clickToOpenOrder)
+            showOldOrders(true)
+        })
+
         viewBinding.btnShowOrders.setOnClickListener { viewModel.loadOrders() }
         viewBinding.btnWriteMsg.setOnClickListener { showWriteMessage(true) }
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
@@ -99,24 +117,28 @@ class ManageDialog : DialogFragment() {
     }
 
     private fun showWriteMessage(show: Boolean) {
-        if (!show) { viewBinding.messageContainer.visibility = View.GONE }
+        if (!show) {
+            viewBinding.messageContainer.visibility = View.GONE
+        }
         val visible = if (!show) View.VISIBLE else View.GONE
         showButtons(visible)
-        if (show) { viewBinding.messageContainer.visibility = View.VISIBLE }
+        if (show) {
+            viewBinding.messageContainer.visibility = View.VISIBLE
+        }
     }
 
-    private fun showButtons(visible:Int) {
+    private fun showButtons(visible: Int) {
         viewBinding.btnProfile.visibility = visible
         viewBinding.btnWriteMsg.visibility = visible
         viewBinding.btnShowInfo.visibility = visible
         viewBinding.btnLogOut.visibility = visible
+        viewBinding.btnShowOrders.visibility = visible
     }
 
-    private fun showOldOrders(show: Boolean){
+    private fun showOldOrders(show: Boolean) {
         val visible = if (!show) View.VISIBLE else View.GONE
         showButtons(visible)
-
-
+        viewBinding.rvOldOrders.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

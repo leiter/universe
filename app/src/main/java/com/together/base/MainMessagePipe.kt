@@ -8,7 +8,6 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.together.R
 import com.together.app.MainActivity
 import com.together.repository.Result
-import com.together.repository.auth.FireBaseAuth
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
@@ -73,7 +72,5 @@ object MainMessagePipe {
     }
 
     val mainThreadMessage: PublishSubject<in Result> = PublishSubject.create()
-
-
 
 }

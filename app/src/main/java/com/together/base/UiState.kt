@@ -127,8 +127,6 @@ sealed class UiState {
         var productList: List<OrderedProduct> = emptyList(),
         ) : UiState()
 
-
-
     data class BuyerProfile(
 
         override var _id: String = "",
@@ -139,7 +137,6 @@ sealed class UiState {
         var emailAddress: String = "",
 
         var contactIds: MutableList<String> = mutableListOf(),
-
         var sellerIds: MutableList<String> = mutableListOf(),
 
         var providerId: String =  "",

@@ -92,7 +92,7 @@ class BasketFragment : DialogFragment() {
             setPaceAndDateForOrder()
             showFinalizeDate(false)
         }
-        viewBinding.etMessage.setText(viewModel.orderMessage)
+        viewBinding.etMessage.setText(viewModel.order.message)
         return viewBinding.root
     }
 
@@ -259,5 +259,9 @@ class BasketFragment : DialogFragment() {
     override fun onDestroyView() {
         disposable.clear()
         super.onDestroyView()
+    }
+
+    companion object {
+        const val TAG = "Basket"
     }
 }

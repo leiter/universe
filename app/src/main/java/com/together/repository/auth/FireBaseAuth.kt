@@ -43,7 +43,7 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
         )
     }
 
-    fun deleteAccount() : Task<Void>{
+    fun deleteAccount() : Task<Void> {
         return getAuth().currentUser!!.delete()
     }
 
@@ -75,7 +75,8 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
             })
     }
 
-    fun createAccountWithEmailAndPassword(email: String, passWord: String, migrateAnonymous: Boolean= false){
+    fun createAccountWithEmailAndPassword(email: String, passWord: String,
+                                          migrateAnonymous: Boolean = false){
         createUserDisposable =
             getAuth().createUserWithEmailAndPassword(email,passWord).getSingle()
                 .map {

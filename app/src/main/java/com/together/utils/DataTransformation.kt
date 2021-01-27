@@ -109,11 +109,33 @@ fun Result.Order.dataToUiOrder(): UiState.Order {
         productList = articles.map { it.dataToUiOrderedProduct() },
     )
 }
+fun UiState.Order.uiOrderToData(): Result.Order {
+    return Result.Order(
+        id = _id,
+        mode = _mode,
+        buyerProfile = buyerProfile.uiOrderToData(),
+        createdDate = createdDate,
+        marketId = marketId,
+        pickUpDate = pickUpDate,
+        message = message,
+        articles = productList.map { it.uiOrderedProductData() },
+    )
+}
 
 fun Result.OrderedProduct.dataToUiOrderedProduct(): UiState.OrderedProduct {
     return UiState.OrderedProduct(
         _id = id,
         _mode = mode,
+        productId = productId,
+        productName = productName,
+        unit = unit,
+        price = price,
+        amount = amount,
+        piecesCount = piecesCount
+    )
+}
+fun UiState.OrderedProduct.uiOrderedProductData(): Result.OrderedProduct {
+    return Result.OrderedProduct(
         productId = productId,
         productName = productName,
         unit = unit,
@@ -137,6 +159,32 @@ fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
     )
 }
 
+fun UiState.BuyerProfile.uiOrderToData(): Result.BuyerProfile {
+    return Result.BuyerProfile(
+        displayName = displayName,
+        emailAddress = emailAddress,
+        isAnonymous = isAnonymous,
+        photoUrl = photoUrl,
+        telephoneNumber = phoneNumber ,
+        defaultMarket = defaultMarket,
+        defaultPickUpTime = defaultTime
+    )
+}
+
+
+fun createBasketUDate(products: List<UiState.Article>, order: UiState.Order) : MutableList<UiState.Article> {
+    val result: ArrayList<UiState.Article> = arrayListOf()
+    order.productList.forEach { orderedProduct ->
+        val available = products.firstOrNull { it._id == orderedProduct._id }
+        if (available!=null){
+            val copy = available.copy(amount = orderedProduct.amount,
+                                        priceDigit = orderedProduct.price)
+            copy.pieceCounter = orderedProduct.piecesCount
+            result.add(copy)
+        }
+    }
+    return result
+}
 
 inline fun <reified T : UiState> errorActions(profile: T, action: () -> Unit): Boolean {
     val toBeChecked =

@@ -15,8 +15,7 @@
         android:elevation="24dp"
         android:clickable="true"
         android:focusable="true"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_manage_profile"
@@ -49,6 +48,7 @@
             android:layout_toEndOf="@id/btn_manage_profile"
             android:layout_toStartOf="@id/btn_menu_search"
             android:gravity="center"
+            tools:text="BODENSCHÄTZE"
             android:textSize="22sp" />
 
         <EditText
@@ -100,6 +100,7 @@
             android:id="@+id/pr_load_image_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.ProgressBar"
             app:layout_constraintBottom_toBottomOf="@+id/iv_product_image"
             app:layout_constraintEnd_toEndOf="@+id/iv_product_image"
             app:layout_constraintStart_toStartOf="parent"
@@ -273,9 +274,11 @@
     <FrameLayout
         android:id="@+id/blocking"
         android:background="@drawable/splash"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_marginTop="96dp"
             android:layout_gravity="center|top"
             android:layout_width="wrap_content"
