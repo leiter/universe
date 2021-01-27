@@ -6,7 +6,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.together.R
 import com.together.base.UiState
 import com.together.utils.BaseTest
-import junit.framework.Assert.assertEquals
+import junit.framework.Assert.*
 import org.junit.Test
 
 class LoginCases : BaseTest() {
@@ -15,11 +15,11 @@ class LoginCases : BaseTest() {
     fun createAccount() {
         val testData = activityRule.activity.testData
         Espresso.onView(withId(R.id.create_account)).perform(click())
-        assertEquals(testData.loginState,UiState.BASE_AUTH)
+        assertTrue(testData.loginState is UiState.BaseAuth)
         Espresso.onView(withId(R.id.logout)).perform(click())
         assertEquals(testData.loginState,UiState.LOGGEDOUT)
         Espresso.onView(withId(R.id.login)).perform(click())
-        assertEquals(testData.loginState,UiState.BASE_AUTH)
+        assertTrue(testData.loginState is UiState.BaseAuth)
         Espresso.onView(withId(R.id.delete_user)).perform(click())
     }
 
@@ -27,11 +27,11 @@ class LoginCases : BaseTest() {
     fun testGoogleAuth() {
         val testData = activityRule.activity.testData
         testData.isGoogleAuth = true
-        if(testData.loginState == UiState.BASE_AUTH){
+        if(testData.loginState is UiState.BaseAuth){
             Espresso.onView(withId(R.id.logout)).perform(click())
         }
         Espresso.onView(withId(R.id.login_google)).perform(click())
-        assertEquals(testData.loginState,UiState.BASE_AUTH)
+        assertTrue(testData.loginState is UiState.BaseAuth)
         Espresso.onView(withId(R.id.logout)).perform(click())
         assertEquals(testData.loginState,UiState.LOGGEDOUT)
     }

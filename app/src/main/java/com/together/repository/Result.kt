@@ -1,7 +1,6 @@
 package com.together.repository
 
 import android.net.Uri
-import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
@@ -44,7 +43,7 @@ sealed class Result {
         override var mode: Int = UNDEFINED
     ) : Result()
 
-    data class User(
+    data class BuyerProfile(
         var displayName: String = "",
         var emailAddress: String = "",
         var telephoneNumber: String = "",
@@ -88,7 +87,7 @@ sealed class Result {
     data class Order(
         override var id: String = "",
         override var mode: Int = UNDEFINED,
-        var user: User = User(),
+        var buyerProfile: BuyerProfile = BuyerProfile(),
         var createdDate: Long = 0L,
         var sellerId: String = "",
         var marketId: String = "",

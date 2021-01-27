@@ -152,11 +152,11 @@ object TestData {
 
 
     val userList = listOf(
-        Result.User(
+        Result.BuyerProfile(
             displayName = "Marco",
             emailAddress = "mmaleiter@gmail.com"
         ),
-        Result.User(
+        Result.BuyerProfile(
             displayName = "Mandy Leiter",
             emailAddress = "marcoleiter@arcor.de"
         ),
@@ -206,12 +206,12 @@ object TestData {
     val orderList = listOf(
         Result.Order(
             id = "",
-            user = userList[0],
+            buyerProfile = userList[0],
 //            articles = articleList
         ),
         Result.Order(
             id = "",
-            user = userList[1],
+            buyerProfile = userList[1],
 //            articles = articleList
         )
     )

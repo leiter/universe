@@ -111,12 +111,20 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_logout"
         android:drawablePadding="24dp"
-        android:text="@string/logout_btn_text"
+        android:text="@string/invalidate_session"
         android:textColor="@color/colorPrimaryDark" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_old_orders"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@+id/progress"
+        layout="@layout/item_blocking_progress"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        />
 
 </LinearLayout>

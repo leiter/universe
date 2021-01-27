@@ -24,7 +24,7 @@ object MainMessagePipe {
                     MainActivity.startLogin(it.context)
                 }
                 is UiEvent.LogOut -> {
-                    FireBaseAuth.logOut()
+//                    FireBaseAuth.logOut()
                 }
 
                 is UiEvent.ShowToast -> {

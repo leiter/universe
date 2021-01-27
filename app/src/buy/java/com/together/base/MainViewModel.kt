@@ -6,31 +6,33 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
+import com.together.repository.storage.getSingle
 import com.together.utils.*
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.*
 
-fun MutableList<UiState.Article>.addItem(
+fun MutableLiveData<MutableList<UiState.Article>>.addItem(
     item: UiState.Article,
-    productData: MutableLiveData<MutableList<UiState.Article>>
 ) {
-    val index = indexOf(item)
+
+    val index = value!!.indexOf(item)
     when (item._mode) {
-        UiState.ADDED -> add(item)
-        UiState.REMOVED -> removeAt(indexOf(first { it._id == item._id }))
+        UiState.ADDED -> value!!.add(item)
+        UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it._id == item._id }))
         UiState.CHANGED -> {
             if (index == -1) {
-                val i = indexOf(first { it._id == item._id })
-                removeAt(i)
-                add(i, item)
+                val i = value!!.indexOf(value!!.first { it._id == item._id })
+                value!!.removeAt(i)
+                value!!.add(i, item)
             } else {
-                removeAt(index)
-                add(index, item)
+                value!!.removeAt(index)
+                value!!.add(index, item)
             }
         }
     }
-    productData.value = this.toSet().toMutableList()
+    value = value!!.toMutableList()
 }
 
 
@@ -38,6 +40,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     ViewModel() {
 
     var orderMessage: String = ""
+
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     private val productData: MutableLiveData<MutableList<UiState.Article>> =
@@ -50,6 +53,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     var buyerProfile = UiState.BuyerProfile()
 
+    var oldOrders: MutableLiveData<List<UiState.Order>> = MutableLiveData()
+
     val uiTasks: LiveData<out UiState> = MutableLiveData()
 
     val order = Result.Order()
@@ -59,17 +64,17 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     lateinit var sellerProfile: UiState.SellerProfile
 
     var marketIndex: Int = 0
-    set(value) {
-        field = value
-        if (::sellerProfile.isInitialized){
-            marketText.value = sellerProfile.marketList[value].name
+        set(value) {
+            field = value
+            if (::sellerProfile.isInitialized) {
+                marketText.value = sellerProfile.marketList[value].name
+            }
         }
-    }
 
     var dateIndex: Int = 0
         set(value) {
             field = value
-            if (::days.isInitialized){
+            if (::days.isInitialized) {
                 dayText.value = days[value].toAppointmentTime()
             }
         }
@@ -83,11 +88,15 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             when (it) {
                 is Result.LoggedOut -> {
                     loggedState.value = UiState.LOGGEDOUT
-                    FireBaseAuth.loginAnonymously()
                 }
 
                 is Result.LoggedIn -> {
-                    loggedState.value = UiState.BASE_AUTH
+                    val user = UiState.BuyerProfile(
+                        isAnonymous = it.currentUser.isAnonymous
+                    )
+                    buyerProfile = user
+                    loggedState.value = UiState.BaseAuth(user)
+                    disposable.clear()
                     setupDataStreams()
                 }
 
@@ -105,27 +114,26 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     private fun setupDataStreams() {
-        disposable.add(dataRepository.setupProviderConnection()
-            .subscribe({ sellerProfile = it.dataToUiSeller() },
-                { it.printStackTrace() })
+        disposable.add(
+            dataRepository.setupProviderConnection()
+                .subscribe({ sellerProfile = it.dataToUiSeller() },
+                    { it.printStackTrace() })
         )
         disposable.add(
             dataRepository.setupProductConnection()
                 .subscribe({
                     val e = it.dataArticleToUi()
-                    productData.value?.addItem(e, productData)
+                    productData.addItem(e)
                     if (productData.value?.size == 1) {
                         presentedProduct.value = productData.value!![0]
                     }
                 }, { it.printStackTrace() },
                     { Log.e("Rx", "Complete called."); })
-
         )
-
     }
 
-    fun resetAmountCount(id: String){
-        productData.value?.first { it._id ==id }?.pieceCounter =0
+    fun resetAmountCount(id: String) {
+        productData.value?.first { it._id == id }?.pieceCounter = 0
     }
 
     fun sendOrder() {
@@ -136,8 +144,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         order.articles = basket.value?.map { it.toOrderedItem() }!!
         dataRepository.sendOrder(order).subscribe({
             blockingLoaderState.value = UiEvent.LoadingDone(0)
-        },{
-            blockingLoaderState.value =UiEvent.LoadingDone(-1)
+        }, {
+            blockingLoaderState.value = UiEvent.LoadingDone(-1)
         }).addTo(disposable)
     }
 
@@ -166,11 +174,21 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         }
     }
 
+    fun clearAccount() {
+        dataRepository.clearUserData().flatMap {
+            FireBaseAuth.deleteAccount().getSingle()
+        }.observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+//                    loggedState.value = UiState.LOGGEDOUT
+            }, {
+
+            }).addTo(disposable)
+    }
+
     fun loadOrders() {
-        dataRepository.loadOrders().subscribe({
-            it
-            Log.e("TTTTT", "For debugging");
-        },{
+        dataRepository.loadOrders().subscribe({ listOfOrders ->
+            oldOrders.value = listOfOrders.map { it.dataToUiOrder() }
+        }, {
             it
         }).addTo(disposable)
     }

@@ -7,11 +7,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
 import com.together.repository.Result
-import com.together.repository.storage.getSingle
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CancellationException
-import java.lang.NullPointerException
 
 
 object FireBaseAuth : FirebaseAuth.AuthStateListener {
@@ -27,7 +25,7 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
     }
     fun isLoggedIn(): UiState {
         return when (getAuth().currentUser != null) {
-            true -> UiState.BASE_AUTH
+            true -> UiState.BaseAuth(UiState.BuyerProfile(isAnonymous =  getAuth().currentUser!!.isAnonymous))
             else -> UiState.LOGGEDOUT
         }
     }
@@ -43,7 +41,10 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
                 MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
             }
         )
+    }
 
+    fun deleteAccount() : Task<Void>{
+        return getAuth().currentUser!!.delete()
     }
 
     fun loginWithEmailAndPassWord(email: String, passWord: String) {
@@ -72,16 +73,6 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
                 // FIXME
                 MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
             })
-    }
-
-    fun deleteAccount(){
-        createUserDisposable = getAuth().currentUser?.delete()!!.getSingle()
-            .subscribe({
-
-        },{
-            // FIXME
-            MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
-        })
     }
 
     fun createAccountWithEmailAndPassword(email: String, passWord: String, migrateAnonymous: Boolean= false){

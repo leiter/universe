@@ -12,6 +12,7 @@ import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.order.ProductsFragment
+import com.together.repository.auth.FireBaseAuth
 import com.together.utils.AQ
 import io.reactivex.disposables.CompositeDisposable
 
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.loggedState.observe(this, {
             when (it) {
 
-                is UiState.BASE_AUTH -> {}
+                is UiState.BaseAuth -> {}
 //                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
 //                        supportFragmentManager,
 //                        ProductsFragment(), ProductsFragment.TAG)
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                     startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
 
                 is UiState.LOGGEDOUT -> {
+                    FireBaseAuth.loginAnonymously()
 //                    MainMessagePipe.uiEvent.onNext(
 //                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
 //                    )

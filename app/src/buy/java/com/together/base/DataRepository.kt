@@ -15,6 +15,7 @@ interface DataRepository {
     fun setupProviderConnection(): Observable<Result.SellerProfile>
     fun sendOrder(order: Result.Order): Single<Boolean>
     fun loadOrders(): Single<List<Result.Order>>
+    fun clearUserData(): Single<Boolean>
 }
 
 class DataRepositoryImpl : DataRepository {
@@ -50,6 +51,14 @@ class DataRepositoryImpl : DataRepository {
             if(isConnected) Database.orders().getSingleList()
             else Single.error(IllegalStateException("No internet connection."))
         }
+    }
+
+    override fun clearUserData(): Single<Boolean> {
+        return Database.connectedStatus().checkConnected().flatMap { isConnected ->
+            if(isConnected) Database.orders().removeValue().getSingle()
+            else Single.error(IllegalStateException("No internet connection."))
+        }
+
     }
 
 

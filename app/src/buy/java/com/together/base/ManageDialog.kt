@@ -71,11 +71,13 @@ class ManageDialog : DialogFragment() {
                     viewBinding.btnLogOut.setText(R.string.login_btn_text)
                 }
 
-                is UiState.BASE_AUTH -> {
+                is UiState.BaseAuth -> {
                     viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedIn)
                     viewBinding.btnLogOut.setOnClickListener {
-                        MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss() }
-                    viewBinding.btnLogOut.setText(R.string.logout_btn_text)
+                        viewModel.clearAccount()
+//                        MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss()
+                    }
+                    viewBinding.btnLogOut.setText(R.string.invalidate_session)
                 }
             }
         })

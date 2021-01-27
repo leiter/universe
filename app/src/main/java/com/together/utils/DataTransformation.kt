@@ -4,13 +4,13 @@ import com.together.base.UiState
 import com.together.repository.Result
 import kotlin.reflect.full.memberProperties
 
-fun Result.Article.dataArticleToUi() : UiState.Article {
+fun Result.Article.dataArticleToUi(): UiState.Article {
     return UiState.Article(
         _id = this.id,
         productName = this.productName,
         remoteImageUrl = this.imageUrl,
         unit = this.unit,
-        pricePerUnit = "%.2f€".format(this.price).replace(".",","),
+        pricePerUnit = "%.2f€".format(this.price).replace(".", ","),
         priceDigit = this.price,
         _mode = this.mode,
         available = this.available,
@@ -22,7 +22,7 @@ fun Result.Article.dataArticleToUi() : UiState.Article {
     )
 }
 
-fun Result.SellerProfile.dataToUiSeller() : UiState.SellerProfile {
+fun Result.SellerProfile.dataToUiSeller(): UiState.SellerProfile {
     return UiState.SellerProfile(
         _id = this.id,
         displayName = this.displayName,
@@ -37,7 +37,8 @@ fun Result.SellerProfile.dataToUiSeller() : UiState.SellerProfile {
         marketList = this.markets.map { it.dataToUiMarket() }.toMutableList()
     )
 }
-fun UiState.SellerProfile.uiSellerToData() : Result.SellerProfile {
+
+fun UiState.SellerProfile.uiSellerToData(): Result.SellerProfile {
     return Result.SellerProfile(
         id = this._id,
         displayName = this.displayName,
@@ -54,7 +55,7 @@ fun UiState.SellerProfile.uiSellerToData() : Result.SellerProfile {
 }
 
 
-fun Result.Market.dataToUiMarket() : UiState.Market {
+fun Result.Market.dataToUiMarket(): UiState.Market {
     return UiState.Market(
         _id = this.id,
         name = this.name,
@@ -69,7 +70,7 @@ fun Result.Market.dataToUiMarket() : UiState.Market {
     )
 }
 
-fun UiState.Market.uiMarketToData() : Result.Market {
+fun UiState.Market.uiMarketToData(): Result.Market {
     return Result.Market(
         id = this._id,
         name = this.name,
@@ -84,9 +85,9 @@ fun UiState.Market.uiMarketToData() : Result.Market {
     )
 }
 
-fun UiState.Article.toOrderedItem() : Result.OrderedProduct {
+fun UiState.Article.toOrderedItem(): Result.OrderedProduct {
     return Result.OrderedProduct(
-        id= _id,
+        id = _id,
         productId = productId,
         unit = unit,
         productName = productName,
@@ -96,17 +97,53 @@ fun UiState.Article.toOrderedItem() : Result.OrderedProduct {
     )
 }
 
+fun Result.Order.dataToUiOrder(): UiState.Order {
+    return UiState.Order(
+        _id = id,
+        _mode = mode,
+        buyerProfile = buyerProfile.dataToUiOrder(),
+        createdDate = createdDate,
+        marketId = marketId,
+        pickUpDate = pickUpDate,
+        message = message,
+        productList = articles.map { it.dataToUiOrderedProduct() },
+    )
+}
+
+fun Result.OrderedProduct.dataToUiOrderedProduct(): UiState.OrderedProduct {
+    return UiState.OrderedProduct(
+        _id = id,
+        _mode = mode,
+        productId = productId,
+        productName = productName,
+        unit = unit,
+        price = price,
+        amount = amount,
+        piecesCount = piecesCount
+    )
+}
+
+fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
+    return UiState.BuyerProfile(
+        _id = id,
+        _mode = mode,
+        displayName = displayName,
+        emailAddress = emailAddress,
+        isAnonymous = isAnonymous,
+        photoUrl = photoUrl,
+        phoneNumber = telephoneNumber,
+        defaultMarket = defaultMarket,
+        defaultTime = defaultPickUpTime
+    )
+}
 
 
-
-
-
-inline fun <reified T : UiState> errorActions(profile: T, action: () -> Unit)  : Boolean {
+inline fun <reified T : UiState> errorActions(profile: T, action: () -> Unit): Boolean {
     val toBeChecked =
         T::class.memberProperties.filter { !it.name.startsWith("_") }
     toBeChecked.forEach { prop ->
         val p = prop.get(profile) as String
-        if(p.isEmpty()) {
+        if (p.isEmpty()) {
             action()
             return false
         }

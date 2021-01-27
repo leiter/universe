@@ -1,7 +1,6 @@
 package com.together.base
 
 import android.net.Uri
-import android.os.Message
 import android.os.Parcelable
 import com.together.repository.Result
 import kotlinx.android.parcel.Parcelize
@@ -38,10 +37,21 @@ sealed class UiState {
         override var _mode: Int = UNDEFINED
     }
 
-    object BASE_AUTH : UiState() {
+    data class BaseAuth(val buyerProfile: BuyerProfile) : UiState() {
         override var _id = "StateLoggedIn"
         override var _mode: Int = UNDEFINED
     }
+
+    data class OrderedProduct(
+        override var _id: String = "",
+        override var _mode: Int = UNDEFINED,
+        var productId: Int = -1,
+        var productName: String = "",
+        var unit: String = "",
+        var price: Double = 0.0,
+        var amount: String = "",
+        var piecesCount: Int = -1
+    ): UiState()
 
     data class Article(
         var productId: Int = -1,
@@ -109,13 +119,15 @@ sealed class UiState {
     data class Order(
         override var _id: String = "",
         override var _mode: Int = Result.UNDEFINED,
-        var user: Result.User = Result.User(),
+        var buyerProfile: BuyerProfile = BuyerProfile(),
         var createdDate: Long = 0L,
         var marketId: String = "",
         var pickUpDate: Long = 0L,
         var message: String = "",
-        var productList: List<Article> = emptyList(),
+        var productList: List<OrderedProduct> = emptyList(),
         ) : UiState()
+
+
 
     data class BuyerProfile(
 

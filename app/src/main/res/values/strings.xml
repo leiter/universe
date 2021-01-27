@@ -12,7 +12,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="product_amount_is_null">Bitte fügen sie eine Mengen größer Null ein.</string>
     <string name="product_amount_empty">Bitte geben sie eine Mengenangabe ein.</string>
-    <string name="logout_btn_text">Ausloggen</string>
+    <string name="invalidate_session">Sitzung löschen</string>
     <string name="login_btn_text">Einloggen</string>
 
 
