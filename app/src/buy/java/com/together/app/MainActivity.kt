@@ -6,21 +6,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
-import com.jakewharton.rxbinding3.view.clicks
 import com.together.R
-import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
-import com.together.loggedout.LoginFragment
 import com.together.order.ProductsFragment
-import com.together.splash.SplashScreenFragment
 import com.together.utils.AQ
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.buy.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
             supportFragmentManager,
@@ -64,10 +56,7 @@ class MainActivity : AppCompatActivity() {
 //                    )
 
                 is UiState.LOGIN_REQUIRED ->
-                    startActivityForResult(
-                        AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
-
-
+                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
 
                 is UiState.LOGGEDOUT -> {
 //                    MainMessagePipe.uiEvent.onNext(
@@ -75,10 +64,6 @@ class MainActivity : AppCompatActivity() {
 //                    )
                 }
             }
-        })
-
-        disposable.add(btn_log_out.clicks().subscribe {
-            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         })
 
     }

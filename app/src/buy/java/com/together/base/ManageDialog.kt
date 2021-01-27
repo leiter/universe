@@ -13,7 +13,7 @@ import com.together.R
 import com.together.about.AboutFragment
 import com.together.databinding.ManageDialogBinding
 import com.together.loggedout.LoginFragment
-import com.together.splash.SplashScreenFragment
+import com.together.profile.ClientProfileFragment
 import io.reactivex.disposables.Disposable
 
 class ManageDialog : DialogFragment() {
@@ -50,7 +50,7 @@ class ManageDialog : DialogFragment() {
         MainMessagePipe.uiEvent.onNext(
             UiEvent.AddFragment(
                 requireActivity().supportFragmentManager,
-                SplashScreenFragment(), AboutFragment.TAG
+                ClientProfileFragment(), AboutFragment.TAG
             )
         )
         dismiss()
@@ -80,6 +80,7 @@ class ManageDialog : DialogFragment() {
             }
         })
 
+        viewBinding.btnShowOrders.setOnClickListener { viewModel.loadOrders() }
         viewBinding.btnWriteMsg.setOnClickListener { showWriteMessage(true) }
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
 
@@ -98,11 +99,22 @@ class ManageDialog : DialogFragment() {
     private fun showWriteMessage(show: Boolean) {
         if (!show) { viewBinding.messageContainer.visibility = View.GONE }
         val visible = if (!show) View.VISIBLE else View.GONE
+        showButtons(visible)
+        if (show) { viewBinding.messageContainer.visibility = View.VISIBLE }
+    }
+
+    private fun showButtons(visible:Int) {
         viewBinding.btnProfile.visibility = visible
         viewBinding.btnWriteMsg.visibility = visible
         viewBinding.btnShowInfo.visibility = visible
         viewBinding.btnLogOut.visibility = visible
-        if (show) { viewBinding.messageContainer.visibility = View.VISIBLE }
+    }
+
+    private fun showOldOrders(show: Boolean){
+        val visible = if (!show) View.VISIBLE else View.GONE
+        showButtons(visible)
+
+
     }
 
     override fun onDestroyView() {
@@ -111,7 +123,6 @@ class ManageDialog : DialogFragment() {
     }
 
     companion object {
-        const val REQUEST_CODE_PERMISSION = 10
         const val TAG = "ManageDialog"
     }
 }

@@ -133,7 +133,9 @@ sealed class UiState {
         var providerId: String =  "",
         var isAnonymous: Boolean = true,
         var photoUrl: String = "",
-        var phoneNumber: String = ""
+        var phoneNumber: String = "",
+        var defaultMarket: String = "",
+        var defaultTime: String  = ""
 
     ) : UiState()
 

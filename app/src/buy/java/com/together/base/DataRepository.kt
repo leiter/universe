@@ -2,18 +2,19 @@ package com.together.base
 
 import com.together.repository.Database
 import com.together.repository.Result
-import com.together.repository.storage.getObservable
-import com.together.repository.storage.getSingle
+import com.together.repository.storage.*
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.lang.IllegalStateException
 
 
 interface DataRepository {
     fun setupProductConnection(): Observable<Result.Article>
     fun setupProviderConnection(): Observable<Result.SellerProfile>
     fun sendOrder(order: Result.Order): Single<Boolean>
+    fun loadOrders(): Single<List<Result.Order>>
 }
 
 class DataRepositoryImpl : DataRepository {
@@ -37,7 +38,18 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun sendOrder(order: Result.Order): Single<Boolean> {
-        return Database.orders().push().setValue(order).getSingle().subscribeOn(Schedulers.io())
+        return Database.connectedStatus().checkConnected().subscribeOn(Schedulers.io())
+            .flatMap { isConnected ->
+            if(isConnected) Database.orders().push().setValue(order).getSingle()
+            else Single.error(IllegalStateException("No internet connection."))
+        }
+    }
+
+    override fun loadOrders(): Single<List<Result.Order>> {
+        return Database.connectedStatus().checkConnected().flatMap { isConnected ->
+            if(isConnected) Database.orders().getSingleList()
+            else Single.error(IllegalStateException("No internet connection."))
+        }
     }
 
 

@@ -54,7 +54,7 @@ inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T>
     }
 }
 
-inline fun <reified T : Result> DatabaseReference.getSingle(): Single<T> {
+inline fun <reified T : Result> DatabaseReference.getSingle(typeHint: Int = -1): Single<T> {
     return Single.create { emitter ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -62,14 +62,68 @@ inline fun <reified T : Result> DatabaseReference.getSingle(): Single<T> {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                val i = p0.getValue(T::class.java)!!
-                i.id = p0.key ?: ""
-                i.mode = UNDEFINED
-                emitter.onSuccess(i)
+                when (typeHint) {
+                    -1 -> {
+                        val i = p0.getValue(T::class.java)!!
+                        i.id = p0.key ?: ""
+                        i.mode = UNDEFINED
+                        emitter.onSuccess(i)
+                    }
+                    0 -> {  // OldOrders
+                        val resultList = p0.children.map {
+                            it.getValue(Result.OrderedProduct::class.java)!!
+                        }
+                        val result = T::class.java.newInstance()
+                        emitter.onSuccess(result as T)
+                    }
+                }
+
+
             }
         }
         addListenerForSingleValueEvent(listener)
         emitter.setCancellable { removeEventListener(listener) }
+    }
+}
+
+inline fun <reified T : Result> DatabaseReference.getSingleList(): Single<List<T>> {
+    return Single.create { emitter ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val resultList = p0.children.map {
+                    it.getValue(T::class.java)!!
+                }
+                emitter.onSuccess(resultList)
+
+
+            }
+        }
+        addListenerForSingleValueEvent(listener)
+        emitter.setCancellable { removeEventListener(listener) }
+    }
+}
+
+fun DatabaseReference.checkConnected(): Single<Boolean> {
+    return Single.create { emitter ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val i = p0.getValue(Boolean::class.java)!!
+                emitter.onSuccess(i)
+            }
+        }
+
+        addListenerForSingleValueEvent(listener)
+        emitter.setCancellable {
+            removeEventListener(listener)
+        }
     }
 }
 

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
@@ -133,9 +134,15 @@ class BasketFragment : DialogFragment() {
                 is UiEvent.LoadingDone -> {
                     viewBinding.progress.loadingIndicator.visibility = View.GONE
                     viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                    val msg = if (uiEvent.indicator==-1) "Bestellung konnte nicht gesendet."
+                    else "Bestellung erfolgreich gesendet."
+                    Toast.makeText(requireContext().applicationContext,
+                        msg, Toast.LENGTH_SHORT).show()
                     dismiss()
                 }
-                is UiEvent.Loading -> viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
+                is UiEvent.Loading -> {
+                    viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
+                }
                 else -> viewBinding.progress.loadingIndicator.visibility = View.GONE
             }
         })
@@ -235,7 +242,8 @@ class BasketFragment : DialogFragment() {
         newDays: Array<Date>? = null,
         selectPos: Int = -1
     ) {
-        viewModel.days = newDays ?: getDays(market)
+        val dayTime = if (viewModel.order.pickUpDate!=0L) viewModel.order.pickUpDate else null
+        viewModel.days = newDays ?: getDays(market, dayTime?.let {Date(it)})
         viewBinding.tlDateContainer.removeAllTabs()
         viewModel.days.forEach {
             val f = viewBinding.tlDateContainer.newTab()

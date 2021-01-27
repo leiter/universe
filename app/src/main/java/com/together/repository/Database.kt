@@ -24,6 +24,7 @@ object Database {
         if(sellerId.isNotEmpty()) result.child(sellerId)
         return if (seller) result.child(FireBaseAuth.getAuth().uid!!) else result
     }
+    fun connectedStatus() = fire().getReference(".info/connected")
 
     fun orders(): DatabaseReference = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
     fun providerArticles(providerId: String): DatabaseReference  = fire().reference.child(ARTICLES).child(providerId)

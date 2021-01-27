@@ -1,6 +1,7 @@
 package com.together.repository
 
 import android.net.Uri
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
@@ -22,11 +23,6 @@ sealed class Result {
         override var mode: Int = UNDEFINED
     }
 
-    object Empty : Result() {
-        override var id: String = "No result"
-        override var mode: Int = UNDEFINED
-    }
-
     object LoggedOut : Result() {
         override var id: String = "loggedIn"
         override var mode: Int = UNDEFINED
@@ -42,15 +38,6 @@ sealed class Result {
         override var mode: Int = UNDEFINED
     }
 
-    data class FireDatabaseError(
-        override var id: String = "ERROR FIRE DATABASE",
-        override var mode: Int = UNDEFINED,
-        var code: Int = Int.MAX_VALUE,
-        var message: String = "",
-        var detail: String = ""
-    ) : Result()
-
-
     data class NewImageCreated(
         var uri: Uri?,
         override var id: String = "",
@@ -62,10 +49,12 @@ sealed class Result {
         var emailAddress: String = "",
         var telephoneNumber: String = "",
         var photoUrl:String = "",
+        var isAnonymous:Boolean = true,
+        var defaultMarket: String = "",
+        var defaultPickUpTime: String = "",
         ) : Result() {
         override var id: String = ""
         override var mode: Int = UNDEFINED
-
     }
 
     data class Article(
@@ -86,13 +75,13 @@ sealed class Result {
     ) : Result()
 
     data class OrderedProduct(
-        override var id: String,
+        override var id: String = "",
         override var mode: Int = UNDEFINED,
         var productId: Int = -1,
         var productName: String = "",
         var unit: String = "",
         var price: Double = 0.0,
-        var amount: String,
+        var amount: String = "",
         var piecesCount: Int = -1
         ): Result()
 
@@ -108,24 +97,18 @@ sealed class Result {
         var articles: List<OrderedProduct> = emptyList(),
         ) : Result()
 
-
-
     data class SellerProfile(
 
         override var id: String = "",
         override var mode: Int = UNDEFINED,
 
         var displayName: String = "",
-
         var firstName: String = "",
         var lastName: String = "",
-
         var street: String = "",
         var houseNumber: String = "",
-
         var city: String = "",
         var zipcode: String = "",
-
         var telephoneNumber: String = "",
 
         var lat: String = "",
@@ -137,20 +120,6 @@ sealed class Result {
         var knownClientIds: MutableList<String> = mutableListOf()
 
     ) : Result()
-
-    data class BuyerProfile(
-
-        override var id: String = "",
-        override var mode: Int = UNDEFINED,
-
-        var displayName: String = "",
-        var emailAddress: String = "",
-
-        var contactIds: MutableList<String> = mutableListOf(), // int is to order 10 100 1000
-        var sellerIds: MutableList<String> = mutableListOf() // int is to order 10 100 1000
-
-    ) : Result()
-
 
     data class Market(
         var name: String = "",
@@ -165,7 +134,6 @@ sealed class Result {
         override var id: String = UUID.randomUUID().toString()
     ) : Result() {
         override var mode: Int = UNDEFINED
-
     }
 
 }

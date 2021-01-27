@@ -34,7 +34,7 @@ fun Result.SellerProfile.dataToUiSeller() : UiState.SellerProfile {
         zipCode = this.zipcode,
         _telephoneNumber = this.telephoneNumber,
         _knownClientIds = this.knownClientIds,
-        marketList = this.markets.map { it.uiMarketToData() }.toMutableList()
+        marketList = this.markets.map { it.dataToUiMarket() }.toMutableList()
     )
 }
 fun UiState.SellerProfile.uiSellerToData() : Result.SellerProfile {
@@ -54,7 +54,7 @@ fun UiState.SellerProfile.uiSellerToData() : Result.SellerProfile {
 }
 
 
-fun Result.Market.uiMarketToData() : UiState.Market {
+fun Result.Market.dataToUiMarket() : UiState.Market {
     return UiState.Market(
         _id = this.id,
         name = this.name,
@@ -93,8 +93,6 @@ fun UiState.Article.toOrderedItem() : Result.OrderedProduct {
         price = priceDigit,
         amount = amountDisplay,
         piecesCount = pieces
-
-
     )
 }
 

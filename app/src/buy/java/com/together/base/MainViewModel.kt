@@ -52,7 +52,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     val uiTasks: LiveData<out UiState> = MutableLiveData()
 
-    private val order = Result.Order()
+    val order = Result.Order()
 
     lateinit var days: Array<Date>
 
@@ -137,7 +137,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         dataRepository.sendOrder(order).subscribe({
             blockingLoaderState.value = UiEvent.LoadingDone(0)
         },{
-            blockingLoaderState.value =UiEvent.LoadingDone(0)
+            blockingLoaderState.value =UiEvent.LoadingDone(-1)
         }).addTo(disposable)
     }
 
@@ -164,6 +164,15 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         MutableLiveData<MutableList<UiState.Article>>().also {
             it.value = mutableListOf()
         }
+    }
+
+    fun loadOrders() {
+        dataRepository.loadOrders().subscribe({
+            it
+            Log.e("TTTTT", "For debugging");
+        },{
+            it
+        }).addTo(disposable)
     }
 
     override fun onCleared() {
