@@ -51,7 +51,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     loggedState.value = UiState.LOGGEDOUT
 
                 is Result.LoggedIn ->
-                    loggedState.value = UiState.BASE_AUTH
+                    loggedState.value = UiState.BaseAuth(
+                        UiState.BuyerProfile(isAnonymous = it.currentUser.isAnonymous)
+                    )
 
                 is Result.NewImageCreated -> {
                     if (newProduct.value == null)
@@ -106,7 +108,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     fun uploadSellerProfile(){
-        blockingLoaderState.value = UiEvent.Loading
+        blockingLoaderState.value = UiEvent.Loading(0)
         val p = profile.uiSellerToData()
         p.markets = markets.value!!.map { it.uiMarketToData() }.toMutableList()
         dataRepository.uploadSellerProfile(p).subscribe({ success ->
@@ -129,7 +131,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         editProduct.value?.let {
             val id = it._id
             if(id.isEmpty()) return  // todo msg
-            blockingLoaderState.value = UiEvent.Loading
+            blockingLoaderState.value = UiEvent.Loading(0)
             dataRepository.deleteProduct(id)
             .subscribe({success ->
                 if(success) {

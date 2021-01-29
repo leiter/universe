@@ -9,14 +9,17 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.navigation.NavigationView
+import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.material.itemSelections
+import com.jakewharton.rxbinding3.view.clicks
+import com.squareup.picasso.Picasso
 import com.together.R
-
 import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
@@ -30,16 +33,17 @@ import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
 import com.together.utils.hideIme
-import com.together.utils.loadImage
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.drawer_logout_button.*
 import kotlinx.android.synthetic.sell.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
+
     private val disposable = CompositeDisposable()
 
     companion object {
@@ -67,29 +71,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
 //                .replace(R.id.container, ProductsFragment()).commit()
 //        }
 
-
-
-        viewModel.loggedState.observe(this,{
+        viewModel.loggedState.observe(this, Observer {
             when (it) {
 
-                is UiState.BASE_AUTH -> {
+                is UiState.BaseAuth -> {
                     Database.sellerProfile("", true).getSingleExists().subscribe({ exists ->
                         if (exists) {
-                            setLoggedIn()
+                            setLoggedIn(navigation_drawer, log_out)
                             disposable.add(setupDrawerNavigation(navigation_drawer, drawer_layout))
                             MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
                                 supportFragmentManager, CreateFragment(),CreateFragment.TAG))
-                            viewBinding.navigationDrawer
                             disposable.add(
                                 log_out.clicks().subscribe {
-                                    viewModel.clear()
                                     drawer_layout.closeDrawers()
                                     MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
                                 })
@@ -99,11 +98,13 @@ class MainActivity : AppCompatActivity() {
                                 UiEvent.ReplaceFragment(supportFragmentManager,
                                     ProfileFragment(), ProfileFragment.TAG)
                             )
+
                         }
                     }, {
                         MainMessagePipe.uiEvent.onNext(
                             UiEvent.ShowToast(baseContext, R.string.developer_error_hint, Gravity.TOP)
                         )
+
                     })
                 }
 
@@ -195,17 +196,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setLoggedIn() {
-        val user = FireBaseAuth.getAuth().currentUser!!
-        val head = viewBinding.navigationDrawer.getHeaderView(0)
+    private fun setLoggedIn(navigation_drawer: NavigationView, logOut: View) {
+        val user = FireBaseAuth.getAuth()!!.currentUser!!
+        val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)
         head.findViewById<Button>(R.id.log_in).visibility = View.GONE
         avatar.visibility = View.VISIBLE
-        log_out.visibility = View.VISIBLE
+        logOut.visibility = View.VISIBLE
         head.findViewById<TextView>(R.id.user_email).text = user.email
         head.findViewById<TextView>(R.id.user_name).text = user.displayName
-        user.photoUrl?.let { loadImage(avatar,user.photoUrl.toString()) }
-        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+
+        user.photoUrl?.let {
+            val p = Picasso.Builder(avatar.context).downloader(OkHttp3Downloader(avatar.context)).build()
+            p.load(user.photoUrl).placeholder(R.drawable.ic_avatar_placeholder_24dp).into(avatar)
+        }
     }
 
 

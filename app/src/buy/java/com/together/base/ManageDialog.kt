@@ -21,11 +21,13 @@ import io.reactivex.disposables.Disposable
 
 class ManageDialog : DialogFragment() {
 
-    private val viewModel: MainViewModel by viewModels({requireParentFragment()})
+    lateinit var adapter: OldOrdersAdapter
+
+    private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
     lateinit var disposable: Disposable
     private var vB: ManageDialogBinding? = null
     private val viewBinding: ManageDialogBinding
-    get() = vB!!
+        get() = vB!!
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -61,13 +63,13 @@ class ManageDialog : DialogFragment() {
         dismiss()
     }
 
-    private val clickToOpenOrder: (UiState.Order) -> Unit  = {
-            viewModel.order = it
+    private val clickToOpenOrder: (UiState.Order) -> Unit = {
+        viewModel.order = it
         val neList = viewModel.productList.value!!.toMutableSet().toList()
-            viewModel.basket.value = createBasketUDate(neList,it)
-            BasketFragment().show(requireParentFragment().childFragmentManager, BasketFragment.TAG)
-            dismiss()
-        }
+        viewModel.basket.value = createBasketUDate(neList, it)
+        BasketFragment().show(requireParentFragment().childFragmentManager, BasketFragment.TAG)
+        dismiss()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,6 +77,8 @@ class ManageDialog : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        adapter = OldOrdersAdapter(emptyList(), clickToOpenOrder)
+        viewBinding.rvOldOrders.adapter = adapter
         viewBinding.rvOldOrders.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.loggedState.observe(viewLifecycleOwner, {
@@ -97,30 +101,26 @@ class ManageDialog : DialogFragment() {
         })
 
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
-            when(uiEvent){
+            when (uiEvent) {
                 is UiEvent.LoadingDone -> {
-                    if (uiEvent.indicator== UiEvent.LOAD_OLD_ORDERS){
+                    if (uiEvent.indicator == UiEvent.LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.GONE
-                        viewModel.oldOrders.removeObservers(viewLifecycleOwner)
+                        viewModel.oldOrders.observe(viewLifecycleOwner, orderObserver)
+                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
                     }
                 }
                 is UiEvent.Loading -> {
-                    if (uiEvent.indicator== UiEvent.LOAD_OLD_ORDERS) {
+                    if (uiEvent.indicator == UiEvent.LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.VISIBLE
                     }
+                }
+                is UiEvent.LoadingNeutral -> {
+                    viewModel.oldOrders.removeObserver(orderObserver)
                 }
             }
         })
 
-        viewBinding.btnShowOrders.setOnClickListener {
-            viewModel.oldOrders.observe(viewLifecycleOwner, {
-                viewBinding.rvOldOrders.adapter = OldOrdersAdapter(it, clickToOpenOrder)
-                if(it.isNotEmpty())showOldOrders(true)
-                else Toast.makeText(requireContext(),
-                    "Bisher wurden bisher keine Bestellungen aufgegeben.",Toast.LENGTH_SHORT).show()
-            })
-            viewModel.loadOrders()
-        }
+        viewBinding.btnShowOrders.setOnClickListener { viewModel.loadOrders() }
 
         viewBinding.btnWriteMsg.setOnClickListener { showWriteMessage(true) }
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
@@ -134,6 +134,18 @@ class ManageDialog : DialogFragment() {
             ); dismiss()
         }
         return viewBinding.root
+    }
+
+    private val orderObserver: (List<UiState.Order>) -> Unit = {
+        if (it.isNotEmpty()) {
+            showOldOrders(true)
+
+            adapter.data = it
+            adapter.notifyDataSetChanged()
+        } else Toast.makeText(
+            requireContext(),
+            "Bisher wurden bisher keine Bestellungen aufgegeben.", Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun showWriteMessage(show: Boolean) {
@@ -156,9 +168,9 @@ class ManageDialog : DialogFragment() {
     }
 
     private fun showOldOrders(show: Boolean) {
+        viewBinding.rvOldOrders.visibility = if (show) View.VISIBLE else View.GONE
         val visible = if (!show) View.VISIBLE else View.GONE
         showButtons(visible)
-        viewBinding.rvOldOrders.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

@@ -14,6 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.*
+import java.util.logging.Handler
 
 fun MutableLiveData<MutableList<UiState.Article>>.addItem(
     item: UiState.Article,
@@ -47,7 +48,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         MutableLiveData(emptyList<UiState.Article>().toMutableList())
 
     val productList: LiveData<MutableList<UiState.Article>>
-        get() { return productData }
+        get() {
+            return productData
+        }
 
     private var buyerProfile = UiState.BuyerProfile()
 
@@ -182,9 +185,10 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         blockingLoaderState.value = UiEvent.Loading(LOAD_OLD_ORDERS)
 
         dataRepository.loadOrders().subscribe({ listOfOrders ->
-            oldOrders.value = listOfOrders.map {
+            val newStuff = listOfOrders.map {
                 it.dataToUiOrder()
             }
+            oldOrders.value = newStuff
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
 
         }, {
