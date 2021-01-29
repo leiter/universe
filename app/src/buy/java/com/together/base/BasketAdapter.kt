@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.databinding.ItemBasketBinding
-import com.together.dialogs.BasketItemViewHolder
 
 class BasketAdapter(var data: MutableList<UiState.Article>,
                     private val clickToDelete: (product: UiState.Article) -> Unit)

@@ -6,7 +6,7 @@ import androidx.test.espresso.IdlingResource
 import com.together.R
 import com.together.TestContainerActivity
 
-class IdleMessager(val activity: TestContainerActivity) : IdlingResource {
+class IdleMessenger(private val activity: TestContainerActivity) : IdlingResource {
 
     @Volatile
     var resourceCallback : IdlingResource.ResourceCallback? = null

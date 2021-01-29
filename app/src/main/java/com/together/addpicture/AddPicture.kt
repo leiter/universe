@@ -64,7 +64,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
             when (it) {
                 ChooseDialog.Action.TAKE_PICKTURE -> startTakePicture()
                 ChooseDialog.Action.CHOOSE_PICTURE -> startPickImage()
-                ChooseDialog.Action.DELETE_PHOTO() -> {          }
+                ChooseDialog.Action.DELETE_PHOTO -> {          }
                 ChooseDialog.Action.CANCEL_ADD_PICTURE -> activity.finish()
             }
         }
@@ -131,15 +131,15 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         else activity.finish()
     }
     fun getPathFromURI(contentUri: Uri ): String {
-        var res: String? = null;
+        var res: String? = null
         val proj = arrayOf(MediaStore.Images.Media.DATA)
         val cursor : Cursor? = activity.contentResolver.query(
-            contentUri, proj, "", null, "");
+            contentUri, proj, "", null, "")
         if (cursor?.moveToFirst()!!) {
-            val column_index = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)!!
-            res = cursor?.getString(column_index);
+            val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            res = cursor.getString(column_index)
         }
-        cursor?.close();
+        cursor.close()
         return res!!
     }
 

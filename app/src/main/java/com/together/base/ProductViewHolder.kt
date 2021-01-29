@@ -1,9 +1,8 @@
-package com.together.order
+package com.together.base
 
 import android.graphics.Typeface
 import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
-import com.together.base.UiState
 import com.together.databinding.ItemProductBinding
 
 

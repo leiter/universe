@@ -74,7 +74,7 @@ inline fun <reified T : Result> DatabaseReference.getSingle(typeHint: Int = -1):
                             it.getValue(Result.OrderedProduct::class.java)!!
                         }
                         val result = T::class.java.newInstance()
-                        emitter.onSuccess(result as T)
+                        emitter.onSuccess(result)
                     }
                 }
 

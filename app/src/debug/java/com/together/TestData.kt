@@ -151,7 +151,7 @@ object TestData {
     )
 
 
-    val userList = listOf(
+    private val userList = listOf(
         Result.BuyerProfile(
             displayName = "Marco",
             emailAddress = "mmaleiter@gmail.com"
@@ -162,7 +162,7 @@ object TestData {
         ),
     )
 
-   val marketListItems = listOf(
+   private val marketListItems = listOf(
         Result.Market(
             name = "Wochenmarkt Onkel Toms Hütte",
             street = "Onkel-Tom-Straße",

@@ -5,10 +5,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import com.firebase.ui.auth.AuthUI
 import com.together.R
-import com.together.base.UiState
-import com.together.repository.Result
-import kotlin.reflect.full.memberProperties
-
 
 
 object AQ {
@@ -17,7 +13,7 @@ object AQ {
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    fun isConnectedTo(connectivityManager: ConnectivityManager, type: Int) : Boolean {
+    private fun isConnectedTo(connectivityManager: ConnectivityManager, type: Int) : Boolean {
 //        @deprecated Applications should instead use {@link NetworkCapabilities#hasCapability} or WIFI_SERVICE
         val ni = connectivityManager.activeNetworkInfo
         return ni !=null && ni.isConnected && ni.type ==  type //ConnectivityManager.TYPE_WIFI

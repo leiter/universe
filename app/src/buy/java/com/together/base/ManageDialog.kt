@@ -21,7 +21,7 @@ import io.reactivex.disposables.Disposable
 
 class ManageDialog : DialogFragment() {
 
-    lateinit var adapter: OldOrdersAdapter
+    private lateinit var adapter: OldOrdersAdapter
 
     private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
     lateinit var disposable: Disposable

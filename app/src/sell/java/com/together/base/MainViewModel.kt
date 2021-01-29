@@ -4,14 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.together.TestData
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.base.UiEvent.Companion.UNDEFINED
 import com.together.base.UiEvent.Companion.UPLOAD_PRODUCT
-import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.repository.storage.getSingle
 import com.together.utils.dataArticleToUi
 import com.together.utils.uiMarketToData
 import com.together.utils.uiSellerToData
@@ -117,12 +114,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 blockingLoaderState.value = UiEvent.ShowCreateFragment
             } else {
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
-//todo message
-//                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show()
             }
         }, {
             blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
-//            Toast.makeText(requireContext(), "EEEEEEEEEEEEeee", Toast.LENGTH_SHORT).show()
         }).addTo(disposable)
 
     }
@@ -152,8 +146,5 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         super.onCleared()
     }
 
-    fun clear(){
-        disposable.clear()
-    }
 }
 

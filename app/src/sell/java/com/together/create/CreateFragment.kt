@@ -13,7 +13,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
-import com.together.order.ProductAdapter
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.utils.FileUtil

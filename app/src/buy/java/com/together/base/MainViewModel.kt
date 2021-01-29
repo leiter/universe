@@ -14,7 +14,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.*
-import java.util.logging.Handler
 
 fun MutableLiveData<MutableList<UiState.Article>>.addItem(
     item: UiState.Article,

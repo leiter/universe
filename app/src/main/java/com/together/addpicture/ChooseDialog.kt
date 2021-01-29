@@ -18,7 +18,7 @@ class ChooseDialog : DialogFragment() {
     sealed class Action {
         object CHOOSE_PICTURE : Action()
         object TAKE_PICKTURE : Action()
-        class DELETE_PHOTO : Action()  //path param
+        object DELETE_PHOTO : Action()  //path param
         object CANCEL_ADD_PICTURE : Action()
     }
 
@@ -43,7 +43,7 @@ class ChooseDialog : DialogFragment() {
         view.capture_image.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
         view.btn_write_msg.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
         view.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
-        view.btn_show_info.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO()); dismiss() }
+        view.btn_show_info.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO); dismiss() }
         builder.setView(view)
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)

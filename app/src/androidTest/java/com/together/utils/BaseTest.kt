@@ -1,36 +1,28 @@
 package com.together.utils
 
-import android.Manifest
 import android.app.Activity
-import android.content.Intent
-import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.platform.app.ActivityLifecycleTimeout
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.together.R
 import com.together.TestContainerActivity
-import junit.extensions.ActiveTestSuite
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
-import java.lang.Exception
 
 
 @RunWith(AndroidJUnit4::class)
 abstract class BaseTest {
 
     @Volatile
-    lateinit var waitForIt: IdleMessager
+    lateinit var waitForIt: IdleMessenger
 
 //    @get:Rule
 //    var runTimeRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -40,7 +32,7 @@ abstract class BaseTest {
 
     @Before
     fun setup() {
-        waitForIt = IdleMessager(activityRule.activity)
+        waitForIt = IdleMessenger(activityRule.activity)
         IdlingRegistry.getInstance().register(waitForIt)
     }
 

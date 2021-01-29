@@ -56,7 +56,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
             FireBaseAuth.loginWithEmailAndPassWord(testData.emailAddress, testData.passWord)
         }
         create_account.setOnClickListener {
-            loading(true);
+            loading(true)
             FireBaseAuth.createAccountWithEmailAndPassword(testData.emailAddress, testData.passWord)
         }
         logout.setOnClickListener { loading(true); FireBaseAuth.logOut() }
