@@ -11,13 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
-import com.together.base.BaseFragment
-import com.together.base.MainMessagePipe
-import com.together.base.UiEvent
-import com.together.base.UiState
+import com.together.base.*
 import com.together.databinding.MainOrderFragmentBinding
-import com.together.base.BasketFragment
-import com.together.base.ManageDialog
 import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -93,9 +88,11 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
             { viewBinding.prLoadImageProgress.visibility = View.GONE }
-
         )
 
+        viewModel.basket.observe(viewLifecycleOwner,{
+            viewBinding.btnShowBasket.badgeCount.text = it.size.toString()
+        })
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
             setPresentedProduct(it)
             viewBinding.blocking.visibility = View.GONE

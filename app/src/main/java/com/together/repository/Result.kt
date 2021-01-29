@@ -81,6 +81,7 @@ sealed class Result {
         var unit: String = "",
         var price: Double = 0.0,
         var amount: String = "",
+        var amountCount: Double = 0.0,
         var piecesCount: Int = -1
         ): Result()
 

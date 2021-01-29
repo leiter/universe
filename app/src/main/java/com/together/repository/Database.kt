@@ -13,9 +13,7 @@ object Database {
 
     private fun fire() : FirebaseDatabase { return FirebaseDatabase.getInstance() }
 
-    init {
-        fire().setPersistenceEnabled(true)
-    }
+
 
     fun articles(): DatabaseReference = fire().reference.child(ARTICLES).child(FireBaseAuth.getAuth().uid!!)
 
@@ -33,4 +31,9 @@ object Database {
         .child(FireBaseAuth.getAuth().uid!!).child(id)
 
 
+
+    init {
+        fire().setPersistenceEnabled(true)
+        orders().keepSynced(true)
+    }
 }

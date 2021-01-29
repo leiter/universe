@@ -20,14 +20,5 @@ class OldOrdersAdapter(var data: List<UiState.Order>,
 
     override fun getItemCount(): Int { return data.size }
 
-
 }
 
-class OldOrdersViewHolder (private val binding: ItemOldOrderBinding ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(order: UiState.Order, clickToOpen: (product: UiState.Order) -> Unit) {
-        binding.tv.text = order.marketId
-        binding.root.setOnClickListener {
-            clickToOpen(order)
-        }
-    }
-}

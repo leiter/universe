@@ -93,6 +93,7 @@ fun UiState.Article.toOrderedItem(): Result.OrderedProduct {
         productName = productName,
         price = priceDigit,
         amount = amountDisplay,
+        amountCount = amountCount,
         piecesCount = pieces
     )
 }
@@ -131,6 +132,7 @@ fun Result.OrderedProduct.dataToUiOrderedProduct(): UiState.OrderedProduct {
         unit = unit,
         price = price,
         amount = amount,
+        amountCount= amountCount,
         piecesCount = piecesCount
     )
 }
@@ -141,6 +143,7 @@ fun UiState.OrderedProduct.uiOrderedProductData(): Result.OrderedProduct {
         unit = unit,
         price = price,
         amount = amount,
+        amountCount = amountCount,
         piecesCount = piecesCount
     )
 }
@@ -177,9 +180,13 @@ fun createBasketUDate(products: List<UiState.Article>, order: UiState.Order) : M
     order.productList.forEach { orderedProduct ->
         val available = products.firstOrNull { it._id == orderedProduct._id }
         if (available!=null){
-            val copy = available.copy(amount = orderedProduct.amount,
-                                        priceDigit = orderedProduct.price)
+            val copy = available.copy(
+                amount = orderedProduct.amount,
+                amountCount = orderedProduct.amountCount,
+                priceDigit = orderedProduct.price)
             copy.pieceCounter = orderedProduct.piecesCount
+            available.pieceCounter = orderedProduct.piecesCount
+            available.amountCount = orderedProduct.amountCount
             result.add(copy)
         }
     }

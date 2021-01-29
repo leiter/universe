@@ -20,8 +20,6 @@ sealed class UiState {
 
     data class LoadingProgress(val progressViewId: Int, val show: Boolean)
 
-
-
     object LOGGEDOUT : UiState() {
         override var _id = "StateLoggedOut"
         override var _mode: Int = UNDEFINED
@@ -50,6 +48,7 @@ sealed class UiState {
         var unit: String = "",
         var price: Double = 0.0,
         var amount: String = "",
+        val amountCount: Double = 0.0,
         var piecesCount: Int = -1
     ): UiState()
 
@@ -125,7 +124,18 @@ sealed class UiState {
         var pickUpDate: Long = 0L,
         var message: String = "",
         var productList: List<OrderedProduct> = emptyList(),
-        ) : UiState()
+        ) : UiState() {
+            fun createProductList() : String {
+                var result = ""
+                productList.forEachIndexed { index, it ->
+                    result += if(index != productList.size -1 ) it.productName + ", " else it.productName
+                }
+               return result
+            }
+        fun createProductCount() : String {
+            return "${productList.size} Produkte"
+        }
+        }
 
     data class BuyerProfile(
 

@@ -14,3 +14,9 @@ fun Date.toDateString() :String {
 fun Date.toAppointmentTime() : String {
     return dayFormatDay.format(this.time) + "gegen " + dateFormatTime.format(this.time) + " Uhr"
 }
+
+fun Long.toOrderTime() : String {
+    val c = Calendar.getInstance()
+    c.timeInMillis = this
+    return "Bestellung vom " + dateFormatWithDayName.format(c.time)
+}

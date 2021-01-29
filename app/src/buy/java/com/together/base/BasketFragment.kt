@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
+import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.databinding.FragmentBasketBinding
 import com.together.dialogs.BasketAdapter
 import com.together.utils.alterPickUptime
@@ -125,23 +126,28 @@ class BasketFragment : DialogFragment() {
         setPaceAndDateForOrder()
         alterTimePicker()
         viewBinding.etMessage.textChanges().skipInitialValue().subscribe {
-            viewModel.orderMessage = it.toString()
+            viewModel.order.message = it.toString()
         }.addTo(disposable)
         viewModel.marketText.observe(viewLifecycleOwner, { viewBinding.tvMarketName.text = it })
         viewModel.dayText.observe(viewLifecycleOwner, { viewBinding.tvMarketDate.text = it })
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, {uiEvent ->
             when(uiEvent) {
                 is UiEvent.LoadingDone -> {
-                    viewBinding.progress.loadingIndicator.visibility = View.GONE
-                    viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
-                    val msg = if (uiEvent.indicator==-1) "Bestellung konnte nicht gesendet."
-                    else "Bestellung erfolgreich gesendet."
-                    Toast.makeText(requireContext().applicationContext,
-                        msg, Toast.LENGTH_SHORT).show()
-                    dismiss()
+                    if(uiEvent.indicator==SEND_ORDER){
+                        viewBinding.progress.loadingIndicator.visibility = View.GONE
+                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                        val msg = if (uiEvent.indicator==-1) "Bestellung konnte nicht gesendet."
+                        else "Bestellung erfolgreich gesendet."
+                        Toast.makeText(requireContext().applicationContext,
+                            msg, Toast.LENGTH_SHORT).show()
+                        dismiss()
+                    }
+
                 }
                 is UiEvent.Loading -> {
-                    viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
+                    if(uiEvent.indicator==SEND_ORDER) {
+                        viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
+                    }
                 }
                 else -> viewBinding.progress.loadingIndicator.visibility = View.GONE
             }

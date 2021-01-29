@@ -13,6 +13,7 @@
         android:padding="8dp"
         android:src="@drawable/ic_add"
         android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toEndOf="@id/tv_counter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,6 +27,7 @@
         android:padding="8dp"
         android:layout_marginStart="8dp"
         android:src="@drawable/ic_minus"
+        app:layout_constraintEnd_toStartOf="@id/tv_counter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,8 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:minWidth="48dp"
-        android:padding="8dp"
+        android:minWidth="24dp"
+        android:padding="4dp"
         android:textSize="16sp"
         android:textStyle="bold"
         android:text="0"

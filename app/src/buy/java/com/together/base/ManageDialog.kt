@@ -1,10 +1,13 @@
 package com.together.base
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -22,12 +25,14 @@ class ManageDialog : DialogFragment() {
 
     private val viewModel: MainViewModel by viewModels({requireParentFragment()})
     lateinit var disposable: Disposable
-    private lateinit var viewBinding: ManageDialogBinding
+    private var vB: ManageDialogBinding? = null
+    private val viewBinding: ManageDialogBinding
+    get() = vB!!
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val builder = AlertDialog.Builder(requireContext())
-        viewBinding = ManageDialogBinding.inflate(LayoutInflater.from(requireContext()))
+        vB = ManageDialogBinding.inflate(LayoutInflater.from(requireContext()))
 
         disposable = viewBinding.messageText.textChanges().subscribe {
             viewModel.smsMessageText = it.toString()
@@ -74,7 +79,6 @@ class ManageDialog : DialogFragment() {
 
         viewBinding.rvOldOrders.layoutManager = LinearLayoutManager(requireContext())
 
-
         viewModel.loggedState.observe(viewLifecycleOwner, {
 
             when (it) {
@@ -95,12 +99,34 @@ class ManageDialog : DialogFragment() {
             }
         })
 
-        viewModel.oldOrders.observe(viewLifecycleOwner, {
-            viewBinding.rvOldOrders.adapter = OldOrdersAdapter(it, clickToOpenOrder)
-            showOldOrders(true)
+        viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
+            when(uiEvent){
+                is UiEvent.LoadingDone -> {
+                    if (uiEvent.indicator== UiEvent.LOAD_OLD_ORDERS){
+                        viewBinding.prLoadOrders.visibility = View.GONE
+                        viewModel.oldOrders.removeObservers(viewLifecycleOwner)
+                    }
+                }
+                is UiEvent.Loading -> {
+                    if (uiEvent.indicator== UiEvent.LOAD_OLD_ORDERS) {
+                        viewBinding.prLoadOrders.visibility = View.VISIBLE
+                    }
+                }
+            }
         })
 
-        viewBinding.btnShowOrders.setOnClickListener { viewModel.loadOrders() }
+
+
+        viewBinding.btnShowOrders.setOnClickListener {
+            viewModel.oldOrders.observe(viewLifecycleOwner, {
+                viewBinding.rvOldOrders.adapter = OldOrdersAdapter(it, clickToOpenOrder)
+                if(it.isNotEmpty())showOldOrders(true)
+                else Toast.makeText(requireContext(),
+                    "Bisher wurden bisher keine Bestellungen aufgegeben.",Toast.LENGTH_SHORT).show()
+            })
+            viewModel.loadOrders()
+        }
+
         viewBinding.btnWriteMsg.setOnClickListener { showWriteMessage(true) }
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
 
@@ -112,7 +138,6 @@ class ManageDialog : DialogFragment() {
                 )
             ); dismiss()
         }
-
         return viewBinding.root
     }
 
@@ -138,7 +163,7 @@ class ManageDialog : DialogFragment() {
     private fun showOldOrders(show: Boolean) {
         val visible = if (!show) View.VISIBLE else View.GONE
         showButtons(visible)
-        viewBinding.rvOldOrders.visibility = View.VISIBLE
+        viewBinding.rvOldOrders.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

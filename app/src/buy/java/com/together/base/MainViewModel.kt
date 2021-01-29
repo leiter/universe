@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
+import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingle
@@ -39,23 +41,17 @@ fun MutableLiveData<MutableList<UiState.Article>>.addItem(
 class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
     ViewModel() {
 
-    var orderMessage: String = ""
-
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     private val productData: MutableLiveData<MutableList<UiState.Article>> =
         MutableLiveData(emptyList<UiState.Article>().toMutableList())
 
     val productList: LiveData<MutableList<UiState.Article>>
-        get() {
-            return productData
-        }
+        get() { return productData }
 
-    var buyerProfile = UiState.BuyerProfile()
+    private var buyerProfile = UiState.BuyerProfile()
 
     var oldOrders: MutableLiveData<List<UiState.Order>> = MutableLiveData()
-
-    val uiTasks: LiveData<out UiState> = MutableLiveData()
 
     var order = UiState.Order()
 
@@ -134,15 +130,15 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     fun sendOrder() {
-        blockingLoaderState.value = UiEvent.Loading
+        blockingLoaderState.value = UiEvent.Loading(SEND_ORDER)
         order.createdDate = System.currentTimeMillis()
         val sendOrder: Result.Order = order.uiOrderToData()
         sendOrder.sellerId = sellerProfile._id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
         dataRepository.sendOrder(sendOrder).subscribe({
-            blockingLoaderState.value = UiEvent.LoadingDone(0)
+            blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
         }, {
-            blockingLoaderState.value = UiEvent.LoadingDone(-1)
+            blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
         }).addTo(disposable)
     }
 
@@ -183,13 +179,17 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     fun loadOrders() {
+        blockingLoaderState.value = UiEvent.Loading(LOAD_OLD_ORDERS)
+
         dataRepository.loadOrders().subscribe({ listOfOrders ->
             oldOrders.value = listOfOrders.map {
                 it.dataToUiOrder()
             }
-            Log.e("TTTTT", "For debugging");
+            blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
+
         }, {
-            it
+
+            blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
         }).addTo(disposable)
     }
 
