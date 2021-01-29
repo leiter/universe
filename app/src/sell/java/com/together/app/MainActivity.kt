@@ -15,15 +15,14 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding3.material.itemSelections
-import com.jakewharton.rxbinding3.view.clicks
 import com.together.R
+
 import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.create.CreateFragment
-import com.together.databinding.ActivityMainBinding
 import com.together.loggedout.LoginFragment
 import com.together.profile.ProfileFragment
 import com.together.repository.Database
@@ -42,7 +41,6 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val disposable = CompositeDisposable()
-    private lateinit var viewBinding: ActivityMainBinding
 
     companion object {
 
@@ -69,9 +67,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        viewBinding =ActivityMainBinding.inflate(layoutInflater)
 
-        setContentView(viewBinding.root)
+        setContentView(R.layout.activity_main)
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
 //                .replace(R.id.container, ProductsFragment()).commit()

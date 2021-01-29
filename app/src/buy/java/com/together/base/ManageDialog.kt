@@ -1,9 +1,7 @@
 package com.together.base
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,7 +90,6 @@ class ManageDialog : DialogFragment() {
                     viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedIn)
                     viewBinding.btnLogOut.setOnClickListener {
                         viewModel.clearAccount()
-//                        MainMessagePipe.uiEvent.onNext(UiEvent.LogOut); dismiss()
                     }
                     viewBinding.btnLogOut.setText(R.string.invalidate_session)
                 }
@@ -114,8 +111,6 @@ class ManageDialog : DialogFragment() {
                 }
             }
         })
-
-
 
         viewBinding.btnShowOrders.setOnClickListener {
             viewModel.oldOrders.observe(viewLifecycleOwner, {

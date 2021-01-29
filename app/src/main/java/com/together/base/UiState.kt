@@ -77,7 +77,9 @@ sealed class UiState {
             set(value) {
                 field = value
                 pieces = value
-                amountCount = value.toDouble() * weightPerPiece
+                if(pieceCounter>0){
+                    amountCount = value.toDouble() * weightPerPiece
+                }
             }
         var amountDisplay: String = prepareAmountDisplay()
         val priceDisplay: String

@@ -20,7 +20,6 @@ import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.databinding.FragmentBasketBinding
-import com.together.dialogs.BasketAdapter
 import com.together.utils.alterPickUptime
 import com.together.utils.getDays
 import com.together.utils.toDateString
