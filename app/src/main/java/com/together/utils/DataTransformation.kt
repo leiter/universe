@@ -107,6 +107,7 @@ fun Result.Order.dataToUiOrder(): UiState.Order {
         marketId = marketId,
         pickUpDate = pickUpDate,
         message = message,
+        isNotFavourite = isNotFavourite,
         productList = articles.map { it.dataToUiOrderedProduct() },
     )
 }
@@ -119,6 +120,7 @@ fun UiState.Order.uiOrderToData(): Result.Order {
         marketId = marketId,
         pickUpDate = pickUpDate,
         message = message,
+        isNotFavourite = isNotFavourite,
         articles = productList.map { it.uiOrderedProductData() },
     )
 }
