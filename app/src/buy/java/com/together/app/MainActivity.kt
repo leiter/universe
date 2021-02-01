@@ -57,10 +57,11 @@ class MainActivity : AppCompatActivity() {
 //                    )
 
                 is UiState.LOGIN_REQUIRED ->
-                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+                    FireBaseAuth.loginAnonymously()
+//                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
 
                 is UiState.LOGGEDOUT -> {
-                    FireBaseAuth.loginAnonymously()
+//                    FireBaseAuth.loginAnonymously()
 //                    MainMessagePipe.uiEvent.onNext(
 //                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
 //                    )
@@ -85,15 +86,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         disposable.dispose()
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                onBackPressed()
+//                onBackPressed()
             }
         } else {
             moveTaskToBack(true)

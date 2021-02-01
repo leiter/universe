@@ -94,6 +94,7 @@ sealed class Result {
         var marketId: String = "",
         var pickUpDate: Long = 0L,
         var message: String = "",
+        var isNotFavourite: Boolean = true,
         var articles: List<OrderedProduct> = emptyList(),
         ) : Result()
 

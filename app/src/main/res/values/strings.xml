@@ -14,6 +14,8 @@
     <string name="product_amount_empty">Bitte geben sie eine Mengenangabe ein.</string>
     <string name="invalidate_session">Sitzung löschen</string>
     <string name="login_btn_text">Einloggen</string>
+    <string name="bodenschatz_caps">BODENSCHÄTZE</string>
+    <string name="price_zero_euro">0,00€</string>
 
 
 </resources>

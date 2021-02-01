@@ -47,19 +47,22 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadOrders(): Single<List<Result.Order>> {
-        return Database.connectedStatus().checkConnected().flatMap { isConnected ->
-            if(isConnected) Database.orders().getSingleList()
+        return wrapInConnectionCheck { isConnected ->
+            if(isConnected) Database.orders().orderByChild("isNotFavourite")
+                .limitToLast(10).getSingleList()
             else Single.error(IllegalStateException("No internet connection."))
         }
     }
 
     override fun clearUserData(): Single<Boolean> {
-        return Database.connectedStatus().checkConnected().flatMap { isConnected ->
+        return wrapInConnectionCheck { isConnected ->
             if(isConnected) Database.orders().removeValue().getSingle()
             else Single.error(IllegalStateException("No internet connection."))
         }
-
     }
 
+    private inline fun <reified T> wrapInConnectionCheck(crossinline func : (Boolean) -> Single<T> ) : Single<T> {
+        return Database.connectedStatus().checkConnected().flatMap { func(it) }
+    }
 
 }

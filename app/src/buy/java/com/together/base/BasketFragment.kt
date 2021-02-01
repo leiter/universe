@@ -1,6 +1,7 @@
 package com.together.base
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,7 +30,9 @@ import java.util.*
 
 class BasketFragment : DialogFragment() {
 
-    private lateinit var viewBinding: FragmentBasketBinding
+    private var vB: FragmentBasketBinding? = null
+    private val viewBinding: FragmentBasketBinding
+    get() {return vB!!}
     private lateinit var adapter: BasketAdapter
     private val viewModel: MainViewModel by viewModels ({ requireParentFragment() })
     private var showingTimePicker: Boolean = false
@@ -107,7 +110,7 @@ class BasketFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        viewBinding = FragmentBasketBinding.inflate(LayoutInflater.from(requireContext()))
+        vB = FragmentBasketBinding.inflate(LayoutInflater.from(requireContext()))
 
         val b = viewModel.basket.value!!
         adapter = BasketAdapter(b, clickToDelete)
@@ -261,7 +264,13 @@ class BasketFragment : DialogFragment() {
         }
     }
 
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        dismiss()
+    }
+
     override fun onDestroyView() {
+        vB = null
         disposable.clear()
         super.onDestroyView()
     }

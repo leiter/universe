@@ -24,6 +24,7 @@ sealed class UiEvent {
         const val LOAD_OLD_ORDERS = 4
         const val INVALIDATE_SESSION = 5
         const val UPLOAD_PROFILE = 6
+        const val CLEAR_ACCOUNT = 7
 
 
 

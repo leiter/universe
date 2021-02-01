@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
 import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.repository.Result
@@ -85,7 +86,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
                 is Result.LoggedOut -> {
-                    loggedState.value = UiState.LOGGEDOUT
+                    loggedState.value = UiState.LOGIN_REQUIRED
                 }
 
                 is Result.LoggedIn -> {
@@ -154,9 +155,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {
-        MutableLiveData<UiState>().also {
-            it.value = FireBaseAuth.isLoggedIn()
-        }
+        MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
     }
 
     val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
@@ -170,12 +169,14 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     fun clearAccount() {
+        blockingLoaderState.value = UiEvent.Loading(CLEAR_ACCOUNT)
         dataRepository.clearUserData().flatMap {
             FireBaseAuth.deleteAccount().getSingle()
         }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-//                    loggedState.value = UiState.LOGGEDOUT
+                blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
             }, {
+                blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
 
             }).addTo(disposable)
     }
@@ -187,7 +188,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             val newStuff = listOfOrders.map {
                 it.dataToUiOrder()
             }
-            oldOrders.value = newStuff
+            oldOrders.value = newStuff.reversed()
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
 
         }, {

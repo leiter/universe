@@ -186,6 +186,26 @@ fun Query.getSingle(): Single<DataSnapshot> {
     }
 
 }
+inline fun <reified T : Result> Query.getSingleList(): Single<List<T>> {
+    return Single.create { emitter ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val resultList = p0.children.map {
+                    it.getValue(T::class.java)!!
+                }
+                emitter.onSuccess(resultList)
+
+
+            }
+        }
+        addListenerForSingleValueEvent(listener)
+        emitter.setCancellable { removeEventListener(listener) }
+    }
+}
 
 fun Task<Void>.getSingle(): Single<Boolean> {
     return Single.create { emitter ->

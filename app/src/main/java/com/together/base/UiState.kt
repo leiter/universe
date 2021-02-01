@@ -125,6 +125,7 @@ sealed class UiState {
         var marketId: String = "",
         var pickUpDate: Long = 0L,
         var message: String = "",
+        var isNotFavourite: Boolean = true,
         var productList: List<OrderedProduct> = emptyList(),
         ) : UiState() {
             fun createProductList() : String {

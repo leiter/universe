@@ -1,6 +1,7 @@
 package com.together.base
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.about.AboutFragment
@@ -19,21 +22,23 @@ import com.together.profile.ClientProfileFragment
 import com.together.utils.createBasketUDate
 import io.reactivex.disposables.Disposable
 
+
 class ManageDialog : DialogFragment() {
 
-    private lateinit var adapter: OldOrdersAdapter
 
-    private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
     lateinit var disposable: Disposable
     private var vB: ManageDialogBinding? = null
-    private val viewBinding: ManageDialogBinding
+    private val viewBinding:ManageDialogBinding  //by viewBinding(ManageDialogBinding::bind)
         get() = vB!!
+
+    private lateinit var adapter: OldOrdersAdapter
+    private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val builder = AlertDialog.Builder(requireContext())
         vB = ManageDialogBinding.inflate(LayoutInflater.from(requireContext()))
-
         disposable = viewBinding.messageText.textChanges().subscribe {
             viewModel.smsMessageText = it.toString()
         }
@@ -71,6 +76,7 @@ class ManageDialog : DialogFragment() {
         dismiss()
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,6 +86,11 @@ class ManageDialog : DialogFragment() {
         adapter = OldOrdersAdapter(emptyList(), clickToOpenOrder)
         viewBinding.rvOldOrders.adapter = adapter
         viewBinding.rvOldOrders.layoutManager = LinearLayoutManager(requireContext())
+        val dividerItemDecoration = DividerItemDecoration(
+            viewBinding.rvOldOrders.context,
+            LinearLayoutManager.VERTICAL
+        )
+        viewBinding.rvOldOrders.addItemDecoration(dividerItemDecoration)
 
         viewModel.loggedState.observe(viewLifecycleOwner, {
 
@@ -108,10 +119,18 @@ class ManageDialog : DialogFragment() {
                         viewModel.oldOrders.observe(viewLifecycleOwner, orderObserver)
                         viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
                     }
+                    if (uiEvent.indicator == UiEvent.CLEAR_ACCOUNT) {
+                        viewBinding.prLogOut.visibility = View.GONE
+                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                        dismiss()
+                    }
                 }
                 is UiEvent.Loading -> {
                     if (uiEvent.indicator == UiEvent.LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.VISIBLE
+                    }
+                    if (uiEvent.indicator == UiEvent.CLEAR_ACCOUNT) {
+                        viewBinding.prLogOut.visibility = View.VISIBLE
                     }
                 }
                 is UiEvent.LoadingNeutral -> {
@@ -139,13 +158,15 @@ class ManageDialog : DialogFragment() {
     private val orderObserver: (List<UiState.Order>) -> Unit = {
         if (it.isNotEmpty()) {
             showOldOrders(true)
-
             adapter.data = it
             adapter.notifyDataSetChanged()
-        } else Toast.makeText(
-            requireContext(),
-            "Bisher wurden bisher keine Bestellungen aufgegeben.", Toast.LENGTH_SHORT
-        ).show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Bisher wurden bisher keine Bestellungen aufgegeben.", Toast.LENGTH_SHORT
+            ).show()
+            dismiss()
+        }
     }
 
     private fun showWriteMessage(show: Boolean) {
@@ -157,6 +178,11 @@ class ManageDialog : DialogFragment() {
         if (show) {
             viewBinding.messageContainer.visibility = View.VISIBLE
         }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        dismiss()
+        super.onCancel(dialog)
     }
 
     private fun showButtons(visible: Int) {
@@ -173,9 +199,10 @@ class ManageDialog : DialogFragment() {
         showButtons(visible)
     }
 
-    override fun onDestroyView() {
+    override fun onDestroy() {
+        vB = null
         disposable.dispose()
-        super.onDestroyView()
+        super.onDestroy()
     }
 
     companion object {

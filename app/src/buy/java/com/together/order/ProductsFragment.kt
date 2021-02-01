@@ -13,9 +13,11 @@ import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.*
 import com.together.databinding.MainOrderFragmentBinding
+import com.together.dialogs.InfoDialogFragment
 import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.main_order_fragment.*
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
@@ -27,7 +29,9 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     private val digitsWithComma = DigitsKeyListener.getInstance("0123456789,")
     private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
     private var itemIndexScrollTo: Int = -1
-    private lateinit var viewBinding: MainOrderFragmentBinding
+    private var vB: MainOrderFragmentBinding? = null
+    private val viewBinding: MainOrderFragmentBinding
+    get() { return vB!!}
     private var selectedItemIndex = -1
 
     override fun clicked(item: UiState.Article) {
@@ -44,10 +48,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
         productData[selectedItemIndex].isSelected = true
         adapter.notifyItemChanged(selectedItemIndex)
-//        Handler().postDelayed({
-//            (viewBinding.articleList.layoutManager!! as LinearLayoutManager)
-//                .scrollToPositionWithOffset(itemIndexScrollTo, 0)
-//        }, 1000L)
     }
 
     override fun onCreateView(
@@ -55,7 +55,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding = MainOrderFragmentBinding.inflate(
+        vB = MainOrderFragmentBinding.inflate(
             LayoutInflater.from(requireContext()),container,false)
         viewBinding.btnActivateCounter.setOnClickListener { clickActivateCounter() }
         viewBinding.counter.btnPlus.setOnClickListener { clickPlusOrMinus(true) }
@@ -85,6 +85,12 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewBinding.btnShowDetailInfo.setOnClickListener {
+            InfoDialogFragment.newInstance(InfoDialogFragment.SHOW_INFO,
+                viewModel.presentedProduct.value!!.detailInfo
+            ).show(childFragmentManager, BasketFragment.TAG)
+
+        }
 
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
             { viewBinding.prLoadImageProgress.visibility = View.GONE }
@@ -96,7 +102,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
             setPresentedProduct(it)
             viewBinding.blocking.visibility = View.GONE
-            viewBinding.tvMenuTitle.text = "BODENSCHÄTZE"
+            viewBinding.tvMenuTitle.text = getString(R.string.bodenschatz_caps)
             viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
         })
 
@@ -106,7 +112,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
         viewBinding.btnShowBasket.badge.setOnClickListener {
             if (viewModel.basket.value!!.size > 0)
-                BasketFragment().show(childFragmentManager, "Basket")
+                BasketFragment().show(childFragmentManager, BasketFragment.TAG)
             else MainMessagePipe.uiEvent.onNext(
                 UiEvent.ShowToast(
                     requireContext(),
@@ -157,7 +163,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                         inFocus().amountCount = v.toDouble()
                         viewBinding.tvPriceAmount.setText(inFocus().priceDisplay)
                     } else {
-                        viewBinding.tvPriceAmount.setText("0,00€")
+                        viewBinding.tvPriceAmount.setText(getString(R.string.price_zero_euro))
                     }
                 }, { it.printStackTrace() })
         )
@@ -317,4 +323,5 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             viewBinding.btnShowBasket.badgeCount.text = basket.size.toString()
         }
     }
+
 }
