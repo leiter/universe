@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_set_appointment" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"/>
 
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_hide_appointment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
         android:paddingBottom="24dp">
 
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_menu_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -173,7 +173,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_show_appointment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -223,14 +223,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             app:layout_constrainedHeight="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/basket_sum"
             app:layout_constraintTop_toBottomOf="@id/divider"
             tools:itemCount="16"
             tools:listitem="@layout/item_basket" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/basket_sum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

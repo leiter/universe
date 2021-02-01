@@ -10,29 +10,26 @@ import androidx.fragment.app.DialogFragment
 import com.together.R
 
 
-
 class InfoDialogFragment : DialogFragment() {
 
     private var usageMode: String? = null
-    private var param2: String? = null
-
-
+    private var productInfo: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE,0)
         requireArguments().let {
             usageMode = it.getString(USAGE_MODE)
-            param2 = it.getString(PRODUCT_INFO)
+            productInfo = it.getString(PRODUCT_INFO)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
+//        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val v = inflater.inflate(R.layout.fragment_info_dialog, container, false)
-
-        v.findViewById<TextView>(R.id.tv_product_info).text = param2
+        v.findViewById<TextView>(R.id.tv_product_info).text = productInfo
         return v
     }
 

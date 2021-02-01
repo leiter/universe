@@ -1,7 +1,6 @@
 package com.together.base
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.about.AboutFragment
@@ -71,11 +69,10 @@ class ManageDialog : DialogFragment() {
     private val clickToOpenOrder: (UiState.Order) -> Unit = {
         viewModel.order = it
         val neList = viewModel.productList.value!!.toMutableSet().toList()
-        viewModel.basket.value = createBasketUDate(neList, it)
+        viewModel.basket.value = createBasketUDate(neList, it.copy())
         BasketFragment().show(requireParentFragment().childFragmentManager, BasketFragment.TAG)
         dismiss()
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -145,19 +142,22 @@ class ManageDialog : DialogFragment() {
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
 
         viewBinding.btnShowInfo.setOnClickListener {
-            MainMessagePipe.uiEvent.onNext(
-                UiEvent.AddFragment(
-                    requireActivity().supportFragmentManager,
-                    AboutFragment(), AboutFragment.TAG
-                )
-            ); dismiss()
+            dismiss()
+            MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(requireContext()))
+//            MainMessagePipe.uiEvent.onNext(
+//                UiEvent.AddFragment(
+//                    requireActivity().supportFragmentManager,
+//                    AboutFragment(), AboutFragment.TAG
+//                )
+//            );
+//            dismiss()
         }
         return viewBinding.root
     }
 
     private val orderObserver: (List<UiState.Order>) -> Unit = {
         if (it.isNotEmpty()) {
-            showOldOrders(true)
+            showOldOrders()
             adapter.data = it
             adapter.notifyDataSetChanged()
         } else {
@@ -180,11 +180,6 @@ class ManageDialog : DialogFragment() {
         }
     }
 
-    override fun onCancel(dialog: DialogInterface) {
-        dismiss()
-        super.onCancel(dialog)
-    }
-
     private fun showButtons(visible: Int) {
         viewBinding.btnProfile.visibility = visible
         viewBinding.btnWriteMsg.visibility = visible
@@ -193,10 +188,9 @@ class ManageDialog : DialogFragment() {
         viewBinding.btnShowOrders.visibility = visible
     }
 
-    private fun showOldOrders(show: Boolean) {
-        viewBinding.rvOldOrders.visibility = if (show) View.VISIBLE else View.GONE
-        val visible = if (!show) View.VISIBLE else View.GONE
-        showButtons(visible)
+    private fun showOldOrders() {
+        viewBinding.rvOldOrders.visibility = View.VISIBLE
+        showButtons(View.GONE)
     }
 
     override fun onDestroy() {

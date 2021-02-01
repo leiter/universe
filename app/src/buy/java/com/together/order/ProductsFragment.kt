@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -19,7 +20,7 @@ import io.reactivex.schedulers.Schedulers
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
-class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocusChangeListener  {
+class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocusChangeListener {
 
     private lateinit var adapter: ProductAdapter
     private lateinit var productData: List<UiState.Article>
@@ -28,7 +29,9 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
     private var itemIndexScrollTo: Int = -1
     private var vB: MainOrderFragmentBinding? = null
     private val viewBinding: MainOrderFragmentBinding
-    get() { return vB!!}
+        get() {
+            return vB!!
+        }
     private var selectedItemIndex = -1
 
     override fun clicked(item: UiState.Article) {
@@ -37,7 +40,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
             productData = adapter.data.toMutableList()
         }
         itemIndexScrollTo = productData.lastIndexOf(item)
-        if(selectedItemIndex>-1){
+        if (selectedItemIndex > -1) {
             adapter.data[selectedItemIndex].isSelected = false
             adapter.notifyItemChanged(selectedItemIndex)
         }
@@ -53,7 +56,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
         savedInstanceState: Bundle?
     ): View {
         vB = MainOrderFragmentBinding.inflate(
-            LayoutInflater.from(requireContext()),container,false)
+            LayoutInflater.from(requireContext()), container, false
+        )
         viewBinding.btnActivateCounter.setOnClickListener { clickActivateCounter() }
         viewBinding.counter.btnPlus.setOnClickListener { clickPlusOrMinus(true) }
         viewBinding.counter.btnMinus.setOnClickListener { clickPlusOrMinus(false) }
@@ -71,8 +75,10 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
         }
 
         adapter = ProductAdapter(this)
-        viewBinding.articleList.layoutManager = LinearLayoutManager(context,
-            RecyclerView.VERTICAL, false)
+        viewBinding.articleList.layoutManager = LinearLayoutManager(
+            context,
+            RecyclerView.VERTICAL, false
+        )
         viewBinding.articleList.adapter = adapter
         viewBinding.blocking.visibility = View.VISIBLE
         return viewBinding.root
@@ -83,7 +89,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding.btnShowDetailInfo.setOnClickListener {
-            InfoDialogFragment.newInstance(InfoDialogFragment.SHOW_INFO,
+            InfoDialogFragment.newInstance(
+                InfoDialogFragment.SHOW_INFO,
                 viewModel.presentedProduct.value!!.detailInfo
             ).show(childFragmentManager, BasketFragment.TAG)
 
@@ -93,7 +100,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
             { viewBinding.prLoadImageProgress.visibility = View.GONE }
         )
 
-        viewModel.basket.observe(viewLifecycleOwner,{
+        viewModel.basket.observe(viewLifecycleOwner, {
             viewBinding.btnShowBasket.badgeCount.text = it.size.toString()
         })
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
@@ -122,6 +129,14 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
 
         viewBinding.etProductAmount.onFocusChangeListener = this
 
+        viewBinding.etProductAmount.setOnEditorActionListener { _, i, _ ->
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                putIntoBasket()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+
         disposable.add(
             viewBinding.etMenuSearchProducts.textChanges().skipInitialValue()
                 .debounce(400, TimeUnit.MILLISECONDS)
@@ -130,15 +145,16 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
                     if (!::productData.isInitialized) {
                         productData = adapter.data.toMutableList()
                     }
-                    if(searchTerm.isNotEmpty()){
+                    if (searchTerm.isNotEmpty()) {
                         productData.forEach { it.isSelected = false }
-                        selectedItemIndex=-1
+                        selectedItemIndex = -1
                     }
 
                     productData.filter {
                         it.productName.startsWith(searchTerm, ignoreCase = true) ||
                                 it.searchTerms.matches(
-                                    ".*$searchTerm.*".toRegex(RegexOption.IGNORE_CASE))
+                                    ".*$searchTerm.*".toRegex(RegexOption.IGNORE_CASE)
+                                )
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -168,7 +184,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
         disposable.add(MainMessagePipe.uiEvent.subscribe {
             when (it) {
                 is UiEvent.BasketMinusOne -> {
-                    viewBinding.btnShowBasket.badgeCount.text = viewModel.basket.value?.size.toString()
+                    viewBinding.btnShowBasket.badgeCount.text =
+                        viewModel.basket.value?.size.toString()
                 }
             }
         })
@@ -229,43 +246,48 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
         requireContext().loadImage(viewBinding.ivProductImage, product.remoteImageUrl)
     }
 
-        override fun onFocusChange(p0: View?, p1: Boolean) {
-            if (p0?.id == R.id.et_product_amount) {
-                if (p1) {
+    override fun onFocusChange(p0: View?, p1: Boolean) {
+        if (p0?.id == R.id.et_product_amount) {
+            if (p1) {
+                viewBinding.btnActivateCounter.visibility = View.VISIBLE
+                viewBinding.counter.counterContainer.visibility = View.INVISIBLE
+                viewBinding.btnProductAmountClear.setImageResource(R.drawable.ic_clear)
+                viewBinding.btnProductAmountClear.setOnClickListener {
+                    viewBinding.etProductAmount.setText("")
                     viewBinding.btnActivateCounter.visibility = View.VISIBLE
                     viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-                    viewBinding.btnProductAmountClear.setImageResource(R.drawable.ic_clear)
-                    viewBinding.btnProductAmountClear.setOnClickListener {
-                        viewBinding.etProductAmount.setText("")
-                        viewBinding.btnActivateCounter.visibility = View.VISIBLE
-                        viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-                        inFocus().pieceCounter = 0
-                        inFocus().amountCount = 0.0
-                    }
-                } else {
-                    viewBinding.btnProductAmountClear.setImageBitmap(null)
-                    viewBinding.btnProductAmountClear.setOnClickListener(null)
+                    inFocus().pieceCounter = 0
+                    inFocus().amountCount = 0.0
                 }
+            } else {
+                viewBinding.btnProductAmountClear.setImageBitmap(null)
+                viewBinding.btnProductAmountClear.setOnClickListener(null)
             }
+        }
 
-            if (p0?.id == R.id.et_menu_search_products) {
-                if (p1) {
-                    viewBinding.btnMenuSearch.setImageResource(R.drawable.search_icon)
-                    viewBinding.btnMenuSearch.setOnClickListener { viewBinding.etMenuSearchProducts.setText("") }
+        if (p0?.id == R.id.et_menu_search_products) {
+            if (p1) {
+                viewBinding.btnMenuSearch.setImageResource(R.drawable.search_icon)
+                viewBinding.btnMenuSearch.setOnClickListener {
+                    viewBinding.etMenuSearchProducts.setText(
+                        ""
+                    )
+                }
 
-                } else {
-                    viewBinding.etMenuSearchProducts.visibility = View.INVISIBLE
-                    viewBinding.etMenuSearchProducts.setText("")
-                    viewBinding.tvMenuTitle.visibility = View.VISIBLE
-                    viewBinding.btnMenuSearch.setImageResource(R.drawable.ic_search_48)
-                    viewBinding.btnMenuSearch.setOnClickListener {
-                        viewBinding.tvMenuTitle.visibility = View.INVISIBLE
-                        viewBinding.etMenuSearchProducts.visibility = View.VISIBLE
-                        viewBinding.etMenuSearchProducts.requestFocus()
-                    }
+            } else {
+                viewBinding.etMenuSearchProducts.clearFocus()
+                viewBinding.etMenuSearchProducts.visibility = View.INVISIBLE
+                viewBinding.etMenuSearchProducts.setText("")
+                viewBinding.tvMenuTitle.visibility = View.VISIBLE
+                viewBinding.btnMenuSearch.setImageResource(R.drawable.ic_search_48)
+                viewBinding.btnMenuSearch.setOnClickListener {
+                    viewBinding.tvMenuTitle.visibility = View.INVISIBLE
+                    viewBinding.etMenuSearchProducts.visibility = View.VISIBLE
+                    viewBinding.etMenuSearchProducts.requestFocus()
                 }
             }
         }
+    }
 
     private fun putIntoBasket() {
         val product = inFocus()

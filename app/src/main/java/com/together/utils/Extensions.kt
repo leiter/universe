@@ -22,6 +22,14 @@ fun View.hideIme() {
     clearFocus()
 }
 
+fun View.showIme() {
+    this.requestFocus()
+    val inputMethod = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethod.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
+}
+
+
+
 fun Activity.setDrawable(resId: Int, imageView: AppCompatImageButton){
     val d = ResourcesCompat.getDrawable(resources, resId, this.theme)
     imageView.setImageDrawable(d)

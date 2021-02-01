@@ -1,7 +1,6 @@
 package com.together.base
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,9 +31,11 @@ class BasketFragment : DialogFragment() {
 
     private var vB: FragmentBasketBinding? = null
     private val viewBinding: FragmentBasketBinding
-    get() {return vB!!}
+        get() {
+            return vB!!
+        }
     private lateinit var adapter: BasketAdapter
-    private val viewModel: MainViewModel by viewModels ({ requireParentFragment() })
+    private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
     private var showingTimePicker: Boolean = false
     private val disposable = CompositeDisposable()
     private val minuteSteps = 15
@@ -112,7 +113,7 @@ class BasketFragment : DialogFragment() {
 
         vB = FragmentBasketBinding.inflate(LayoutInflater.from(requireContext()))
 
-        val b = viewModel.basket.value!!
+        val b = viewModel.basket.value!!.toMutableList()
         adapter = BasketAdapter(b, clickToDelete)
         viewBinding.basketSum.text = calculatePurchaseSum(b)
         viewBinding.orderBasket.adapter = adapter
@@ -132,22 +133,24 @@ class BasketFragment : DialogFragment() {
         }.addTo(disposable)
         viewModel.marketText.observe(viewLifecycleOwner, { viewBinding.tvMarketName.text = it })
         viewModel.dayText.observe(viewLifecycleOwner, { viewBinding.tvMarketDate.text = it })
-        viewModel.blockingLoaderState.observe(viewLifecycleOwner, {uiEvent ->
-            when(uiEvent) {
+        viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
+            when (uiEvent) {
                 is UiEvent.LoadingDone -> {
-                    if(uiEvent.indicator==SEND_ORDER){
+                    if (uiEvent.indicator == SEND_ORDER) {
                         viewBinding.progress.loadingIndicator.visibility = View.GONE
                         viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
-                        val msg = if (uiEvent.indicator==-1) "Bestellung konnte nicht gesendet."
+                        val msg = if (uiEvent.indicator == -1) "Bestellung konnte nicht gesendet."
                         else "Bestellung erfolgreich gesendet."
-                        Toast.makeText(requireContext().applicationContext,
-                            msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext().applicationContext,
+                            msg, Toast.LENGTH_SHORT
+                        ).show()
                         dismiss()
                     }
 
                 }
                 is UiEvent.Loading -> {
-                    if(uiEvent.indicator==SEND_ORDER) {
+                    if (uiEvent.indicator == SEND_ORDER) {
                         viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
                     }
                 }
@@ -189,15 +192,16 @@ class BasketFragment : DialogFragment() {
                 val market =
                     viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
-                showDates(market,null,viewModel.dateIndex)
+                showDates(market, null, viewModel.dateIndex)
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val market =
                     viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
                 viewBinding.tlDateContainer.getTabAt(viewModel.dateIndex)?.select()
-                showDates(market,null,viewModel.dateIndex)
+                showDates(market, null, viewModel.dateIndex)
             }
         })
         viewBinding.tlDateContainer.addOnTabSelectedListener(object :
@@ -205,6 +209,7 @@ class BasketFragment : DialogFragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewModel.dateIndex = viewBinding.tlDateContainer.selectedTabPosition
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 viewModel.dateIndex = viewBinding.tlDateContainer.selectedTabPosition
@@ -250,8 +255,8 @@ class BasketFragment : DialogFragment() {
         newDays: Array<Date>? = null,
         selectPos: Int = -1
     ) {
-        val dayTime = if (viewModel.order.pickUpDate!=0L) viewModel.order.pickUpDate else null
-        viewModel.days = newDays ?: getDays(market, dayTime?.let {Date(it)})
+        val dayTime = if (viewModel.order.pickUpDate != 0L) viewModel.order.pickUpDate else null
+        viewModel.days = newDays ?: getDays(market, dayTime?.let { Date(it) })
         viewBinding.tlDateContainer.removeAllTabs()
         viewModel.days.forEach {
             val f = viewBinding.tlDateContainer.newTab()
@@ -262,11 +267,6 @@ class BasketFragment : DialogFragment() {
             viewBinding.tlDateContainer.getTabAt(selectPos)?.select()
             viewModel.dateIndex = selectPos
         }
-    }
-
-    override fun onCancel(dialog: DialogInterface) {
-        super.onCancel(dialog)
-        dismiss()
     }
 
     override fun onDestroyView() {
