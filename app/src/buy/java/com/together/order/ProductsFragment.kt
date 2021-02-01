@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -17,15 +16,13 @@ import com.together.dialogs.InfoDialogFragment
 import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.main_order_fragment.*
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
-class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
+class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocusChangeListener  {
 
     private lateinit var adapter: ProductAdapter
     private lateinit var productData: List<UiState.Article>
-    private val focusChangeHandler = FocusListener()
     private val digitsWithComma = DigitsKeyListener.getInstance("0123456789,")
     private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
     private var itemIndexScrollTo: Int = -1
@@ -121,9 +118,9 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
             )
         }
 
-        viewBinding.etMenuSearchProducts.onFocusChangeListener = focusChangeHandler
+        viewBinding.etMenuSearchProducts.onFocusChangeListener = this
 
-        viewBinding.etProductAmount.onFocusChangeListener = focusChangeHandler
+        viewBinding.etProductAmount.onFocusChangeListener = this
 
         disposable.add(
             viewBinding.etMenuSearchProducts.textChanges().skipInitialValue()
@@ -232,7 +229,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
         requireContext().loadImage(viewBinding.ivProductImage, product.remoteImageUrl)
     }
 
-    inner class FocusListener : View.OnFocusChangeListener {
         override fun onFocusChange(p0: View?, p1: Boolean) {
             if (p0?.id == R.id.et_product_amount) {
                 if (p1) {
@@ -254,11 +250,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
             if (p0?.id == R.id.et_menu_search_products) {
                 if (p1) {
-                    viewBinding.btnMenuSearch.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources, R.drawable.search_icon, requireActivity().theme
-                        )
-                    )
+                    viewBinding.btnMenuSearch.setImageResource(R.drawable.search_icon)
                     viewBinding.btnMenuSearch.setOnClickListener { viewBinding.etMenuSearchProducts.setText("") }
 
                 } else {
@@ -274,7 +266,6 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked {
                 }
             }
         }
-    }
 
     private fun putIntoBasket() {
         val product = inFocus()

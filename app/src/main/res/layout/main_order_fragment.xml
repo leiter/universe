@@ -48,7 +48,7 @@
             android:layout_toEndOf="@id/btn_manage_profile"
             android:layout_toStartOf="@id/btn_menu_search"
             android:gravity="center"
-            tools:text="BODENSCHÄTZE"
+            tools:text="@string/bodenschatz_caps"
             android:textSize="@dimen/toolbar_title_size" />
 
         <EditText
