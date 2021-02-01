@@ -1,0 +1,9 @@
+<resources>
+
+<!--    4.0” 480x800 hdpi-->
+<!--    3.7” 480x854 hdpi-->
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>
