@@ -23,23 +23,18 @@ import io.reactivex.disposables.Disposable
 
 class ManageDialog : DialogFragment() {
 
-
     lateinit var disposable: Disposable
     private var vB: ManageDialogBinding? = null
     private val viewBinding:ManageDialogBinding  //by viewBinding(ManageDialogBinding::bind)
         get() = vB!!
 
-    private lateinit var adapter: OldOrdersAdapter
+    private var adapter: OldOrdersAdapter? = null
     private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        val builder = AlertDialog.Builder(requireContext())
         vB = ManageDialogBinding.inflate(LayoutInflater.from(requireContext()))
-        disposable = viewBinding.messageText.textChanges().subscribe {
-            viewModel.smsMessageText = it.toString()
-        }
+        val builder = AlertDialog.Builder(requireContext())
         builder.setView(viewBinding.root)
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)
@@ -50,28 +45,24 @@ class ManageDialog : DialogFragment() {
         MainMessagePipe.uiEvent.onNext(
             UiEvent.AddFragment(
                 requireActivity().supportFragmentManager,
-                LoginFragment(), LoginFragment.TAG
-            )
-        )
-        dismiss()
+                LoginFragment(), LoginFragment.TAG)
+        ); dismiss()
     }
 
     private val clickProfileWhileLoggedIn: (View) -> Unit = {
         MainMessagePipe.uiEvent.onNext(
             UiEvent.AddFragment(
                 requireActivity().supportFragmentManager,
-                ClientProfileFragment(), AboutFragment.TAG
-            )
-        )
-        dismiss()
+                ClientProfileFragment(), AboutFragment.TAG)
+        ); dismiss()
     }
 
     private val clickToOpenOrder: (UiState.Order) -> Unit = {
         viewModel.order = it
         val neList = viewModel.productList.value!!.toMutableSet().toList()
         viewModel.basket.value = createBasketUDate(neList, it.copy())
-        BasketFragment().show(requireParentFragment().childFragmentManager, BasketFragment.TAG)
         dismiss()
+        BasketFragment().show(requireParentFragment().childFragmentManager, BasketFragment.TAG)
     }
 
     override fun onCreateView(
@@ -79,6 +70,10 @@ class ManageDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        disposable = viewBinding.messageText.textChanges().subscribe {
+            viewModel.smsMessageText = it.toString()
+        }
 
         adapter = OldOrdersAdapter(emptyList(), clickToOpenOrder)
         viewBinding.rvOldOrders.adapter = adapter
@@ -158,8 +153,8 @@ class ManageDialog : DialogFragment() {
     private val orderObserver: (List<UiState.Order>) -> Unit = {
         if (it.isNotEmpty()) {
             showOldOrders()
-            adapter.data = it
-            adapter.notifyDataSetChanged()
+            adapter?.data = it
+            adapter?.notifyDataSetChanged()
         } else {
             Toast.makeText(
                 requireContext(),
@@ -193,14 +188,16 @@ class ManageDialog : DialogFragment() {
         showButtons(View.GONE)
     }
 
-    override fun onDestroy() {
-        vB = null
+    override fun onDestroyView() {
+        adapter = null
         disposable.dispose()
-        super.onDestroy()
+        vB = null
+        super.onDestroyView()
     }
 
     companion object {
         const val TAG = "ManageDialog"
     }
+
 }
 

@@ -1,17 +1,9 @@
 <resources>
-
-<!--    5.5" 1440x2560 xxxhdpi-->
-
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="toolbar_title_size">22sp</dimen>
-    <dimen name="preview_image_width">172dp</dimen>
-    <dimen name="preview_image_height">244dp</dimen>
-    <dimen name="price_margin_bottom">8dp</dimen>
-
-
-
-
+	<dimen name="activity_horizontal_margin">16dp</dimen>
+	<dimen name="activity_vertical_margin">16dp</dimen>
+	<dimen name="fab_margin">16dp</dimen>
+	<dimen name="toolbar_title_size">22.5sp</dimen>
+	<dimen name="preview_image_width">172dp</dimen>
+	<dimen name="preview_image_height">244dp</dimen>
+	<dimen name="price_margin_bottom">8dp</dimen>
 </resources>

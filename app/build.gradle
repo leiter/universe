@@ -82,7 +82,7 @@ android {
         buy {
             dimension = "basic"
             applicationIdSuffix ".buy"
-            versionCode 7
+            versionCode 8
             signingConfig signingConfigs.release
         }
     }

@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
 import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.base.UiEvent.Companion.SEND_ORDER
+import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
+import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
+import com.together.repository.AlreadyPlaceOrder
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingle
@@ -15,28 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.*
-
-fun MutableLiveData<MutableList<UiState.Article>>.addItem(
-    item: UiState.Article,
-) {
-
-    val index = value!!.indexOf(item)
-    when (item._mode) {
-        UiState.ADDED -> value!!.add(item)
-        UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it._id == item._id }))
-        UiState.CHANGED -> {
-            if (index == -1) {
-                val i = value!!.indexOf(value!!.first { it._id == item._id })
-                value!!.removeAt(i)
-                value!!.add(i, item)
-            } else {
-                value!!.removeAt(index)
-                value!!.add(index, item)
-            }
-        }
-    }
-    value = value!!.toMutableList()
-}
+import kotlin.collections.ArrayList
 
 
 class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
@@ -141,9 +123,30 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         dataRepository.sendOrder(sendOrder).subscribe({
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
         }, {
-            blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
+            if(it is AlreadyPlaceOrder){
+                loadExistingOrder(sendOrder)
+            }else blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
+
         }).addTo(disposable)
     }
+
+    private fun loadExistingOrder(sendOrder: Result.Order) {
+        dataRepository.loadExistingOrder(sendOrder.pickUpDate.toOrderId()).map { loadedOrder ->
+            order = loadedOrder.dataToUiOrder()
+            val currentBasket = basket.value?.toMutableList()
+            val loadedBasket = createBasketUDate(productList.value!!.toList(),loadedOrder.dataToUiOrder())
+            val result: ArrayList<UiState.Article> = ArrayList()
+            result.addAll(currentBasket!!.toTypedArray())
+            result.addAll(loadedBasket.toTypedArray())
+            result.sortBy { it.productName }
+            basket.value = result.toMutableList()
+        }.subscribe({
+            blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_UPDATED)
+        },{
+            blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
+        }).addTo(disposable)
+    }
+
 
     val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
         it.value = UiState.LoadingProgress(-1, false)
@@ -174,6 +177,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             FireBaseAuth.deleteAccount().getSingle()
         }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                basket.value = mutableListOf()
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
             }, {
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)

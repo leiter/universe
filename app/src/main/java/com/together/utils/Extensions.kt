@@ -7,11 +7,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.MutableLiveData
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.together.R
 import com.together.base.MainMessagePipe
+import com.together.base.UiState
 import com.together.repository.Result
 
 
@@ -62,4 +64,26 @@ fun Context.loadImage(imageView: ImageView, url: String){
                     })
             }
         })
+}
+
+fun MutableLiveData<MutableList<UiState.Article>>.addItem(
+    item: UiState.Article,
+) {
+
+    val index = value!!.indexOf(item)
+    when (item._mode) {
+        UiState.ADDED -> if(index==-1) value!!.add(item)
+        UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it._id == item._id }))
+        UiState.CHANGED -> {
+            if (index == -1) {
+                val i = value!!.indexOf(value!!.first { it._id == item._id })
+                value!!.removeAt(i)
+                value!!.add(i, item)
+            } else {
+                value!!.removeAt(index)
+                value!!.add(index, item)
+            }
+        }
+    }
+    value = value!!.toMutableList()
 }

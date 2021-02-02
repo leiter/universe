@@ -19,6 +19,8 @@ import com.google.android.material.tabs.TabLayout
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.UiEvent.Companion.SEND_ORDER
+import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
+import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
 import com.together.databinding.FragmentBasketBinding
 import com.together.utils.alterPickUptime
 import com.together.utils.getDays
@@ -42,8 +44,9 @@ class BasketFragment : DialogFragment() {
 
     private val clickToDelete: (UiState.Article) -> Unit
         inline get() = { input ->
-            val pos = adapter.data.indexOf(adapter.data.first { input._id == it._id })
-            viewModel.basket.value?.remove(viewModel.basket.value!!.first { it._id == input._id })
+            val pos = adapter.data.indexOf(adapter.data.first { input.hashCode() == it.hashCode() })
+            adapter.data.removeAt(pos)
+            viewModel.basket.value?.removeAt(pos)
             viewModel.resetAmountCount(input._id)
             adapter.notifyItemRemoved(pos)
             viewBinding.basketSum.text = calculatePurchaseSum(viewModel.basket.value!!)
@@ -110,17 +113,19 @@ class BasketFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         vB = FragmentBasketBinding.inflate(LayoutInflater.from(requireContext()))
+        setListAdapter()
+        return AlertDialog.Builder(requireActivity(), R.style.MyDialogTheme)
+            .setView(viewBinding.root).create()
+    }
 
+    private fun setListAdapter(){
         val b = viewModel.basket.value!!.toMutableList()
         adapter = BasketAdapter(b, clickToDelete)
         viewBinding.basketSum.text = calculatePurchaseSum(b)
         viewBinding.orderBasket.adapter = adapter
         viewBinding.orderBasket.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        return AlertDialog.Builder(requireActivity(), R.style.MyDialogTheme)
-            .setView(viewBinding.root).create()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -134,27 +139,38 @@ class BasketFragment : DialogFragment() {
         viewModel.marketText.observe(viewLifecycleOwner, { viewBinding.tvMarketName.text = it })
         viewModel.dayText.observe(viewLifecycleOwner, { viewBinding.tvMarketDate.text = it })
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
+            var toastMsg: String? = null
             when (uiEvent) {
                 is UiEvent.LoadingDone -> {
-                    if (uiEvent.indicator == SEND_ORDER) {
-                        viewBinding.progress.loadingIndicator.visibility = View.GONE
-                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
-                        val msg = if (uiEvent.indicator == -1) "Bestellung konnte nicht gesendet."
-                        else "Bestellung erfolgreich gesendet."
-                        Toast.makeText(
-                            requireContext().applicationContext,
-                            msg, Toast.LENGTH_SHORT
-                        ).show()
-                        dismiss()
+                    when (uiEvent.indicator) {
+                        SEND_ORDER -> {
+                            viewBinding.progress.loadingIndicator.visibility = View.GONE
+                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                            toastMsg = "Bestellung erfolgreich gesendet."
+                            dismiss()
+                        }
+                        SEND_ORDER_FAILED -> {
+                            toastMsg = "Bestellung konnte nicht gesendet werden."
+                            dismiss()
+                        }
+                        SEND_ORDER_UPDATED -> {
+                            toastMsg = "Die bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
+                            viewBinding.progress.loadingIndicator.visibility = View.GONE
+                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                            setListAdapter()
+                        }
                     }
-
+                    Toast.makeText(
+                        requireContext().applicationContext,
+                        toastMsg, Toast.LENGTH_LONG
+                    ).show()
                 }
+
                 is UiEvent.Loading -> {
                     if (uiEvent.indicator == SEND_ORDER) {
                         viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
                     }
                 }
-                else -> viewBinding.progress.loadingIndicator.visibility = View.GONE
             }
         })
     }
@@ -270,8 +286,9 @@ class BasketFragment : DialogFragment() {
     }
 
     override fun onDestroyView() {
-        vB = null
+        viewBinding.orderBasket.adapter = null
         disposable.clear()
+        vB = null
         super.onDestroyView()
     }
 
