@@ -151,6 +151,7 @@ class BasketFragment : DialogFragment() {
                         }
                         SEND_ORDER_FAILED -> {
                             toastMsg = "Bestellung konnte nicht gesendet werden."
+                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {

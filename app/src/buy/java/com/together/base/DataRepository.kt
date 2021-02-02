@@ -2,6 +2,7 @@ package com.together.base
 
 import com.together.repository.AlreadyPlaceOrder
 import com.together.repository.Database
+import com.together.repository.NoInternetConnection
 import com.together.repository.Result
 import com.together.repository.storage.*
 import com.together.utils.toOrderId
@@ -9,7 +10,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.lang.IllegalStateException
 
 
 interface DataRepository {
@@ -42,8 +42,7 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun sendOrder(order: Result.Order, update: Boolean): Single<Boolean> {
-        return wrapInConnectionCheck { isConnected ->
-            if (isConnected) {
+        return wrapInConnectionCheck {
                 val date = order.pickUpDate.toOrderId()
                 Database.orders().child(date).getSingleExists().flatMap { exists ->
                     if (exists.not() || update) {
@@ -52,35 +51,27 @@ class DataRepositoryImpl : DataRepository {
                         Single.error(AlreadyPlaceOrder())
                     }
                 }
-            } else Single.error(IllegalStateException("No internet connection."))
         }
     }
 
     override fun loadOrders(): Single<List<Result.Order>> {
-        return wrapInConnectionCheck { isConnected ->
-            if (isConnected) Database.orders().orderByChild("isNotFavourite")
+        return wrapInConnectionCheck {
+            Database.orders().orderByChild("isNotFavourite")
                 .limitToLast(10).getSingleList()
-            else Single.error(IllegalStateException("No internet connection."))
         }
     }
 
     override fun clearUserData(): Single<Boolean> {
-        return wrapInConnectionCheck { isConnected ->
-            if (isConnected) Database.orders().removeValue().getSingle()
-            else Single.error(IllegalStateException("No internet connection."))
-        }
+        return wrapInConnectionCheck { Database.orders().removeValue().getSingle() }
     }
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {
-        return wrapInConnectionCheck { isConnected ->
-            if(isConnected) Database.orders().child(orderId).getSingleValue()
-            else Single.error(IllegalStateException("No internet connection."))
-        }
+        return wrapInConnectionCheck { Database.orders().child(orderId).getSingleValue() }
     }
 
-    private inline fun <reified T> wrapInConnectionCheck(crossinline func: (Boolean) -> Single<T>): Single<T> {
+    private inline fun <reified T> wrapInConnectionCheck(crossinline func: () -> Single<T>): Single<T> {
         return Database.connectedStatus().checkConnected().subscribeOn(Schedulers.io())
-            .flatMap { func(it) }
+            .flatMap { if(it) func(); else Single.error(NoInternetConnection()) }
     }
 
 }

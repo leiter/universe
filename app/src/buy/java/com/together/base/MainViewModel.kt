@@ -123,6 +123,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         sendOrder.sellerId = sellerProfile._id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
         dataRepository.sendOrder(sendOrder, updateOrder).subscribe({
+            if(updateOrder) updateOrder = false
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
         }, {
             if(it is AlreadyPlaceOrder){
