@@ -15,7 +15,7 @@ import java.lang.IllegalStateException
 interface DataRepository {
     fun setupProductConnection(): Observable<Result.Article>
     fun setupProviderConnection(): Observable<Result.SellerProfile>
-    fun sendOrder(order: Result.Order): Single<Boolean>
+    fun sendOrder(order: Result.Order, update: Boolean  = false): Single<Boolean>
     fun loadOrders(): Single<List<Result.Order>>
     fun clearUserData(): Single<Boolean>
     fun loadExistingOrder(orderId: String): Single<Result.Order>
@@ -41,12 +41,12 @@ class DataRepositoryImpl : DataRepository {
             }.observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun sendOrder(order: Result.Order): Single<Boolean> {
+    override fun sendOrder(order: Result.Order, update: Boolean): Single<Boolean> {
         return wrapInConnectionCheck { isConnected ->
             if (isConnected) {
                 val date = order.pickUpDate.toOrderId()
                 Database.orders().child(date).getSingleExists().flatMap { exists ->
-                    if (exists.not()) {
+                    if (exists.not() || update) {
                         return@flatMap Database.orders().child(date).setValue(order).getSingle()
                     } else {
                         Single.error(AlreadyPlaceOrder())

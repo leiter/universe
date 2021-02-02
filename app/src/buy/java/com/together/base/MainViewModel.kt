@@ -40,6 +40,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     var order = UiState.Order()
 
+    var updateOrder = false
+
     lateinit var days: Array<Date>
 
     lateinit var sellerProfile: UiState.SellerProfile
@@ -120,7 +122,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         val sendOrder: Result.Order = order.uiOrderToData()
         sendOrder.sellerId = sellerProfile._id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
-        dataRepository.sendOrder(sendOrder).subscribe({
+        dataRepository.sendOrder(sendOrder, updateOrder).subscribe({
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
         }, {
             if(it is AlreadyPlaceOrder){
@@ -141,6 +143,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             result.sortBy { it.productName }
             basket.value = result.toMutableList()
         }.subscribe({
+            updateOrder = true
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_UPDATED)
         },{
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
