@@ -13,25 +13,21 @@
     </style>
 
     <style name="AppTheme.Start" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/fab_green</item>
         <item name="android:windowBackground">@drawable/splash</item>
 
-
-
     </style>
 
     <style name="AppTheme.Licence" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/fab_green</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/fab_green</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:actionBarStyle">@style/ToolbarTheme.Title</item>
-        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/fab_green</item>
 
     </style>
 
@@ -86,7 +82,6 @@
 <!--        <item name="colorControlNormal">@color/price_text_color</item>-->
 <!--        <item name="colorControlActivated">@color/price_text_color</item>-->
 <!--        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox</item>-->
-
 <!--    </style>-->
 
 

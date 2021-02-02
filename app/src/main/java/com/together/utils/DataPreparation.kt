@@ -14,7 +14,7 @@ fun getDays(market: UiState.Market, hourMinute: Date? = null): Array<Date> {
     val e = format.parse(market.end)
 
     val (midHour, midMinute) =
-    if(hourMinute!=null){
+    if(hourMinute!=null) {
         calendar.time = hourMinute
         calendar.get(Calendar.HOUR_OF_DAY) to calendar.get(Calendar.MINUTE)
     } else ((b!!.hours + e!!.hours) * 0.5).toInt() to 0

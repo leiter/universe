@@ -2,6 +2,9 @@ package com.together.utils
 
 import android.app.Activity
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.telecom.ConnectionService
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -30,11 +33,15 @@ fun View.showIme() {
     inputMethod.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
 }
 
-
-
 fun Activity.setDrawable(resId: Int, imageView: AppCompatImageButton){
     val d = ResourcesCompat.getDrawable(resources, resId, this.theme)
     imageView.setImageDrawable(d)
+}
+
+fun Context.hasInternet(): Boolean {
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+    return activeNetwork?.isConnectedOrConnecting == true
 }
 
 fun Context.loadImage(imageView: ImageView, url: String){

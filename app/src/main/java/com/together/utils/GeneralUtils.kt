@@ -24,7 +24,6 @@ object AQ {
                 isConnectedTo(getConnectionManager(context),ConnectivityManager.TYPE_MOBILE)
     }
 
-
     fun getFirebaseUIStarter(): Intent {
         val providers = listOf(
             AuthUI.IdpConfig.AnonymousBuilder().build(),

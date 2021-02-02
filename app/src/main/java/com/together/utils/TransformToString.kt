@@ -3,7 +3,7 @@ package com.together.utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val dateFormatWithDash = SimpleDateFormat("dd_MM_yyyy", Locale.GERMANY)
+private val dateFormatWithDash = SimpleDateFormat("yyyyMMdd", Locale.GERMANY)
 private val dateFormatWithDayName = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
 private val dateFormatTime = SimpleDateFormat("HH:mm", Locale.GERMAN)
 private val dayFormatDay = SimpleDateFormat("E, dd.MM.yyyy ", Locale.GERMAN)
