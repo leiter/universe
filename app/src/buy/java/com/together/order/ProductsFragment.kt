@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -88,7 +89,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.btnShowDetailInfo.setOnClickListener {
+        viewBinding.tvProductName.setOnClickListener {
             InfoDialogFragment.newInstance(
                 InfoDialogFragment.SHOW_INFO,
                 viewModel.presentedProduct.value!!.detailInfo
@@ -197,11 +198,13 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
 
     private fun clickPlusOrMinus(isPlus: Boolean) {
         val toAdd = if (isPlus) 1 else -1
-        var newVal = inFocus().pieceCounter + toAdd
+        val newVal = inFocus().pieceCounter + toAdd
         if (newVal <= 0) {
             viewBinding.btnActivateCounter.visibility = View.VISIBLE
             viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-            newVal = 0
+            viewBinding.etProductAmount.setText(R.string.price_zero_euro)
+            inFocus().pieceCounter = 0
+            return
         }
         inFocus().pieceCounter = newVal
         val v = inFocus().calculateAmountCountDisplay()
@@ -328,7 +331,8 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
         } else {
             basket.add(p)
         }
-
+        viewBinding.btnShowBasket.badge.startAnimation(
+            AnimationUtils.loadAnimation(requireContext(),R.anim.shake_rotate))
         if (basket.size == 0) {
             viewBinding.btnShowBasket.badgeCount.visibility = View.INVISIBLE
         } else {

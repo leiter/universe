@@ -33,9 +33,7 @@ class BasketFragment : DialogFragment() {
 
     private var vB: FragmentBasketBinding? = null
     private val viewBinding: FragmentBasketBinding
-        get() {
-            return vB!!
-        }
+        get() { return vB!! }
     private lateinit var adapter: BasketAdapter
     private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
     private var showingTimePicker: Boolean = false

@@ -57,10 +57,13 @@ class ManageDialog : DialogFragment() {
         ); dismiss()
     }
 
-    private val clickToOpenOrder: (UiState.Order) -> Unit = {
-        viewModel.order = it
+    private val clickToOpenOrder: (UiState.Order) -> Unit = { selectedOrder ->
+        viewModel.order = selectedOrder
+        viewModel.marketIndex = viewModel.sellerProfile.marketList.indexOfFirst {
+            it._id == viewModel.order.marketId }
+
         val neList = viewModel.productList.value!!.toMutableSet().toList()
-        viewModel.basket.value = createBasketUDate(neList, it.copy())
+        viewModel.basket.value = createBasketUDate(neList, selectedOrder.copy())
         dismiss()
         BasketFragment().show(requireParentFragment().childFragmentManager, BasketFragment.TAG)
     }

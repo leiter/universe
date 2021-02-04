@@ -55,7 +55,7 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadOrders(): Single<List<Result.Order>> {
-        return wrapInConnectionCheck { Database.orders().orderByChild("isNotFavourite")
+        return wrapInConnectionCheck { Database.orders()
                 .limitToLast(10).getSingleList() }
     }
 
