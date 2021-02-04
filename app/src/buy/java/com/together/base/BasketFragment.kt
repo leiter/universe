@@ -110,6 +110,11 @@ class BasketFragment : DialogFragment() {
         viewModel.setTimeDateForOrder(market, date)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adapter = BasketAdapter(mutableListOf(), clickToDelete)
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         vB = FragmentBasketBinding.inflate(LayoutInflater.from(requireContext()))
         setListAdapter()
@@ -119,7 +124,7 @@ class BasketFragment : DialogFragment() {
 
     private fun setListAdapter(){
         val b = viewModel.basket.value!!.toMutableList()
-        adapter = BasketAdapter(b, clickToDelete)
+        adapter.data = b
         viewBinding.basketSum.text = calculatePurchaseSum(b)
         viewBinding.orderBasket.adapter = adapter
         viewBinding.orderBasket.layoutManager =

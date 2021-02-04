@@ -120,15 +120,16 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         blockingLoaderState.value = UiEvent.Loading(SEND_ORDER)
         order.createdDate = System.currentTimeMillis()
         val sendOrder: Result.Order = order.uiOrderToData()
+        sendOrder.pickUpDate = days[dateIndex].time
         sendOrder.sellerId = sellerProfile._id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
         dataRepository.sendOrder(sendOrder, updateOrder).subscribe({
-            if(updateOrder) updateOrder = false
+            if (updateOrder) updateOrder = false
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
         }, {
-            if(it is AlreadyPlaceOrder){
+            if (it is AlreadyPlaceOrder) {
                 loadExistingOrder(sendOrder)
-            }else blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
+            } else blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
 
         }).addTo(disposable)
     }
@@ -137,16 +138,27 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         dataRepository.loadExistingOrder(sendOrder.pickUpDate.toOrderId()).map { loadedOrder ->
             order = loadedOrder.dataToUiOrder()
             val currentBasket = basket.value?.toMutableList()
-            val loadedBasket = createBasketUDate(productList.value!!.toList(),loadedOrder.dataToUiOrder())
+            val loadedBasket =
+                createBasketUDate(productList.value!!.toList(), loadedOrder.dataToUiOrder())
             val result: ArrayList<UiState.Article> = ArrayList()
             result.addAll(currentBasket!!.toTypedArray())
             result.addAll(loadedBasket.toTypedArray())
             result.sortBy { it.productName }
-            basket.value = result.toMutableList()
+            val f = result.filterIndexed { index, article ->
+                if (index < result.size - 2) {
+                    val next = result[index + 1]
+                    return@filterIndexed !(article.productName == next.productName &&
+                            article.amount == next.amount)
+                } else {
+                    return@filterIndexed !(article.productName == result[index - 1].productName &&
+                            article.amount == result[index - 1].amount)
+                }
+            }
+            basket.value = f.toMutableList()
         }.subscribe({
             updateOrder = true
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_UPDATED)
-        },{
+        }, {
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
         }).addTo(disposable)
     }
@@ -193,9 +205,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         blockingLoaderState.value = UiEvent.Loading(LOAD_OLD_ORDERS)
 
         dataRepository.loadOrders().subscribe({ listOfOrders ->
-            val newStuff = listOfOrders.map {
-                it.dataToUiOrder()
-            }
+            val newStuff = listOfOrders.map { it.dataToUiOrder() }
             oldOrders.value = newStuff.reversed()
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
 

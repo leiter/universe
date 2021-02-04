@@ -93,7 +93,7 @@ class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocu
             InfoDialogFragment.newInstance(
                 InfoDialogFragment.SHOW_INFO,
                 viewModel.presentedProduct.value!!.detailInfo
-            ).show(childFragmentManager, BasketFragment.TAG)
+            ).show(childFragmentManager, InfoDialogFragment.TAG)
 
         }
 
