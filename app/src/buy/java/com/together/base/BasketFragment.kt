@@ -27,14 +27,13 @@ import com.together.utils.getDays
 import com.together.utils.toDateString
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import viewBinding
 import java.util.*
 
 class BasketFragment : DialogFragment() {
 
-    private var vB: FragmentBasketBinding? = null
-    private val viewBinding: FragmentBasketBinding
-        get() { return vB!! }
-    private lateinit var adapter: BasketAdapter
+    private val viewBinding: FragmentBasketBinding by viewBinding (FragmentBasketBinding::inflate)
+    private var adapter: BasketAdapter? = null
     private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
     private var showingTimePicker: Boolean = false
     private val disposable = CompositeDisposable()
@@ -42,11 +41,12 @@ class BasketFragment : DialogFragment() {
 
     private val clickToDelete: (UiState.Article) -> Unit
         inline get() = { input ->
-            val pos = adapter.data.indexOf(adapter.data.first { input.hashCode() == it.hashCode() })
-            adapter.data.removeAt(pos)
+            val ad = adapter!!
+            val pos = ad.data.indexOf(ad.data.first { input.hashCode() == it.hashCode() })
+            ad.data.removeAt(pos)
             viewModel.basket.value?.removeAt(pos)
             viewModel.resetAmountCount(input._id)
-            adapter.notifyItemRemoved(pos)
+            ad.notifyItemRemoved(pos)
             viewBinding.basketSum.text = calculatePurchaseSum(viewModel.basket.value!!)
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
             if (viewModel.basket.value?.size == 0) dismiss()
@@ -116,7 +116,6 @@ class BasketFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        vB = FragmentBasketBinding.inflate(LayoutInflater.from(requireContext()))
         setListAdapter()
         return AlertDialog.Builder(requireActivity(), R.style.MyDialogTheme)
             .setView(viewBinding.root).create()
@@ -124,7 +123,7 @@ class BasketFragment : DialogFragment() {
 
     private fun setListAdapter(){
         val b = viewModel.basket.value!!.toMutableList()
-        adapter.data = b
+        adapter?.data = b
         viewBinding.basketSum.text = calculatePurchaseSum(b)
         viewBinding.orderBasket.adapter = adapter
         viewBinding.orderBasket.layoutManager =
@@ -150,6 +149,7 @@ class BasketFragment : DialogFragment() {
                             viewBinding.progress.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
                             toastMsg = "Bestellung erfolgreich gesendet."
+                            viewModel.basket.value = mutableListOf()
                             dismiss()
                         }
                         SEND_ORDER_FAILED -> {
@@ -290,9 +290,9 @@ class BasketFragment : DialogFragment() {
     }
 
     override fun onDestroyView() {
-        viewBinding.orderBasket.adapter = null
         disposable.clear()
-        vB = null
+        adapter = null
+        viewBinding.orderBasket.adapter = null
         super.onDestroyView()
     }
 

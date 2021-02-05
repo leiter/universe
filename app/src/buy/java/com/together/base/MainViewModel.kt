@@ -17,6 +17,7 @@ import com.together.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import java.lang.IndexOutOfBoundsException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -130,7 +131,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             if (it is AlreadyPlaceOrder) {
                 loadExistingOrder(sendOrder)
             } else blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
-
         }).addTo(disposable)
     }
 
@@ -145,13 +145,17 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             result.addAll(loadedBasket.toTypedArray())
             result.sortBy { it.productName }
             val f = result.filterIndexed { index, article ->
-                if (index < result.size - 2) {
+                if (index < result.size - 2 && result.size > 1 ) {
                     val next = result[index + 1]
                     return@filterIndexed !(article.productName == next.productName &&
                             article.amount == next.amount)
                 } else {
-                    return@filterIndexed !(article.productName == result[index - 1].productName &&
-                            article.amount == result[index - 1].amount)
+                    return@filterIndexed try {
+                        !(article.productName == result[index-1].productName &&
+                                article.amount == result[index-1].amount)
+                    } catch (e: IndexOutOfBoundsException){
+                        true
+                    }
                 }
             }
             basket.value = f.toMutableList()

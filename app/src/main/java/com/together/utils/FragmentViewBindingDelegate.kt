@@ -1,60 +1,87 @@
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class FragmentViewBindingDelegate<T : ViewBinding>(
-    val fragment: Fragment,
-    val viewBindingFactory: (View) -> T
-) : ReadOnlyProperty<Fragment, T>,LifecycleObserver {
-    private var binding: T? = null
 
-    init {
+/** Activity binding delegate, may be used since onCreate up to onDestroy (inclusive) */
+inline fun <T : ViewBinding> AppCompatActivity.viewBinding(crossinline factory: (LayoutInflater) -> T) =
+    lazy(LazyThreadSafetyMode.NONE) {
+        factory(layoutInflater)
+    }
 
-//        fragment.lifecycle.addObserver(this)
-        fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            val viewLifecycleOwnerLiveDataObserver =
-                Observer<LifecycleOwner?> {
-                    val viewLifecycleOwner = it ?: return@Observer
+/** Fragment binding delegate, may be used since onViewCreated up to onDestroyView (inclusive) */
+fun <T : ViewBinding> Fragment.viewBinding(factory: (View) -> T): ReadOnlyProperty<Fragment, T> =
+    object : ReadOnlyProperty<Fragment, T>, DefaultLifecycleObserver {
+        private var binding: T? = null
 
-                    viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                        override fun onDestroy(owner: LifecycleOwner) {
-                            binding = null
-                        }
-                    })
+        override fun getValue(thisRef: Fragment, property: KProperty<*>): T =
+            binding ?: factory(requireView()).also {
+                // if binding is accessed after Lifecycle is DESTROYED, create new instance, but don't cache it
+                if (viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
+                    viewLifecycleOwner.lifecycle.addObserver(this)
+                    binding = it
                 }
-
-            override fun onCreate(owner: LifecycleOwner) {
-                fragment.viewLifecycleOwnerLiveData.observeForever(viewLifecycleOwnerLiveDataObserver)
             }
 
-            override fun onDestroy(owner: LifecycleOwner) {
-                fragment.viewLifecycleOwnerLiveData.removeObserver(viewLifecycleOwnerLiveDataObserver)
+        override fun onDestroy(owner: LifecycleOwner) {
+            binding = null
+        }
+    }
+
+/** DialogFragment binding delegate, may be used since onCreateView/onCreateDialog up to onDestroy (inclusive) */
+inline fun <T : ViewBinding> DialogFragment.viewBinding(crossinline factory: (LayoutInflater) -> T) =
+    lazy(LazyThreadSafetyMode.NONE) {
+        factory(layoutInflater)
+    }
+
+/** Not really a delegate, just a small helper for RecyclerView.ViewHolders */
+inline fun <T : ViewBinding> ViewGroup.viewBinding(factory: (LayoutInflater, ViewGroup, Boolean) -> T) =
+    factory(LayoutInflater.from(context), this, false)
+
+
+
+fun <T> Fragment.viewLifecycleLazy(initialise: () -> T): ReadOnlyProperty<Fragment, T> =
+    object : ReadOnlyProperty<Fragment, T>, DefaultLifecycleObserver {
+
+        // A backing property to hold our value
+        private var binding: T? = null
+
+        private var viewLifecycleOwner: LifecycleOwner? = null
+
+        init {
+            // Observe the View Lifecycle of the Fragment
+            this@viewLifecycleLazy
+                .viewLifecycleOwnerLiveData
+                .observe(this@viewLifecycleLazy, Observer { newLifecycleOwner ->
+                    viewLifecycleOwner
+                        ?.lifecycle
+                        ?.removeObserver(this)
+
+                    viewLifecycleOwner = newLifecycleOwner.also {
+                        it.lifecycle.addObserver(this)
+                    }
+                })
+        }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            binding = null
+        }
+
+        override fun getValue(
+            thisRef: Fragment,
+            property: KProperty<*>
+        ): T {
+            // Return the backing property if it's set, or initialise
+            return this.binding ?: initialise().also {
+                this.binding = it
             }
-        })
-    }
-
-//    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-//    fun onCreate(){
-//        fragment.viewLifecycleOwnerLiveData.observeForever()
-//    }
-
-    override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
-        val binding = binding
-        if (binding != null) {
-            return binding
         }
-
-        val lifecycle = fragment.viewLifecycleOwner.lifecycle
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-            throw IllegalStateException("Should not attempt to get bindings when Fragment views are destroyed.")
-        }
-
-        return viewBindingFactory(thisRef.requireView()).also { this.binding = it }
     }
-}
-
-fun <T : ViewBinding> Fragment.viewBinding(viewBindingFactory: (View) -> T) =
-    FragmentViewBindingDelegate(this, viewBindingFactory)

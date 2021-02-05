@@ -27,6 +27,8 @@ sealed class UiEvent {
         const val CLEAR_ACCOUNT = 7
         const val SEND_ORDER_FAILED = 8
         const val SEND_ORDER_UPDATED = 9
+        const val LOAD_OLD_ORDERS_FAILED = 10
+
 
 
 
