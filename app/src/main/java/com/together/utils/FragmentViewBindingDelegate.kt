@@ -9,7 +9,7 @@ import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-
+//https://gist.github.com/gmk57/aefa53e9736d4d4fb2284596fb62710d
 /** Activity binding delegate, may be used since onCreate up to onDestroy (inclusive) */
 inline fun <T : ViewBinding> AppCompatActivity.viewBinding(crossinline factory: (LayoutInflater) -> T) =
     lazy(LazyThreadSafetyMode.NONE) {
@@ -46,7 +46,7 @@ inline fun <T : ViewBinding> ViewGroup.viewBinding(factory: (LayoutInflater, Vie
     factory(LayoutInflater.from(context), this, false)
 
 
-
+//https://gist.github.com/jamiesanson/478997780eb6ca93361df311058dc5c2
 fun <T> Fragment.viewLifecycleLazy(initialise: () -> T): ReadOnlyProperty<Fragment, T> =
     object : ReadOnlyProperty<Fragment, T>, DefaultLifecycleObserver {
 

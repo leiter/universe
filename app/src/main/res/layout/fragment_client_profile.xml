@@ -31,7 +31,7 @@
         android:src="@drawable/ic_arrow_back" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/btn_save_canges"
+        android:id="@+id/btn_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="12dp"
@@ -40,13 +40,13 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="16dp"
-        android:src="@drawable/ic_arrow_back" />
+        android:src="@drawable/ic_settings" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Meine Daten"
-        android:textSize="22sp"
+        android:textSize="24sp"
         android:elevation="12dp"
 
         android:textColor="@color/white"
@@ -102,7 +102,7 @@ android:src="@drawable/ic_person"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btn_clear_display_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -145,7 +145,7 @@ android:src="@drawable/ic_person"
             android:layout_height="match_parent"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btn_clear_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -188,7 +188,7 @@ android:src="@drawable/ic_person"
             android:inputType="phone" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btn_clear_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -198,5 +198,51 @@ android:src="@drawable/ic_person"
         app:layout_constraintBottom_toBottomOf="@+id/tv_phone_number_layout"
         app:layout_constraintEnd_toEndOf="@+id/tv_display_name_layout"
         app:layout_constraintTop_toTopOf="@+id/tv_phone_number_layout" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/btn_choose_market"
+        android:layout_marginTop="16dp"
+        app:drawableStartCompat="@drawable/ic_market_place"
+        android:gravity="center_vertical"
+        android:text="Marktplatz"
+        android:textSize="24sp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/gl_start"
+        app:layout_constraintTop_toBottomOf="@id/tv_phone_number_layout"
+         />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/btn_choose_pickup_time"
+        android:layout_marginTop="16dp"
+        app:drawableStartCompat="@drawable/ic_set_default_time"
+        android:gravity="center_vertical"
+        android:text="Abholzeit"
+        android:textSize="24sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/gl_end"
+        app:layout_constraintTop_toBottomOf="@id/tv_phone_number_layout"
+         />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/fab_green"
+        android:minWidth="200dp"
+        android:text="Speichern"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

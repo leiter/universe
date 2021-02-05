@@ -19,6 +19,7 @@ interface DataRepository {
     fun loadOrders(): Single<List<Result.Order>>
     fun clearUserData(): Single<Boolean>
     fun loadExistingOrder(orderId: String): Single<Result.Order>
+    fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean>
 }
 
 class DataRepositoryImpl : DataRepository {
@@ -65,6 +66,10 @@ class DataRepositoryImpl : DataRepository {
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {
         return wrapInConnectionCheck { Database.orders().child(orderId).getSingleValue() }
+    }
+
+    override fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean> {
+        return wrapInConnectionCheck { Database.buyer().setValue(buyerProfile).getSingle() }
     }
 
     private inline fun <reified T> wrapInConnectionCheck(crossinline func: () -> Single<T>): Single<T> {

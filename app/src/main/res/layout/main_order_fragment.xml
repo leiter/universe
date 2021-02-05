@@ -84,7 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/preview_image_height"
         android:layout_below="@id/toolbar"
-        android:background="#667A5012">
+        android:background="@color/soft_brown">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_product_image"

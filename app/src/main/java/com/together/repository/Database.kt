@@ -9,11 +9,9 @@ object Database {
     private const val ARTICLES = "articles"
     private const val SELLER_PROFILE = "seller_profile"
     private const val ORDERS = "orders"
-    private const val CLIENTS = "clients"
+    private const val CLIENTS = "buyer_profile"
 
     private fun fire() : FirebaseDatabase { return FirebaseDatabase.getInstance() }
-
-
 
     fun articles(): DatabaseReference = fire().reference.child(ARTICLES).child(FireBaseAuth.getAuth().uid!!)
 

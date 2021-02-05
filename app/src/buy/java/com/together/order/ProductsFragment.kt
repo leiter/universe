@@ -3,9 +3,7 @@ package com.together.order
 import android.os.Bundle
 import android.text.method.DigitsKeyListener
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +16,7 @@ import com.together.dialogs.InfoDialogFragment
 import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import viewLifecycleLazy
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
@@ -28,11 +27,8 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
     private val digitsWithComma = DigitsKeyListener.getInstance("0123456789,")
     private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
     private var itemIndexScrollTo: Int = -1
-    private var vB: MainOrderFragmentBinding? = null
-    private val viewBinding: MainOrderFragmentBinding
-        get() {
-            return vB!!
-        }
+    private val viewBinding: MainOrderFragmentBinding by viewLifecycleLazy {
+        MainOrderFragmentBinding.bind(requireView()) }
     private var selectedItemIndex = -1
 
     override fun clicked(item: UiState.Article) {
@@ -51,14 +47,9 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         adapter.notifyItemChanged(selectedItemIndex)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        vB = MainOrderFragmentBinding.inflate(
-            LayoutInflater.from(requireContext()), container, false
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         viewBinding.btnActivateCounter.setOnClickListener { clickActivateCounter() }
         viewBinding.counter.btnPlus.setOnClickListener { clickPlusOrMinus(true) }
         viewBinding.counter.btnMinus.setOnClickListener { clickPlusOrMinus(false) }
@@ -82,12 +73,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         )
         viewBinding.articleList.adapter = adapter
         viewBinding.blocking.visibility = View.VISIBLE
-        return viewBinding.root
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         viewBinding.tvProductName.setOnClickListener {
             InfoDialogFragment.newInstance(

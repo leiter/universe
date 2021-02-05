@@ -23,7 +23,7 @@ class AboutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_settings.setOnClickListener { showPopup()}
+        btn_settings.setOnClickListener { showPopup() }
         back_button.setOnClickListener { activity?.onBackPressed() }
     }
 
@@ -33,7 +33,7 @@ class AboutFragment : Fragment() {
 
     private fun showPopup() {
         val popupMenu = PopupMenu(requireActivity(), btn_settings)
-        popupMenu.menuInflater.inflate(R.menu.menu_setting_about,popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.menu_setting_about, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.btn_show_licence -> {
