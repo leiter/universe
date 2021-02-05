@@ -10,16 +10,11 @@ import com.together.base.BaseFragment
 import com.together.base.UiState
 import kotlinx.android.synthetic.main.fragment_login.*
 
-class LoginFragment : BaseFragment() {
+class LoginFragment : BaseFragment(R.layout.fragment_login) {
     companion object {
         const val TAG = "LoginFragment"
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

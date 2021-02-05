@@ -35,7 +35,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             return productData
         }
 
-    private var buyerProfile = UiState.BuyerProfile()
+    var buyerProfile = UiState.BuyerProfile()
 
     var oldOrders: MutableLiveData<List<UiState.Order>> = MutableLiveData()
 

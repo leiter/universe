@@ -145,9 +145,9 @@ sealed class UiState {
         override var _id: String = "",
         override var _mode: Int = Result.UNDEFINED,
 
-        var displayName: String = "",
+        var displayName: String = "Marco",
 
-        var emailAddress: String = "",
+        var emailAddress: String = "mmaleiter@arcor.de",
 
         var contactIds: MutableList<String> = mutableListOf(),
         var sellerIds: MutableList<String> = mutableListOf(),
@@ -155,7 +155,7 @@ sealed class UiState {
         var providerId: String =  "",
         var isAnonymous: Boolean = true,
         var photoUrl: String = "",
-        var phoneNumber: String = "",
+        var phoneNumber: String = "+49 178 288 41 37",
         var defaultMarket: String = "",
         var defaultTime: String  = ""
 

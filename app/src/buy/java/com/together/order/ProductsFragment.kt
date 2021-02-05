@@ -21,7 +21,7 @@ import io.reactivex.schedulers.Schedulers
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
-class ProductsFragment : BaseFragment(), ProductAdapter.ItemClicked, View.OnFocusChangeListener {
+class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdapter.ItemClicked, View.OnFocusChangeListener {
 
     private lateinit var adapter: ProductAdapter
     private lateinit var productData: List<UiState.Article>
