@@ -19,21 +19,19 @@ import com.together.loggedout.LoginFragment
 import com.together.profile.ClientProfileFragment
 import com.together.utils.createBasketUDate
 import io.reactivex.disposables.Disposable
+import viewBinding
 
 
 class ManageDialog : DialogFragment() {
 
     lateinit var disposable: Disposable
-    private var vB: ManageDialogBinding? = null
-    private val viewBinding:ManageDialogBinding  //by viewBinding(ManageDialogBinding::bind)
-        get() = vB!!
+    private val viewBinding:ManageDialogBinding by viewBinding(ManageDialogBinding::inflate)
 
     private var adapter: OldOrdersAdapter? = null
     private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        vB = ManageDialogBinding.inflate(LayoutInflater.from(requireContext()))
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(viewBinding.root)
         val dialog = builder.create()
@@ -53,7 +51,7 @@ class ManageDialog : DialogFragment() {
         MainMessagePipe.uiEvent.onNext(
             UiEvent.AddFragment(
                 requireActivity().supportFragmentManager,
-                ClientProfileFragment(), AboutFragment.TAG)
+                ClientProfileFragment(), ClientProfileFragment.TAG)
         ); dismiss()
     }
 
@@ -194,7 +192,6 @@ class ManageDialog : DialogFragment() {
     override fun onDestroyView() {
         adapter = null
         disposable.dispose()
-        vB = null
         super.onDestroyView()
     }
 

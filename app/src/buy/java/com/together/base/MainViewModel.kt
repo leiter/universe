@@ -22,8 +22,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
-    ViewModel() {
+class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
@@ -31,9 +30,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         MutableLiveData(emptyList<UiState.Article>().toMutableList())
 
     val productList: LiveData<MutableList<UiState.Article>>
-        get() {
-            return productData
-        }
+        get() { return productData }
 
     var buyerProfile = UiState.BuyerProfile()
 
@@ -99,7 +96,11 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     private fun setupDataStreams() {
 
         dataRepository.setupProviderConnection()
-            .subscribe({ sellerProfile = it.dataToUiSeller() },
+            .subscribe({
+                sellerProfile = it.dataToUiSeller()
+
+                       Log.e("TTTTT", "For debugging");
+                       },
                 { it.printStackTrace() }).addTo(disposable)
 
         dataRepository.setupProductConnection()
@@ -167,7 +168,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         }).addTo(disposable)
     }
 
-
     val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
         it.value = UiState.LoadingProgress(-1, false)
     }
@@ -212,7 +212,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             val newStuff = listOfOrders.map { it.dataToUiOrder() }
             oldOrders.value = newStuff.reversed()
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
-
         }, {
 
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
