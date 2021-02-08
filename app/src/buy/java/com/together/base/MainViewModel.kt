@@ -69,15 +69,19 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
                 is Result.LoggedOut -> {
-                    loggedState.value = UiState.LOGIN_REQUIRED
+                    loggedState.value = UiState.LoginRequired()
                 }
 
                 is Result.LoggedIn -> {
                     val user = UiState.BuyerProfile(
                         isAnonymous = it.currentUser.isAnonymous
                     )
-                    loggedState.value = UiState.BaseAuth(user)
-                    setupDataStreams()
+
+//                    if(loggedState.value !is UiState.BaseAuth) {
+                        buyerProfile = user
+                        loggedState.value = UiState.BaseAuth(user)
+                        setupDataStreams()
+//                    }
                 }
 
                 is Result.NewImageCreated -> {

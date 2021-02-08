@@ -4,16 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.together.R
-import com.together.base.MainMessagePipe
-import com.together.base.MainViewModel
-import com.together.base.UiEvent
-import com.together.base.UiState
+import com.together.base.*
 import com.together.order.ProductsFragment
+import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.AQ
+import com.together.utils.hasInternet
 import io.reactivex.disposables.CompositeDisposable
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +35,12 @@ class MainActivity : AppCompatActivity() {
             }
             context.startActivity(i)
         }
+        fun reStart(context: Context) {
+            val i = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(i)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,17 +56,38 @@ class MainActivity : AppCompatActivity() {
         viewModel.loggedState.observe(this, {
             when (it) {
 
-                is UiState.BaseAuth -> {}
+                is UiState.BaseAuth -> {
+
+                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
+                        supportFragmentManager,
+                        ProductsFragment(), ProductsFragment.TAG)
+                    )
+
+
+                }
 //                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
 //                        supportFragmentManager,
 //                        ProductsFragment(), ProductsFragment.TAG)
 //                    )
 
-                is UiState.LOGIN_REQUIRED ->
-                    FireBaseAuth.loginAnonymously()
+                is UiState.LoginRequired -> {
+                    if(hasInternet()){
+                        FireBaseAuth.loginAnonymously()
+                    }
+                    else {
+                        val u = UiEvent.ReplaceFragment(supportFragmentManager,
+                            NoInternetFragment(),NoInternetFragment.TAG)
+                        MainMessagePipe.uiEvent.onNext(u)
+                    }
+                }
 //                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
 
                 is UiState.LOGGEDOUT -> {
+                    if (!firstStart){
+                        recreate()
+                    }
+                    firstStart = false
+                    Log.e("LLLLOOOo", "For debugging");
 //                    FireBaseAuth.loginAnonymously()
 //                    MainMessagePipe.uiEvent.onNext(
 //                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
@@ -70,6 +97,8 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
+    private var firstStart = true
 
     override fun onBackPressed() {
         when (supportFragmentManager.backStackEntryCount) {
@@ -81,6 +110,7 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null && intent.action == packageName + LOGIN_ACTION) {
+//            MainMessagePipe.mainThreadMessage.onNext(Result.LoggedOut)
             startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
         }
     }

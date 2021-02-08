@@ -77,7 +77,7 @@ fun MutableLiveData<MutableList<UiState.Article>>.addItem(
     item: UiState.Article,
 ) {
 
-    val index = value!!.indexOf(item)
+    val index = value!!.indexOfFirst {item._id == it._id}
     when (item._mode) {
         UiState.ADDED -> if(index==-1) value!!.add(item)
         UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it._id == item._id }))

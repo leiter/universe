@@ -91,12 +91,12 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         })
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
             setPresentedProduct(it)
-            viewBinding.blocking.visibility = View.GONE
             viewBinding.tvMenuTitle.text = getString(R.string.bodenschatz_caps)
             viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
         })
 
         viewModel.productList.observe(viewLifecycleOwner, {
+            if(it.size > 2) viewBinding.blocking.visibility = View.GONE
             adapter.setFilteredList(it.toMutableList())
         })
 

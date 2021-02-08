@@ -25,9 +25,11 @@ sealed class UiState {
         override var _mode: Int = UNDEFINED
     }
 
-    object LOGIN_REQUIRED : UiState() {
-        override var _id = "StateLoggedOut"
+    data class LoginRequired(
+        override var _id: String = "StateLoggedOut",
         override var _mode: Int = UNDEFINED
+    ) : UiState() {
+
     }
 
     object ACCOUNT_DELETED : UiState() {
@@ -50,7 +52,7 @@ sealed class UiState {
         var amount: String = "",
         val amountCount: Double = 0.0,
         var piecesCount: Int = -1
-    ): UiState()
+    ) : UiState()
 
     data class Article(
         var productId: Int = -1,
@@ -77,7 +79,7 @@ sealed class UiState {
             set(value) {
                 field = value
                 pieces = value
-                if(pieceCounter>0){
+                if (pieceCounter > 0) {
                     amountCount = value.toDouble() * weightPerPiece
                 }
             }
@@ -127,18 +129,19 @@ sealed class UiState {
         var message: String = "",
         var isNotFavourite: Boolean = true,
         var productList: List<OrderedProduct> = emptyList(),
-        ) : UiState() {
-            fun createProductList() : String {
-                var result = ""
-                productList.forEachIndexed { index, it ->
-                    result += if(index != productList.size -1 ) it.productName + ", " else it.productName
-                }
-               return result
+    ) : UiState() {
+        fun createProductList(): String {
+            var result = ""
+            productList.forEachIndexed { index, it ->
+                result += if (index != productList.size - 1) it.productName + ", " else it.productName
             }
-        fun createProductCount() : String {
+            return result
+        }
+
+        fun createProductCount(): String {
             return "${productList.size} Produkte"
         }
-        }
+    }
 
     data class BuyerProfile(
 
@@ -152,12 +155,12 @@ sealed class UiState {
         var contactIds: MutableList<String> = mutableListOf(),
         var sellerIds: MutableList<String> = mutableListOf(),
 
-        var providerId: String =  "",
+        var providerId: String = "",
         var isAnonymous: Boolean = true,
         var photoUrl: String = "",
         var phoneNumber: String = "+49 178 288 41 37",
         var defaultMarket: String = "",
-        var defaultTime: String  = ""
+        var defaultTime: String = ""
 
     ) : UiState()
 
