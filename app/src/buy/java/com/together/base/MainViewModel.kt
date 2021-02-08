@@ -76,7 +76,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     val user = UiState.BuyerProfile(
                         isAnonymous = it.currentUser.isAnonymous
                     )
-                    buyerProfile = user
                     loggedState.value = UiState.BaseAuth(user)
                     setupDataStreams()
                 }

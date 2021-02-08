@@ -73,7 +73,8 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadBuyerProfile(): Single<Result.BuyerProfile> {
-        return  Database.buyer().getSingleValue<Result.BuyerProfile>()
+        return  Database.buyer().getSingleExists().flatMap {
+            if(it) Database.buyer().getSingleValue() else Single.just(Result.BuyerProfile()) }
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
