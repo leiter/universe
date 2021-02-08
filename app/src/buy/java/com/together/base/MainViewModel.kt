@@ -9,6 +9,7 @@ import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
 import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
+import com.together.base.UiEvent.Companion.UPLOAD_PROFILE
 import com.together.repository.AlreadyPlaceOrder
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
@@ -32,7 +33,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     val productList: LiveData<MutableList<UiState.Article>>
         get() { return productData }
 
-    var buyerProfile = UiState.BuyerProfile()
+    lateinit var buyerProfile: UiState.BuyerProfile
 
     var oldOrders: MutableLiveData<List<UiState.Order>> = MutableLiveData()
 
@@ -96,11 +97,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     private fun setupDataStreams() {
 
         dataRepository.setupProviderConnection()
-            .subscribe({
-                sellerProfile = it.dataToUiSeller()
-
-                       Log.e("TTTTT", "For debugging");
-                       },
+            .subscribe({ sellerProfile = it.dataToUiSeller() },
                 { it.printStackTrace() }).addTo(disposable)
 
         dataRepository.setupProductConnection()
@@ -112,10 +109,30 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
             }, { it.printStackTrace() },
                 { Log.e("Rx", "Complete called."); }).addTo(disposable)
+
+        dataRepository.loadBuyerProfile().subscribe({
+            buyerProfile = it.dataToUiOrder()
+            Log.e("TTTTT", "For debugging");
+        },{
+            it.printStackTrace()
+        }).addTo(disposable)
+
     }
 
     fun resetAmountCount(id: String) {
         productData.value?.first { it._id == id }?.pieceCounter = 0
+    }
+
+    fun uploadBuyerProfile() {
+        blockingLoaderState.value = UiEvent.Loading(UPLOAD_PROFILE)
+        dataRepository.saveBuyerProfile(buyerProfile.uiOrderToData()).subscribe(
+            {
+                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PROFILE)
+
+            },{
+                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PROFILE)
+            }
+        ).addTo(disposable)
     }
 
     fun sendOrder() {

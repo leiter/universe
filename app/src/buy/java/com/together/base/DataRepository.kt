@@ -20,6 +20,7 @@ interface DataRepository {
     fun clearUserData(): Single<Boolean>
     fun loadExistingOrder(orderId: String): Single<Result.Order>
     fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean>
+    fun loadBuyerProfile(): Single<Result.BuyerProfile>
 }
 
 class DataRepositoryImpl : DataRepository {
@@ -56,8 +57,7 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadOrders(): Single<List<Result.Order>> {
-        return wrapInConnectionCheck { Database.orders()
-                .limitToLast(10).getSingleList() }
+        return wrapInConnectionCheck { Database.orders().limitToLast(10).getSingleList() }
     }
 
     override fun clearUserData(): Single<Boolean> {
@@ -70,6 +70,11 @@ class DataRepositoryImpl : DataRepository {
 
     override fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean> {
         return wrapInConnectionCheck { Database.buyer().setValue(buyerProfile).getSingle() }
+    }
+
+    override fun loadBuyerProfile(): Single<Result.BuyerProfile> {
+        return  Database.buyer().getSingleValue<Result.BuyerProfile>()
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
     private inline fun <reified T> wrapInConnectionCheck(crossinline func: () -> Single<T>): Single<T> {
