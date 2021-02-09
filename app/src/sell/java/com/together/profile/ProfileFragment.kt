@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding3.widget.textChanges
+import com.together.R
 import com.together.app.MarketDialog
 import com.together.base.*
 import com.together.create.CreateFragment
@@ -13,7 +14,7 @@ import com.together.utils.loadImage
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
 
-class ProfileFragment : BaseFragment() {
+class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
     companion object {
         const val TAG = "ProfileFragment"

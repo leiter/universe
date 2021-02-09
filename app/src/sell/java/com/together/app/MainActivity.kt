@@ -181,15 +181,15 @@ class MainActivity : AppCompatActivity() {
 
         return navigationItemView.itemSelections().subscribe {
             when (it.itemId) {
-                R.id.drawer_nav_1 -> {
-
-                }
-
-                R.id.drawer_nav_4 -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
-                        supportFragmentManager,
-                        AboutFragment(), AboutFragment.TAG))
-                }
+//                R.id.drawer_nav_1 -> {
+//
+//                }
+//
+//                R.id.drawer_nav_4 -> {
+//                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+//                        supportFragmentManager,
+//                        AboutFragment(), AboutFragment.TAG))
+//                }
 
             }
             drawer.closeDrawers()

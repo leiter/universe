@@ -4,12 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.storage.FirebaseStorage
+import com.together.R
 import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
@@ -22,7 +22,7 @@ import io.reactivex.rxkotlin.addTo
 import java.io.File
 import java.io.FileOutputStream
 
-class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
+class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked {
 
     private lateinit var adapter: ProductAdapter
     private var vB: FragmentCreateBinding? = null
@@ -48,9 +48,9 @@ class CreateFragment : BaseFragment(), ProductAdapter.ItemClicked {
 
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
 
-            btnDrawerOpen.setOnClickListener {
-                MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
-            }
+//            btnDrawerOpen.setOnClickListener {
+//                MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
+//            }
 
             createNewProduct.visibility = View.VISIBLE
             createNewProduct.setOnClickListener { makeEditable(true) }

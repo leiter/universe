@@ -6,16 +6,17 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackgroundBorderless">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/badge_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
+        android:contentDescription="@string/content_description_shopping_cart"
         android:src="@drawable/ic_shopping_cart_black_24dp" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/badge_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +25,7 @@
         android:clickable="false"
         android:focusable="false"
         android:gravity="center"
-        android:text="0"
+        android:text="@string/zero_count_amount"
         android:textColor="#FFF"
         android:textSize="10sp"
         android:textStyle="bold"

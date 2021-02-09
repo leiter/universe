@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,31 +10,19 @@
     android:orientation="vertical"
     android:padding="4dp">
 
-    <ImageButton
-
-        android:id="@+id/edit_order"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:src="@drawable/ic_info_outline"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/product_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:padding="8dp"
         android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="parent"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        app:layout_constraintStart_toEndOf="@id/edit_order"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Linda" />
 
-    <TextView
-
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/product_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +31,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         tools:text="2.93€" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
