@@ -30,7 +30,6 @@ class ManageDialog : DialogFragment() {
     private var adapter: OldOrdersAdapter? = null
     private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(viewBinding.root)

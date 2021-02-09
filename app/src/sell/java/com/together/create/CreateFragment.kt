@@ -19,47 +19,14 @@ import com.together.utils.FileUtil
 import com.together.utils.loadImage
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import viewLifecycleLazy
 import java.io.File
 import java.io.FileOutputStream
 
 class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked {
 
     private lateinit var adapter: ProductAdapter
-    private var vB: FragmentCreateBinding? = null
-    private val viewBinding: FragmentCreateBinding
-        get() = vB!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        vB = FragmentCreateBinding.inflate(inflater, container, false)
-
-        adapter = ProductAdapter(this)
-
-        with(viewBinding) {
-
-            saveChanges.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
-
-            btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
-
-            createFab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
-
-            manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
-
-//            btnDrawerOpen.setOnClickListener {
-//                MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
-//            }
-
-            createNewProduct.visibility = View.VISIBLE
-            createNewProduct.setOnClickListener { makeEditable(true) }
-
-            productList.layoutManager = LinearLayoutManager(context)
-            productList.adapter = adapter
-        }
-        return viewBinding.root
-    }
+    private val viewBinding: FragmentCreateBinding by viewLifecycleLazy { FragmentCreateBinding.bind(requireView()) }
 
     companion object {
         const val TAG = "CreateFragment"
@@ -83,6 +50,30 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = ProductAdapter(this)
+
+
+        with(viewBinding) {
+
+            saveChanges.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
+
+            btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
+
+            createFab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
+
+            manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
+
+//            btnDrawerOpen.setOnClickListener {
+//                MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
+//            }
+
+            createNewProduct.visibility = View.VISIBLE
+            createNewProduct.setOnClickListener { makeEditable(true) }
+
+            productList.layoutManager = LinearLayoutManager(context)
+            productList.adapter = adapter
+        }
 
         viewModel.newProduct.observe(viewLifecycleOwner, {
             requireContext().loadImage(viewBinding.image, it.uri.toString())
@@ -195,7 +186,6 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         }.addTo(disposable)
     }
 
-
     private fun writeToNewProduct() {
         viewModel.editProduct.value?.productName = viewBinding.productName.text.toString()
         viewModel.editProduct.value?.productDescription =
@@ -206,7 +196,6 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     }
 
     override fun onDestroyView() {
-        vB = null
         disposable.clear()
         super.onDestroyView()
     }

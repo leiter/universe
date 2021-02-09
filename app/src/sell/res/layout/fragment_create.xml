@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".app.MainActivity"
+    >
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:animateLayoutChanges="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_drawer_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_menu_hamburger" />
+
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btn_delete_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_delete" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btn_edit_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/btn_delete_product"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_edit_black"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/create_new_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/btn_edit_product"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_add" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_menu_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/create_new_product"
+            android:layout_toEndOf="@+id/btn_drawer_open"
+            android:gravity="center"
+            android:textSize="24sp"
+            tools:text="Linda" />
+
+
+    </RelativeLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_product_amount_layout"
+        android:layout_width="244dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:hint="Produktname"
+            android:lines="1"
+            android:maxLength="30"
+            android:textColor="@color/edit_text_text_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_description_layout"
+        android:layout_width="244dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
+        app:layout_constraintTop_toBottomOf="@id/et_product_amount_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:textColor="@color/edit_text_text_color"
+            android:hint="Beschreibung"
+            android:lines="1"
+            android:maxLength="30" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_price_layout"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content"
+        android:minWidth="250dp"
+        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_description_layout">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789,."
+            android:enabled="false"
+            android:textColor="@color/edit_text_text_color"
+            android:hint="Preis pro Einheit"
+            android:inputType="numberDecimal"
+            android:lines="1"
+            android:maxLength="30" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_ic_menu_hamburgerdescription_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Platz für einen ausführlichen Beschreibungtext"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_price_unit_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/product_description_layout"
+        app:layout_constraintStart_toEndOf="@+id/product_price_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_description_layout">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_price_unit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:gravity="center"
+            android:textColor="@color/edit_text_text_color"
+            android:hint="Einheit z.B Kg"
+            android:lines="1"
+            android:maxLength="5" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/et_product_amount_layout"
+        app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout" />
+    <ImageButton
+        android:id="@+id/change_picture"
+        android:visibility="gone"
+        android:src="@drawable/ic_photo_camera"
+        app:layout_constraintEnd_toEndOf="@id/image"
+        app:layout_constraintBottom_toBottomOf="@id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_discount_layout"
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@id/image"
+        app:layout_constraintTop_toBottomOf="@id/image">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_discount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Rabat"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackground"
+        android:padding="16dp"
+        android:src="@drawable/ic_info_outline"
+        app:layout_constraintBottom_toBottomOf="@+id/article_available"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/product_discount_layout"
+        app:layout_constraintTop_toTopOf="@+id/article_available" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/article_available"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="Artikel ist verfügbar"
+        android:textColor="@color/brightGreen"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/product_discount_layout"
+        app:layout_constraintEnd_toEndOf="@+id/product_price_unit_layout"
+        app:layout_constraintStart_toStartOf="@+id/product_price_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_discount_layout" />
+
+
+    <ImageButton
+        android:id="@+id/manage_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="?attr/selectableItemBackground"
+        android:scaleType="centerCrop"
+        android:visibility="visible"
+        android:src="@drawable/ic_photo_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/et_product_amount_layout"
+        app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/product_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_discount_layout"
+        tools:itemCount="14"
+        tools:listitem="@layout/item_product" />
+
+    <TextView
+        android:id="@+id/empty_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="Sie haben noch keine \n   Produkte angelegt"
+        android:visibility="visible"
+        android:lineSpacingMultiplier="1.4"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_discount_layout" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/create_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_add"
+        android:visibility="gone"
+        app:backgroundTint="@color/brightGreen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/empty_message" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/save_changes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:visibility="visible"
+        android:text="Änderungen Speichern"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/loading_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

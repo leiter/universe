@@ -18,9 +18,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
             android:id="@+id/log_in"
-
             android:layout_width="wrap_content"
             android:text="Einloggen"
             android:visibility="visible"
@@ -36,7 +35,7 @@
 
 
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
             android:id="@+id/user_email"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +47,7 @@
             android:layout_height="wrap_content"/>
 
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
             android:id="@+id/user_name"
             app:layout_constraintBottom_toTopOf="@id/user_email"
             app:layout_constraintStart_toStartOf="parent"

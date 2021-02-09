@@ -12,6 +12,7 @@ import com.together.create.CreateFragment
 import com.together.databinding.FragmentProfileBinding
 import com.together.utils.loadImage
 import io.reactivex.rxkotlin.addTo
+import viewLifecycleLazy
 import java.util.concurrent.TimeUnit
 
 class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
@@ -20,14 +21,13 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         const val TAG = "ProfileFragment"
     }
 
-    private lateinit var viewBinding : FragmentProfileBinding
+    private val viewBinding : FragmentProfileBinding by viewLifecycleLazy {
+        FragmentProfileBinding.bind(requireView())  }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        viewBinding = FragmentProfileBinding.inflate(inflater,container,false)
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         with(viewBinding){
             city.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.city = it.toString()
@@ -51,7 +51,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
                 viewModel.profile.lastName = it.toString()
             }.addTo(disposable)
             addPickupPlace.setOnClickListener {
-               MarketDialog().show(childFragmentManager, MarketDialog.MARKET_DIALOG_TAG)
+                MarketDialog().show(childFragmentManager, MarketDialog.MARKET_DIALOG_TAG)
             }
         }
 
@@ -87,7 +87,6 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
             }
         }
 
-        return viewBinding.root
     }
 
     private val openAddMarket: (UiState.Market) -> Unit

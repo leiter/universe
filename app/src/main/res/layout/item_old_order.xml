@@ -12,41 +12,40 @@
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:text="Bestellung vom 26.07.2021"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/fab_green"
         app:layout_constraintEnd_toStartOf="@+id/tv_product_count"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Bestellung vom 26.07.2021" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_product_count"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="16 Produkte"
-        app:layout_constraintTop_toTopOf="parent"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/fab_green"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="16 Produkte" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_products"
-        android:layout_marginTop="8dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:maxLines="2"
-        android:lines="2"
-        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="2"
+        android:maxLines="2"
         android:singleLine="false"
-        tools:text="Bananen, Stangensellerie, Kartoffeln, Bananen, Stangensellerie, Kartoffeln, Bananen, Stangensellerie, Kartoffeln ,Bananen, Stangensellerie, Kartoffeln,Bananen, Stangensellerie, Kartoffeln"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/fab_green"
-
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="Bananen, Stangensellerie, Kartoffeln, Bananen, Stangensellerie, Kartoffeln, Bananen, Stangensellerie, Kartoffeln ,Bananen, Stangensellerie, Kartoffeln,Bananen, Stangensellerie, Kartoffeln" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

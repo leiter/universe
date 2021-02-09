@@ -6,7 +6,7 @@
     android:background="@color/white"
         tools:context="loggedout.LoginFragment">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
             android:text="Einloggen"
             android:id="@+id/plus_one_button"
             android:layout_gravity="center"

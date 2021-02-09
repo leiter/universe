@@ -1,5 +1,6 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true"
     android:layout_width="match_parent"
@@ -7,7 +8,6 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
@@ -269,18 +269,6 @@
             tools:text="Abholzeit" />
 
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_save_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/fab_green"
-            android:minWidth="200dp"
-            android:text="Speichern"
-            app:cornerRadius="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_clear_market"
@@ -358,10 +346,25 @@
             android:layout_height="144dp"
             android:layout_marginTop="8dp"
             android:timePickerMode="spinner"
-            android:visibility="invisible"
+            app:layout_goneMarginBottom="96dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/btn_set_pickup_time"
             app:layout_constraintStart_toEndOf="@id/btn_clear_pickup_time"
             app:layout_constraintTop_toBottomOf="@id/tl_market_container" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/fab_green"
+            android:minWidth="200dp"
+            android:text="Speichern"
+            app:cornerRadius="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tp_set_appointment" />
 
         <include
             android:id="@+id/progress"
