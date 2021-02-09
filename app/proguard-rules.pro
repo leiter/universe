@@ -84,3 +84,17 @@
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
 
+
+
+# New stuff .... hahaha
+-keepattributes Signature
+
+-keepclasseswithmembers class com.together.*.* { *; }
+
+-keep class com.firebase.*.* { *; }
+-keep class org.apache.*.* { *; }
+-keepnames class com.fasterxml.jackson.*.* { *; }
+-keepnames class javax.servlet.*.* { *; }
+-keepnames class org.ietf.jgss.*.* { *; }
+-dontwarn org.apache.**
+-dontwarn org.w3c.dom.**

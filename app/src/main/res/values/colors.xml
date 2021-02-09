@@ -21,6 +21,8 @@
 <!--    new Colors -->
     <color name="fab_green">#0A6308</color>
     <color name="soft_brown">#667A5012</color>
+    <color name="soft_brown_no_alpha">#c9b9a0</color>
+
     <color name="yellow_brown">#FAC87D</color>
 
 

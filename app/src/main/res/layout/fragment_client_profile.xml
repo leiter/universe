@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="@color/orange"
+        android:background="@color/soft_brown_no_alpha"
         android:clickable="true"
         android:focusable="true"
         tools:context="com.together.profile.ClientProfileFragment">

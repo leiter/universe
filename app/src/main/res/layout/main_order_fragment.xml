@@ -141,7 +141,7 @@
                 android:lines="1"
                 android:textColorHint="@color/price_text_color"
                 android:textColor="@color/price_text_color"
-                android:text="@string/price_zero_euro"
+                android:text="@string/zero_price_euro"
                 android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
 

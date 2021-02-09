@@ -162,7 +162,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
                         inFocus().amountCount = v.toDouble()
                         viewBinding.tvPriceAmount.setText(inFocus().priceDisplay)
                     } else {
-                        viewBinding.tvPriceAmount.setText(getString(R.string.price_zero_euro))
+                        viewBinding.tvPriceAmount.setText(getString(R.string.zero_price_euro))
                     }
                 }, { it.printStackTrace() })
         )
@@ -187,7 +187,8 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         if (newVal <= 0) {
             viewBinding.btnActivateCounter.visibility = View.VISIBLE
             viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-            viewBinding.etProductAmount.setText(R.string.price_zero_euro)
+            val zeroStr = if(inFocus().unit=="kg") R.string.zero_kg else R.string.zero_count_amount
+            viewBinding.etProductAmount.setText(zeroStr)
             inFocus().pieceCounter = 0
             return
         }

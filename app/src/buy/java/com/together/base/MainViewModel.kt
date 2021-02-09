@@ -23,7 +23,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {
+class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
+    ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
@@ -31,7 +32,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         MutableLiveData(emptyList<UiState.Article>().toMutableList())
 
     val productList: LiveData<MutableList<UiState.Article>>
-        get() { return productData }
+        get() {
+            return productData
+        }
 
     lateinit var buyerProfile: UiState.BuyerProfile
 
@@ -76,12 +79,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     val user = UiState.BuyerProfile(
                         isAnonymous = it.currentUser.isAnonymous
                     )
-
-//                    if(loggedState.value !is UiState.BaseAuth) {
-                        buyerProfile = user
-                        loggedState.value = UiState.BaseAuth(user)
-                        setupDataStreams()
-//                    }
+                    buyerProfile = user
+                    loggedState.value = UiState.BaseAuth(user)
+                    setupDataStreams()
                 }
 
                 is Result.NewImageCreated -> {
@@ -111,12 +111,11 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     presentedProduct.value = productData.value!![0]
                 }
             }, { it.printStackTrace() },
-                { Log.e("Rx", "Complete called."); }).addTo(disposable)
+                { Log.d("MainViewModel", "Rx Complete called."); }).addTo(disposable)
 
         dataRepository.loadBuyerProfile().subscribe({
             buyerProfile = it.dataToUiOrder()
-            Log.e("TTTTT", "For debugging");
-        },{
+        }, {
             it.printStackTrace()
         }).addTo(disposable)
 
@@ -132,7 +131,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             {
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PROFILE)
 
-            },{
+            }, {
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PROFILE)
             }
         ).addTo(disposable)
@@ -166,15 +165,15 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             result.addAll(loadedBasket.toTypedArray())
             result.sortBy { it.productName }
             val f = result.filterIndexed { index, article ->
-                if (index < result.size - 2 && result.size > 1 ) {
+                if (index < result.size - 2 && result.size > 1) {
                     val next = result[index + 1]
                     return@filterIndexed !(article.productName == next.productName &&
                             article.amount == next.amount)
                 } else {
                     return@filterIndexed try {
-                        !(article.productName == result[index-1].productName &&
-                                article.amount == result[index-1].amount)
-                    } catch (e: IndexOutOfBoundsException){
+                        !(article.productName == result[index - 1].productName &&
+                                article.amount == result[index - 1].amount)
+                    } catch (e: IndexOutOfBoundsException) {
                         true
                     }
                 }

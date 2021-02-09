@@ -108,6 +108,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
             ).show()
             return
         }
+        viewBinding.root.hideIme()
         showTimePicker(true)
     }
 
@@ -138,6 +139,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         viewBinding.tlMarketContainer.visibility = v
         viewBinding.btnClearMarket.visibility = v
         viewBinding.btnSetMarket.visibility = v
+        if(show) viewBinding.root.hideIme()
     }
 
 
@@ -201,7 +203,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.btn_clear_data -> {
-//                    MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(requireContext()))
+                    vModel.clearAccount()
                     true
                 }
                 else -> {

@@ -9,6 +9,7 @@ import com.together.utils.toOrderId
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 
 
@@ -61,7 +62,10 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun clearUserData(): Single<Boolean> {
-        return wrapInConnectionCheck { Database.orders().removeValue().getSingle() }
+        return wrapInConnectionCheck {
+            Database.orders().removeValue().getSingle()
+            .zipWith(Database.buyer().removeValue().getSingle())
+                .map { it.second && it.first } }
     }
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {

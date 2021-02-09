@@ -8,14 +8,14 @@
 
     <string name="developer_error_hint">General ERROR FIXME</string>
     <string name="empty_basket_msg">Sie haben keine Produkte im Einkaufskorb.</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="product_amount_is_null">Bitte fügen sie eine Mengen größer Null ein.</string>
     <string name="product_amount_empty">Bitte geben sie eine Mengenangabe ein.</string>
-    <string name="invalidate_session">Sitzung löschen</string>
+    <string name="invalidate_session">Alle Daten löschen</string>
     <string name="login_btn_text">Einloggen</string>
     <string name="bodenschatz_caps">BODENSCHÄTZE</string>
-    <string name="price_zero_euro">0,00€</string>
+    <string name="zero_price_euro">0,00€</string>
+    <string name="zero_count_amount">0</string>
+    <string name="zero_kg">0,000</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
