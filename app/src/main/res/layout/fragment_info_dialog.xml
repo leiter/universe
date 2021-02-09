@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:theme="@style/MyDialogTheme"
     tools:context=".dialogs.InfoDialogFragment">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_product_info"
         android:padding="24dp"
         android:layout_width="match_parent"
