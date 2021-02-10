@@ -69,7 +69,8 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {
-        return wrapInConnectionCheck { Database.orders().child(orderId).getSingleValue()
+        return wrapInConnectionCheck {
+            Database.orders().child(orderId).getSingleValue()
         }
     }
 

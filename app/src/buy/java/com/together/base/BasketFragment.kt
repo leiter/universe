@@ -1,7 +1,6 @@
 package com.together.base
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
@@ -24,6 +22,8 @@ import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
 import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
 import com.together.databinding.FragmentBasketBinding
 import com.together.utils.alterPickUptime
+import com.together.utils.getHourAndMinute
+import com.together.utils.getTimePair
 import com.together.utils.toDateString
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -34,10 +34,9 @@ class BasketFragment : DialogFragment() {
 
     private val viewBinding: FragmentBasketBinding by viewBinding (FragmentBasketBinding::inflate)
     private var adapter: BasketAdapter? = null
-    private val viewModel: MainViewModel by activityViewModels() //viewModels({ requireParentFragment() })
+    private val viewModel: MainViewModel by activityViewModels()
     private var showingTimePicker: Boolean = false
     private val disposable = CompositeDisposable()
-    private val minuteSteps = 15
 
     private val clickToDelete: (UiState.Article) -> Unit
         inline get() = { input ->
@@ -82,9 +81,12 @@ class BasketFragment : DialogFragment() {
 
         viewBinding.btnSendOrder.setOnClickListener {
             if(viewBinding.ckSetReminder.isChecked){
-//                viewModel.buyerProfile.
+                viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex]._id
+                viewModel.buyerProfile.defaultTime = viewModel.days[0].getHourAndMinute()
+                viewModel.uploadBuyerProfile()
             }
             viewModel.sendOrder() }
+
         viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
         viewBinding.btnHideAppointment.setOnClickListener { showFinalizeDate(false) }
         viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
@@ -208,24 +210,20 @@ class BasketFragment : DialogFragment() {
             m.text = it.name
             viewBinding.tlMarketContainer.addTab(m)
         }
-        showDates(marketList[viewModel.marketIndex])
+        showDates()
 
         viewBinding.tlMarketContainer.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val market =
-                    viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
-                showDates(market, null, viewModel.dateIndex)
+                showDates( null, viewModel.dateIndex)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                val market =
-                    viewModel.sellerProfile.marketList[viewBinding.tlMarketContainer.selectedTabPosition]
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
                 viewBinding.tlDateContainer.getTabAt(viewModel.dateIndex)?.select()
-                showDates(market, null, viewModel.dateIndex)
+                showDates( null, viewModel.dateIndex)
             }
         })
         viewBinding.tlDateContainer.addOnTabSelectedListener(object :
@@ -242,24 +240,11 @@ class BasketFragment : DialogFragment() {
         viewBinding.tlMarketContainer.getTabAt(viewModel.marketIndex)?.select()
     }
 
-    @Suppress("DEPRECATION")
     private fun updatePickUptime() {
-        val (hour, minute) = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            Pair(
-                viewBinding.tpSetAppointment.currentHour,
-                viewBinding.tpSetAppointment.currentMinute * minuteSteps
-            )
-        } else {
-            Pair(
-                viewBinding.tpSetAppointment.hour,
-                viewBinding.tpSetAppointment.minute * minuteSteps
-            )
-        }
+        val (hour, minute) = viewBinding.tpSetAppointment.getTimePair()
         val newArray = alterPickUptime(viewModel.days, hour, minute)
         val date = viewBinding.tlDateContainer.selectedTabPosition
-        val market = viewModel.sellerProfile.marketList[
-                viewBinding.tlMarketContainer.selectedTabPosition]
-        showDates(market, newArray.toTypedArray(), date)
+        showDates(newArray.toTypedArray(), date)
     }
 
     private fun showFinalizeDate(show: Boolean) {
@@ -275,14 +260,10 @@ class BasketFragment : DialogFragment() {
     }
 
     private fun showDates(
-        market: UiState.Market,
         newDays: Array<Date>? = null,
         selectPos: Int = -1
     ) {
-        val dayTime = if (viewModel.order.pickUpDate != 0L) viewModel.order.pickUpDate else null
-        newDays?.let {
-            viewModel.days = it
-        } //?: //getDays(market, dayTime?.let { Date(it) })
+        newDays?.let { viewModel.days = it }
         viewBinding.tlDateContainer.removeAllTabs()
         viewModel.days.forEach {
             val f = viewBinding.tlDateContainer.newTab()

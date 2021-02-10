@@ -27,3 +27,7 @@ fun Long.toOrderId() : String {
     c.timeInMillis = this
     return dateFormatWithDash.format(c.time)
 }
+
+fun Date.getHourAndMinute() : String {
+    return dateFormatTime.format(this)
+}

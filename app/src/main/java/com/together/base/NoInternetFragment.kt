@@ -22,14 +22,20 @@ class NoInternetFragment : BaseFragment(R.layout.fragment_no_internet) {
 
     private lateinit var vModel: MainViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View {
+//        requireActivity().window.setBackgroundDrawable(ResourcesCompat.getDrawable(
+//            resources,R.drawable.splash,requireActivity().theme))
+//        return viewBinding.root
+//    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         requireActivity().window.setBackgroundDrawable(ResourcesCompat.getDrawable(
             resources,R.drawable.splash,requireActivity().theme))
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onResume() {

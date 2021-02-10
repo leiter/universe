@@ -148,7 +148,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun uploadBuyerProfile() {
         blockingLoaderState.value = UiEvent.Loading(UPLOAD_PROFILE)
-        buyerProfile = buyerProfile.copy(displayName = buyerProfile.displayName)
         dataRepository.saveBuyerProfile(buyerProfile.uiBuyerProfileToData()).subscribe(
             {
                 setMarketAndTime()

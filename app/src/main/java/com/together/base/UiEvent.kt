@@ -99,5 +99,7 @@ sealed class UiEvent {
                               var text: String,
                               var photoUrl: String) : UiEvent()
 
-
+    interface LoadingIndication{
+        val indicator: Int
+    }
 }

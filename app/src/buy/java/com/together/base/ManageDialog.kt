@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
-import com.together.about.AboutFragment
 import com.together.databinding.ManageDialogBinding
 import com.together.loggedout.LoginFragment
 import com.together.profile.ClientProfileFragment
@@ -24,11 +23,10 @@ import viewBinding
 
 class ManageDialog : DialogFragment() {
 
-    lateinit var disposable: Disposable
+    private lateinit var disposable: Disposable
     private val viewBinding:ManageDialogBinding by viewBinding(ManageDialogBinding::inflate)
-
     private var adapter: OldOrdersAdapter? = null
-    private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
@@ -132,7 +130,6 @@ class ManageDialog : DialogFragment() {
         })
 
         viewBinding.btnShowOrders.setOnClickListener { viewModel.loadOrders() }
-
         viewBinding.btnWriteMsg.setOnClickListener { showWriteMessage(true) }
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
 
