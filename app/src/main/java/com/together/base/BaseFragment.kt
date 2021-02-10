@@ -4,7 +4,6 @@ package com.together.base
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseFragment(@LayoutRes layoutId: Int) : Fragment(layoutId) {

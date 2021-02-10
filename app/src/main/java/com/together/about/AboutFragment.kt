@@ -8,7 +8,7 @@ import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.databinding.FragmentAboutBinding
-import viewBinding
+import com.together.utils.viewBinding
 
 class AboutFragment : Fragment() {
 

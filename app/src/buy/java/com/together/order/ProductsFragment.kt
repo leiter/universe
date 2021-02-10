@@ -16,7 +16,7 @@ import com.together.dialogs.InfoDialogFragment
 import com.together.utils.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import viewLifecycleLazy
+import com.together.utils.viewLifecycleLazy
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
@@ -41,7 +41,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
             adapter.data[selectedItemIndex].isSelected = false
             adapter.notifyItemChanged(selectedItemIndex)
         }
-        selectedItemIndex = productData.indexOfFirst { it._id == item._id }
+        selectedItemIndex = productData.indexOfFirst { it.id == item.id }
 
         productData[selectedItemIndex].isSelected = true
         adapter.notifyItemChanged(selectedItemIndex)
@@ -306,7 +306,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         val basket = viewModel.basket.value!!
         var inBasket = -1
         basket.forEachIndexed { index, basketItem ->
-            if (basketItem._id == p._id) {
+            if (basketItem.id == p.id) {
                 inBasket = index
             }
         }

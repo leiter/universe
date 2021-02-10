@@ -9,6 +9,7 @@ import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
 import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
+import com.together.base.UiEvent.Companion.UNDEFINED
 import com.together.base.UiEvent.Companion.UPLOAD_PROFILE
 import com.together.repository.AlreadyPlaceOrder
 import com.together.repository.Result
@@ -42,7 +43,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     var order = UiState.Order()
 
-    var updateOrder = false
+    private var updateOrder = false
 
     lateinit var days: Array<Date>
 
@@ -127,7 +128,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     private fun setMarketAndTime() {
         var market: UiState.Market? = null
         if (buyerProfile.defaultMarket != "") {
-            sellerProfile.marketList.find { buyerProfile.defaultMarket == it._id }?.let {
+            sellerProfile.marketList.find { buyerProfile.defaultMarket == it.id }?.let {
                 market = it
                 val n = sellerProfile.marketList.indexOf(it)
                 if (n > -1) marketIndex = n
@@ -143,7 +144,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     fun resetAmountCount(id: String) {
-        productData.value?.first { it._id == id }?.pieceCounter = 0
+        productData.value?.first { it.id == id }?.pieceCounter = 0
     }
 
     fun uploadBuyerProfile() {
@@ -164,7 +165,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         order.createdDate = System.currentTimeMillis()
         val sendOrder: Result.Order = order.uiBuyerProfileToData()
         sendOrder.pickUpDate = days[dateIndex].time
-        sendOrder.sellerId = sellerProfile._id
+        sendOrder.sellerId = sellerProfile.id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
         dataRepository.sendOrder(sendOrder, updateOrder).subscribe({
             if (updateOrder) updateOrder = false
@@ -214,8 +215,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
     var smsMessageText = ""
 
-    val blockingLoaderState: MutableLiveData<UiEvent> by lazy {
-        MutableLiveData<UiEvent>().also { it.value = UiEvent.LoadingNeutral }
+    val blockingLoaderState: MutableLiveData<UiEvent.LoadingIndication> by lazy {
+        MutableLiveData<UiEvent.LoadingIndication>().also { it.value = UiEvent.LoadingNeutral(UNDEFINED) }
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {
@@ -266,7 +267,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun setTimeDateForOrder(market: UiState.Market, date: Date) {
         order.pickUpDate = date.time
-        order.marketId = market._id
+        order.marketId = market.id
     }
 }
 

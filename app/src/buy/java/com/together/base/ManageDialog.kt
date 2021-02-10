@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
+import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
+import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.databinding.ManageDialogBinding
 import com.together.loggedout.LoginFragment
 import com.together.profile.ClientProfileFragment
 import com.together.utils.createBasketUDate
 import io.reactivex.disposables.Disposable
-import viewBinding
+import com.together.utils.viewBinding
 
 
 class ManageDialog : DialogFragment() {
@@ -55,7 +57,7 @@ class ManageDialog : DialogFragment() {
     private val clickToOpenOrder: (UiState.Order) -> Unit = { selectedOrder ->
         viewModel.order = selectedOrder
         viewModel.marketIndex = viewModel.sellerProfile.marketList.indexOfFirst {
-            it._id == viewModel.order.marketId }
+            it.id == viewModel.order.marketId }
 
         val neList = viewModel.productList.value!!.toMutableSet().toList()
         viewModel.basket.value = createBasketUDate(neList, selectedOrder.copy())
@@ -85,7 +87,7 @@ class ManageDialog : DialogFragment() {
         viewModel.loggedState.observe(viewLifecycleOwner, {
 
             when (it) {
-                is UiState.LOGGEDOUT -> {
+                is UiState.LoggedOut -> {
                     viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedOut)
                     viewBinding.btnLogOut.setOnClickListener(clickProfileWhileLoggedOut)
                     viewBinding.btnLogOut.setText(R.string.login_btn_text)
@@ -104,22 +106,22 @@ class ManageDialog : DialogFragment() {
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
             when (uiEvent) {
                 is UiEvent.LoadingDone -> {
-                    if (uiEvent.indicator == UiEvent.LOAD_OLD_ORDERS) {
+                    if (uiEvent.indicator == LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.GONE
                         viewModel.oldOrders.observe(viewLifecycleOwner, orderObserver)
-                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(LOAD_OLD_ORDERS)
                     }
-                    if (uiEvent.indicator == UiEvent.CLEAR_ACCOUNT) {
+                    if (uiEvent.indicator == CLEAR_ACCOUNT) {
                         viewBinding.prLogOut.visibility = View.GONE
-                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(CLEAR_ACCOUNT)
                         dismiss()
                     }
                 }
                 is UiEvent.Loading -> {
-                    if (uiEvent.indicator == UiEvent.LOAD_OLD_ORDERS) {
+                    if (uiEvent.indicator == LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.VISIBLE
                     }
-                    if (uiEvent.indicator == UiEvent.CLEAR_ACCOUNT) {
+                    if (uiEvent.indicator == CLEAR_ACCOUNT) {
                         viewBinding.prLogOut.visibility = View.VISIBLE
                     }
                 }

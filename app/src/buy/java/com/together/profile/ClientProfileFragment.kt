@@ -8,17 +8,15 @@ import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.together.R
 import com.together.base.BaseFragment
-import com.together.base.MainViewModel
 import com.together.base.UiEvent
+import com.together.base.UiEvent.Companion.UPLOAD_PROFILE
 import com.together.databinding.FragmentClientProfileBinding
 import com.together.utils.getTimePair
 import com.together.utils.hideIme
-import viewLifecycleLazy
+import com.together.utils.viewLifecycleLazy
 
 
 class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
@@ -34,13 +32,13 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         viewModel.blockingLoaderState.observe(viewLifecycleOwner,{
             when (it){
                 is UiEvent.LoadingDone -> {
-                    if(it.indicator == UiEvent.UPLOAD_PROFILE){
+                    if(it.indicator == UPLOAD_PROFILE){
                         viewBinding.progress.loadingIndicator.visibility = View.GONE
-                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(UPLOAD_PROFILE)
                     }
                 }
                 is UiEvent.Loading -> {
-                    if(it.indicator == UiEvent.UPLOAD_PROFILE){
+                    if(it.indicator == UPLOAD_PROFILE){
                     viewBinding.progress.loadingIndicator.visibility = View.VISIBLE}
                 }
                 is UiEvent.LoadingNeutral -> {
@@ -56,7 +54,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         viewBinding.tvEmailAddress.setText(viewModel.buyerProfile.emailAddress)
         if(viewModel.buyerProfile.defaultMarket!=""){
             viewBinding.tvMarketName.text = viewModel.sellerProfile.marketList
-                .first {  it._id == viewModel.buyerProfile.defaultMarket }.name
+                .first {  it.id == viewModel.buyerProfile.defaultMarket }.name
         }
         viewBinding.tvPickupTime.text = if(viewModel.buyerProfile.defaultTime!="")
             viewModel.buyerProfile.getDefaultTimeDisplay() else ""
@@ -120,7 +118,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
     private fun setMarketAsDefault() {
         showPickMarket(false)
         viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile
-            .marketList[viewModel.marketIndex]._id
+            .marketList[viewModel.marketIndex].id
     }
 
     private fun clearMarketSetting() {
@@ -160,7 +158,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {
-//                viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
+//                viewModel.marketIndex = com.together.utils.viewBinding.tlMarketContainer.selectedTabPosition
             }
         })
     }

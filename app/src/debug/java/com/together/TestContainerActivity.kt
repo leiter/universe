@@ -36,11 +36,11 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
                         loading(false)
                     }
                     is Result.LoggedOut -> {
-                        testData.loginState = UiState.LOGGEDOUT
+                        testData.loginState = UiState.LoggedOut
                         loading(false)
                     }
                     is Result.AccountDeleted -> {
-                        testData.loginState = UiState.ACCOUNT_DELETED
+                        testData.loginState = UiState.AccountDeleted
                         loading(false)
                     }
                 }
@@ -108,7 +108,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
         if (p0.currentUser != null) {
             testData.loginState = UiState.BaseAuth(
                 UiState.BuyerProfile(isAnonymous = p0.currentUser!!.isAnonymous))
-        } else testData.loginState = UiState.LOGGEDOUT
+        } else testData.loginState = UiState.LoggedOut
         loading(false)
     }
 

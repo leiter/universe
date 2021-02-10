@@ -89,7 +89,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 viewBinding.changePicture.visibility = View.GONE
             } else {
                 viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
-//                viewBinding.changePicture.visibility = View.VISIBLE
+//                com.together.utils.viewBinding.changePicture.visibility = View.VISIBLE
             }
         })
 

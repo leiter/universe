@@ -17,7 +17,7 @@ class LoginCases : BaseTest() {
         Espresso.onView(withId(R.id.create_account)).perform(click())
         assertTrue(testData.loginState is UiState.BaseAuth)
         Espresso.onView(withId(R.id.logout)).perform(click())
-        assertEquals(testData.loginState,UiState.LOGGEDOUT)
+        assertEquals(testData.loginState,UiState.LoggedOut)
         Espresso.onView(withId(R.id.login)).perform(click())
         assertTrue(testData.loginState is UiState.BaseAuth)
         Espresso.onView(withId(R.id.delete_user)).perform(click())
@@ -33,7 +33,7 @@ class LoginCases : BaseTest() {
         Espresso.onView(withId(R.id.login_google)).perform(click())
         assertTrue(testData.loginState is UiState.BaseAuth)
         Espresso.onView(withId(R.id.logout)).perform(click())
-        assertEquals(testData.loginState,UiState.LOGGEDOUT)
+        assertEquals(testData.loginState,UiState.LoggedOut)
     }
 
 }

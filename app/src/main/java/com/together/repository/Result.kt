@@ -2,6 +2,7 @@ package com.together.repository
 
 import android.net.Uri
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.Exclude
 import java.util.*
 
 sealed class Result {
@@ -52,7 +53,10 @@ sealed class Result {
         var defaultMarket: String = "",
         var defaultPickUpTime: String = "",
         ) : Result() {
+
+        @get:Exclude @set:Exclude
         override var id: String = ""
+        @get:Exclude @set:Exclude
         override var mode: Int = UNDEFINED
     }
 

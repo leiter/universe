@@ -17,7 +17,6 @@ sealed class UiEvent {
         const val DRAWER_UNLOCKED = 1
         const val LOCK_MODE_LOCKED_CLOSED = 2
 
-
         const val UNDEFINED = -1
         const val DELETE_PRODUCT = 1
         const val UPLOAD_PRODUCT = 2
@@ -29,7 +28,6 @@ sealed class UiEvent {
         const val SEND_ORDER_FAILED = 8
         const val SEND_ORDER_UPDATED = 9
         const val LOAD_OLD_ORDERS_FAILED = 10
-
     }
 
 
@@ -43,11 +41,11 @@ sealed class UiEvent {
 
     data class DrawerState(val gravity: Int) : UiEvent()
 
-    data class Loading(val indicator: Int) : UiEvent()
+    data class Loading(override val indicator: Int) : UiEvent(), LoadingIndication
 
-    object LoadingNeutral : UiEvent()
+    data class LoadingNeutral(override val indicator: Int) : UiEvent(), LoadingIndication
 
-    data class LoadingDone(val indicator: Int, val exception: Throwable? = null) : UiEvent()
+    data class LoadingDone(override val indicator: Int, val exception: Throwable? = null) : UiEvent(), LoadingIndication
 
     data class LoadingD<T>(val indicator: Int, val exception: Throwable? = null, val payLoad: T? = null) : UiEvent()
 

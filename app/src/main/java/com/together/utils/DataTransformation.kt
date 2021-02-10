@@ -6,13 +6,13 @@ import kotlin.reflect.full.memberProperties
 
 fun Result.Article.dataArticleToUi(): UiState.Article {
     return UiState.Article(
-        _id = this.id,
+        id = this.id,
         productName = this.productName,
         remoteImageUrl = this.imageUrl,
         unit = this.unit,
         pricePerUnit = "%.2f€".format(this.price).replace(".", ","),
         priceDigit = this.price,
-        _mode = this.mode,
+        mode = this.mode,
         available = this.available,
         category = this.category,
         detailInfo = this.detailInfo,
@@ -24,7 +24,7 @@ fun Result.Article.dataArticleToUi(): UiState.Article {
 
 fun Result.SellerProfile.dataToUiSeller(): UiState.SellerProfile {
     return UiState.SellerProfile(
-        _id = this.id,
+        id = this.id,
         displayName = this.displayName,
         firstName = this.firstName,
         lastName = this.lastName,
@@ -40,7 +40,7 @@ fun Result.SellerProfile.dataToUiSeller(): UiState.SellerProfile {
 
 fun UiState.SellerProfile.uiSellerToData(): Result.SellerProfile {
     return Result.SellerProfile(
-        id = this._id,
+        id = this.id,
         displayName = this.displayName,
         firstName = this.firstName,
         lastName = this.lastName,
@@ -57,7 +57,7 @@ fun UiState.SellerProfile.uiSellerToData(): Result.SellerProfile {
 
 fun Result.Market.dataToUiMarket(): UiState.Market {
     return UiState.Market(
-        _id = this.id,
+        id = this.id,
         name = this.name,
         street = this.street,
         houseNumber = this.houseNumber,
@@ -72,7 +72,7 @@ fun Result.Market.dataToUiMarket(): UiState.Market {
 
 fun UiState.Market.uiMarketToData(): Result.Market {
     return Result.Market(
-        id = this._id,
+        id = this.id,
         name = this.name,
         street = this.street,
         houseNumber = this.houseNumber,
@@ -87,7 +87,7 @@ fun UiState.Market.uiMarketToData(): Result.Market {
 
 fun UiState.Article.toOrderedItem(): Result.OrderedProduct {
     return Result.OrderedProduct(
-        id = _id,
+        id = id,
         productId = productId,
         unit = unit,
         productName = productName,
@@ -100,8 +100,8 @@ fun UiState.Article.toOrderedItem(): Result.OrderedProduct {
 
 fun Result.Order.dataToUiOrder(): UiState.Order {
     return UiState.Order(
-        _id = id,
-        _mode = mode,
+        id = id,
+        mode = mode,
         buyerProfile = buyerProfile.dataToUiOrder(),
         createdDate = createdDate,
         marketId = marketId,
@@ -113,8 +113,8 @@ fun Result.Order.dataToUiOrder(): UiState.Order {
 }
 fun UiState.Order.uiBuyerProfileToData(): Result.Order {
     return Result.Order(
-        id = _id,
-        mode = _mode,
+        id = id,
+        mode = mode,
         buyerProfile = buyerProfile.uiBuyerProfileToData(),
         createdDate = createdDate,
         marketId = marketId,
@@ -127,8 +127,8 @@ fun UiState.Order.uiBuyerProfileToData(): Result.Order {
 
 fun Result.OrderedProduct.dataToUiOrderedProduct(): UiState.OrderedProduct {
     return UiState.OrderedProduct(
-        _id = id,
-        _mode = mode,
+        id = id,
+        mode = mode,
         productId = productId,
         productName = productName,
         unit = unit,
@@ -152,7 +152,6 @@ fun UiState.OrderedProduct.uiOrderedProductData(): Result.OrderedProduct {
 
 fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
     return UiState.BuyerProfile(
-        _mode = mode,
         displayName = displayName,
         emailAddress = emailAddress,
         isAnonymous = isAnonymous,
@@ -179,7 +178,7 @@ fun UiState.BuyerProfile.uiBuyerProfileToData(): Result.BuyerProfile {
 fun createBasketUDate(products: List<UiState.Article>, order: UiState.Order) : MutableList<UiState.Article> {
     val result: ArrayList<UiState.Article> = arrayListOf()
     order.productList.forEach { orderedProduct ->
-        val available = products.firstOrNull { it._id == orderedProduct._id }
+        val available = products.firstOrNull { it.id == orderedProduct.id }
         if (available!=null){
             val copy = available.copy(
                 amount = orderedProduct.amount,

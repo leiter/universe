@@ -5,12 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import com.together.R
 import com.together.databinding.FragmentInfoDialogBinding
-import viewBinding
-import viewLifecycleLazy
+import com.together.utils.viewBinding
 
 
 class InfoDialogFragment : DialogFragment() {
@@ -31,9 +28,8 @@ class InfoDialogFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 //        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        val v = inflater.inflate(R.layout.fragment_info_dialog, container, false)
         viewBinding.tvProductInfo.text = productInfo
         return viewBinding.root
     }

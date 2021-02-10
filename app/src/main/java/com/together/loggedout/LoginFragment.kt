@@ -1,9 +1,7 @@
 package com.together.loggedout
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.together.R
 import com.together.app.MainActivity
 import com.together.base.BaseFragment
@@ -23,7 +21,7 @@ class LoginFragment : BaseFragment(R.layout.fragment_login) {
             MainActivity.startLogin(requireActivity())
             it.visibility = View.GONE
             viewModel.loggedState.observe(viewLifecycleOwner, { uiState ->
-                if(uiState is UiState.LOGGEDOUT){
+                if(uiState is UiState.LoggedOut){
                     plus_one_button.visibility = View.VISIBLE
                 } else {
                     plus_one_button.visibility = View.GONE

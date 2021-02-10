@@ -3,9 +3,7 @@ package com.together.base
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +11,7 @@ import com.together.R
 import com.together.databinding.FragmentNoInternetBinding
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.isInternetAvailable
-import viewBinding
+import com.together.utils.viewBinding
 
 
 class NoInternetFragment : BaseFragment(R.layout.fragment_no_internet) {
@@ -22,32 +20,15 @@ class NoInternetFragment : BaseFragment(R.layout.fragment_no_internet) {
 
     private lateinit var vModel: MainViewModel
 
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View {
-//        requireActivity().window.setBackgroundDrawable(ResourcesCompat.getDrawable(
-//            resources,R.drawable.splash,requireActivity().theme))
-//        return viewBinding.root
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().window.setBackgroundDrawable(ResourcesCompat.getDrawable(
             resources,R.drawable.splash,requireActivity().theme))
     }
 
-    override fun onResume() {
-        requireActivity().window.setBackgroundDrawable(ResourcesCompat.getDrawable(
-            resources,R.drawable.splash,requireActivity().theme))
-        super.onResume()
-    }
-
     override fun onDestroyView() {
         requireActivity().window.setBackgroundDrawable(ColorDrawable(Color.WHITE))
         super.onDestroyView()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,16 +1,13 @@
 package com.together.app
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.together.R
 import com.together.base.*
 import com.together.order.ProductsFragment
-import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.AQ
 import com.together.utils.hasInternet
@@ -31,12 +28,6 @@ class MainActivity : AppCompatActivity() {
         fun startLogin(context: Context) {
             val i = Intent(context, MainActivity::class.java).apply {
                 action = context.packageName + LOGIN_ACTION
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context.startActivity(i)
-        }
-        fun reStart(context: Context) {
-            val i = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(i)
@@ -62,8 +53,6 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager,
                         ProductsFragment(), ProductsFragment.TAG)
                     )
-
-
                 }
 //                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
 //                        supportFragmentManager,
@@ -82,12 +71,11 @@ class MainActivity : AppCompatActivity() {
                 }
 //                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
 
-                is UiState.LOGGEDOUT -> {
+                is UiState.LoggedOut -> {
                     if (!firstStart){
                         recreate()
                     }
                     firstStart = false
-                    Log.e("LLLLOOOo", "For debugging");
 //                    FireBaseAuth.loginAnonymously()
 //                    MainMessagePipe.uiEvent.onNext(
 //                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
@@ -120,15 +108,5 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == LOGIN_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-//                onBackPressed()
-            }
-        } else {
-            moveTaskToBack(true)
-        }
-    }
 
 }

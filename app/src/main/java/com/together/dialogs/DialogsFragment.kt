@@ -26,12 +26,5 @@ class DialogsFragment : DialogFragment() {
 
         private const val ARG_DIALOG_TYPE = "dialogType"
 
-        @JvmStatic
-        fun newInstance(layoutId: Int) =
-            DialogsFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_DIALOG_TYPE, layoutId)
-                }
-            }
     }
 }

@@ -7,44 +7,42 @@ import kotlinx.android.parcel.Parcelize
 
 sealed class UiState {
 
-    abstract var _id: String
-    abstract var _mode: Int
+    abstract var id: String
+    abstract var mode: Int
 
     companion object {
         const val ADDED = 0
         const val CHANGED = 1
-        const val MOVED = 2
+//        const val MOVED = 2
         const val REMOVED = 3
         const val UNDEFINED = -1
     }
 
     data class LoadingProgress(val progressViewId: Int, val show: Boolean)
 
-    object LOGGEDOUT : UiState() {
-        override var _id = "StateLoggedOut"
-        override var _mode: Int = UNDEFINED
+    object LoggedOut : UiState() {
+        override var id = "StateLoggedOut"
+        override var mode: Int = UNDEFINED
     }
 
     data class LoginRequired(
-        override var _id: String = "StateLoggedOut",
-        override var _mode: Int = UNDEFINED
-    ) : UiState() {
+        override var id: String = "StateLoggedOut",
+        override var mode: Int = UNDEFINED
+    ) : UiState()
 
-    }
-
-    object ACCOUNT_DELETED : UiState() {
-        override var _id = "StateLoggedOut"
-        override var _mode: Int = UNDEFINED
+    object AccountDeleted : UiState() {
+        override var id = "StateLoggedOut"
+        override var mode: Int = UNDEFINED
     }
 
     data class BaseAuth(val buyerProfile: BuyerProfile) : UiState() {
-        override var _id = "StateLoggedIn"
-        override var _mode: Int = UNDEFINED
+        override var id = "StateLoggedIn"
+        override var mode: Int = UNDEFINED
     }
 
     data class OrderedProduct(
-        override var _id: String = "",
-        override var _mode: Int = UNDEFINED,
+        override var id: String = "",
+        override var mode: Int = UNDEFINED,
         var productId: Int = -1,
         var productName: String = "",
         var unit: String = "",
@@ -71,8 +69,8 @@ sealed class UiState {
         var searchTerms: String = "",
         var weightPerPiece: Double = 0.0,
         var pieces: Int = 0,
-        override var _id: String = "",
-        override var _mode: Int = UNDEFINED
+        override var id: String = "",
+        override var mode: Int = UNDEFINED
 
     ) : UiState() {
         var pieceCounter: Int = 0
@@ -102,8 +100,7 @@ sealed class UiState {
 
         fun getWeightText(): String {
             return if (unit != "kg") "" else {
-                val result: String
-                result = when {
+                val result: String = when {
                     weightPerPiece >= 1 -> {
                         "Ca. ${this.weightPerPiece}kg pro Stück."
                     }
@@ -120,8 +117,8 @@ sealed class UiState {
     data class NewProductImage(val uri: Uri)
 
     data class Order(
-        override var _id: String = "",
-        override var _mode: Int = Result.UNDEFINED,
+        override var id: String = "",
+        override var mode: Int = Result.UNDEFINED,
         var buyerProfile: BuyerProfile = BuyerProfile(),
         var createdDate: Long = 0L,
         var marketId: String = "",
@@ -144,10 +141,6 @@ sealed class UiState {
     }
 
     data class BuyerProfile(
-
-        override var _id: String = "",
-        override var _mode: Int = Result.UNDEFINED,
-
         var displayName: String = "",
 
         var emailAddress: String = "",
@@ -165,10 +158,12 @@ sealed class UiState {
         fun getDefaultTimeDisplay() : String {
             return "$defaultTime Uhr"
         }
+        override var id: String = ""
+        override var mode: Int = Result.UNDEFINED
     }
 
     data class SellerProfile(
-        override var _id: String = "",
+        override var id: String = "",
         var displayName: String = "",
         var firstName: String = "",
         var lastName: String = "",
@@ -186,7 +181,7 @@ sealed class UiState {
         var _knownClientIds: MutableList<String> = mutableListOf(),
 
         ) : UiState() {
-        override var _mode: Int = UNDEFINED
+        override var mode: Int = UNDEFINED
     }
 
 
@@ -201,8 +196,8 @@ sealed class UiState {
         var begin: String = "",
         var end: String = "",
         var dayIndicator: Int = UNDEFINED,
-        override var _id: String = "",
-        override var _mode: Int = UNDEFINED
+        override var id: String = "",
+        override var mode: Int = UNDEFINED
     ) : UiState(), Parcelable
 
 

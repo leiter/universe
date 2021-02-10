@@ -22,26 +22,6 @@ class ProductAdapter(private val click: ItemClicked,
         notifyDataSetChanged()
     }
 
-
-    fun addItem(item: UiState.Article) {
-        val index = data.indexOf(item)
-        when (item._mode) {
-            ADDED -> data.add(item)
-            REMOVED -> data.removeAt(data.indexOf(data.first { it._id == item._id }))
-            CHANGED -> {
-                if(index == -1) {
-                    val i = data.indexOf(data.first { it._id == item._id })
-                    data.removeAt(i)
-                    data.add(i, item)
-                } else {
-                    data.removeAt(index)
-                    data.add(index, item)
-                }
-            }
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         val binding = ItemProductBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ArticleViewHolder(binding, click)

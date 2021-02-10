@@ -94,13 +94,13 @@ fun MutableLiveData<MutableList<UiState.Article>>.addItem(
     item: UiState.Article,
 ) {
 
-    val index = value!!.indexOfFirst {item._id == it._id}
-    when (item._mode) {
+    val index = value!!.indexOfFirst {item.id == it.id}
+    when (item.mode) {
         UiState.ADDED -> if (index == -1) value!!.add(item)
-        UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it._id == item._id }))
+        UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it.id == item.id }))
         UiState.CHANGED -> {
             if (index == -1) {
-                val i = value!!.indexOf(value!!.first { it._id == item._id })
+                val i = value!!.indexOf(value!!.first { it.id == item.id })
                 value!!.removeAt(i)
                 value!!.add(i, item)
             } else {

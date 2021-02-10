@@ -27,7 +27,7 @@ import com.together.utils.getTimePair
 import com.together.utils.toDateString
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import viewBinding
+import com.together.utils.viewBinding
 import java.util.*
 
 class BasketFragment : DialogFragment() {
@@ -44,7 +44,7 @@ class BasketFragment : DialogFragment() {
             val pos = ad.data.indexOf(ad.data.first { input.hashCode() == it.hashCode() })
             ad.data.removeAt(pos)
             viewModel.basket.value?.removeAt(pos)
-            viewModel.resetAmountCount(input._id)
+            viewModel.resetAmountCount(input.id)
             ad.notifyItemRemoved(pos)
             viewBinding.basketSum.text = calculatePurchaseSum(viewModel.basket.value!!)
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
@@ -81,7 +81,7 @@ class BasketFragment : DialogFragment() {
 
         viewBinding.btnSendOrder.setOnClickListener {
             if(viewBinding.ckSetReminder.isChecked){
-                viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex]._id
+                viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex].id
                 viewModel.buyerProfile.defaultTime = viewModel.days[0].getHourAndMinute()
                 viewModel.uploadBuyerProfile()
             }
@@ -153,20 +153,22 @@ class BasketFragment : DialogFragment() {
                     when (uiEvent.indicator) {
                         SEND_ORDER -> {
                             viewBinding.progress.loadingIndicator.visibility = View.GONE
-                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(SEND_ORDER)
                             toastMsg = "Bestellung erfolgreich gesendet."
                             viewModel.basket.value = mutableListOf()
                             dismiss()
                         }
                         SEND_ORDER_FAILED -> {
                             toastMsg = "Bestellung konnte nicht gesendet werden."
-                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
+                                SEND_ORDER_FAILED)
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {
                             toastMsg = "DiparentFragmente bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
                             viewBinding.progress.loadingIndicator.visibility = View.GONE
-                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                            viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
+                                SEND_ORDER_UPDATED)
                             setListAdapter()
                         }
                     }
