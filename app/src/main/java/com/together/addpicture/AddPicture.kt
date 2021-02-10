@@ -189,8 +189,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     private fun getRotation(inputStream: InputStream): Int {
         val exif = ExifInterface(inputStream)
         val result = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
-        val rotation: Int
-        rotation = when (result) {
+        val rotation: Int = when (result) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_180 -> 180
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
