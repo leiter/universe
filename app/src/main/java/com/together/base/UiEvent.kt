@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import java.lang.Exception
 
 
 sealed class UiEvent {
@@ -29,10 +30,6 @@ sealed class UiEvent {
         const val SEND_ORDER_UPDATED = 9
         const val LOAD_OLD_ORDERS_FAILED = 10
 
-
-
-
-
     }
 
 
@@ -47,8 +44,12 @@ sealed class UiEvent {
     data class DrawerState(val gravity: Int) : UiEvent()
 
     data class Loading(val indicator: Int) : UiEvent()
+
     object LoadingNeutral : UiEvent()
-    data class LoadingDone(val indicator: Int) : UiEvent()
+
+    data class LoadingDone(val indicator: Int, val exception: Throwable? = null) : UiEvent()
+
+    data class LoadingD<T>(val indicator: Int, val exception: Throwable? = null, val payLoad: T? = null) : UiEvent()
 
     object ShowCreateFragment : UiEvent()
 

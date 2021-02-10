@@ -148,9 +148,9 @@ sealed class UiState {
         override var _id: String = "",
         override var _mode: Int = Result.UNDEFINED,
 
-        var displayName: String = "Marco",
+        var displayName: String = "",
 
-        var emailAddress: String = "mmaleiter@arcor.de",
+        var emailAddress: String = "",
 
         var contactIds: MutableList<String> = mutableListOf(),
         var sellerIds: MutableList<String> = mutableListOf(),
@@ -158,11 +158,14 @@ sealed class UiState {
         var providerId: String = "",
         var isAnonymous: Boolean = true,
         var photoUrl: String = "",
-        var phoneNumber: String = "+49 178 288 41 37",
+        var phoneNumber: String = "",
         var defaultMarket: String = "",
         var defaultTime: String = ""
-
-    ) : UiState()
+    ) : UiState() {
+        fun getDefaultTimeDisplay() : String {
+            return "$defaultTime Uhr"
+        }
+    }
 
     data class SellerProfile(
         override var _id: String = "",

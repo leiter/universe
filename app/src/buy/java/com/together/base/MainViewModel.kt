@@ -100,7 +100,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     private fun setupDataStreams() {
 
         dataRepository.setupProviderConnection()
-            .subscribe({ sellerProfile = it.dataToUiSeller() },
+            .subscribe({ sellerProfile = it.dataToUiSeller()
+                       days = getDays(sellerProfile.marketList[0])
+                       },
                 { it.printStackTrace() }).addTo(disposable)
 
         dataRepository.setupProductConnection()
@@ -113,12 +115,31 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             }, { it.printStackTrace() },
                 { Log.d("MainViewModel", "Rx Complete called."); }).addTo(disposable)
 
-        dataRepository.loadBuyerProfile().subscribe({
-            buyerProfile = it.dataToUiOrder()
-        }, {
+        dataRepository.loadBuyerProfile().subscribe({ buyer ->
+            buyerProfile = buyer.dataToUiOrder()
+            setMarketAndTime()
+            }, {
             it.printStackTrace()
         }).addTo(disposable)
 
+    }
+
+    private fun setMarketAndTime() {
+        var market: UiState.Market? = null
+        if (buyerProfile.defaultMarket != "") {
+            sellerProfile.marketList.find { buyerProfile.defaultMarket == it._id }?.let {
+                market = it
+                val n = sellerProfile.marketList.indexOf(it)
+                if (n > -1) marketIndex = n
+            }
+        }
+        if (buyerProfile.defaultTime != "" && market != null) {
+            val calendar = Calendar.getInstance()
+            val time = buyerProfile.defaultTime.split(":")
+            calendar.set(Calendar.HOUR_OF_DAY, time[0].toInt() )
+            calendar.set(Calendar.MINUTE, time[1].toInt() )
+            days = getDays(market = market!!, calendar.time)
+        }
     }
 
     fun resetAmountCount(id: String) {
@@ -127,8 +148,10 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun uploadBuyerProfile() {
         blockingLoaderState.value = UiEvent.Loading(UPLOAD_PROFILE)
-        dataRepository.saveBuyerProfile(buyerProfile.uiOrderToData()).subscribe(
+        buyerProfile = buyerProfile.copy(displayName = buyerProfile.displayName)
+        dataRepository.saveBuyerProfile(buyerProfile.uiBuyerProfileToData()).subscribe(
             {
+                setMarketAndTime()
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PROFILE)
 
             }, {
@@ -140,7 +163,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     fun sendOrder() {
         blockingLoaderState.value = UiEvent.Loading(SEND_ORDER)
         order.createdDate = System.currentTimeMillis()
-        val sendOrder: Result.Order = order.uiOrderToData()
+        val sendOrder: Result.Order = order.uiBuyerProfileToData()
         sendOrder.pickUpDate = days[dateIndex].time
         sendOrder.sellerId = sellerProfile._id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
@@ -232,7 +255,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             oldOrders.value = newStuff.reversed()
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
         }, {
-
+            it
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
         }).addTo(disposable)
     }

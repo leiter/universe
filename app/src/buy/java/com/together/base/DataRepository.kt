@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers
 
 interface DataRepository {
     fun setupProductConnection(): Observable<Result.Article>
-    fun setupProviderConnection(): Observable<Result.SellerProfile>
+    fun setupProviderConnection(): Single<Result.SellerProfile>
     fun sendOrder(order: Result.Order, update: Boolean  = false): Single<Boolean>
     fun loadOrders(): Single<List<Result.Order>>
     fun clearUserData(): Single<Boolean>
@@ -33,8 +33,8 @@ class DataRepositoryImpl : DataRepository {
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun setupProviderConnection(): Observable<Result.SellerProfile> {
-        return Database.sellerProfile("").limitToFirst(1).getSingle().toObservable()
+    override fun setupProviderConnection(): Single<Result.SellerProfile> {
+        return Database.sellerProfile("").limitToFirst(1).getSingle()
             .subscribeOn(Schedulers.io())
             .map {
                 val sellerId = it.children.first().key!!
@@ -69,17 +69,20 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {
-        return wrapInConnectionCheck { Database.orders().child(orderId).getSingleValue() }
+        return wrapInConnectionCheck { Database.orders().child(orderId).getSingleValue()
+        }
     }
 
     override fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean> {
         return wrapInConnectionCheck { Database.buyer().setValue(buyerProfile).getSingle() }
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun loadBuyerProfile(): Single<Result.BuyerProfile> {
         return  Database.buyer().getSingleExists().flatMap {
             if(it) Database.buyer().getSingleValue() else Single.just(Result.BuyerProfile()) }
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+
     }
 
     private inline fun <reified T> wrapInConnectionCheck(crossinline func: () -> Single<T>): Single<T> {

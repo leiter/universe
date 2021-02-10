@@ -1,30 +1,24 @@
 package com.together.about
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
-import kotlinx.android.synthetic.main.fragment_about.*
+import com.together.databinding.FragmentAboutBinding
+import viewBinding
 
 class AboutFragment : Fragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
-    }
+    private val viewBinding: FragmentAboutBinding by viewBinding { FragmentAboutBinding.bind(requireView()) }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_settings.setOnClickListener { showPopup() }
-        back_button.setOnClickListener { activity?.onBackPressed() }
+        viewBinding.btnSettings.setOnClickListener { showPopup() }
+        viewBinding.backButton.setOnClickListener { activity?.onBackPressed() }
     }
 
     companion object {
@@ -32,7 +26,7 @@ class AboutFragment : Fragment() {
     }
 
     private fun showPopup() {
-        val popupMenu = PopupMenu(requireActivity(), btn_settings)
+        val popupMenu = PopupMenu(requireActivity(), viewBinding.btnSettings)
         popupMenu.menuInflater.inflate(R.menu.menu_setting_about, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {

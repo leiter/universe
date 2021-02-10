@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,6 @@ import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
 import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
 import com.together.databinding.FragmentBasketBinding
 import com.together.utils.alterPickUptime
-import com.together.utils.getDays
 import com.together.utils.toDateString
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -34,7 +34,7 @@ class BasketFragment : DialogFragment() {
 
     private val viewBinding: FragmentBasketBinding by viewBinding (FragmentBasketBinding::inflate)
     private var adapter: BasketAdapter? = null
-    private val viewModel: MainViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: MainViewModel by activityViewModels() //viewModels({ requireParentFragment() })
     private var showingTimePicker: Boolean = false
     private val disposable = CompositeDisposable()
     private val minuteSteps = 15
@@ -80,7 +80,11 @@ class BasketFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        viewBinding.btnSendOrder.setOnClickListener { viewModel.sendOrder() }
+        viewBinding.btnSendOrder.setOnClickListener {
+            if(viewBinding.ckSetReminder.isChecked){
+//                viewModel.buyerProfile.
+            }
+            viewModel.sendOrder() }
         viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
         viewBinding.btnHideAppointment.setOnClickListener { showFinalizeDate(false) }
         viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
@@ -158,7 +162,7 @@ class BasketFragment : DialogFragment() {
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {
-                            toastMsg = "Die bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
+                            toastMsg = "DiparentFragmente bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
                             viewBinding.progress.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
                             setListAdapter()
@@ -276,7 +280,9 @@ class BasketFragment : DialogFragment() {
         selectPos: Int = -1
     ) {
         val dayTime = if (viewModel.order.pickUpDate != 0L) viewModel.order.pickUpDate else null
-        viewModel.days = newDays ?: getDays(market, dayTime?.let { Date(it) })
+        newDays?.let {
+            viewModel.days = it
+        } //?: //getDays(market, dayTime?.let { Date(it) })
         viewBinding.tlDateContainer.removeAllTabs()
         viewModel.days.forEach {
             val f = viewBinding.tlDateContainer.newTab()

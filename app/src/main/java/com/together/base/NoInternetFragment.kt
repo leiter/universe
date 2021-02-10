@@ -8,17 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.together.R
-import com.together.app.MainActivity
 import com.together.databinding.FragmentNoInternetBinding
-import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.utils.hasInternet
+import com.together.utils.isInternetAvailable
 import viewBinding
 
 
@@ -38,7 +32,6 @@ class NoInternetFragment : BaseFragment(R.layout.fragment_no_internet) {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-
     override fun onResume() {
         requireActivity().window.setBackgroundDrawable(ResourcesCompat.getDrawable(
             resources,R.drawable.splash,requireActivity().theme))
@@ -55,11 +48,19 @@ class NoInternetFragment : BaseFragment(R.layout.fragment_no_internet) {
         super.onViewCreated(view, savedInstanceState)
         vModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         viewBinding.btnRetry.setOnClickListener {
-            if(requireActivity().hasInternet())FireBaseAuth.loginAnonymously()
-            else Toast.makeText(requireContext(),"Noch keine Internetverbindung", Toast.LENGTH_LONG).show()
+            isInternetAvailable().subscribe({
+                if (it) FireBaseAuth.loginAnonymously()
+                else Toast.makeText(
+                    requireContext(),
+                    "Noch keine Internetverbindung",
+                    Toast.LENGTH_LONG
+                ).show()
+            }, {
+
+
+            })
         }
     }
-
     companion object {
         const val TAG = "NoInternetFragment"
     }

@@ -8,6 +8,7 @@ import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.together.R
@@ -24,21 +25,18 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private val viewBinding by viewLifecycleLazy { FragmentClientProfileBinding.bind(requireView()) }
 
-    private lateinit var vModel: MainViewModel
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         setupClicks()
         setupTextFields()
         alterTimePicker()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        vModel.blockingLoaderState.observe(viewLifecycleOwner,{
+        viewModel.blockingLoaderState.observe(viewLifecycleOwner,{
             when (it){
                 is UiEvent.LoadingDone -> {
                     if(it.indicator == UiEvent.UPLOAD_PROFILE){
                         viewBinding.progress.loadingIndicator.visibility = View.GONE
-                        vModel.blockingLoaderState.value = UiEvent.LoadingNeutral
+                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral
                     }
                 }
                 is UiEvent.Loading -> {
@@ -53,14 +51,15 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
     }
 
     private fun setupTextFields() {
-        viewBinding.tvPhoneNumber.setText(vModel.buyerProfile.phoneNumber)
-        viewBinding.tvDisplayName.setText(vModel.buyerProfile.displayName)
-        viewBinding.tvEmailAddress.setText(vModel.buyerProfile.emailAddress)
-        if(vModel.buyerProfile.defaultMarket!=""){
-            viewBinding.tvMarketName.text = vModel.sellerProfile.marketList
-                .first {  it._id == vModel.buyerProfile.defaultMarket }.name
+        viewBinding.tvPhoneNumber.setText(viewModel.buyerProfile.phoneNumber)
+        viewBinding.tvDisplayName.setText(viewModel.buyerProfile.displayName)
+        viewBinding.tvEmailAddress.setText(viewModel.buyerProfile.emailAddress)
+        if(viewModel.buyerProfile.defaultMarket!=""){
+            viewBinding.tvMarketName.text = viewModel.sellerProfile.marketList
+                .first {  it._id == viewModel.buyerProfile.defaultMarket }.name
         }
-        viewBinding.tvPickupTime.text = vModel.buyerProfile.defaultTime
+        viewBinding.tvPickupTime.text = if(viewModel.buyerProfile.defaultTime!="")
+            viewModel.buyerProfile.getDefaultTimeDisplay() else ""
     }
 
     private fun setupClicks() {
@@ -79,29 +78,28 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
     }
 
     private fun uploadBuyerProfile(){
-        vModel.buyerProfile.phoneNumber = viewBinding.tvPhoneNumber.text.toString()
-        vModel.buyerProfile.displayName = viewBinding.tvDisplayName.text.toString()
-        vModel.buyerProfile.emailAddress = viewBinding.tvEmailAddress.text.toString()
-        vModel.uploadBuyerProfile()
+        viewModel.buyerProfile.phoneNumber = viewBinding.tvPhoneNumber.text.toString()
+        viewModel.buyerProfile.displayName = viewBinding.tvDisplayName.text.toString()
+        viewModel.buyerProfile.emailAddress = viewBinding.tvEmailAddress.text.toString()
+        viewModel.uploadBuyerProfile()
     }
 
     private fun clearPickUptime() {
         viewBinding.tvPickupTime.text = ""
-        vModel.buyerProfile.defaultTime = ""
+        viewModel.buyerProfile.defaultTime = ""
         showTimePicker(false)
     }
 
     private fun setPickUpTime() {
         val timeBox = viewBinding.tpSetAppointment.getTimePair().toList()
-        val time = "%02d:%02d Uhr".format(timeBox[0],timeBox[1])
-        vModel.buyerProfile.defaultTime = time
-
-        viewBinding.tvPickupTime.text = time
+        val time = "%02d:%02d".format(timeBox[0],timeBox[1])
+        viewModel.buyerProfile.defaultTime = time
+        viewBinding.tvPickupTime.text = viewModel.buyerProfile.getDefaultTimeDisplay()
         showTimePicker(false)
     }
 
     private fun showChoosePickUptime() {
-        if (vModel.buyerProfile.defaultMarket == "") {
+        if (viewModel.buyerProfile.defaultMarket == "") {
             Toast.makeText(
                 requireContext(), "Bitte erst den Marktplatz bestimmen.",
                 Toast.LENGTH_LONG
@@ -121,16 +119,16 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun setMarketAsDefault() {
         showPickMarket(false)
-        vModel.buyerProfile.defaultMarket = vModel.sellerProfile
-            .marketList[vModel.marketIndex]._id
+        viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile
+            .marketList[viewModel.marketIndex]._id
     }
 
     private fun clearMarketSetting() {
         showPickMarket(false)
         viewBinding.tvPickupTime.text = ""
-        vModel.buyerProfile.defaultTime = ""
+        viewModel.buyerProfile.defaultTime = ""
         viewBinding.tvMarketName.text = ""
-        vModel.buyerProfile.defaultMarket = ""
+        viewModel.buyerProfile.defaultMarket = ""
     }
 
     private fun showPickMarket(show: Boolean) {
@@ -144,7 +142,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
 
     private fun setupMarketButtons() {
-        val marketList = vModel.sellerProfile.marketList
+        val marketList = viewModel.sellerProfile.marketList
         viewBinding.tlMarketContainer.removeAllTabs()
         marketList.forEach {
             val m = viewBinding.tlMarketContainer.newTab()
@@ -155,21 +153,21 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         viewBinding.tlMarketContainer.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewBinding.tvMarketName.text = vModel.sellerProfile.marketList[
+                viewBinding.tvMarketName.text = viewModel.sellerProfile.marketList[
                         viewBinding.tlMarketContainer.selectedTabPosition].name
-                vModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
+                viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {
-//                vModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
+//                viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
             }
         })
     }
 
     private fun alterTimePicker() {
         viewBinding.tpSetAppointment.setIs24HourView(true)
-        val defaultMarket = vModel.sellerProfile.marketList[vModel.marketIndex]
+        val defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex]
         val i = (viewBinding.tpSetAppointment as FrameLayout).children.iterator().next()
         val hourPicker = (i.touchables[0].parent as NumberPicker)
         val minutePicker = (i.touchables[1].parent as NumberPicker)
@@ -203,7 +201,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.btn_clear_data -> {
-                    vModel.clearAccount()
+                    viewModel.clearAccount()
                     true
                 }
                 else -> {

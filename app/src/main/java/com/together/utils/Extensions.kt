@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.telecom.ConnectionService
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -18,7 +17,10 @@ import com.together.R
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
 import com.together.repository.Result
-
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.net.InetAddress
 
 fun View.hideIme() {
     val inputMethod =
@@ -30,7 +32,7 @@ fun View.hideIme() {
 fun View.showIme() {
     this.requestFocus()
     val inputMethod = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethod.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
+    inputMethod.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 }
 
 fun Activity.setDrawable(resId: Int, imageView: AppCompatImageButton){
@@ -44,6 +46,18 @@ fun Context.hasInternet(): Boolean {
     return activeNetwork?.isConnectedOrConnecting == true
 }
 
+fun isInternetAvailable(): Single<Boolean> {
+    return Single.fromCallable{
+        try {
+            val ipAddr: InetAddress = InetAddress.getByName("google.com")
+            //You can replace it with your name
+            !ipAddr.equals("")
+        } catch (e: Exception) {
+            false
+        }
+    }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+}
+
 fun Context.loadImage(imageView: ImageView, url: String){
     Picasso.with(this)
         .load(url)
@@ -51,7 +65,8 @@ fun Context.loadImage(imageView: ImageView, url: String){
         .into(imageView, object : Callback {
             override fun onSuccess() {
                 MainMessagePipe.mainThreadMessage.onNext(
-                    Result.ImageLoaded(R.id.pr_load_image_progress, false))
+                    Result.ImageLoaded(R.id.pr_load_image_progress, false)
+                )
             }
 
             override fun onError() {
@@ -61,12 +76,14 @@ fun Context.loadImage(imageView: ImageView, url: String){
                     .into(imageView, object : Callback {
                         override fun onSuccess() {
                             MainMessagePipe.mainThreadMessage.onNext(
-                                Result.ImageLoaded(R.id.pr_load_image_progress,false))
+                                Result.ImageLoaded(R.id.pr_load_image_progress, false)
+                            )
                         }
 
                         override fun onError() {
                             MainMessagePipe.mainThreadMessage.onNext(
-                                Result.ImageLoaded(R.id.pr_load_image_progress,false))
+                                Result.ImageLoaded(R.id.pr_load_image_progress, false)
+                            )
                         }
                     })
             }
@@ -79,7 +96,7 @@ fun MutableLiveData<MutableList<UiState.Article>>.addItem(
 
     val index = value!!.indexOfFirst {item._id == it._id}
     when (item._mode) {
-        UiState.ADDED -> if(index==-1) value!!.add(item)
+        UiState.ADDED -> if (index == -1) value!!.add(item)
         UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it._id == item._id }))
         UiState.CHANGED -> {
             if (index == -1) {

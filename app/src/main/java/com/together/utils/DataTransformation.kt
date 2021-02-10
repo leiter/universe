@@ -111,11 +111,11 @@ fun Result.Order.dataToUiOrder(): UiState.Order {
         productList = articles.map { it.dataToUiOrderedProduct() },
     )
 }
-fun UiState.Order.uiOrderToData(): Result.Order {
+fun UiState.Order.uiBuyerProfileToData(): Result.Order {
     return Result.Order(
         id = _id,
         mode = _mode,
-        buyerProfile = buyerProfile.uiOrderToData(),
+        buyerProfile = buyerProfile.uiBuyerProfileToData(),
         createdDate = createdDate,
         marketId = marketId,
         pickUpDate = pickUpDate,
@@ -152,7 +152,6 @@ fun UiState.OrderedProduct.uiOrderedProductData(): Result.OrderedProduct {
 
 fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
     return UiState.BuyerProfile(
-        _id = id,
         _mode = mode,
         displayName = displayName,
         emailAddress = emailAddress,
@@ -164,7 +163,7 @@ fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
     )
 }
 
-fun UiState.BuyerProfile.uiOrderToData(): Result.BuyerProfile {
+fun UiState.BuyerProfile.uiBuyerProfileToData(): Result.BuyerProfile {
     return Result.BuyerProfile(
         displayName = displayName,
         emailAddress = emailAddress,
@@ -195,7 +194,7 @@ fun createBasketUDate(products: List<UiState.Article>, order: UiState.Order) : M
     return result
 }
 
-inline fun <reified T : UiState> errorActions(profile: T, action: () -> Unit): Boolean {
+inline fun <reified T : UiState> UiState.errorActions(profile: T, action: () -> Unit): Boolean {
     val toBeChecked =
         T::class.memberProperties.filter { !it.name.startsWith("_") }
     toBeChecked.forEach { prop ->
