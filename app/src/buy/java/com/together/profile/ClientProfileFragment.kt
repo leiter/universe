@@ -11,9 +11,12 @@ import androidx.core.view.children
 import com.google.android.material.tabs.TabLayout
 import com.together.R
 import com.together.base.BaseFragment
+import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.base.UiEvent.Companion.UPLOAD_PROFILE
 import com.together.databinding.FragmentClientProfileBinding
+import com.together.loggedout.LoginFragment
+import com.together.order.ProductsFragment
 import com.together.utils.getTimePair
 import com.together.utils.hideIme
 import com.together.utils.viewLifecycleLazy
@@ -61,7 +64,14 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
     }
 
     private fun setupClicks() {
-        viewBinding.btnBack.setOnClickListener { activity?.onBackPressed() }
+        viewBinding.btnBack.setOnClickListener {
+//            activity?.onBackPressed()
+            MainMessagePipe.uiEvent.onNext(
+                UiEvent.ReplaceFragment(
+                    requireActivity().supportFragmentManager,
+                    ProductsFragment(), ProductsFragment.TAG)
+            )
+        }
         viewBinding.btnClearDisplayName.setOnClickListener { viewBinding.tvDisplayName.setText("") }
         viewBinding.btnClearEmail.setOnClickListener { viewBinding.tvEmailAddress.setText("") }
         viewBinding.btnClearPhoneNumber.setOnClickListener { viewBinding.tvPhoneNumber.setText("") }

@@ -48,7 +48,7 @@ class ManageDialog : DialogFragment() {
 
     private val clickProfileWhileLoggedIn: (View) -> Unit = {
         MainMessagePipe.uiEvent.onNext(
-            UiEvent.AddFragment(
+            UiEvent.ReplaceFragment(
                 requireActivity().supportFragmentManager,
                 ClientProfileFragment(), ClientProfileFragment.TAG)
         ); dismiss()

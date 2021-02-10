@@ -13,6 +13,7 @@ import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
 import com.together.repository.Database
 import com.together.repository.Result
+import com.together.utils.FileUtils
 import com.together.utils.loadImage
 import com.together.utils.viewLifecycleLazy
 import io.reactivex.Observable

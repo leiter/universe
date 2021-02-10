@@ -7,13 +7,16 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.together.R
+import com.together.databinding.ChooseSourceBinding
+import com.together.utils.viewBinding
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.choose_source.view.*
 
 
 class ChooseDialog : DialogFragment() {
 
     val actionChannel: PublishSubject<Action> = PublishSubject.create()
+
+    private val viewBinding: ChooseSourceBinding by viewBinding(ChooseSourceBinding::inflate )
 
     sealed class Action {
         object CHOOSE_PICTURE : Action()
@@ -24,11 +27,6 @@ class ChooseDialog : DialogFragment() {
 
     companion object {
         const val TAG = "AddPicture"  // Handle hideIme delete
-        fun newInstance(): ChooseDialog {
-            val frag = ChooseDialog()
-//            val args: Bundle = Bundle().apply { put }
-            return frag
-        }
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -40,10 +38,10 @@ class ChooseDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
         val view = requireActivity().layoutInflater.inflate(R.layout.choose_source, null as ViewGroup?)
-        view.capture_image.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
-        view.btn_write_msg.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
-        view.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
-        view.btn_show_info.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO); dismiss() }
+        viewBinding.captureImage.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
+        viewBinding.btnWriteMsg.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
+        viewBinding.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
+        viewBinding.btnShowInfo.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO); dismiss() }
         builder.setView(view)
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)

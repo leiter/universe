@@ -7,15 +7,13 @@ buildscript {
         retrofit_version = '2.3.0'
     }
 
-
-
     repositories {
         jcenter()
         mavenLocal()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:4.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.5'
         classpath 'com.google.gms:oss-licenses:0.9.2'
@@ -32,7 +30,6 @@ allprojects {
         mavenLocal()
         maven { url 'https://jitpack.io' }
         google()
-
     }
 }
 

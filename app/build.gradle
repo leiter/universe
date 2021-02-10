@@ -15,7 +15,6 @@ android {
     defaultConfig {
         applicationId "com.together"
         minSdkVersion 21
-        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 //        multiDexEnabled true
@@ -78,11 +77,13 @@ android {
         sell {
             dimension = "basic"
             applicationIdSuffix ".sell"
+            targetSdkVersion 29
         }
         buy {
             dimension = "basic"
             applicationIdSuffix ".buy"
-            versionCode 13
+            versionCode 14
+            targetSdkVersion 30
             signingConfig signingConfigs.release
         }
     }
@@ -100,7 +101,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.activity:activity-ktx:1.1.0"
     implementation "androidx.fragment:fragment-ktx:1.2.5"
-    implementation "androidx.lifecycle:lifecycle-runtime:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
