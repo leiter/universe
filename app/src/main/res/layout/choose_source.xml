@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
-        android:text="Foto hinzufügen"
+        android:text="@string/tv_add_photo_title"
         android:textSize="24sp" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -18,28 +18,28 @@
         style="@style/AppTheme.ChooseSourceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fotomachen" />
+        android:text="@string/btn_add_photo_take_picture" />
 
     <TextView
         android:id="@+id/btn_write_msg"
         style="@style/AppTheme.ChooseSourceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Photo aus Gallerie" />
+        android:text="@string/btn_add_photo_pick_from_gallery" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/btn_show_info"
         style="@style/AppTheme.ChooseSourceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bild löschen" />
+        android:text="@string/btn_add_photo_delete_image" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/cancel"
         style="@style/AppTheme.ChooseSourceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Abbrechen" />
+        android:text="@string/btn_add_photo_abort" />
 
 
 </LinearLayout>

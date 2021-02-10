@@ -20,12 +20,12 @@ fun MutableList<UiState.Article>.addItem(
     productData: MutableLiveData<MutableList<UiState.Article>>
 ) {
     val index = indexOf(item)
-    when (item._mode) {
+    when (item.mode) {
         UiState.ADDED -> add(item)
-        UiState.REMOVED -> removeAt(indexOf(first { it._id == item._id }))
+        UiState.REMOVED -> removeAt(indexOf(first { it.id == item.id }))
         UiState.CHANGED -> {
             if (index == -1) {
-                val i = indexOf(first { it._id == item._id })
+                val i = indexOf(first { it.id == item.id })
                 removeAt(i)
                 add(i, item)
             } else {
@@ -45,7 +45,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         disposable.add( MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
                 is Result.LoggedOut ->
-                    loggedState.value = UiState.LOGGEDOUT
+                    loggedState.value = UiState.LoggedOut
 
                 is Result.LoggedIn ->
                     loggedState.value = UiState.BaseAuth(
@@ -123,7 +123,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun deleteProduct(){
         editProduct.value?.let {
-            val id = it._id
+            val id = it.id
             if(id.isEmpty()) return  // todo msg
             blockingLoaderState.value = UiEvent.Loading(0)
             dataRepository.deleteProduct(id)

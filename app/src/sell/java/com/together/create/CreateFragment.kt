@@ -4,9 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.storage.FirebaseStorage
 import com.together.R
@@ -15,11 +13,10 @@ import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
 import com.together.repository.Database
 import com.together.repository.Result
-import com.together.utils.FileUtil
 import com.together.utils.loadImage
+import com.together.utils.viewLifecycleLazy
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import viewLifecycleLazy
 import java.io.File
 import java.io.FileOutputStream
 
@@ -133,9 +130,9 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             price = uiState.pricePerUnit.replace("€", "")
                 .replace(",", ".").toDouble()
         )
-        if (uiState._id.isNotEmpty()) {
+        if (uiState.id.isNotEmpty()) {
             val m = mutableMapOf("price" to 7.8 as Any)
-            Database.updateArticle(uiState._id).updateChildren(m)
+            Database.updateArticle(uiState.id).updateChildren(m)
         } else {
             Database.articles().push().setValue(result)
         }
@@ -158,9 +155,9 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                         price = uiState.pricePerUnit.replace("€", "")
                             .replace(",", ".").toDouble()
                     )
-                    if (uiState._id.isNotEmpty()) {
+                    if (uiState.id.isNotEmpty()) {
                         val m = mutableMapOf("price" to 7.8 as Any)
-                        Database.updateArticle(uiState._id).updateChildren(m)
+                        Database.updateArticle(uiState.id).updateChildren(m)
                     } else {
                         Database.articles().push().setValue(result)
                     }
@@ -182,7 +179,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             tmpFile
         }.subscribe {
             updateProduct(Uri.fromFile(it))
-            imageUri.path?.let { file -> FileUtil.deleteFile(File(file)) }
+            imageUri.path?.let { file -> FileUtils.deleteFile(File(file)) }
         }.addTo(disposable)
     }
 

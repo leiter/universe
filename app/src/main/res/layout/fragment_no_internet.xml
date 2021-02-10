@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/iv_cloud_offline"
                 android:gravity="center"
-                android:text="Keine Internetverbindung"
+                android:text="@string/tv_no_internet_no_internet"
                 android:textSize="22sp" />
 
             <com.google.android.material.button.MaterialButton
@@ -41,7 +41,7 @@
                 android:layout_below="@id/tv_no_internet"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="24dp"
-                android:text="Noch mal versuchen"
+                android:text="@string/btn_no_internet_try_again"
                 android:textColor="@color/fab_green" />
 
         </RelativeLayout>

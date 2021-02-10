@@ -1,9 +1,7 @@
 package com.together.profile
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.MarketDialog
@@ -11,8 +9,8 @@ import com.together.base.*
 import com.together.create.CreateFragment
 import com.together.databinding.FragmentProfileBinding
 import com.together.utils.loadImage
+import com.together.utils.viewLifecycleLazy
 import io.reactivex.rxkotlin.addTo
-import viewLifecycleLazy
 import java.util.concurrent.TimeUnit
 
 class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
@@ -32,7 +30,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
             city.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.city = it.toString()
             }.addTo(disposable)
-            zipcode.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
+            zipCode.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.zipCode = it.toString()
             }.addTo(disposable)
             house.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {

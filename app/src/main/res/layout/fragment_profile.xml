@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:fillViewport="true"
-    tools:context=".profile.ClientProfileFragment">
+    tools:context=".profile.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -142,14 +142,14 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/zipcode_layout"
+            android:id="@+id/zip_code_layout"
             android:layout_width="144dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/street_layout">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/zipcode"
+                android:id="@+id/zip_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Postleitzahl"
@@ -162,7 +162,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/zipcode_layout"
+            app:layout_constraintStart_toEndOf="@id/zip_code_layout"
             app:layout_constraintTop_toBottomOf="@id/street_layout"
 
             >
@@ -185,11 +185,11 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="56dp"
-            android:text="Standort hinzugühen"
+            android:text="Standort hinzufügen"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/zipcode_layout" />
+            app:layout_constraintTop_toBottomOf="@id/zip_code_layout" />
 
         <LinearLayout
             android:id="@+id/places_list"
@@ -209,6 +209,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:contentDescription="@string/content_description_seller_profile_save"
             android:src="@drawable/ic_edit_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

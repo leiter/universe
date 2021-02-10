@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                     })
                 }
 
-                is UiState.LOGGEDOUT -> {
+                is UiState.LoggedOut -> {
                     drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                     MainMessagePipe.uiEvent.onNext(
                         UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")

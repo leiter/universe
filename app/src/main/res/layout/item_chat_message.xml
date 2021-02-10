@@ -23,7 +23,7 @@
                 android:id="@+id/message_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="sdf asdkjf su foisuf asidfu aua dfudfa ospf asiudf asdfapodiu asdif aidufs ofiasdf asdffodifu df"
+                tools:text="@tools:sample/backgrounds/scenic"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
                 android:textColor="@color/colorPrimary"
                 app:layout_constraintStart_toStartOf="parent"

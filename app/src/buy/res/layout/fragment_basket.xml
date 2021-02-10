@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/fab_green"
-            android:text="Fertig"
+            android:text="@string/btn_basket_finish_set_time"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:buttonTint="@color/fab_green"
-            android:text="Markt und Uhrzeit merken"
+            android:text="@string/ck_btn_basket_remind_time_and_place"
             android:textColor="@color/fab_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="Abholung"
+            android:text="@string/tv_basket_title_set_time"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/btn_hide_appointment"
@@ -94,7 +94,7 @@
                 android:id="@+id/et_message"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Nachricht hinzufügen"
+                android:hint="@string/tv_basket_hint_add_msg"
                 android:minLines="3" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -167,7 +167,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="Bestellung"
+            android:text="@string/tv_basket_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -253,7 +253,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@color/fab_green"
-            android:text="Bestellung senden"
+            android:text="@string/btn_basket_send_order"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

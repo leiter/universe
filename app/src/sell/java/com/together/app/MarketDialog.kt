@@ -47,14 +47,14 @@ class MarketDialog : DialogFragment() {
                     placeName.text.toString(),
                     street.text.toString(),
                     house.text.toString(),
-                    zipcode.text.toString(),
+                    zipCode.text.toString(),
                     city.text.toString(),
                     weekdays.text.toString(),
                     begin.text.toString(),
                     end.text.toString()
                 )
                 val items = viewModel.markets.value!!
-                val s = items.indexOfFirst { it._id == market._id}
+                val s = items.indexOfFirst { it.id == market.id}
                 if (s > -1) {
                     items.removeAt(s)
                     items.add(s, market)
@@ -66,7 +66,7 @@ class MarketDialog : DialogFragment() {
                 placeName.setText(market.name)
                 street.setText(market.street)
                 house.setText(market.houseNumber)
-                zipcode.setText(market.zipCode)
+                zipCode.setText(market.zipCode)
                 city.setText(market.city)
                 weekdays.setText(market.dayOfWeek)
                 begin.setText(market.begin)

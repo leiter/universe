@@ -22,7 +22,7 @@ class MarketAdapter(context: Context,
         v.findViewById<TextView>(R.id.place_name).text = markets[position].name
         v.findViewById<TextView>(R.id.street).text = markets[position].street
         v.findViewById<TextView>(R.id.house).text = markets[position].houseNumber
-        v.findViewById<TextView>(R.id.zipcode).text = markets[position].zipCode
+        v.findViewById<TextView>(R.id.zip_code).text = markets[position].zipCode
         v.findViewById<TextView>(R.id.city).text = markets[position].city
         v.findViewById<TextView>(R.id.weekdays).text = markets[position].dayOfWeek
         v.findViewById<TextView>(R.id.begin).text = markets[position].begin
