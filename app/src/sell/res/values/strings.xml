@@ -12,5 +12,7 @@
 
     <string name="app_name">Stand</string>
 
+    <string name="content_description_btn_start_add_image">Taste started ein Auswahlmenu um ein Bild hinzuzufügen.</string>
+    <string name="content_description_seller_profile_save">Taste Profile speichern</string>
 
 </resources>

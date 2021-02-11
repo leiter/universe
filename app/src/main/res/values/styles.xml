@@ -36,24 +36,11 @@
         <item name="android:minLines">3</item>
     </style>
 
-    <style name="TabLayoutStyle" parent="Base.Widget.Design.TabLayout">
-
-    </style>
-
 
     <style name="ToolbarTheme.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">2sp</item>
-    </style>
-
-    <style name="Button" parent="Widget.AppCompat.Button.Colored">
-        <item name="android:textAppearance">@style/ButtonText</item>
-    </style>
-
-    <style name="AppTheme.Basket" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">600dp</item>
     </style>
 
     <style name="MyDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
@@ -70,15 +57,7 @@
     </style>
 
 
-    <style name="SplashProgress" parent="ThemeOverlay.AppCompat.Light">
-        <item name="colorAccent">@color/white</item>
-    </style>
-
-    <style name="ButtonText" parent="TextAppearance.AppCompat.Widget.Button.Colored">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-<!--    <style name="TextHintPrice" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
+    <!--    <style name="TextHintPrice" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
 <!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>-->
 <!--        <item name="hintTextColor">?attr/colorOnSurface</item>&ndash;&gt;-->
 <!--    </style>-->
@@ -106,19 +85,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.NoDisplay">
-<!--        <item name="android:windowBackground">@null</item>-->
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-<!--        <item name="android:windowAnimationStyle">@null</item>-->
-        <item name="android:windowDisablePreview">true</item>
-<!--        <item name="android:windowNoDisplay">true</item>-->
-    </style>
-
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="AppTheme.ChooseSourceText" >
         <item name="android:padding">16dp</item>
@@ -128,23 +94,5 @@
 
     </style>
 
-
-    <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-
-        <!-- Set this to true if you want Full Screen without status bar -->
-        <item name="android:windowFullscreen">false</item>
-
-        <item name="android:windowIsFloating">false</item>
-
-        <!-- This is important! Don't forget to set window background -->
-        <item name="android:windowBackground">@color/white</item>
-
-        <!-- Additionally if you want animations when dialog opening -->
-        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
-        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
-    </style>
 
 </resources>

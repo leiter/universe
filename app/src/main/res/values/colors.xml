@@ -5,25 +5,15 @@
     <color name="colorAccent">#FF7A5012</color>
 
 
-    <color name="textColorMain">#FA9C4D</color>
-
-
     <!--pure colors-->
     <color name="brightGreen">#008577</color>
-    <color name="darkGreen">#00574B</color>
-    <color name="brown">#936A2D</color>
     <color name="orange">#FA9C4D</color>
-    <color name="black">@android:color/black</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="black_overlay">#66000000</color>
 
 
-<!--    new Colors -->
+    <!--    new Colors -->
     <color name="fab_green">#0A6308</color>
-    <color name="soft_brown">#667A5012</color>
     <color name="soft_brown_no_alpha">#c9b9a0</color>
-
-    <color name="yellow_brown">#FAC87D</color>
 
 
 </resources>

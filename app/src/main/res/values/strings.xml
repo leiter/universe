@@ -1,12 +1,8 @@
 <resources>
 
     <string name="app_name">Bodenschätze</string>
-    <string name="title_home">Angebot</string>
-    <string name="title_dashboard">Erstellen</string>
-    <string name="title_notifications">Unterhalten</string>
 
 
-    <string name="developer_error_hint">General ERROR FIXME</string>
     <string name="empty_basket_msg">Sie haben keine Produkte im Einkaufskorb.</string>
     <string name="product_amount_is_null">Bitte fügen sie eine Mengen größer Null ein.</string>
     <string name="product_amount_empty">Bitte geben sie eine Mengenangabe ein.</string>
@@ -25,7 +21,6 @@
     <string name="content_description_back_btn">Taste um zur vorherigen Anzeige zu wechseln.</string>
     <string name="content_description_btn_more_options">Taste um mehr Optionen anzuzeigen.</string>
     <string name="content_description_no_internet">Anzeige Intenet nicht verfügbar.</string>
-    <string name="content_description_btn_start_add_image">Taste started ein Auswahlmenu um ein Bild hinzuzufügen.</string>
     <string name="content_description_add_to_shopping_cart">Taste um gewähltes Produkt zum Warenkorb hinzuzufügen.</string>
     <string name="btn_manage_send">Senden</string>
     <string name="btn_manage_my_profile">Mein Profil</string>
@@ -33,7 +28,6 @@
     <string name="btn_manage_write_msg">Nachricht an Bodenschätze</string>
     <string name="btn_manage_show_write_msg">Nachricht schreiben</string>
     <string name="btn_manage_show_infos">Infos anzeigen</string>
-    <string name="btn_drawer_login">Einloggen</string>
     <string name="tv_hint_price">Preis</string>
     <string name="tv_hint_amount">Menge</string>
     <string name="tv_hint_search">Suche</string>
@@ -42,7 +36,6 @@
     <string name="btn_add_photo_pick_from_gallery">Photo aus Galerie</string>
     <string name="btn_add_photo_take_picture">Foto machen</string>
     <string name="tv_add_photo_title">Foto hinzufügen</string>
-    <string name="btn_drawer_logout">Logout</string>
     <string name="btn_basket_finish_set_time">Fertig</string>
     <string name="ck_btn_basket_remind_time_and_place">Markt und Uhrzeit merken</string>
     <string name="tv_basket_title_set_time">Abholung</string>
@@ -51,7 +44,6 @@
     <string name="btn_basket_send_order">Bestellung senden</string>
     <string name="tv_client_profile_hint_email">E-Mail-Adresse</string>
     <string name="btn_client_profile_save">Speichern</string>
-    <string name="content_description_seller_profile_save">Taste Profile speichern</string>
     <string name="tv_client_profile_title">Meine Daten</string>
     <string name="tv_hint_client_profile_displayname">Anzeigename</string>
     <string name="tv_hint_client_profile_phone_number">Telefonnummer</string>
@@ -59,6 +51,9 @@
     <string name="btn_client_profile_pick_up_time">Abholzeit</string>
     <string name="tv_no_internet_no_internet">Keine Internetverbindung</string>
     <string name="btn_no_internet_try_again">Noch mal versuchen</string>
+
+
+    <string name="developer_error_hint">something went wrong</string>
 
 
 </resources>
