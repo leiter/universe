@@ -8,7 +8,7 @@
     <string name="product_amount_empty">Bitte geben sie eine Mengenangabe ein.</string>
     <string name="invalidate_session">Alle Daten löschen</string>
     <string name="login_btn_text">Einloggen</string>
-    <string name="bodenschatz_caps">BODENSCHÄTZE</string>
+    <string name="bodenschatz_caps">BODENSCHÄTZE</string>@tools:sstring/about_disclaimer
     <string name="zero_price_euro">0,00€</string>
     <string name="zero_count_amount">0</string>
     <string name="zero_kg">0,000</string>

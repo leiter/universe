@@ -113,7 +113,7 @@ sealed class Result {
         var street: String = "",
         var houseNumber: String = "",
         var city: String = "",
-        var zipcode: String = "",
+        var zipCode: String = "",
         var telephoneNumber: String = "",
 
         var lat: String = "",
@@ -131,7 +131,7 @@ sealed class Result {
         var street: String = "",
         var houseNumber: String = "",
         var city: String = "",
-        var zipcode: String = "",
+        var zipCode: String = "",
         var dayOfWeek: String = "",
         var begin: String = "",
         var end: String = "",

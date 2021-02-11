@@ -27,7 +27,7 @@ interface AppModule {
 @Component(modules = [AppModule::class])
 interface AppComponent : AndroidInjector<App> {
     @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<App>(){}
+    abstract class Builder : AndroidInjector.Builder<App>()
 }
 
 @Module

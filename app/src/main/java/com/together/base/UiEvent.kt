@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import java.lang.Exception
 
 
 sealed class UiEvent {

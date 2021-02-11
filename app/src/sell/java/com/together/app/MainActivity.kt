@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.navigation.NavigationView
 import com.jakewharton.picasso.OkHttp3Downloader
@@ -77,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 //                .replace(R.id.container, ProductsFragment()).commit()
 //        }
 
-        viewModel.loggedState.observe(this, Observer {
+        viewModel.loggedState.observe(this, {
             when (it) {
 
                 is UiState.BaseAuth -> {
@@ -181,15 +180,15 @@ class MainActivity : AppCompatActivity() {
 
         return navigationItemView.itemSelections().subscribe {
             when (it.itemId) {
-//                R.id.drawer_nav_1 -> {
-//
-//                }
-//
-//                R.id.drawer_nav_4 -> {
-//                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
-//                        supportFragmentManager,
-//                        AboutFragment(), AboutFragment.TAG))
-//                }
+                R.id.drawer_nav_1 -> {
+
+                }
+
+                R.id.drawer_nav_4 -> {
+                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+                        supportFragmentManager,
+                        AboutFragment(), AboutFragment.TAG))
+                }
 
             }
             drawer.closeDrawers()
@@ -197,7 +196,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoggedIn(navigation_drawer: NavigationView, logOut: View) {
-        val user = FireBaseAuth.getAuth()!!.currentUser!!
+        val user = FireBaseAuth.getAuth().currentUser!!
         val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)
         head.findViewById<Button>(R.id.log_in).visibility = View.GONE

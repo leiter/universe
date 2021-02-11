@@ -23,8 +23,7 @@ class LoginFragment : BaseFragment(R.layout.fragment_login) {
             MainActivity.startLogin(requireActivity())
             it.visibility = View.GONE
             viewModel.loggedState.observe(viewLifecycleOwner, { uiState ->
-                if(uiState is UiState.LoggedOut){
-                } else {
+                if(uiState !is UiState.LoggedOut){
                     viewBinding.plusOneButton.visibility = View.VISIBLE
                     viewBinding.plusOneButton.visibility = View.GONE
                 }

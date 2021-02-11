@@ -3,9 +3,6 @@ package com.together.base
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.together.base.UiState.Companion.ADDED
-import com.together.base.UiState.Companion.CHANGED
-import com.together.base.UiState.Companion.REMOVED
 import com.together.databinding.ItemProductBinding
 
 
