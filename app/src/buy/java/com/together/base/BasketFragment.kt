@@ -15,20 +15,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
 import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
 import com.together.databinding.FragmentBasketBinding
-import com.together.utils.alterPickUptime
-import com.together.utils.getHourAndMinute
-import com.together.utils.getTimePair
-import com.together.utils.toDateString
+import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import com.together.utils.viewBinding
 import java.util.*
 
 class BasketFragment : DialogFragment() {

@@ -10,7 +10,6 @@ import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
 import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
 import com.together.base.UiEvent.Companion.UNDEFINED
-import com.together.base.UiEvent.Companion.UPLOAD_PROFILE
 import com.together.repository.AlreadyPlaceOrder
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
@@ -19,7 +18,6 @@ import com.together.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import java.lang.IndexOutOfBoundsException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -150,7 +148,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     fun resetAmountCount(id: String) {
         productData.value?.first { it.id == id }?.pieceCounter = 0
     }
-    fun resetProductList() {
+    private fun resetProductList() {
         productData.value?.forEach { it.pieceCounter = 0; it.amountCount = 0.0; it.isSelected = false }
     }
 
@@ -268,7 +266,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             oldOrders.value = newStuff.reversed()
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
         }, {
-            it
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
         }).addTo(disposable)
     }
@@ -281,6 +278,11 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     fun setTimeDateForOrder(market: UiState.Market, date: Date) {
         order.pickUpDate = date.time
         order.marketId = market.id
+    }
+
+    fun refreshData() {
+        disposable2.clear()
+        setupDataStreams()
     }
 }
 

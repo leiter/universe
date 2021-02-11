@@ -11,7 +11,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
-import java.lang.Exception
 
 
 interface DataRepository {
@@ -71,18 +70,18 @@ class DataRepositoryImpl : DataRepository {
                             Database.orders().removeValue().getSingle()
                                 .zipWith(Database.buyer().removeValue().getSingle())
                         }
-                        it.first -> Database.orders().removeValue().getSingle().zipWith(Single.just(true))
-                        it.second -> Database.buyer().removeValue().getSingle().zipWith(Single.just(true))
+                        it.first -> Database.orders().removeValue().getSingle()
+                            .zipWith(Single.just(true))
+                        it.second -> Database.buyer().removeValue().getSingle()
+                            .zipWith(Single.just(true))
                         else -> Single.just(true).zipWith(Single.just(true))
                     }
-                }.map { it.second && it.first  }
+                }.map { it.second && it.first }
         }
     }
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {
-        return wrapInConnectionCheck {
-            Database.orders().child(orderId).getSingleValue()
-        }
+        return wrapInConnectionCheck { Database.orders().child(orderId).getSingleValue() }
     }
 
     override fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean> {
@@ -91,10 +90,13 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadBuyerProfile(): Single<Result.BuyerProfile> {
-        return Database.buyer().getSingleExists().flatMap {
-            if (it) Database.buyer().getSingleValue() else Single.just(Result.BuyerProfile())
+        return wrapInConnectionCheck {
+            Database.buyer().getSingleExists().subscribeOn(Schedulers.io()).flatMap {
+                if (it) Database.buyer().getSingleValue()
+                else Single.just(Result.BuyerProfile())
+            }
+                .observeOn(AndroidSchedulers.mainThread())
         }
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
     }
 

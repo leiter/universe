@@ -86,6 +86,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+    override fun onResume() {  // refine here
+        super.onResume()
+        if(hasInternet()){
+            viewModel.refreshData()
+        }
+    }
+
     private var firstStart = true
 
     override fun onBackPressed() {

@@ -93,19 +93,20 @@ fun Context.loadImage(imageView: ImageView, url: String){
 fun MutableLiveData<MutableList<UiState.Article>>.addItem(
     item: UiState.Article,
 ) {
-
     val index = value!!.indexOfFirst {item.id == it.id}
     when (item.mode) {
-        UiState.ADDED -> if (index == -1) value!!.add(item)
+        UiState.ADDED -> if (index == -1 && item.available) value!!.add(item)
         UiState.REMOVED -> value!!.removeAt(value!!.indexOf(value!!.first { it.id == item.id }))
         UiState.CHANGED -> {
             if (index == -1) {
-                val i = value!!.indexOf(value!!.first { it.id == item.id })
-                value!!.removeAt(i)
-                value!!.add(i, item)
+                if (item.available) value!!.add(item)
+                else {
+                    val i = value!!.indexOf(value!!.first { it.id == item.id })
+                    value!!.removeAt(i)
+                }
             } else {
                 value!!.removeAt(index)
-                value!!.add(index, item)
+                if (item.available) value!!.add(index, item)
             }
         }
     }
