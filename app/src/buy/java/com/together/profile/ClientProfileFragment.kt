@@ -15,9 +15,10 @@ import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.base.UiEvent.Companion.UPLOAD_PROFILE
 import com.together.databinding.FragmentClientProfileBinding
-import com.together.loggedout.LoginFragment
 import com.together.order.ProductsFragment
+import com.together.repository.NoInternetConnection
 import com.together.utils.getTimePair
+import com.together.utils.handleProgress
 import com.together.utils.hideIme
 import com.together.utils.viewLifecycleLazy
 
@@ -32,24 +33,34 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         setupTextFields()
         alterTimePicker()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        viewModel.blockingLoaderState.observe(viewLifecycleOwner,{
-            when (it){
-                is UiEvent.LoadingDone -> {
-                    if(it.indicator == UPLOAD_PROFILE){
-                        viewBinding.progress.loadingIndicator.visibility = View.GONE
-                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(UPLOAD_PROFILE)
-                    }
-                }
-                is UiEvent.Loading -> {
-                    if(it.indicator == UPLOAD_PROFILE){
-                    viewBinding.progress.loadingIndicator.visibility = View.VISIBLE}
-                }
-                is UiEvent.LoadingNeutral -> {
-                    viewBinding.progress.loadingIndicator.visibility = View.GONE
-                }
-            }
+//        viewModel.blockingLoaderState.observe(viewLifecycleOwner,{
+//            when (it){
+//                is UiEvent.LoadingDone -> {
+//                    if(it.contextId == UPLOAD_PROFILE){
+//                        viewBinding.progress.loadingIndicator.visibility = View.GONE
+//                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(UPLOAD_PROFILE)
+//                    }
+//                }
+//                is UiEvent.Loading -> {
+//                    if(it.contextId == UPLOAD_PROFILE){
+//                    viewBinding.progress.loadingIndicator.visibility = View.VISIBLE}
+//                }
+//                is UiEvent.LoadingNeutral -> {
+//                    viewBinding.progress.loadingIndicator.visibility = View.GONE
+//                }
+//            }
+//        })
+
+        viewModel.loadingContainer.observe(viewLifecycleOwner,{
+            handleProgress(it.profileUpload,
+                viewBinding.progress.loadingIndicator,
+                R.string.toast_fail_no_internet_profile_upload,
+                R.string.toast_fail_unknown_profile_upload,
+                R.string.toast_success_profile_upload
+            )
         })
     }
+
 
     private fun setupTextFields() {
         viewBinding.tvPhoneNumber.setText(viewModel.buyerProfile.phoneNumber)
@@ -89,7 +100,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         viewModel.buyerProfile.phoneNumber = viewBinding.tvPhoneNumber.text.toString()
         viewModel.buyerProfile.displayName = viewBinding.tvDisplayName.text.toString()
         viewModel.buyerProfile.emailAddress = viewBinding.tvEmailAddress.text.toString()
-        viewModel.uploadBuyerProfile()
+        viewModel.uploadBuyerProfile(false)
     }
 
     private fun clearPickUptime() {

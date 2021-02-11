@@ -140,11 +140,8 @@ inline fun <reified T : Result> DatabaseReference.getSingleValue(): Single<T> {
                 emitter.onSuccess(i)
             }
         }
-
         addListenerForSingleValueEvent(listener)
-        emitter.setCancellable {
-            removeEventListener(listener)
-        }
+        emitter.setCancellable { removeEventListener(listener) }
     }
 }
 

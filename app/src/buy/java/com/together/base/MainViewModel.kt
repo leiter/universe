@@ -28,6 +28,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
+    private var disposable2: CompositeDisposable = CompositeDisposable()
 
     private val productData: MutableLiveData<MutableList<UiState.Article>> =
         MutableLiveData(emptyList<UiState.Article>().toMutableList())
@@ -68,6 +69,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     val marketText: MutableLiveData<String> = MutableLiveData()
     val dayText: MutableLiveData<String> = MutableLiveData()
 
+    val loadingContainer = MutableLiveData<UiEvent.LoadingContainer>().apply {
+        value = UiEvent.LoadingContainer()
+    }
 
     init {
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
@@ -104,7 +108,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             .subscribe({ sellerProfile = it.dataToUiSeller()
                        days = getDays(sellerProfile.marketList[0])
                        },
-                { it.printStackTrace() }).addTo(disposable)
+                { it.printStackTrace() }).addTo(disposable2)
 
         dataRepository.setupProductConnection()
             .subscribe({
@@ -114,14 +118,14 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     presentedProduct.value = productData.value!![0]
                 }
             }, { it.printStackTrace() },
-                { Log.d("MainViewModel", "Rx Complete called."); }).addTo(disposable)
+                { Log.d("MainViewModel", "Rx Complete called."); }).addTo(disposable2)
 
         dataRepository.loadBuyerProfile().subscribe({ buyer ->
             buyerProfile = buyer.dataToUiOrder()
             setMarketAndTime()
             }, {
             it.printStackTrace()
-        }).addTo(disposable)
+        }).addTo(disposable2)
 
     }
 
@@ -146,16 +150,22 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     fun resetAmountCount(id: String) {
         productData.value?.first { it.id == id }?.pieceCounter = 0
     }
+    fun resetProductList() {
+        productData.value?.forEach { it.pieceCounter = 0; it.amountCount = 0.0; it.isSelected = false }
+    }
 
-    fun uploadBuyerProfile() {
-        blockingLoaderState.value = UiEvent.Loading(UPLOAD_PROFILE)
+    fun uploadBuyerProfile(giveFeedback: Boolean) {
+        val next = loadingContainer.value!!
+        loadingContainer.value = next.copy(profileUpload = UiEvent.Loading(showProgress = true,
+            autoConsumeResult = !giveFeedback))
         dataRepository.saveBuyerProfile(buyerProfile.uiBuyerProfileToData()).subscribe(
             {
                 setMarketAndTime()
-                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PROFILE)
-
+                val flag = if (giveFeedback) -1 else 0
+                loadingContainer.value = next.copy(profileUpload = UiEvent.Loading(contextId = flag))
             }, {
-                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PROFILE)
+                if (!giveFeedback) loadingContainer.value = next.copy(profileUpload = UiEvent.Loading(exception = it))
+                else loadingContainer.value = next.copy(profileUpload = UiEvent.Loading())
             }
         ).addTo(disposable)
     }
@@ -235,6 +245,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun clearAccount() {
         blockingLoaderState.value = UiEvent.Loading(CLEAR_ACCOUNT)
+        disposable2.clear()
+        resetProductList()
+        basket.value = mutableListOf()
         dataRepository.clearUserData().flatMap {
             FireBaseAuth.deleteAccount().getSingle()
         }.observeOn(AndroidSchedulers.mainThread())

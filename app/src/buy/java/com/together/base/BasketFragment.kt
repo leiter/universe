@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.UiEvent.Companion.SEND_ORDER
@@ -83,9 +84,10 @@ class BasketFragment : DialogFragment() {
             if(viewBinding.ckSetReminder.isChecked){
                 viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex].id
                 viewModel.buyerProfile.defaultTime = viewModel.days[0].getHourAndMinute()
-                viewModel.uploadBuyerProfile()
+                viewModel.uploadBuyerProfile(true)
             }
             viewModel.sendOrder() }
+
 
         viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
         viewBinding.btnHideAppointment.setOnClickListener { showFinalizeDate(false) }
@@ -150,7 +152,7 @@ class BasketFragment : DialogFragment() {
             var toastMsg: String? = null
             when (uiEvent) {
                 is UiEvent.LoadingDone -> {
-                    when (uiEvent.indicator) {
+                    when (uiEvent.contextId) {
                         SEND_ORDER -> {
                             viewBinding.progress.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(SEND_ORDER)
@@ -165,7 +167,7 @@ class BasketFragment : DialogFragment() {
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {
-                            toastMsg = "DiparentFragmente bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
+                            toastMsg = "Die bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
                             viewBinding.progress.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
                                 SEND_ORDER_UPDATED)
@@ -173,13 +175,13 @@ class BasketFragment : DialogFragment() {
                         }
                     }
                     Toast.makeText(
-                        requireContext().applicationContext,
+                        requireContext(),
                         toastMsg, Toast.LENGTH_LONG
                     ).show()
                 }
 
                 is UiEvent.Loading -> {
-                    if (uiEvent.indicator == SEND_ORDER) {
+                    if (uiEvent.contextId == SEND_ORDER) {
                         viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
                     }
                 }

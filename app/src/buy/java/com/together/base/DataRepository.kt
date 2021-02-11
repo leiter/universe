@@ -11,12 +11,13 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
+import java.lang.Exception
 
 
 interface DataRepository {
     fun setupProductConnection(): Observable<Result.Article>
     fun setupProviderConnection(): Single<Result.SellerProfile>
-    fun sendOrder(order: Result.Order, update: Boolean  = false): Single<Boolean>
+    fun sendOrder(order: Result.Order, update: Boolean = false): Single<Boolean>
     fun loadOrders(): Single<List<Result.Order>>
     fun clearUserData(): Single<Boolean>
     fun loadExistingOrder(orderId: String): Single<Result.Order>
@@ -46,14 +47,14 @@ class DataRepositoryImpl : DataRepository {
 
     override fun sendOrder(order: Result.Order, update: Boolean): Single<Boolean> {
         return wrapInConnectionCheck {
-                val date = order.pickUpDate.toOrderId()
-                Database.orders().child(date).getSingleExists().flatMap { exists ->
-                    if (exists.not() || update) {
-                        return@flatMap Database.orders().child(date).setValue(order).getSingle()
-                    } else {
-                        Single.error(AlreadyPlaceOrder())
-                    }
+            val date = order.pickUpDate.toOrderId()
+            Database.orders().child(date).getSingleExists().flatMap { exists ->
+                if (exists.not() || update) {
+                    return@flatMap Database.orders().child(date).setValue(order).getSingle()
+                } else {
+                    Single.error(AlreadyPlaceOrder())
                 }
+            }
         }
     }
 
@@ -63,9 +64,19 @@ class DataRepositoryImpl : DataRepository {
 
     override fun clearUserData(): Single<Boolean> {
         return wrapInConnectionCheck {
-            Database.orders().removeValue().getSingle()
-            .zipWith(Database.buyer().removeValue().getSingle())
-                .map { it.second && it.first } }
+            Database.orders().getSingleExists()
+                .zipWith(Database.buyer().getSingleExists()).flatMap {
+                    when {
+                        it.first && it.second -> {
+                            Database.orders().removeValue().getSingle()
+                                .zipWith(Database.buyer().removeValue().getSingle())
+                        }
+                        it.first -> Database.orders().removeValue().getSingle().zipWith(Single.just(true))
+                        it.second -> Database.buyer().removeValue().getSingle().zipWith(Single.just(true))
+                        else -> Single.just(true).zipWith(Single.just(true))
+                    }
+                }.map { it.second && it.first  }
+        }
     }
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {
@@ -80,15 +91,16 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadBuyerProfile(): Single<Result.BuyerProfile> {
-        return  Database.buyer().getSingleExists().flatMap {
-            if(it) Database.buyer().getSingleValue() else Single.just(Result.BuyerProfile()) }
+        return Database.buyer().getSingleExists().flatMap {
+            if (it) Database.buyer().getSingleValue() else Single.just(Result.BuyerProfile())
+        }
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
     }
 
     private inline fun <reified T> wrapInConnectionCheck(crossinline func: () -> Single<T>): Single<T> {
         return Database.connectedStatus().checkConnected().subscribeOn(Schedulers.io())
-            .flatMap { if(it) func(); else Single.error(NoInternetConnection()) }
+            .flatMap { if (it) func(); else Single.error(NoInternetConnection()) }
     }
 
 }

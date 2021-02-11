@@ -106,22 +106,22 @@ class ManageDialog : DialogFragment() {
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
             when (uiEvent) {
                 is UiEvent.LoadingDone -> {
-                    if (uiEvent.indicator == LOAD_OLD_ORDERS) {
+                    if (uiEvent.contextId == LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.GONE
                         viewModel.oldOrders.observe(viewLifecycleOwner, orderObserver)
                         viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(LOAD_OLD_ORDERS)
                     }
-                    if (uiEvent.indicator == CLEAR_ACCOUNT) {
+                    if (uiEvent.contextId == CLEAR_ACCOUNT) {
                         viewBinding.prLogOut.visibility = View.GONE
                         viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(CLEAR_ACCOUNT)
                         dismiss()
                     }
                 }
                 is UiEvent.Loading -> {
-                    if (uiEvent.indicator == LOAD_OLD_ORDERS) {
+                    if (uiEvent.contextId == LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.VISIBLE
                     }
-                    if (uiEvent.indicator == CLEAR_ACCOUNT) {
+                    if (uiEvent.contextId == CLEAR_ACCOUNT) {
                         viewBinding.prLogOut.visibility = View.VISIBLE
                     }
                 }
