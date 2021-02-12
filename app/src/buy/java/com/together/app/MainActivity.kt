@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onResume() {  // refine here
+    override fun onResume() {  // TODO refine here
         super.onResume()
         if(hasInternet()){
             viewModel.refreshData()

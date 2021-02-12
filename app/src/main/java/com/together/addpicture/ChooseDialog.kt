@@ -3,6 +3,8 @@ package com.together.addpicture
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -37,14 +39,22 @@ class ChooseDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
-        val view = requireActivity().layoutInflater.inflate(R.layout.choose_source, null as ViewGroup?)
-        viewBinding.captureImage.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
-        viewBinding.btnWriteMsg.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
-        viewBinding.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
-        viewBinding.btnShowInfo.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO); dismiss() }
-        builder.setView(view)
+        builder.setView(viewBinding.root)
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)
         return dialog
     }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        viewBinding.captureImage.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
+        viewBinding.btnWriteMsg.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
+        viewBinding.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
+        viewBinding.btnShowInfo.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO); dismiss() }
+        return viewBinding.root
+    }
+
 }

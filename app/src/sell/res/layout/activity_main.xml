@@ -52,25 +52,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:padding="16dp"
-            android:orientation="vertical"
-            android:layout_gravity="bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <include
+            layout="@layout/drawer_log_out_container"
+            android:id="@+id/btn_bottom"
+            />
 
-            <TextView
-                android:id="@+id/log_out"
-                android:textStyle="bold"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:text="Logout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
-
-
+        <include layout="@layout/drawer_log_out_container" />
     </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

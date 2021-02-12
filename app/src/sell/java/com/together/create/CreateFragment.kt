@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.storage.FirebaseStorage
@@ -31,19 +33,23 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     }
 
     private fun makeEditable(edit: Boolean) {
-        viewBinding.productDescription.isEnabled = edit
-        viewBinding.productName.isEnabled = edit
-        viewBinding.productPrice.isEnabled = edit
-        viewBinding.productPriceUnit.isEnabled = edit
-        viewBinding.manageImage.isEnabled = edit
+        with(viewBinding){
+            productDescription.isEnabled = edit
+            productName.isEnabled = edit
+            productPrice.isEnabled = edit
+            productPriceUnit.isEnabled = edit
+            manageImage.isEnabled = edit
+        }
     }
 
     private fun resetProduct() {
-        viewBinding.productDescription.setText("")
-        viewBinding.productName.setText("")
-        viewBinding.productPrice.setText("")
-        viewBinding.productPriceUnit.setText("")
-        viewBinding.image.setImageBitmap(null)
+        with(viewBinding){
+            productDescription.setText("")
+            productName.setText("")
+            productPrice.setText("")
+            productPriceUnit.setText("")
+            image.setImageBitmap(null)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,16 +61,12 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         with(viewBinding) {
 
             saveChanges.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
-
             btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
-
             createFab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
-
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
-
-//            btnDrawerOpen.setOnClickListener {
-//                MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
-//            }
+            btnDrawerOpen.setOnClickListener {
+                MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
+            }
 
             createNewProduct.visibility = View.VISIBLE
             createNewProduct.setOnClickListener { makeEditable(true) }
@@ -94,7 +96,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, {
             if (it is UiEvent.LoadingDone) {
                 viewBinding.loadingIndicator.visibility = View.GONE
-                if (it.indicator == DELETE_PRODUCT) {
+                if (it.contextId == DELETE_PRODUCT) {
                     resetProduct()
                 }
 

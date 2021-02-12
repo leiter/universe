@@ -8,25 +8,27 @@ import com.google.firebase.auth.FirebaseAuth
 import com.together.base.MainMessagePipe
 import com.together.base.UiState
 import com.together.base.UtilsActivity
+import com.together.databinding.ActivityTestContainerBinding
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingle
+import com.together.utils.viewBinding
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.debug.activity_test_container.*
 import java.util.*
 
 class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
 
     private val compositeDisposable = CompositeDisposable()
+    private val viewBinding: ActivityTestContainerBinding by viewBinding(ActivityTestContainerBinding::inflate)
 
     val testData = TestDataHolder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_test_container)
+        setContentView(viewBinding.root)
         compositeDisposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             if (!testData.isGoogleAuth) {
                 when (it) {
@@ -51,19 +53,19 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
     }
 
     private fun setupClicks() {
-        login.setOnClickListener {
+        viewBinding.login.setOnClickListener {
             loading(true)
             FireBaseAuth.loginWithEmailAndPassWord(testData.emailAddress, testData.passWord)
         }
-        create_account.setOnClickListener {
+        viewBinding.createAccount.setOnClickListener {
             loading(true)
             FireBaseAuth.createAccountWithEmailAndPassword(testData.emailAddress, testData.passWord)
         }
-        logout.setOnClickListener { loading(true); FireBaseAuth.logOut() }
-        upload_seller_profile.setOnClickListener { setupSellerProfile() }
-        upload_products.setOnClickListener { uploadList() }
-        delete_user.setOnClickListener { loading(true); FireBaseAuth.deleteAccount() }
-        login_google.setOnClickListener { loading(true); UtilsActivity.startGoogleSigning(this) }
+        viewBinding.logout.setOnClickListener { loading(true); FireBaseAuth.logOut() }
+        viewBinding.uploadSellerProfile.setOnClickListener { setupSellerProfile() }
+        viewBinding.uploadProducts.setOnClickListener { uploadList() }
+        viewBinding.deleteUser.setOnClickListener { loading(true); FireBaseAuth.deleteAccount() }
+        viewBinding.loginGoogle.setOnClickListener { loading(true); UtilsActivity.startGoogleSigning(this) }
     }
 
     private fun uploadList() {
@@ -96,7 +98,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
     }
 
     private fun loading(show: Boolean) {
-        load_indicator.visibility = if (show) View.VISIBLE else View.GONE
+        viewBinding.loadIndicator.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {

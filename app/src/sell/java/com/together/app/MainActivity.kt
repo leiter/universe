@@ -25,6 +25,7 @@ import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.create.CreateFragment
+import com.together.databinding.ActivityMainBinding
 import com.together.loggedout.LoginFragment
 import com.together.profile.ProfileFragment
 import com.together.repository.Database
@@ -32,9 +33,9 @@ import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
 import com.together.utils.hideIme
+import com.together.utils.viewBinding
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.sell.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
+
+    private val viewBinding : ActivityMainBinding by viewBinding (ActivityMainBinding::inflate)
 
     private val disposable = CompositeDisposable()
 
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(viewBinding.root)
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
 //                .replace(R.id.container, ProductsFragment()).commit()
@@ -82,17 +85,17 @@ class MainActivity : AppCompatActivity() {
                 is UiState.BaseAuth -> {
                     Database.sellerProfile("", true).getSingleExists().subscribe({ exists ->
                         if (exists) {
-                            setLoggedIn(navigation_drawer, log_out)
-                            disposable.add(setupDrawerNavigation(navigation_drawer, drawer_layout))
+                            setLoggedIn(viewBinding.navigationDrawer)
+                            disposable.add(setupDrawerNavigation())
                             MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
                                 supportFragmentManager, CreateFragment(),CreateFragment.TAG))
                             disposable.add(
-                                log_out.clicks().subscribe {
-                                    drawer_layout.closeDrawers()
+                                viewBinding.btnBottom.logOut.clicks().subscribe {
+                                    viewBinding.drawerLayout.closeDrawers()
                                     MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
                                 })
                         } else {
-                            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                            viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                             MainMessagePipe.uiEvent.onNext(
                                 UiEvent.ReplaceFragment(supportFragmentManager,
                                     ProfileFragment(), ProfileFragment.TAG)
@@ -100,6 +103,7 @@ class MainActivity : AppCompatActivity() {
 
                         }
                     }, {
+
                         MainMessagePipe.uiEvent.onNext(
                             UiEvent.ShowToast(baseContext, R.string.developer_error_hint, Gravity.TOP)
                         )
@@ -108,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 is UiState.LoggedOut -> {
-                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                     MainMessagePipe.uiEvent.onNext(
                         UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")
                     )
@@ -120,15 +124,15 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is UiEvent.DrawerState -> {
                     if (it.gravity == Gravity.START) {
-                        container.hideIme()
-                        drawer_layout.openDrawer(navigation_drawer)
-                    } else drawer_layout.closeDrawers()
+                        viewBinding.container.hideIme()
+                        viewBinding.drawerLayout.openDrawer(viewBinding.navigationDrawer)
+                    } else viewBinding.drawerLayout.closeDrawers()
                 }
                 is UiEvent.LockDrawer -> {
-                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                 }
                 is UiEvent.UnlockDrawer -> {
-                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                    viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 }
             }
         })
@@ -164,44 +168,45 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            drawer_layout.isDrawerOpen(GravityCompat.START) -> {
-                drawer_layout.closeDrawer(GravityCompat.START)
+            viewBinding.drawerLayout.isDrawerOpen(GravityCompat.START) -> {
+                viewBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 return
             }
             supportFragmentManager.backStackEntryCount == 0 -> {
                 moveTaskToBack(true)
-                container.clearFocus()
+                viewBinding.container.clearFocus()
             }
             else -> super.onBackPressed()
         }
     }
 
-    private fun setupDrawerNavigation(navigationItemView: NavigationView, drawer: DrawerLayout): Disposable {
+    private fun setupDrawerNavigation(): Disposable {
 
-        return navigationItemView.itemSelections().subscribe {
+        return viewBinding.navigationDrawer.itemSelections().subscribe {
             when (it.itemId) {
                 R.id.drawer_nav_1 -> {
+
 
                 }
 
                 R.id.drawer_nav_4 -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.AddFragment(
+                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
                         supportFragmentManager,
                         AboutFragment(), AboutFragment.TAG))
                 }
 
             }
-            drawer.closeDrawers()
+            viewBinding.drawerLayout.closeDrawers()
         }
     }
 
-    private fun setLoggedIn(navigation_drawer: NavigationView, logOut: View) {
+    private fun setLoggedIn(navigation_drawer: NavigationView) {
         val user = FireBaseAuth.getAuth().currentUser!!
         val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)
         head.findViewById<Button>(R.id.log_in).visibility = View.GONE
         avatar.visibility = View.VISIBLE
-        logOut.visibility = View.VISIBLE
+        viewBinding.btnBottom.logOut.visibility = View.VISIBLE
         head.findViewById<TextView>(R.id.user_email).text = user.email
         head.findViewById<TextView>(R.id.user_name).text = user.displayName
 

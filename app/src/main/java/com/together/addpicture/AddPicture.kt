@@ -181,7 +181,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
                     activity.finish()
                 }
             }
-        }
+        } else activity.finish()
     }
 
 

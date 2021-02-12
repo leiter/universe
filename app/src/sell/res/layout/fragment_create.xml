@@ -237,7 +237,7 @@
         android:layout_height="wrap_content"
         android:checked="false"
         android:text="Artikel ist verfügbar"
-        android:textColor="@color/brightGreen"
+        android:textColor="@color/fab_green"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/product_discount_layout"
         app:layout_constraintEnd_toEndOf="@+id/product_price_unit_layout"
