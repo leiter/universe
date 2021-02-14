@@ -70,6 +70,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -81,14 +83,16 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.loggedState.observe(this, {
             when (it) {
-
                 is UiState.BaseAuth -> {
                     Database.sellerProfile("", true).getSingleExists().subscribe({ exists ->
                         if (exists) {
                             setLoggedIn(viewBinding.navigationDrawer)
                             disposable.add(setupDrawerNavigation())
-                            MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-                                supportFragmentManager, CreateFragment(),CreateFragment.TAG))
+                            MainMessagePipe.uiEvent.onNext(
+                                UiEvent.ReplaceFragment(
+                                    supportFragmentManager, CreateFragment(), CreateFragment.TAG
+                                )
+                            )
                             disposable.add(
                                 viewBinding.btnBottom.logOut.clicks().subscribe {
                                     viewBinding.drawerLayout.closeDrawers()
@@ -97,15 +101,21 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                             MainMessagePipe.uiEvent.onNext(
-                                UiEvent.ReplaceFragment(supportFragmentManager,
-                                    ProfileFragment(), ProfileFragment.TAG)
+                                UiEvent.ReplaceFragment(
+                                    supportFragmentManager,
+                                    ProfileFragment(), ProfileFragment.TAG
+                                )
                             )
 
                         }
                     }, {
 
                         MainMessagePipe.uiEvent.onNext(
-                            UiEvent.ShowToast(baseContext, R.string.developer_error_hint, Gravity.TOP)
+                            UiEvent.ShowToast(
+                                baseContext,
+                                R.string.developer_error_hint,
+                                Gravity.TOP
+                            )
                         )
 
                     })
@@ -141,6 +151,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+
         if (intent != null && intent.action == packageName + LOGIN_ACTION) {
             startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
         }
@@ -190,9 +201,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.drawer_nav_4 -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-                        supportFragmentManager,
-                        AboutFragment(), AboutFragment.TAG))
+                    MainMessagePipe.uiEvent.onNext(
+                        UiEvent.ReplaceFragment(
+                            supportFragmentManager,
+                            AboutFragment(), AboutFragment.TAG
+                        )
+                    )
                 }
 
             }

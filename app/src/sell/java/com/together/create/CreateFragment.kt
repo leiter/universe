@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -57,9 +56,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
         adapter = ProductAdapter(this)
 
-
         with(viewBinding) {
-
             saveChanges.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
             btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
             createFab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
@@ -96,9 +93,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, {
             if (it is UiEvent.LoadingDone) {
                 viewBinding.loadingIndicator.visibility = View.GONE
-                if (it.contextId == DELETE_PRODUCT) {
-                    resetProduct()
-                }
+                if (it.contextId == DELETE_PRODUCT) { resetProduct() }
 
             } else {
                 viewBinding.loadingIndicator.visibility = View.VISIBLE
@@ -187,12 +182,14 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     }
 
     private fun writeToNewProduct() {
-        viewModel.editProduct.value?.productName = viewBinding.productName.text.toString()
-        viewModel.editProduct.value?.productDescription =
-            viewBinding.productDescription.text.toString()
-        viewModel.editProduct.value?.pricePerUnit = viewBinding.productPrice.text.toString()
-        viewModel.editProduct.value?.unit = viewBinding.productPriceUnit.text.toString()
-        viewModel.editProduct.value?.available = viewBinding.articleAvailable.isChecked
+        with(viewModel.editProduct){
+           value?.productName = viewBinding.productName.text.toString()
+           value?.productDescription = viewBinding.productDescription.text.toString()
+           value?.pricePerUnit = viewBinding.productPrice.text.toString()
+           value?.unit = viewBinding.productPriceUnit.text.toString()
+           value?.available = viewBinding.articleAvailable.isChecked
+        }
+
     }
 
     override fun onDestroyView() {

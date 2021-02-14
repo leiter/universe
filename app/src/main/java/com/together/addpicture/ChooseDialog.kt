@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.together.R
 import com.together.databinding.ChooseSourceBinding
 import com.together.utils.viewBinding
 import io.reactivex.subjects.PublishSubject
@@ -32,10 +31,9 @@ class ChooseDialog : DialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        super.onCancel(dialog)
         actionChannel.onNext(Action.CANCEL_ADD_PICTURE)
+        super.onCancel(dialog)
     }
-
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())

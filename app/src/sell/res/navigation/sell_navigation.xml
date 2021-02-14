@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sell_navigation"
+    app:startDestination="@id/createFragment">
+
+    <fragment
+        android:id="@+id/createFragment"
+        android:name="com.together.create.CreateFragment"
+        android:label="fragment_create" />
+    <dialog
+        android:id="@+id/chooseDialog"
+        android:name="com.together.addpicture.ChooseDialog"
+        android:label="ChooseDialog" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.together.loggedout.LoginFragment"
+        android:label="LoginFragment" />
+
+
+</navigation>

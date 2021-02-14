@@ -7,11 +7,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -35,16 +38,22 @@ import java.util.*
 interface AddPicture {
     fun startAddPhoto(): Disposable
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    )
 }
 
 class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
-    private lateinit var dialogFragment: ChooseDialog
+    private var dialogFragment: ChooseDialog? = null
 
     private lateinit var actions: PublishSubject<ChooseDialog.Action>
 
     private lateinit var currentImageFile: File
+
+    private lateinit var fileUri: Uri
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -56,17 +65,21 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
             ft.remove(prev).commit()
         }
         dialogFragment = ChooseDialog()
-        dialogFragment.show(activity.supportFragmentManager, ChooseDialog.TAG)
+        dialogFragment?.show(activity.supportFragmentManager, ChooseDialog.TAG)
 
-        actions = dialogFragment.actionChannel
+        actions = dialogFragment!!.actionChannel
 
         return actions.subscribe {
             when (it) {
                 ChooseDialog.Action.TAKE_PICKTURE -> startTakePicture()
                 ChooseDialog.Action.CHOOSE_PICTURE -> startPickImage()
-                ChooseDialog.Action.DELETE_PHOTO -> {          }
-                ChooseDialog.Action.CANCEL_ADD_PICTURE -> activity.finish()
+                ChooseDialog.Action.DELETE_PHOTO -> { }
+                ChooseDialog.Action.CANCEL_ADD_PICTURE -> {
+                    dialogFragment = null
+                    activity.finish()
+                }
             }
+            dialogFragment = null
         }
     }
 
@@ -86,7 +99,8 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     private fun startTakePicture() {
         when (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)) {
             PackageManager.PERMISSION_GRANTED -> startCamera()
-            else -> ActivityCompat.requestPermissions(activity,
+            else -> ActivityCompat.requestPermissions(
+                activity,
                 arrayOf(Manifest.permission.CAMERA),
                 REQUEST_TAKE_PICTURE_PERMISSION
             )
@@ -104,7 +118,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
                         return
                     }
                     file?.also {
-                        val fileUri: Uri = FileProvider.getUriForFile(
+                        fileUri = FileProvider.getUriForFile(
                             activity, activity.packageName, it
                         )
                         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
@@ -115,26 +129,40 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         if (permissions.size == 1 &&
             requestCode == REQUEST_PIC_PICTURE_PERMISSION &&
             permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {         startPickIntent()       }
-        else activity.finish()
+        ) {
+            startPickIntent()
+        } else {
+            dialogFragment = null
+            activity.finish()
+        }
 
         if (permissions.size == 1 &&
-            (requestCode == REQUEST_TAKE_PICTURE_PERMISSION || requestCode==65758) &&  //todo
+            (requestCode == REQUEST_TAKE_PICTURE_PERMISSION || requestCode == 65758) &&  //todo
             permissions[0] == Manifest.permission.CAMERA &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {         startCamera()       }
-        else activity.finish()
+        ) {
+            startCamera()
+        } else {
+            dialogFragment = null
+            activity.finish()
+        }
     }
-    fun getPathFromURI(contentUri: Uri ): String {
+
+    fun getPathFromURI(contentUri: Uri): String {
         var res: String? = null
         val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor : Cursor? = activity.contentResolver.query(
-            contentUri, proj, "", null, "")
+        val cursor: Cursor? = activity.contentResolver.query(
+            contentUri, proj, "", null, ""
+        )
         if (cursor?.moveToFirst()!!) {
             val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
             res = cursor.getString(column_index)
@@ -145,17 +173,22 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val fileUri: Uri
+
             if (requestCode == REQUEST_TAKE_PICTURE) {
-                fileUri = FileProvider.getUriForFile(activity, activity.packageName, currentImageFile)
-                compositeDisposable.add(Single.just(fileUri).subscribeOn(Schedulers.io()).map {
-                    val orgBitmap = MediaStore.Images.Media.getBitmap(activity.contentResolver, fileUri)
-                    rotateImageIfNeeded(orgBitmap, fileUri)?.compress(
-                        Bitmap.CompressFormat.PNG, 100, FileOutputStream(currentImageFile))
-                    orgBitmap.recycle()
+                compositeDisposable.add(
+                    Single.fromCallable {
+                        val orgBitmap =
+                            MediaStore.Images.Media.getBitmap(activity.contentResolver, fileUri)
+                        rotateImageIfNeeded(orgBitmap, fileUri).compress(
+                            Bitmap.CompressFormat.JPEG, 100, FileOutputStream(currentImageFile)
+                        )
+                        orgBitmap.recycle()
+
+                    }.subscribeOn(Schedulers.io()).map {
 
                 }.observeOn(AndroidSchedulers.mainThread()).subscribe({
                     val image = Result.NewImageCreated(fileUri)
+                    dialogFragment = null
                     MainMessagePipe.mainThreadMessage.onNext(image)
                     activity.finish()
                 }, {
@@ -178,17 +211,23 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 //                    val image = Result.NewImageCreated(fileUri)
                     val image = Result.NewImageCreated(data.data)
                     MainMessagePipe.mainThreadMessage.onNext(image)
+                    dialogFragment = null
                     activity.finish()
                 }
             }
-        } else activity.finish()
+        } else {
+            dialogFragment = null
+            activity.finish()
+        }
     }
-
 
 
     private fun getRotation(inputStream: InputStream): Int {
         val exif = ExifInterface(inputStream)
-        return when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)) {
+        return when (exif.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_180 -> 180
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -197,25 +236,33 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     }
 
 
-    private fun rotateImageIfNeeded(img: Bitmap, selectedImg: Uri) : Bitmap? {
+    private fun rotateImageIfNeeded(img: Bitmap, selectedImg: Uri): Bitmap {
         val inputStream = activity.contentResolver.openInputStream(selectedImg)
-        val ei : ExifInterface = if (Build.VERSION.SDK_INT > 23 && inputStream != null) {
+
+        val ei: ExifInterface = if (Build.VERSION.SDK_INT > 23 && inputStream != null) {
             ExifInterface(inputStream)
         } else {
             ExifInterface(selectedImg.path!!)
         }
-        return when (ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)){
+
+        return when (ei.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL
+        )) {
             ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90F)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img,180F)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img,270F)
-            else -> null
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180F)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270F)
+            else -> img
         }
     }
 
-    private fun rotateImage(bitMap: Bitmap, degree: Float) : Bitmap {
+    private fun rotateImage(bitMap: Bitmap, degree: Float): Bitmap {
         val m = Matrix(); m.postRotate(degree)
-        return Bitmap.createBitmap(bitMap,0,0,
-            bitMap.width, bitMap.height,m, true)
+
+        return Bitmap.createBitmap(
+            bitMap, 0, 0,
+            bitMap.width, bitMap.height, m, true
+        )
     }
 
     private fun createFile(context: Context, tmpName: String = someString()): File {
@@ -235,8 +282,10 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
     }
 
     private fun startPickImage() {
-        when (ContextCompat.checkSelfPermission(activity,
-            Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        when (ContextCompat.checkSelfPermission(
+            activity,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )) {
             PackageManager.PERMISSION_GRANTED -> startPickIntent()
             else -> {
                 ActivityCompat.requestPermissions(

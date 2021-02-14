@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".app.MainActivity"
     >
 
     <RelativeLayout

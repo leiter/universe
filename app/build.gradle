@@ -3,15 +3,14 @@ apply plugin: 'com.google.gms.oss.licenses.plugin'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 apply plugin: 'kotlin-android-extensions'
-//apply plugin: "androidx.navigation.safeargs.kotlin"
-//apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'dagger.hilt.android.plugin'
 
 androidExtensions {
     experimental = true
 }
 
 android {
-    compileSdkVersion 29
     defaultConfig {
         applicationId "com.together"
         minSdkVersion 21
@@ -71,6 +70,18 @@ android {
         exclude 'META-INF/NOTICE'
     }
 
+    sourceSets {
+        buy {
+            java.srcDirs = [ 'src/main/java', 'src/buy/java']
+        }
+
+        sell {
+            java.srcDirs = [ 'src/main/java', 'src/sell/java']
+        }
+
+
+    }
+
     flavorDimensions("basic")
     productFlavors {
 
@@ -78,11 +89,14 @@ android {
             dimension = "basic"
             applicationIdSuffix ".sell"
             targetSdkVersion 29
+            compileSdkVersion 29
+
         }
         buy {
             dimension = "basic"
             applicationIdSuffix ".buy"
             versionCode 15
+            compileSdkVersion 30
             targetSdkVersion 30
             signingConfig signingConfigs.release
         }
@@ -129,8 +143,8 @@ dependencies {
 
 
     //Dagger - Hilt
-//    implementation "com.google.dagger:hilt-android:2.28-alpha"
-//    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+    implementation "com.google.dagger:hilt-android:2.28-alpha"
+    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
 
     implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
     implementation "com.google.firebase:firebase-core:18.0.2"

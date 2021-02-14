@@ -4,7 +4,10 @@ import android.app.Application
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.together.BuildConfig
+import dagger.hilt.android.HiltAndroidApp
 
+
+//@HiltAndroidApp
 class App : Application(){
 
     override fun onCreate() {
