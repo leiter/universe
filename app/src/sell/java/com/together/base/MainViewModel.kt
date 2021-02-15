@@ -34,7 +34,7 @@ fun MutableList<UiState.Article>.addItem(
             }
         }
     }
-    productData.value = this.toSet().toMutableList()
+    productData.value = this.toMutableList()
 }
 
 class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {

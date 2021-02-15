@@ -2,6 +2,7 @@ package com.together.profile
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.MarketDialog
@@ -76,11 +77,14 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
         viewModel.blockingLoaderState.observe(viewLifecycleOwner) {
             when (it ) {
-                is UiEvent.LoadingDone ->  viewBinding.loadingIndicator.visibility = View.GONE
+                is UiEvent.LoadingDone ->  {
+                    viewBinding.loadingIndicator.visibility = View.GONE
+                }
                 is UiEvent.Loading -> viewBinding.loadingIndicator.visibility = View.VISIBLE
                 is UiEvent.ShowCreateFragment -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-                        requireActivity().supportFragmentManager, CreateFragment(), CreateFragment.TAG))
+                    viewBinding.loadingIndicator.visibility = View.GONE
+                    viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(-1)
+                    findNavController().navigate(R.id.createFragment)
                 }
             }
         }

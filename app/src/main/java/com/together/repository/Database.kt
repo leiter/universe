@@ -33,5 +33,6 @@ object Database {
     init {
         fire().setPersistenceEnabled(true)
         orders().keepSynced(true)
+        sellerProfile("").keepSynced(true)
     }
 }

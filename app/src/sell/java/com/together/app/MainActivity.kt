@@ -13,27 +13,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationView
-import com.jakewharton.picasso.OkHttp3Downloader
 import com.jakewharton.rxbinding3.material.itemSelections
 import com.jakewharton.rxbinding3.view.clicks
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.about.AboutFragment
 import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
-import com.together.create.CreateFragment
 import com.together.databinding.ActivityMainBinding
-import com.together.loggedout.LoginFragment
-import com.together.profile.ProfileFragment
 import com.together.repository.Database
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import com.together.utils.viewBinding
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
@@ -43,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
+
 
     private val viewBinding : ActivityMainBinding by viewBinding (ActivityMainBinding::inflate)
 
@@ -61,16 +60,7 @@ class MainActivity : AppCompatActivity() {
             }
             context.startActivity(i)
         }
-
-        fun reStart(context: Context) {
-            val i = Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context.startActivity(i)
-        }
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -81,32 +71,27 @@ class MainActivity : AppCompatActivity() {
 //                .replace(R.id.container, ProductsFragment()).commit()
 //        }
 
+        NavigationUI.setupWithNavController(viewBinding.navigationView,findNavController(R.id.navigation_controller))
+
+
+
         viewModel.loggedState.observe(this, {
             when (it) {
                 is UiState.BaseAuth -> {
-                    Database.sellerProfile("", true).getSingleExists().subscribe({ exists ->
+                    Database.sellerProfile("", true).getSingleExists().observeOn(AndroidSchedulers.mainThread()).subscribe({ exists ->
                         if (exists) {
-                            setLoggedIn(viewBinding.navigationDrawer)
+                            setLoggedIn(viewBinding.navigationView)
                             disposable.add(setupDrawerNavigation())
-                            MainMessagePipe.uiEvent.onNext(
-                                UiEvent.ReplaceFragment(
-                                    supportFragmentManager, CreateFragment(), CreateFragment.TAG
-                                )
-                            )
-                            disposable.add(
-                                viewBinding.btnBottom.logOut.clicks().subscribe {
-                                    viewBinding.drawerLayout.closeDrawers()
-                                    MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
-                                })
+                            viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+//                            disposable.add(
+//                                viewBinding.btnBottom.logOut.clicks().subscribe {
+//                                    viewBinding.drawerLayout.closeDrawers()
+//                                    MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
+//                                })
                         } else {
                             viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                            MainMessagePipe.uiEvent.onNext(
-                                UiEvent.ReplaceFragment(
-                                    supportFragmentManager,
-                                    ProfileFragment(), ProfileFragment.TAG
-                                )
-                            )
-
+//                            findNavController(R.id.navigation_controller)
+//                                .navigate(R.id.profileFragment)
                         }
                     }, {
 
@@ -123,9 +108,8 @@ class MainActivity : AppCompatActivity() {
 
                 is UiState.LoggedOut -> {
                     viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                    MainMessagePipe.uiEvent.onNext(
-                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")
-                    )
+                    findNavController(R.id.navigation_controller)
+                        .navigate(R.id.loginFragment)
                 }
             }
         })
@@ -135,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                 is UiEvent.DrawerState -> {
                     if (it.gravity == Gravity.START) {
                         viewBinding.container.hideIme()
-                        viewBinding.drawerLayout.openDrawer(viewBinding.navigationDrawer)
+                        viewBinding.drawerLayout.openDrawer(viewBinding.navigationView)
                     } else viewBinding.drawerLayout.closeDrawers()
                 }
                 is UiEvent.LockDrawer -> {
@@ -166,11 +150,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-//                viewModel.loggedState.value = UiState.BASE_AUTH
+                viewModel.loggedState.value = UiState.BaseAuth(UiState.BuyerProfile())
             } else {
-                MainMessagePipe.uiEvent.onNext(
-                    UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "wer")
-                )
+                findNavController(R.id.navigation_controller).navigate(R.id.loginFragment)
             }
         } else {
             moveTaskToBack(true)
@@ -183,35 +165,20 @@ class MainActivity : AppCompatActivity() {
                 viewBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 return
             }
-            supportFragmentManager.backStackEntryCount == 0 -> {
+            findNavController(R.id.navigation_controller).currentDestination!!.id ==
+                    R.id.createFragment -> {
                 moveTaskToBack(true)
-                viewBinding.container.clearFocus()
+                return
             }
             else -> super.onBackPressed()
         }
     }
 
     private fun setupDrawerNavigation(): Disposable {
-
-        return viewBinding.navigationDrawer.itemSelections().subscribe {
-            when (it.itemId) {
-                R.id.drawer_nav_1 -> {
-
-
-                }
-
-                R.id.drawer_nav_4 -> {
-                    MainMessagePipe.uiEvent.onNext(
-                        UiEvent.ReplaceFragment(
-                            supportFragmentManager,
-                            AboutFragment(), AboutFragment.TAG
-                        )
-                    )
-                }
-
-            }
+        return viewBinding.navigationView.itemSelections().subscribe ({
+            NavigationUI.onNavDestinationSelected(it, findNavController(R.id.navigation_controller))
             viewBinding.drawerLayout.closeDrawers()
-        }
+        },{ it.printStackTrace() })
     }
 
     private fun setLoggedIn(navigation_drawer: NavigationView) {
@@ -221,12 +188,15 @@ class MainActivity : AppCompatActivity() {
         head.findViewById<Button>(R.id.log_in).visibility = View.GONE
         avatar.visibility = View.VISIBLE
         viewBinding.btnBottom.logOut.visibility = View.VISIBLE
+        viewBinding.btnBottom.logOut.setOnClickListener {
+            viewBinding.drawerLayout.closeDrawers()
+            MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
+        }
         head.findViewById<TextView>(R.id.user_email).text = user.email
         head.findViewById<TextView>(R.id.user_name).text = user.displayName
-
         user.photoUrl?.let {
-            val p = Picasso.Builder(avatar.context).downloader(OkHttp3Downloader(avatar.context)).build()
-            p.load(user.photoUrl).placeholder(R.drawable.ic_avatar_placeholder_24dp).into(avatar)
+            Picasso.with(this).load(user.photoUrl)
+                .placeholder(R.drawable.ic_avatar_placeholder_24dp).into(avatar)
         }
     }
 

@@ -3,7 +3,7 @@
 
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/drawer_nav_1"
+                android:id="@+id/createFragment"
                 android:icon="@drawable/ic_avatar_placeholder_24dp"
                 android:title="@string/nav_title_1"
                 />
@@ -21,7 +21,7 @@
                 />
 
         <item
-                android:id="@+id/drawer_nav_4"
+                android:id="@id/action_createFragment_to_aboutFragment"
                 android:icon="@drawable/ic_info_outline"
                 android:title="@string/nav_title_4"
                 />

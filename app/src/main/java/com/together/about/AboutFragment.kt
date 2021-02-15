@@ -2,23 +2,27 @@ package com.together.about
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.together.R
+import com.together.base.BaseFragment
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.databinding.FragmentAboutBinding
 import com.together.utils.viewBinding
 
-class AboutFragment : Fragment() {
+class AboutFragment : BaseFragment(R.layout.fragment_about) {
 
     private val viewBinding: FragmentAboutBinding by viewBinding { FragmentAboutBinding.bind(requireView()) }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.btnSettings.setOnClickListener { showPopup() }
-        viewBinding.backButton.setOnClickListener { activity?.onBackPressed() }
+        viewBinding.backButton.setOnClickListener {
+            findNavController().navigate(R.id.createFragment) }
+
     }
 
     companion object {

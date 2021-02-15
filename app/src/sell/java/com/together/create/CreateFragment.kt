@@ -95,8 +95,11 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 viewBinding.loadingIndicator.visibility = View.GONE
                 if (it.contextId == DELETE_PRODUCT) { resetProduct() }
 
-            } else {
+            } else if(it is UiEvent.Loading) {
                 viewBinding.loadingIndicator.visibility = View.VISIBLE
+            } else {
+                viewBinding.loadingIndicator.visibility = View.GONE
+
             }
         })
 

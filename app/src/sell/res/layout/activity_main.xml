@@ -9,9 +9,7 @@
     android:layout_height="match_parent">
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"
@@ -21,7 +19,7 @@
 
 
             <fragment
-                android:id="@+id/navigation_host"
+                android:id="@+id/navigation_controller"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 app:navGraph="@navigation/sell_navigation"
                 app:defaultNavHost="true"
@@ -45,19 +43,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"/>
 
-
-
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
-    </FrameLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:layout_gravity="start"
-        android:id="@+id/navigation_drawer"
+        android:id="@+id/navigation_view"
         app:headerLayout="@layout/navigation_header_view"
         app:menu="@menu/drawer_menu"
         android:layout_width="wrap_content"
