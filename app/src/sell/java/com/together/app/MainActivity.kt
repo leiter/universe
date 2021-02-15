@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -17,7 +18,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding3.material.itemSelections
-import com.jakewharton.rxbinding3.view.clicks
 import com.squareup.picasso.Picasso
 import com.together.R
 import com.together.base.MainMessagePipe
@@ -38,10 +38,7 @@ import io.reactivex.disposables.Disposable
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
-    }
-
+    private val viewModel: MainViewModel by viewModels()
 
     private val viewBinding : ActivityMainBinding by viewBinding (ActivityMainBinding::inflate)
 
@@ -73,25 +70,17 @@ class MainActivity : AppCompatActivity() {
 
         NavigationUI.setupWithNavController(viewBinding.navigationView,findNavController(R.id.navigation_controller))
 
-
-
         viewModel.loggedState.observe(this, {
             when (it) {
                 is UiState.BaseAuth -> {
-                    Database.sellerProfile("", true).getSingleExists().observeOn(AndroidSchedulers.mainThread()).subscribe({ exists ->
+                    Database.sellerProfile("", true).getSingleExists()
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe({ exists ->
                         if (exists) {
                             setLoggedIn(viewBinding.navigationView)
                             disposable.add(setupDrawerNavigation())
                             viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-//                            disposable.add(
-//                                viewBinding.btnBottom.logOut.clicks().subscribe {
-//                                    viewBinding.drawerLayout.closeDrawers()
-//                                    MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
-//                                })
                         } else {
                             viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-//                            findNavController(R.id.navigation_controller)
-//                                .navigate(R.id.profileFragment)
                         }
                     }, {
 

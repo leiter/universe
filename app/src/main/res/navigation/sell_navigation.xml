@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/createFragment"
         android:name="com.together.create.CreateFragment"
+        tools:layout="@layout/fragment_create"
         android:label="fragment_create" >
         <action
             android:id="@+id/action_createFragment_to_aboutFragment"
@@ -25,10 +26,12 @@
     <dialog
         android:id="@+id/chooseDialog"
         android:name="com.together.addpicture.ChooseDialog"
+        tools:layout="@layout/choose_source"
         android:label="ChooseDialog" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.together.loggedout.LoginFragment"
+        tools:layout="@layout/fragment_login"
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_createFragment"

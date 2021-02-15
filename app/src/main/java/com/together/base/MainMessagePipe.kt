@@ -5,7 +5,6 @@ import android.view.Gravity
 import androidx.transition.Fade
 import androidx.transition.Slide
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.together.BuildConfig
 import com.together.R
 import com.together.app.MainActivity
 import com.together.repository.Result
@@ -26,7 +25,7 @@ object MainMessagePipe {
                 }
                 is UiEvent.LogOut -> {
                     //fixme
-                    if (BuildConfig.APPLICATION_ID=="com.together.sell")FireBaseAuth.logOut()
+                    FireBaseAuth.logOut()
                 }
 
                 is UiEvent.ShowToast -> {

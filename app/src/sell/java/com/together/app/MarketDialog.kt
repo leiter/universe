@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.together.base.MainViewModel
 import com.together.base.UiState
@@ -19,7 +20,7 @@ class MarketDialog : DialogFragment() {
     private lateinit var market: UiState.Market
     private lateinit var viewBinding: FragmentDialogsBinding
 
-    val viewModel: MainViewModel by viewModels ({ requireParentFragment() })
+    val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

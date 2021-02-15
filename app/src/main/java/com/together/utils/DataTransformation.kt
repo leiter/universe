@@ -22,6 +22,24 @@ fun Result.Article.dataArticleToUi(): UiState.Article {
     )
 }
 
+fun UiState.Article.uiArticleToData(): Result.Article {
+    return Result.Article(
+        id = this.id,
+        productName = this.productName,
+        imageUrl = this.remoteImageUrl,
+        unit = this.unit,
+        price = pricePerUnit.replace(",",".").toDouble(),
+
+//        priceDigit = this.price,
+        available = this.available,
+        category = this.category,
+        detailInfo = this.detailInfo,
+        searchTerms = "${this.searchTerms},${this.category}",
+        weighPerPiece = this.weightPerPiece,
+        productId = this.productId
+    )
+}
+
 fun Result.SellerProfile.dataToUiSeller(): UiState.SellerProfile {
     return UiState.SellerProfile(
         id = this.id,

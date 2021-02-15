@@ -18,6 +18,7 @@ import com.together.utils.FileUtils
 import com.together.utils.loadImage
 import com.together.utils.viewLifecycleLazy
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import java.io.File
 import java.io.FileOutputStream
@@ -168,7 +169,23 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
 
     private fun createBitmap(imageUri: Uri) {
-        Observable.just(Any()).map {
+//        Observable.just(Any()).map {
+//            val bitmap: Bitmap = Bitmap.createBitmap(
+//                viewBinding.image.width, viewBinding.image.height,
+//                Bitmap.Config.ARGB_8888
+//            )
+//            val canvas = Canvas(bitmap)
+//            viewBinding.image.draw(canvas)
+//            val tmpFile = File.createTempFile("img", "trash")
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
+//            tmpFile
+//        }.subscribe {
+//            updateProduct(Uri.fromFile(it))
+//            imageUri.path?.let { file -> FileUtils.deleteFile(File(file)) }
+//        }.addTo(disposable)
+        writeToNewProduct()
+
+        viewModel.uploadProduct(Single.fromCallable{
             val bitmap: Bitmap = Bitmap.createBitmap(
                 viewBinding.image.width, viewBinding.image.height,
                 Bitmap.Config.ARGB_8888
@@ -176,12 +193,10 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             val canvas = Canvas(bitmap)
             viewBinding.image.draw(canvas)
             val tmpFile = File.createTempFile("img", "trash")
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(tmpFile))
             tmpFile
-        }.subscribe {
-            updateProduct(Uri.fromFile(it))
-            imageUri.path?.let { file -> FileUtils.deleteFile(File(file)) }
-        }.addTo(disposable)
+        })
+
     }
 
     private fun writeToNewProduct() {

@@ -2,10 +2,7 @@ package com.together.about
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.PopupMenu
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.together.R
 import com.together.base.BaseFragment
 import com.together.base.MainMessagePipe
@@ -21,7 +18,9 @@ class AboutFragment : BaseFragment(R.layout.fragment_about) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.btnSettings.setOnClickListener { showPopup() }
         viewBinding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.createFragment) }
+//           if(BuildConfig.FLAVOR=="sell") findNavController().navigate(R.id.createFragment)
+
+        }
 
     }
 

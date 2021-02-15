@@ -23,8 +23,6 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
     private val viewBinding : FragmentProfileBinding by viewLifecycleLazy {
         FragmentProfileBinding.bind(requireView())  }
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(viewBinding){

@@ -1,19 +1,27 @@
 package com.together.base
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.FirebaseApp
+import com.google.firebase.storage.FirebaseStorage
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.base.UiEvent.Companion.UNDEFINED
 import com.together.base.UiEvent.Companion.UPLOAD_PRODUCT
+import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.utils.dataArticleToUi
-import com.together.utils.uiMarketToData
-import com.together.utils.uiSellerToData
+import com.together.repository.storage.getSingle
+import com.together.repository.storage.getTypedSingle
+import com.together.utils.*
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
+import java.io.File
+import java.net.URI
 
 fun MutableList<UiState.Article>.addItem(
     item: UiState.Article,
@@ -126,6 +134,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             val id = it.id
             if(id.isEmpty()) return  // todo msg
             blockingLoaderState.value = UiEvent.Loading(0)
+
             dataRepository.deleteProduct(id)
             .subscribe({success ->
                 if(success) {
@@ -139,6 +148,21 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
             })
         }
+    }
+
+    fun uploadProduct(file: Single<File>) {
+        file.subscribeOn(Schedulers.io()).flatMap {
+           val uri =  Uri.fromFile(it)
+            val dest = FirebaseStorage.getInstance().reference
+                .child("images/tt_${System.currentTimeMillis()}_${newProduct.value!!.uri.lastPathSegment}")
+                dest.putFile(uri).getSingle()
+        }.flatMap {
+            it.metadata?.reference?.downloadUrl?.getTypedSingle()
+        }.map {
+           val newproduct =  editProduct.value!!.uiArticleToData()
+            newproduct.imageUrl = it.toString()
+            newproduct
+        }.map { Database.articles().push().setValue(it) }.subscribe().addTo(disposable)
     }
 
     override fun onCleared() {

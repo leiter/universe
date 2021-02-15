@@ -16,7 +16,6 @@ import com.together.R
 import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
 import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.databinding.ManageDialogBinding
-import com.together.loggedout.LoginFragment
 import com.together.profile.ClientProfileFragment
 import com.together.utils.createBasketUDate
 import io.reactivex.disposables.Disposable
@@ -39,11 +38,11 @@ class ManageDialog : DialogFragment() {
     }
 
     private val clickProfileWhileLoggedOut: (View) -> Unit = {
-        MainMessagePipe.uiEvent.onNext(
-            UiEvent.AddFragment(
-                requireActivity().supportFragmentManager,
-                LoginFragment(), LoginFragment.TAG)
-        ); dismiss()
+//        MainMessagePipe.uiEvent.onNext(
+//            UiEvent.AddFragment(
+//                requireActivity().supportFragmentManager,
+//                LoginFragment(), LoginFragment.TAG)
+//        ); dismiss()
     }
 
     private val clickProfileWhileLoggedIn: (View) -> Unit = {

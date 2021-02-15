@@ -1,7 +1,9 @@
 package com.together.repository.storage
 
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
+import com.google.firebase.storage.UploadTask
 import com.together.repository.Result
 import com.together.repository.Result.Companion.ADDED
 import com.together.repository.Result.Companion.CHANGED
@@ -10,6 +12,7 @@ import com.together.repository.Result.Companion.REMOVED
 import com.together.repository.Result.Companion.UNDEFINED
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.concurrent.CancellationException
 
 
 inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T> {
@@ -210,6 +213,22 @@ fun Task<Void>.getSingle(): Single<Boolean> {
         addOnCanceledListener { emitter.onSuccess(false) }
         addOnFailureListener { emitter.onError(it) }
     }
+}
+inline fun <reified T> Task<T>.getTypedSingle(): Single<T> {
+    return Single.create { emitter ->
+        val onSuccessListener = OnSuccessListener<T> { result ->
+            result?.let { emitter.onSuccess(result) } ?:
+                            emitter.onError(CancellationException("Upload was canceled.")) }
+        addOnSuccessListener(onSuccessListener)
+        addOnCanceledListener { emitter.onError(CancellationException("Upload was canceled.")) }
+        addOnFailureListener { emitter.onError(it) }
 
+    }
 }
 
+
+fun UploadTask.getSingle(): Single<UploadTask.TaskSnapshot> {
+    return Single.create<UploadTask.TaskSnapshot>{ emitter ->
+        addOnSuccessListener { emitter.onSuccess(it) }
+    }
+}
