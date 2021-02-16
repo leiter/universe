@@ -1,29 +1,18 @@
-package com.together.base
+package com.together.data
 
 import android.net.Uri
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 import com.together.repository.Database
-import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.repository.storage.*
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
-import java.lang.Exception
+import com.together.repository.Result
+import com.together.repository.storage.*
 
-interface DataRepositorySell {
-
-    fun setupProductConnection(): Observable<Result.Article>
-    fun uploadSellerProfile(profile: Result.SellerProfile): Single<Boolean>
-    fun deleteProduct(productId: Result.Article): Single<Boolean>
-    fun loadNextOrders(): Single<List<List<Result.Order>>>
-    fun loadSellerProfile(): Single<Result.SellerProfile>
-    fun uploadProduct(file: Single<File>, fileAttached: Boolean,product: Result.Article): Single<Task<Void>>
-
-}
 
 class DataRepositorySellImpl : DataRepositorySell {
 
@@ -42,18 +31,26 @@ class DataRepositorySellImpl : DataRepositorySell {
     override fun deleteProduct(product: Result.Article): Single<Boolean> {
         val location = try {
             FirebaseStorage.getInstance().getReferenceFromUrl(product.imageUrl)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             null
         }
         return location?.delete()?.getSingle()?.flatMap {
-            Database.articles().child(product.id).removeValue().getSingle() }
+            Database.articles().child(product.id).removeValue().getSingle()
+        }
             ?: Database.articles().child(product.id).removeValue().getSingle()
     }
 
-    override fun loadNextOrders(): Single<List<List<Result.Order>>> {
-        Database.nextOrders()
-        val t = listOf(listOf(Result.Order()))
-        return Single.just(t)
+    override fun loadNextOrders(): Single<List<Result.Order>> {
+        return Database.nextOrders().getSingle().map {
+            val result = ArrayList<Result.Order>()
+            it.children.forEach {
+                it.children.forEach { order ->
+                    val i = order.getValue(Result.Order::class.java)
+                    i?.let {  result.add(i) }
+                }
+            }
+            result.sortedByDescending { it.pickUpDate }.reversed()
+        }
     }
 
     override fun loadSellerProfile(): Single<Result.SellerProfile> {
@@ -63,7 +60,11 @@ class DataRepositorySellImpl : DataRepositorySell {
         }
     }
 
-    override fun uploadProduct(file: Single<File>, fileAttached: Boolean,product: Result.Article): Single<Task<Void>> {
+    override fun uploadProduct(
+        file: Single<File>,
+        fileAttached: Boolean,
+        product: Result.Article
+    ): Single<Task<Void>> {
         val start = if (fileAttached)
             file.flatMap {
                 val uri = Uri.fromFile(it)

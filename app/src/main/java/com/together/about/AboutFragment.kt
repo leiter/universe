@@ -5,9 +5,9 @@ import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import com.together.R
-import com.together.base.BaseFragment
-import com.together.base.MainMessagePipe
-import com.together.base.UiEvent
+import com.together.data.BaseFragment
+import com.together.data.MainMessagePipe
+import com.together.data.UiEvent
 import com.together.databinding.FragmentAboutBinding
 import com.together.utils.getIntIdentity
 import com.together.utils.viewBinding

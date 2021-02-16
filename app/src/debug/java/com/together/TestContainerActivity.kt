@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.together.base.MainMessagePipe
-import com.together.base.UiState
-import com.together.base.UtilsActivity
+import com.together.data.MainMessagePipe
+import com.together.data.UiState
+import com.together.data.UtilsActivity
 import com.together.databinding.ActivityTestContainerBinding
 import com.together.repository.Database
 import com.together.repository.Result

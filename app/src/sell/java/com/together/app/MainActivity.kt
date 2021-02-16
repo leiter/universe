@@ -13,17 +13,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding3.material.itemSelections
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.base.MainMessagePipe
-import com.together.base.MainViewModel
-import com.together.base.UiEvent
-import com.together.base.UiState
+import com.together.data.MainMessagePipe
+import com.together.data.MainViewModel
+import com.together.data.UiEvent
+import com.together.data.UiState
 import com.together.databinding.ActivityMainBinding
 import com.together.repository.Database
 import com.together.repository.auth.FireBaseAuth
@@ -179,6 +178,7 @@ class MainActivity : AppCompatActivity() {
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
                 }
+
             }
 
             NavigationUI.onNavDestinationSelected(it, findNavController(R.id.navigation_controller))
@@ -192,8 +192,8 @@ class MainActivity : AppCompatActivity() {
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)
         head.findViewById<Button>(R.id.log_in).visibility = View.GONE
         avatar.visibility = View.VISIBLE
-        viewBinding.btnBottom.logOut.visibility = View.VISIBLE
-        viewBinding.btnBottom.logOut.setOnClickListener {
+        viewBinding.btnBottom.btnContainer.visibility = View.VISIBLE
+        viewBinding.btnBottom.btnContainer.setOnClickListener {
             viewBinding.drawerLayout.closeDrawers()
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         }

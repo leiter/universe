@@ -1,10 +1,8 @@
-package com.together.base
+package com.together.data
 
 import android.app.Application
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
-import com.together.BuildConfig
-import dagger.hilt.android.HiltAndroidApp
 
 
 //@HiltAndroidApp
@@ -23,10 +21,10 @@ class App : Application(){
         val picassoBuild = Picasso.Builder(this)
             .downloader(OkHttp3Downloader(this, Long.MAX_VALUE))
             .build()
-        if(BuildConfig.DEBUG) {
-            picassoBuild.isLoggingEnabled = true
-//            picassoBuild.setIndicatorsEnabled(true)
-        }
+//        if(BuildConfig.DEBUG) {
+//            picassoBuild.isLoggingEnabled = true
+////            picassoBuild.setIndicatorsEnabled(true)
+//        }
         Picasso.setSingletonInstance(picassoBuild)
     }
 }

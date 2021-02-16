@@ -1,4 +1,4 @@
-package com.together.base
+package com.together.data
 
 import android.content.Intent
 import android.view.Gravity

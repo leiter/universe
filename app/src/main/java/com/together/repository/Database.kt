@@ -28,7 +28,12 @@ object Database {
 
     fun orders(): DatabaseReference = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
 
-    fun nextOrders(): DatabaseReference = fire().reference.child(ORDERS)
+    fun nextOrders() = fire().reference.child(ORDERS).orderByKey()
+//        .startAt(1613856816070.toDouble(),"pickUpDate")
+//        .orderByChild("message")
+//        .startAt("kj")
+//        .startAt(0L.toDouble())
+//        .endAt(1613656930701L.toDouble())
 
     fun providerArticles(providerId: String): DatabaseReference  = fire().reference.child(ARTICLES).child(providerId)
 

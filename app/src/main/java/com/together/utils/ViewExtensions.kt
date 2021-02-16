@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.together.base.UiEvent
+import com.together.data.UiEvent
 import com.together.repository.NoInternetConnection
 
 

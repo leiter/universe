@@ -47,7 +47,7 @@
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.together.about.AboutFragment"
-        android:label="fragment_about"
+        android:label="FragmentAbout"
         tools:layout="@layout/fragment_about" >
         <argument
             android:name="navigationId_back_btn"

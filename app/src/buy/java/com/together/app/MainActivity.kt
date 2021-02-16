@@ -89,9 +89,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {  // TODO refine here
         super.onResume()
-        if(hasInternet()){
-            viewModel.refreshData()
-        }
+//        if(hasInternet()){
+//            viewModel.refreshData()
+//        }
     }
 
     private var firstStart = true

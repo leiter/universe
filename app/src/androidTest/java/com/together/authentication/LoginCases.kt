@@ -4,7 +4,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.together.R
-import com.together.base.UiState
+import com.together.data.UiState
 import com.together.utils.BaseTest
 import junit.framework.Assert.*
 import org.junit.Test

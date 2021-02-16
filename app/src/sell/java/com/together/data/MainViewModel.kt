@@ -1,23 +1,18 @@
-package com.together.base
+package com.together.data
 
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.together.base.UiEvent.Companion.DELETE_PRODUCT
-import com.together.base.UiEvent.Companion.UNDEFINED
-import com.together.repository.Database
+import com.together.data.UiEvent.Companion.DELETE_PRODUCT
+import com.together.data.UiEvent.Companion.UNDEFINED
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
-import com.together.repository.storage.getSingle
-import com.together.repository.storage.getTypedSingle
 import com.together.utils.dataArticleToUi
 import com.together.utils.uiArticleToData
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import java.io.File
 
 fun MutableList<UiState.Article>.addItem(
@@ -103,7 +98,7 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
     }
 
     fun loadNextOrders() {
-        dataRepository.loadNextOrders()
+        dataRepository.loadNextOrders().subscribe()
     }
 
     fun deleteProduct() {
