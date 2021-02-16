@@ -3,28 +3,24 @@
 
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/createFragment"
-                android:icon="@drawable/ic_avatar_placeholder_24dp"
-                android:title="@string/nav_title_1"
-                />
+            android:id="@+id/createFragment"
+            android:icon="@drawable/ic_edit_black"
+            android:title="@string/nav_title_1" />
 
         <item
-                android:id="@+id/drawer_nav_2"
-                android:icon="@drawable/ic_group_black"
-                android:title="@string/nav_title_2"
-                />
+            android:id="@+id/action_createFragment_to_profileFragment"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:title="@string/nav_title_2" />
 
         <item
-                android:id="@+id/drawer_nav_3"
-                android:icon="@drawable/ic_settings_black"
-                android:title="@string/nav_title_3"
-                />
+            android:id="@+id/drawer_nav_3"
+            android:icon="@drawable/ic_shopping_basket"
+            android:title="@string/nav_title_3" />
 
         <item
-                android:id="@id/action_createFragment_to_aboutFragment"
-                android:icon="@drawable/ic_info_outline"
-                android:title="@string/nav_title_4"
-                />
+            android:id="@id/action_createFragment_to_aboutFragment"
+            android:icon="@drawable/ic_info_outline"
+            android:title="@string/nav_title_4" />
     </group>
 
 </menu>

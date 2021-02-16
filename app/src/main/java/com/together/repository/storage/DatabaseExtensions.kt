@@ -198,8 +198,6 @@ inline fun <reified T : Result> Query.getSingleList(): Single<List<T>> {
                     it.getValue(T::class.java)!!
                 }
                 emitter.onSuccess(resultList)
-
-
             }
         }
         addListenerForSingleValueEvent(listener)
@@ -228,7 +226,8 @@ inline fun <reified T> Task<T>.getTypedSingle(): Single<T> {
 
 
 fun UploadTask.getSingle(): Single<UploadTask.TaskSnapshot> {
-    return Single.create<UploadTask.TaskSnapshot>{ emitter ->
+    return Single.create { emitter ->
         addOnSuccessListener { emitter.onSuccess(it) }
+        addOnFailureListener { emitter.onError(it) }
     }
 }

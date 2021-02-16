@@ -3,25 +3,39 @@ package com.together.about
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.navigation.fragment.findNavController
 import com.together.R
 import com.together.base.BaseFragment
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.databinding.FragmentAboutBinding
+import com.together.utils.getIntIdentity
 import com.together.utils.viewBinding
 
 class AboutFragment : BaseFragment(R.layout.fragment_about) {
 
     private val viewBinding: FragmentAboutBinding by viewBinding { FragmentAboutBinding.bind(requireView()) }
 
+    private lateinit var flavour: String
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            flavour = it.getString("navigationId_back_btn") ?: ""
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.btnSettings.setOnClickListener { showPopup() }
         viewBinding.backButton.setOnClickListener {
-//           if(BuildConfig.FLAVOR=="sell") findNavController().navigate(R.id.createFragment)
-
+            if(flavour=="createFragment") {  // later use id reference directly
+                findNavController().navigate(requireContext().getIntIdentity(flavour,"id"))
+            } else {
+                requireActivity().onBackPressed()
+            }
         }
-
     }
 
     companion object {

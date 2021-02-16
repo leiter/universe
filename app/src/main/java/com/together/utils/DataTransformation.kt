@@ -28,7 +28,7 @@ fun UiState.Article.uiArticleToData(): Result.Article {
         productName = this.productName,
         imageUrl = this.remoteImageUrl,
         unit = this.unit,
-        price = pricePerUnit.replace(",",".").toDouble(),
+        price = pricePerUnit.replace(",",".").replace("€","").toDouble(),
 
 //        priceDigit = this.price,
         available = this.available,

@@ -33,8 +33,7 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
             if (!testData.isGoogleAuth) {
                 when (it) {
                     is Result.LoggedIn -> {
-                        testData.loginState = UiState.BaseAuth(
-                            UiState.BuyerProfile(isAnonymous = it.currentUser.isAnonymous))
+                        testData.loginState = UiState.BaseAuth()
                         loading(false)
                     }
                     is Result.LoggedOut -> {
@@ -108,12 +107,10 @@ class TestContainerActivity : AppCompatActivity(), FirebaseAuth.AuthStateListene
 
     override fun onAuthStateChanged(p0: FirebaseAuth) {
         if (p0.currentUser != null) {
-            testData.loginState = UiState.BaseAuth(
-                UiState.BuyerProfile(isAnonymous = p0.currentUser!!.isAnonymous))
+            testData.loginState = UiState.BaseAuth()
         } else testData.loginState = UiState.LoggedOut
         loading(false)
     }
-
 }
 
 

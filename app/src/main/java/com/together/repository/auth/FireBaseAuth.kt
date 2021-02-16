@@ -25,7 +25,7 @@ object FireBaseAuth : FirebaseAuth.AuthStateListener {
     }
     fun isLoggedIn(): UiState {
         return when (getAuth().currentUser != null) {
-            true -> UiState.BaseAuth(UiState.BuyerProfile(isAnonymous =  getAuth().currentUser!!.isAnonymous))
+            true -> UiState.BaseAuth()
             else -> UiState.LoggedOut
         }
     }

@@ -79,11 +79,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
 
                 is Result.LoggedIn -> {
-                    val user = UiState.BuyerProfile(
-                        isAnonymous = it.currentUser.isAnonymous
-                    )
+                    val user = UiState.BuyerProfile()
                     buyerProfile = user
-                    loggedState.value = UiState.BaseAuth(user)
+                    loggedState.value = UiState.BaseAuth()
                     setupDataStreams()
                 }
 
@@ -260,7 +258,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun loadOrders() {
         blockingLoaderState.value = UiEvent.Loading(LOAD_OLD_ORDERS)
-
         dataRepository.loadOrders().subscribe({ listOfOrders ->
             val newStuff = listOfOrders.map { it.dataToUiOrder() }
             oldOrders.value = newStuff.reversed()

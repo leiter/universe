@@ -2,30 +2,38 @@ package com.together.profile
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.MarketDialog
-import com.together.base.*
-import com.together.create.CreateFragment
+import com.together.base.UiEvent
+import com.together.base.UiState
+import com.together.base.UtilsActivity
 import com.together.databinding.FragmentProfileBinding
-import com.together.utils.loadImage
 import com.together.utils.viewLifecycleLazy
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
 
-class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
+class ProfileFragment() : Fragment(R.layout.fragment_profile) {
+
+    val viewModel: ProfileViewModel by viewModels()
+
+    private val disposable = CompositeDisposable()
 
     companion object {
         const val TAG = "ProfileFragment"
     }
 
-    private val viewBinding : FragmentProfileBinding by viewLifecycleLazy {
-        FragmentProfileBinding.bind(requireView())  }
+    private val viewBinding: FragmentProfileBinding by viewLifecycleLazy {
+        FragmentProfileBinding.bind(requireView())
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(viewBinding){
+        with(viewBinding) {
             city.textChanges().debounce(400, TimeUnit.MILLISECONDS).subscribe {
                 viewModel.profile.city = it.toString()
             }.addTo(disposable)
@@ -60,8 +68,17 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
             UtilsActivity.startAddImage(requireActivity())
         }
 
-        viewModel.newProduct.observe(viewLifecycleOwner, {
-            requireContext().loadImage(viewBinding.storeImage,it.uri.toString())
+        viewModel.profileLive.observe(viewLifecycleOwner,{ profile ->
+
+            with(viewBinding) {
+                lastName.setText(profile.lastName)
+                firstName.setText(profile.firstName)
+                companyName.setText(profile.displayName)
+                house.setText(profile.houseNumber)
+                zipCode.setText(profile.zipCode)
+                city.setText(profile.city)
+                street.setText(profile.street)
+            }
         })
 
         viewModel.markets.observe(viewLifecycleOwner, {
@@ -74,8 +91,8 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         })
 
         viewModel.blockingLoaderState.observe(viewLifecycleOwner) {
-            when (it ) {
-                is UiEvent.LoadingDone ->  {
+            when (it) {
+                is UiEvent.LoadingDone -> {
                     viewBinding.loadingIndicator.visibility = View.GONE
                 }
                 is UiEvent.Loading -> viewBinding.loadingIndicator.visibility = View.VISIBLE
@@ -86,7 +103,6 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
                 }
             }
         }
-
     }
 
     private val openAddMarket: (UiState.Market) -> Unit
@@ -95,4 +111,9 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
                 childFragmentManager, MarketDialog.MARKET_DIALOG_TAG
             )
         }
+
+    override fun onDestroyView() {
+        disposable.clear()
+        super.onDestroyView()
+    }
 }

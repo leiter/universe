@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                viewModel.loggedState.value = UiState.BaseAuth(UiState.BuyerProfile())
+                viewModel.loggedState.value = UiState.BaseAuth()
             } else {
                 findNavController(R.id.navigation_controller).navigate(R.id.loginFragment)
             }
@@ -165,6 +165,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDrawerNavigation(): Disposable {
         return viewBinding.navigationView.itemSelections().subscribe ({
+            val bundle = Bundle()
+            when(it.itemId) {
+                R.id.btn_show_info -> {
+                    bundle.putString(
+                        "navigationId_back_btn",
+                        "action_aboutFragment_to_createFragment"
+                    )
+                    findNavController(R.id.navigation_controller).navigate(
+                        R.id.aboutFragment,
+                        bundle
+                    )
+                    viewBinding.drawerLayout.closeDrawers()
+                    return@subscribe
+                }
+            }
+
             NavigationUI.onNavDestinationSelected(it, findNavController(R.id.navigation_controller))
             viewBinding.drawerLayout.closeDrawers()
         },{ it.printStackTrace() })

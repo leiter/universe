@@ -7,19 +7,15 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.storage.FirebaseStorage
 import com.together.R
 import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
 import com.together.repository.Database
 import com.together.repository.Result
-import com.together.utils.FileUtils
 import com.together.utils.loadImage
 import com.together.utils.viewLifecycleLazy
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.addTo
 import java.io.File
 import java.io.FileOutputStream
 
@@ -56,11 +52,11 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ProductAdapter(this)
-
+        viewBinding.image.tag = false
         with(viewBinding) {
-            saveChanges.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
+            saveChanges.setOnClickListener { createBitmap() }
             btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
-            createFab.setOnClickListener { createBitmap(viewModel.newProduct.value!!.uri) }
+            createFab.setOnClickListener { createBitmap() }
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             btnDrawerOpen.setOnClickListener {
                 MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
@@ -68,6 +64,8 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
             createNewProduct.visibility = View.VISIBLE
             createNewProduct.setOnClickListener { makeEditable(true) }
+
+            btnEditProduct.setOnClickListener { viewModel.loadNextOrders() }
 
             productList.layoutManager = LinearLayoutManager(context)
             productList.adapter = adapter
@@ -100,7 +98,6 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 viewBinding.loadingIndicator.visibility = View.VISIBLE
             } else {
                 viewBinding.loadingIndicator.visibility = View.GONE
-
             }
         })
 
@@ -139,50 +136,10 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             Database.articles().push().setValue(result)
         }
         return
-        FirebaseStorage.getInstance()
-            .reference
-            .child("images/${System.currentTimeMillis()}_${imageUri.lastPathSegment}")
-            .putFile(imageUri)
-            .addOnSuccessListener {
-
-                it.metadata?.reference?.downloadUrl?.addOnSuccessListener { imageUri ->
-
-                    val uiState = viewModel.editProduct.value!!
-
-                    val result = Result.Article(
-                        productName = uiState.productName,
-                        imageUrl = imageUri.toString(),
-                        unit = viewBinding.productPriceUnit.toString(),
-                        available = uiState.available,
-                        price = uiState.pricePerUnit.replace("€", "")
-                            .replace(",", ".").toDouble()
-                    )
-                    if (uiState.id.isNotEmpty()) {
-                        val m = mutableMapOf("price" to 7.8 as Any)
-                        Database.updateArticle(uiState.id).updateChildren(m)
-                    } else {
-                        Database.articles().push().setValue(result)
-                    }
-                }
-            }
     }
 
 
-    private fun createBitmap(imageUri: Uri) {
-//        Observable.just(Any()).map {
-//            val bitmap: Bitmap = Bitmap.createBitmap(
-//                viewBinding.image.width, viewBinding.image.height,
-//                Bitmap.Config.ARGB_8888
-//            )
-//            val canvas = Canvas(bitmap)
-//            viewBinding.image.draw(canvas)
-//            val tmpFile = File.createTempFile("img", "trash")
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(tmpFile))
-//            tmpFile
-//        }.subscribe {
-//            updateProduct(Uri.fromFile(it))
-//            imageUri.path?.let { file -> FileUtils.deleteFile(File(file)) }
-//        }.addTo(disposable)
+    private fun createBitmap() {
         writeToNewProduct()
 
         viewModel.uploadProduct(Single.fromCallable{
@@ -195,7 +152,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             val tmpFile = File.createTempFile("img", "trash")
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(tmpFile))
             tmpFile
-        })
+        }, viewBinding.image.tag as Boolean)
 
     }
 

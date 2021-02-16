@@ -5,23 +5,20 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.FirebaseApp
-import com.google.firebase.storage.FirebaseStorage
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.base.UiEvent.Companion.UNDEFINED
-import com.together.base.UiEvent.Companion.UPLOAD_PRODUCT
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingle
 import com.together.repository.storage.getTypedSingle
-import com.together.utils.*
+import com.together.utils.dataArticleToUi
+import com.together.utils.uiArticleToData
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import java.io.File
-import java.net.URI
 
 fun MutableList<UiState.Article>.addItem(
     item: UiState.Article,
@@ -45,20 +42,19 @@ fun MutableList<UiState.Article>.addItem(
     productData.value = this.toMutableList()
 }
 
-class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {
+class MainViewModel(private val dataRepository: DataRepositorySell = DataRepositorySellImpl()) :
+    ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     init {
-        disposable.add( MainMessagePipe.mainThreadMessage.subscribe {
+        disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
                 is Result.LoggedOut ->
                     loggedState.value = UiState.LoggedOut
 
                 is Result.LoggedIn ->
-                    loggedState.value = UiState.BaseAuth(
-                        UiState.BuyerProfile(isAnonymous = it.currentUser.isAnonymous)
-                    )
+                    loggedState.value = UiState.BaseAuth()
 
                 is Result.NewImageCreated -> {
                     if (newProduct.value == null)
@@ -67,7 +63,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
             }
         })
-
     }
 
     private val productData: MutableLiveData<MutableList<UiState.Article>> by lazy {
@@ -81,7 +76,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                     { Log.e("Rx", "Complete called."); })
 
         )
-        MutableLiveData(emptyList<UiState.Article>().toMutableList())}
+        MutableLiveData(emptyList<UiState.Article>().toMutableList())
+    }
 
     val productList: LiveData<MutableList<UiState.Article>>
         get() {
@@ -98,7 +94,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
 
-    val profile : UiState.SellerProfile = UiState.SellerProfile()
+    var profile: UiState.SellerProfile = UiState.SellerProfile()
 
     val editProduct: MutableLiveData<UiState.Article> by lazy {
         MutableLiveData<UiState.Article>().also {
@@ -106,63 +102,39 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         }
     }
 
-    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
-        MutableLiveData<MutableList<UiState.Market>>().also {
-            it.value = mutableListOf()
-        }
+    fun loadNextOrders() {
+        dataRepository.loadNextOrders()
     }
 
-    fun uploadSellerProfile(){
-        blockingLoaderState.value = UiEvent.Loading(0)
-        val p = profile.uiSellerToData()
-        p.markets = markets.value!!.map { it.uiMarketToData() }.toMutableList()
-        dataRepository.uploadSellerProfile(p).subscribe({ success ->
-            if (success) {
-                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
-                blockingLoaderState.value = UiEvent.ShowCreateFragment
-            } else {
-                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
-            }
-        }, {
-            blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
-        }).addTo(disposable)
-
-    }
-
-    fun deleteProduct(){
+    fun deleteProduct() {
         editProduct.value?.let {
             val id = it.id
-            if(id.isEmpty()) return  // todo msg
+            if (id.isEmpty()) return  // todo msg
             blockingLoaderState.value = UiEvent.Loading(0)
-
-            dataRepository.deleteProduct(id)
-            .subscribe({success ->
-                if(success) {
-                    blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
-                }else {
+            val deleteMe = it.uiArticleToData()
+            dataRepository.deleteProduct(deleteMe)
+                .subscribe({ success ->
+                    if (success) {
+                        blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
+                    } else {
+                        // msg
+                        blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
+                    }
+                }, {
                     // msg
                     blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
-                }
-            }, {
-                // msg
-                blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
-            })
+                })
         }
     }
 
-    fun uploadProduct(file: Single<File>) {
-        file.subscribeOn(Schedulers.io()).flatMap {
-           val uri =  Uri.fromFile(it)
-            val dest = FirebaseStorage.getInstance().reference
-                .child("images/tt_${System.currentTimeMillis()}_${newProduct.value!!.uri.lastPathSegment}")
-                dest.putFile(uri).getSingle()
-        }.flatMap {
-            it.metadata?.reference?.downloadUrl?.getTypedSingle()
-        }.map {
-           val newproduct =  editProduct.value!!.uiArticleToData()
-            newproduct.imageUrl = it.toString()
-            newproduct
-        }.map { Database.articles().push().setValue(it) }.subscribe().addTo(disposable)
+    fun uploadProduct(file: Single<File>, fileAttached: Boolean) {
+        val product = editProduct.value!!.uiArticleToData()
+        dataRepository.uploadProduct(file,fileAttached,product)
+            .subscribe({
+
+            },{
+
+            }).addTo(disposable)
     }
 
     override fun onCleared() {

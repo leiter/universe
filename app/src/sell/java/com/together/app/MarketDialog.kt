@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import com.together.base.MainViewModel
 import com.together.base.UiState
 import com.together.databinding.FragmentDialogsBinding
+import com.together.profile.ProfileViewModel
 
 
 class MarketDialog : DialogFragment() {
@@ -20,7 +21,7 @@ class MarketDialog : DialogFragment() {
     private lateinit var market: UiState.Market
     private lateinit var viewBinding: FragmentDialogsBinding
 
-    val viewModel: MainViewModel by activityViewModels()
+    val viewModel: ProfileViewModel by viewModels( { requireParentFragment()  })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

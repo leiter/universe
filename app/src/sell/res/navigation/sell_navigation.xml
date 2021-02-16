@@ -22,6 +22,7 @@
         <action
             android:id="@+id/action_createFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+
     </fragment>
     <dialog
         android:id="@+id/chooseDialog"
@@ -31,6 +32,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.together.loggedout.LoginFragment"
+
         tools:layout="@layout/fragment_login"
         android:label="LoginFragment" >
         <action
@@ -47,8 +49,11 @@
         android:name="com.together.about.AboutFragment"
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" >
+        <argument
+            android:name="navigationId_back_btn"
+            app:argType="string"
+            />
         <action
-
             app:popUpToInclusive="true"
             app:popUpTo="@id/createFragment"
             android:id="@+id/action_aboutFragment_to_createFragment"
@@ -66,6 +71,7 @@
             app:popUpToInclusive="true"
             app:destination="@id/createFragment" />
     </fragment>
+
 
 
 </navigation>

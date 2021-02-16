@@ -3,7 +3,7 @@ package com.together.base
 import android.net.Uri
 import android.os.Parcelable
 import com.together.repository.Result
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 sealed class UiState {
 
@@ -13,7 +13,8 @@ sealed class UiState {
     companion object {
         const val ADDED = 0
         const val CHANGED = 1
-//        const val MOVED = 2
+
+        //        const val MOVED = 2
         const val REMOVED = 3
         const val UNDEFINED = -1
     }
@@ -35,10 +36,10 @@ sealed class UiState {
         override var mode: Int = UNDEFINED
     }
 
-    data class BaseAuth(val buyerProfile: BuyerProfile) : UiState() {
-        override var id = "StateLoggedIn"
+    data class BaseAuth(
+        override var id: String = "StateLoggedIn",
         override var mode: Int = UNDEFINED
-    }
+    ) : UiState()
 
     data class OrderedProduct(
         override var id: String = "",
@@ -155,9 +156,10 @@ sealed class UiState {
         var defaultMarket: String = "",
         var defaultTime: String = ""
     ) : UiState() {
-        fun getDefaultTimeDisplay() : String {
+        fun getDefaultTimeDisplay(): String {
             return "$defaultTime Uhr"
         }
+
         override var id: String = ""
         override var mode: Int = Result.UNDEFINED
     }
