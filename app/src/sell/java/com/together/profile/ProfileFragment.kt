@@ -8,9 +8,9 @@ import androidx.navigation.fragment.findNavController
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.MarketDialog
-import com.together.data.UiEvent
-import com.together.data.UiState
-import com.together.data.UtilsActivity
+import com.together.base.UiEvent
+import com.together.base.UiState
+import com.together.base.UtilsActivity
 import com.together.databinding.FragmentProfileBinding
 import com.together.utils.viewLifecycleLazy
 import io.reactivex.disposables.CompositeDisposable

@@ -8,8 +8,8 @@ import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.together.R
-import com.together.data.*
-import com.together.data.UiEvent.Companion.DELETE_PRODUCT
+import com.together.base.*
+import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
 import com.together.repository.Database
 import com.together.repository.Result
@@ -56,7 +56,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         with(viewBinding) {
             saveChanges.setOnClickListener { createBitmap() }
             btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
-            createFab.setOnClickListener { viewModel.loadNextOrders() }
+            createFab.setOnClickListener {  }
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             btnDrawerOpen.setOnClickListener {
                 MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
@@ -65,7 +65,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             createNewProduct.visibility = View.VISIBLE
             createNewProduct.setOnClickListener { makeEditable(true) }
 
-            btnEditProduct.setOnClickListener { viewModel.loadNextOrders() }
+            btnEditProduct.setOnClickListener { }
 
             productList.layoutManager = LinearLayoutManager(context)
             productList.adapter = adapter

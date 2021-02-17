@@ -1,11 +1,11 @@
-package com.together.data
+package com.together.base
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.together.data.UiEvent.Companion.DELETE_PRODUCT
-import com.together.data.UiEvent.Companion.UNDEFINED
+import com.together.base.UiEvent.Companion.DELETE_PRODUCT
+import com.together.base.UiEvent.Companion.UNDEFINED
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
@@ -97,9 +97,7 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
         }
     }
 
-    fun loadNextOrders() {
-        dataRepository.loadNextOrders().subscribe()
-    }
+
 
     fun deleteProduct() {
         editProduct.value?.let {

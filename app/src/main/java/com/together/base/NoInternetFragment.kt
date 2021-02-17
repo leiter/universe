@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable

@@ -19,10 +19,10 @@ import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding3.material.itemSelections
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.data.MainMessagePipe
-import com.together.data.MainViewModel
-import com.together.data.UiEvent
-import com.together.data.UiState
+import com.together.base.MainMessagePipe
+import com.together.base.MainViewModel
+import com.together.base.UiEvent
+import com.together.base.UiState
 import com.together.databinding.ActivityMainBinding
 import com.together.repository.Database
 import com.together.repository.auth.FireBaseAuth

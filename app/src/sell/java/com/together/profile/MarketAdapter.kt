@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.google.android.material.button.MaterialButton
 import com.together.R
-import com.together.data.UiState
+import com.together.base.UiState
 
 class MarketAdapter(context: Context,
                     private val markets: MutableList<UiState.Market>,

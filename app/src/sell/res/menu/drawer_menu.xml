@@ -13,7 +13,7 @@
             android:title="@string/nav_title_2" />
 
         <item
-            android:id="@+id/drawer_nav_3"
+            android:id="@+id/action_createFragment_to_showOrdersFragment"
             android:icon="@drawable/ic_shopping_basket"
             android:title="@string/nav_title_3" />
 

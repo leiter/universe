@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions

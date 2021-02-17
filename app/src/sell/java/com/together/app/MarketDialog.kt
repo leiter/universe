@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import com.together.data.UiState
+import com.together.base.UiState
 import com.together.databinding.FragmentDialogsBinding
 import com.together.profile.ProfileViewModel
 

@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sell_navigation"
+    android:id="@+id/sell_navigation_graph"
     app:startDestination="@id/loginFragment">
 
     <fragment
@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_createFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_createFragment_to_showOrdersFragment"
+            app:destination="@id/showOrdersFragment" />
 
     </fragment>
     <dialog
@@ -71,7 +74,15 @@
             app:popUpToInclusive="true"
             app:destination="@id/createFragment" />
     </fragment>
-
+    <fragment
+        android:id="@+id/showOrdersFragment"
+        android:name="com.together.orders.ShowOrdersFragment"
+        android:label="fragment_show_orders"
+        tools:layout="@layout/fragment_show_orders" >
+        <action
+            android:id="@+id/action_showOrdersFragment_to_createFragment"
+            app:destination="@id/createFragment" />
+    </fragment>
 
 
 </navigation>

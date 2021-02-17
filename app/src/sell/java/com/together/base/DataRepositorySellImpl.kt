@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 import android.net.Uri
 import com.google.android.gms.tasks.Task
@@ -14,7 +14,7 @@ import com.together.repository.Result
 import com.together.repository.storage.*
 
 
-class DataRepositorySellImpl : DataRepositorySell {
+class DataRepositorySellImpl constructor() : DataRepositorySell {
 
     override fun setupProductConnection(): Observable<Result.Article> {
         return Database.articles().getObservable<Result.Article>()

@@ -1,6 +1,6 @@
 package com.together.utils
 
-import com.together.data.UiState
+import com.together.base.UiState
 import com.together.repository.Result
 import kotlin.reflect.full.memberProperties
 

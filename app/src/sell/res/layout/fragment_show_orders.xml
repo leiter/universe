@@ -1,14 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".orders.ShowOrdersFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+   <View
+       android:id="@+id/v_action"
+       app:layout_constraintTop_toTopOf="parent"
+       android:background="@color/fab_green"
+       android:layout_width="match_parent"
+       android:layout_height="?attr/actionBarSize"/>
 
-</FrameLayout>
+   <ImageButton
+       android:id="@+id/btn_back"
+       android:src="@drawable/ic_arrow_back"
+       android:padding="16dp"
+       android:background="?attr/selectableItemBackground"
+       app:layout_constraintTop_toTopOf="@id/v_action"
+       app:layout_constraintBottom_toBottomOf="@id/v_action"
+       app:layout_constraintStart_toStartOf="@id/v_action"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"/>
+
+   <com.google.android.material.textview.MaterialTextView
+       android:id="@+id/tv_title"
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:gravity="center"
+       android:text="Bestellungen"
+       android:textColor="@color/white"
+       android:textSize="22dp"
+       app:layout_constraintBottom_toBottomOf="@id/v_action"
+       app:layout_constraintEnd_toStartOf="@+id/btn_more"
+       app:layout_constraintStart_toEndOf="@id/btn_back"
+
+       app:layout_constraintTop_toTopOf="@id/v_action" />
+
+   <ImageButton
+       android:id="@+id/btn_more"
+       android:src="@drawable/ic_settings"
+       android:padding="16dp"
+       android:visibility="invisible"
+       android:background="?attr/selectableItemBackground"
+       app:layout_constraintTop_toTopOf="@id/v_action"
+       app:layout_constraintBottom_toBottomOf="@id/v_action"
+       app:layout_constraintEnd_toEndOf="@id/v_action"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"/>
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/rv_new_orders"
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/v_action"
+       tools:itemCount="3"
+       tools:listitem="@layout/item_next_order" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

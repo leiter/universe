@@ -2,10 +2,10 @@ package com.together.profile
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.together.data.DataRepositorySell
-import com.together.data.DataRepositorySellImpl
-import com.together.data.UiEvent
-import com.together.data.UiState
+import com.together.base.DataRepositorySell
+import com.together.base.DataRepositorySellImpl
+import com.together.base.UiEvent
+import com.together.base.UiState
 import com.together.utils.dataToUiSeller
 import com.together.utils.uiMarketToData
 import com.together.utils.uiSellerToData

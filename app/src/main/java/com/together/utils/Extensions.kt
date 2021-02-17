@@ -14,8 +14,8 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.together.R
-import com.together.data.MainMessagePipe
-import com.together.data.UiState
+import com.together.base.MainMessagePipe
+import com.together.base.UiState
 import com.together.repository.Result
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

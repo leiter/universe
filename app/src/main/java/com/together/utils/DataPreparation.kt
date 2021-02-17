@@ -1,6 +1,6 @@
 package com.together.utils
 
-import com.together.data.UiState
+import com.together.base.UiState
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList

@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 import android.app.Application
 import com.jakewharton.picasso.OkHttp3Downloader
@@ -17,6 +17,7 @@ class App : Application(){
 //        super.attachBaseContext(base)
 //        MultiDex.install(this)
 //    }
+
     private fun setupPicasso(){
         val picassoBuild = Picasso.Builder(this)
             .downloader(OkHttp3Downloader(this, Long.MAX_VALUE))

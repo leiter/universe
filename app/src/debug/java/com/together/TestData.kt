@@ -1,6 +1,6 @@
 package com.together
 
-import com.together.data.UiState
+import com.together.base.UiState
 import com.together.repository.Result
 import java.util.*
 

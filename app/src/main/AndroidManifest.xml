@@ -8,16 +8,14 @@
 
 
     <application
-        android:name=".data.App"
+        android:name=".base.App"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
-
         <activity
-            android:name=".data.UtilsActivity"
+            android:name=".base.UtilsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 

@@ -1,14 +1,21 @@
 package com.together.di
 
-//
+import com.together.base.DataRepositorySell
+import com.together.base.DataRepositorySellImpl
+
+
 //@dagger.Module
-//@InstallIn(ApplicationComponent::class)
+//@InstallIn(value = [ApplicationComponent::class])
 //object AppMudule {
 //
+//
+//    @Binds
+//    abstract fun providesDataRepository(impl: DataRepositorySellImpl): DataRepositorySell
 //}
-//
-//
-//@dagger.Module
+
+
+
+//@Module
 //@InstallIn(ViewModelComponent::class)
 //abstract class RepositoryModule {
 //    @Binds

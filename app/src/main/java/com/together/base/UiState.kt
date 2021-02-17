@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 import android.net.Uri
 import android.os.Parcelable

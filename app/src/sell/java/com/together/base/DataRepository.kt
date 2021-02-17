@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 import com.google.android.gms.tasks.Task
 import com.together.repository.Result

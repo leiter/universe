@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 import android.graphics.Typeface
 import android.util.TypedValue

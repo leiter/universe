@@ -1,4 +1,4 @@
-package com.together.data
+package com.together.base
 
 //
 //@Module(includes = [

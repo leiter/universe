@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
-import com.together.data.MainMessagePipe
+import com.together.base.MainMessagePipe
 import com.together.repository.Result
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

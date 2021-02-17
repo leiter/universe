@@ -4,8 +4,8 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.together.data.MainMessagePipe
-import com.together.data.UiState
+import com.together.base.MainMessagePipe
+import com.together.base.UiState
 import com.together.repository.Result
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable

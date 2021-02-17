@@ -7,8 +7,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.together.R
 import com.together.app.MainActivity
-import com.together.data.BaseFragment
-import com.together.data.UiState
+import com.together.base.BaseFragment
+import com.together.base.UiState
 import com.together.databinding.FragmentLoginBinding
 import com.together.repository.Database
 import com.together.repository.storage.getSingleExists

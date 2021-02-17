@@ -87,7 +87,6 @@ sealed class Result {
         var amount: String = "",
         var amountCount: Double = 0.0,
         var piecesCount: Int = -1,
-
         ): Result()
 
     data class Order(
