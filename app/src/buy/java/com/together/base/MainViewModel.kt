@@ -135,11 +135,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             }
         }
         if (buyerProfile.defaultTime != "" && market != null) {
-            val calendar = Calendar.getInstance()
-            val time = buyerProfile.defaultTime.split(":")
-            calendar.set(Calendar.HOUR_OF_DAY, time[0].toInt() )
-            calendar.set(Calendar.MINUTE, time[1].toInt() )
-            days = getDays(market = market!!, calendar.time)
+            val time = buyerProfile.defaultTime.getDayTimeDate()
+            days = getDays(market = market!!, time)
         }
     }
 

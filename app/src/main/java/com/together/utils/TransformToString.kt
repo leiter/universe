@@ -31,3 +31,9 @@ fun Long.toOrderId() : String {
 fun Date.getHourAndMinute() : String {
     return dateFormatTime.format(this)
 }
+
+fun Long.toDate() : Date {
+    val c = Calendar.getInstance()
+    c.timeInMillis = this
+    return c.time
+}

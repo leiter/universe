@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.UiEvent.Companion.SEND_ORDER
@@ -75,14 +76,15 @@ class BasketFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        viewBinding.btnSendOrder.setOnClickListener {
-            if(viewBinding.ckSetReminder.isChecked){
+        viewBinding.btnSendOrder.setOnClickListener { viewModel.sendOrder() }
+
+        viewBinding.ckSetReminder.checkedChanges().subscribe { isChecked ->
+            if(isChecked){
                 viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex].id
                 viewModel.buyerProfile.defaultTime = viewModel.days[0].getHourAndMinute()
                 viewModel.uploadBuyerProfile(true)
             }
-            viewModel.sendOrder() }
-
+        }.addTo(disposable)
 
         viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
         viewBinding.btnHideAppointment.setOnClickListener { showFinalizeDate(false) }
@@ -262,7 +264,10 @@ class BasketFragment : DialogFragment() {
         newDays: Array<Date>? = null,
         selectPos: Int = -1
     ) {
-        newDays?.let { viewModel.days = it }
+        val dayTime = if (viewModel.order.pickUpDate != 0L) viewModel.order.pickUpDate else null
+        viewModel.days = newDays ?:
+        getDays(viewModel.sellerProfile.marketList[viewModel.marketIndex], dayTime?.let { Date(it) })
+
         viewBinding.tlDateContainer.removeAllTabs()
         viewModel.days.forEach {
             val f = viewBinding.tlDateContainer.newTab()

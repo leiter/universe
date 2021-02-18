@@ -4,17 +4,22 @@ import android.net.Uri
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 import com.together.repository.Database
+import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
+import com.together.repository.storage.*
+import dagger.hilt.android.scopes.ViewModelScoped
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
-import com.together.repository.Result
-import com.together.repository.storage.*
+import javax.inject.Inject
 
 
-class DataRepositorySellImpl constructor() : DataRepositorySell {
+class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
+
+    init {
+    }
 
     override fun setupProductConnection(): Observable<Result.Article> {
         return Database.articles().getObservable<Result.Article>()

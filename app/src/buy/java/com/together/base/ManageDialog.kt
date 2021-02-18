@@ -17,9 +17,8 @@ import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
 import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.databinding.ManageDialogBinding
 import com.together.profile.ClientProfileFragment
-import com.together.utils.createBasketUDate
+import com.together.utils.*
 import io.reactivex.disposables.Disposable
-import com.together.utils.viewBinding
 
 
 class ManageDialog : DialogFragment() {
@@ -58,6 +57,8 @@ class ManageDialog : DialogFragment() {
         viewModel.marketIndex = viewModel.sellerProfile.marketList.indexOfFirst {
             it.id == viewModel.order.marketId }
 
+        val dayTime = selectedOrder.pickUpDate.toDate()
+            viewModel.days = getDays(viewModel.sellerProfile.marketList[viewModel.marketIndex],dayTime)
         val neList = viewModel.productList.value!!.toMutableSet().toList()
         viewModel.basket.value = createBasketUDate(neList, selectedOrder.copy())
         dismiss()

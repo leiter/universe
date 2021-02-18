@@ -185,6 +185,7 @@ fun Query.getSingle(): Single<DataSnapshot> {
         emitter.setCancellable { removeEventListener(valueEventListener) }
     }
 
+
 }
 inline fun <reified T : Result> Query.getSingleList(): Single<List<T>> {
     return Single.create { emitter ->

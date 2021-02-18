@@ -23,6 +23,12 @@ sealed class Result {
         override var mode: Int = UNDEFINED
     }
 
+    data class Keys(
+        override var id: String = "",
+        override var mode: Int = UNDEFINED,
+        val order: Order= Order()
+    ): Result()
+
     object LoggedOut : Result() {
         override var id: String = "loggedIn"
         override var mode: Int = UNDEFINED

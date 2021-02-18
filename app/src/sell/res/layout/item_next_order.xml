@@ -5,27 +5,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_person_name"
-        tools:text="This is marco"
-        android:textSize="16sp"
+        android:text="This is marco"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:layout_width="0dp"
         app:layout_constraintEnd_toStartOf="@id/tv_product_count"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_product_count"
-        tools:text="15 Produkte"
-        android:textSize="16sp"
-        android:gravity="end"
-        app:layout_constraintStart_toEndOf="@id/tv_person_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_person_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_person_name"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        tools:text="15 Produkte" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_day"
@@ -45,6 +51,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <View
+        app:layout_constraintTop_toBottomOf="@id/ll_product_items"
+        android:background="@color/fab_green"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,11 +30,13 @@ import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import com.together.utils.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()

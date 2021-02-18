@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.together.base.UiEvent
 import com.together.repository.NoInternetConnection
+import java.util.*
 
 
 fun TimePicker.getTimePair(minuteSteps: Int = 15):Pair<Int,Int>{
@@ -21,6 +22,14 @@ fun TimePicker.getTimePair(minuteSteps: Int = 15):Pair<Int,Int>{
             this.minute * minuteSteps
         )
     }
+}
+
+fun String.getDayTimeDate(): Date {
+    val t = this.split(":")
+    val c = Calendar.getInstance()
+    c.set(Calendar.HOUR_OF_DAY,t[0].toInt())
+    c.set(Calendar.MINUTE,t[1].toInt())
+    return c.time
 }
 
 fun Fragment.handleProgress(loading: UiEvent.Loading,

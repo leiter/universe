@@ -25,6 +25,17 @@ class OrdersAdapter(var data: MutableList<UiState.Order> = mutableListOf()) : Re
 class OrderItemViewHolder(private val binding: ItemNextOrderBinding) : RecyclerView.ViewHolder(binding.root){
 
     fun bindItem(item: UiState.Order){
+        with(binding) {
+            tvProductCount.text = item.productList.size.toString()
+//            tvPersonName.text = item.buyerProfile.displayName
+            llProductItems.removeAllViews()
+            val a = OrderedProductAdapter(llProductItems.context,item.productList)
+            (0 until a.count).forEach {
+                pos ->
+                val p = a.getView(pos,null, llProductItems)
+                llProductItems.addView(p)
+            }
+        }
 
     }
 }

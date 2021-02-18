@@ -58,7 +58,7 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadOrders(): Single<List<Result.Order>> {
-        return wrapInConnectionCheck { Database.orders().limitToLast(10).getSingleList() }
+        return wrapInConnectionCheck { Database.orders().orderByKey().getSingleList() }
     }
 
     override fun clearUserData(): Single<Boolean> {
@@ -68,8 +68,7 @@ class DataRepositoryImpl : DataRepository {
                     when {
                         it.first && it.second -> {
                             Database.orders().removeValue().getSingle()
-                                .zipWith(Database.buyer().removeValue().getSingle())
-                        }
+                                .zipWith(Database.buyer().removeValue().getSingle()) }
                         it.first -> Database.orders().removeValue().getSingle()
                             .zipWith(Single.just(true))
                         it.second -> Database.buyer().removeValue().getSingle()
@@ -90,14 +89,10 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadBuyerProfile(): Single<Result.BuyerProfile> {
-        return wrapInConnectionCheck {
-            Database.buyer().getSingleExists().subscribeOn(Schedulers.io()).flatMap {
+        return Database.buyer().getSingleExists().subscribeOn(Schedulers.io()).flatMap {
                 if (it) Database.buyer().getSingleValue()
                 else Single.just(Result.BuyerProfile())
-            }
-                .observeOn(AndroidSchedulers.mainThread())
-        }
-
+            }.observeOn(AndroidSchedulers.mainThread())
     }
 
     private inline fun <reified T> wrapInConnectionCheck(crossinline func: () -> Single<T>): Single<T> {

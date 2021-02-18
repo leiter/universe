@@ -1,12 +1,12 @@
-package com.together.base
+package com.together
 
 import android.app.Application
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.HiltAndroidApp
 
-
-//@HiltAndroidApp
-class App : Application(){
+@HiltAndroidApp
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()

@@ -54,10 +54,14 @@
        android:id="@+id/rv_new_orders"
        android:layout_width="0dp"
        android:layout_height="wrap_content"
+       app:layout_behavior="@string/appbar_scrolling_view_behavior"
+       android:paddingBottom="?attr/actionBarSize"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintTop_toBottomOf="@id/v_action"
        tools:itemCount="3"
        tools:listitem="@layout/item_next_order" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

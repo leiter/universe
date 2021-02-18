@@ -15,7 +15,7 @@ class InfoDialogFragment : DialogFragment() {
     private var usageMode: String? = null
     private var productInfo: String? = null
 
-    private val viewBinding :FragmentInfoDialogBinding by viewBinding( FragmentInfoDialogBinding::inflate)
+    private val viewBinding : FragmentInfoDialogBinding by viewBinding( FragmentInfoDialogBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
