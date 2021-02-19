@@ -143,7 +143,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     fun resetAmountCount(id: String) {
         productData.value?.first { it.id == id }?.pieceCounter = 0
     }
-    private fun resetProductList() {
+    fun resetProductList() {
         productData.value?.forEach { it.pieceCounter = 0; it.amountCount = 0.0; it.isSelected = false }
     }
 
