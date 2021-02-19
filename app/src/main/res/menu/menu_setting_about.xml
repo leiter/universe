@@ -2,7 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/btn_show_licence"
-        android:title="Licences"
-        />
+        android:id="@+id/btn_call"
+        android:title="Anrufen" />
+
+    <item
+        android:id="@+id/btn_rate_app"
+        android:title="App bewerten" />
+
+    <item
+        android:id="@+id/btn_show_licences"
+        android:title="Lizenzen" />
 </menu>

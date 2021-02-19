@@ -37,14 +37,18 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
             productData = adapter.data.toMutableList()
         }
         itemIndexScrollTo = productData.lastIndexOf(item)
-        if (selectedItemIndex > -1) {
-            adapter.data[selectedItemIndex].isSelected = false
-            adapter.notifyItemChanged(selectedItemIndex)
-        }
+        deSelectProduct()
         selectedItemIndex = productData.indexOfFirst { it.id == item.id }
 
         productData[selectedItemIndex].isSelected = true
         adapter.notifyItemChanged(selectedItemIndex)
+    }
+
+    private fun deSelectProduct(){
+        if (selectedItemIndex > -1) {
+            adapter.data[selectedItemIndex].isSelected = false
+            adapter.notifyItemChanged(selectedItemIndex)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,6 +91,8 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         )
 
         viewModel.basket.observe(viewLifecycleOwner, {
+            if(it.size==0){ deSelectProduct(); viewBinding.etProductAmount.setText(
+                getString(R.string.zero_count_amount)) }
             viewBinding.btnShowBasket.badgeCount.text = it.size.toString()
         })
         viewModel.presentedProduct.observe(viewLifecycleOwner, {

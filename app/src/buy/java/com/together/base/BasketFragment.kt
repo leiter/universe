@@ -155,6 +155,7 @@ class BasketFragment : DialogFragment() {
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(SEND_ORDER)
                             toastMsg = "Bestellung erfolgreich gesendet."
                             viewModel.basket.value = mutableListOf()
+                            viewModel.resetProductList()
                             dismiss()
                         }
                         SEND_ORDER_FAILED -> {

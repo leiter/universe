@@ -2,7 +2,6 @@ package com.together.repository
 
 import android.net.Uri
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.Exclude
 import java.util.*
 
 sealed class Result {
@@ -22,12 +21,6 @@ sealed class Result {
         override var id: String = "No result"
         override var mode: Int = UNDEFINED
     }
-
-    data class Keys(
-        override var id: String = "",
-        override var mode: Int = UNDEFINED,
-        val order: Order= Order()
-    ): Result()
 
     object LoggedOut : Result() {
         override var id: String = "loggedIn"
@@ -55,14 +48,16 @@ sealed class Result {
         var emailAddress: String = "",
         var telephoneNumber: String = "",
         var photoUrl:String = "",
-        var isAnonymous:Boolean = true,
+        var anonymous:Boolean = true,
         var defaultMarket: String = "",
         var defaultPickUpTime: String = "",
+//        var userDevices: List<Device> = emptyList(),
+//        var placedOrderIds: List<String> = emptyList(),
         ) : Result() {
 
-        @get:Exclude @set:Exclude
+//        @get:Exclude @set:Exclude
         override var id: String = ""
-        @get:Exclude @set:Exclude
+//        @get:Exclude @set:Exclude
         override var mode: Int = UNDEFINED
     }
 
@@ -78,7 +73,7 @@ sealed class Result {
         var imageUrl: String = "",
         var category: String = "",
         var searchTerms: String = "",
-        var detailInfo: String = ""
+        var detailInfo: String = "",
 //         @get:PropertyName("adsfg")
 //        val fuckck:String =  "Fuck"
     ) : Result()
@@ -104,7 +99,7 @@ sealed class Result {
         var marketId: String = "",
         var pickUpDate: Long = 0L,
         var message: String = "",
-        var isNotFavourite: Boolean = true,
+        var notFavourite: Boolean = true,
         var articles: List<OrderedProduct> = emptyList(),
         ) : Result()
 
@@ -128,7 +123,8 @@ sealed class Result {
 
         var markets: MutableList<Market> = mutableListOf(),
         var urls: MutableList<String> = mutableListOf(),
-        var knownClientIds: MutableList<String> = mutableListOf()
+        var knownClientIds: MutableList<String> = mutableListOf(),
+//        var employeeIds: MutableList<Employee> = mutableListOf(),
 
     ) : Result()
 

@@ -11,6 +11,7 @@ object Database {
     private const val ARTICLES = "articles"
     private const val SELLER_PROFILE = "seller_profile"
     private const val ORDERS = "orders"
+    private const val ORDER_IDS = "order_ids"
     private const val CLIENTS = "buyer_profile"
     private const val STORAGE_PREFIX = "images/"
 
@@ -30,7 +31,11 @@ object Database {
 
     fun ordersRoot(): DatabaseReference = fire().reference.child(ORDERS)
 
-    fun nextOrders() = fire().reference.child(ORDERS).orderByKey()
+    fun nextOrders() = fire().reference.child(ORDERS).orderByValue()
+//        .child("Qndow4Nw90dNRelvAGyMgmfAURG3")
+//        .orderByChild("createdDate").equalTo(1613319828391.toDouble())
+
+    fun orderIds() = fire().reference.child(ORDER_IDS)
 
     fun providerArticles(providerId: String): DatabaseReference  = fire().reference.child(ARTICLES).child(providerId)
 

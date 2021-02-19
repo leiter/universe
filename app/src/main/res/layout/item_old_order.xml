@@ -29,6 +29,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="16 Produkte" />
 
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/ck_save_order"
+        style="?android:attr/starStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:buttonTint="@color/check_favourite_color"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@id/tv_products"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_products"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_products"
         android:layout_width="0dp"
@@ -36,16 +48,15 @@
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:lines="2"
-        android:maxLines="2"
         android:singleLine="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/fab_green"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ck_save_order"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         tools:text="Bananen, Stangensellerie, Kartoffeln, Bananen, Stangensellerie, Kartoffeln, Bananen, Stangensellerie, Kartoffeln ,Bananen, Stangensellerie, Kartoffeln,Bananen, Stangensellerie, Kartoffeln" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

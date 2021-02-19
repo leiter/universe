@@ -125,7 +125,7 @@ fun Result.Order.dataToUiOrder(): UiState.Order {
         marketId = marketId,
         pickUpDate = pickUpDate,
         message = message,
-        isNotFavourite = isNotFavourite,
+        isNotFavourite = notFavourite,
         productList = articles.map { it.dataToUiOrderedProduct() },
     )
 }
@@ -138,7 +138,7 @@ fun UiState.Order.uiBuyerProfileToData(): Result.Order {
         marketId = marketId,
         pickUpDate = pickUpDate,
         message = message,
-        isNotFavourite = isNotFavourite,
+        notFavourite = isNotFavourite,
         articles = productList.map { it.uiOrderedProductData() },
     )
 }
@@ -172,7 +172,7 @@ fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
     return UiState.BuyerProfile(
         displayName = displayName,
         emailAddress = emailAddress,
-        isAnonymous = isAnonymous,
+        isAnonymous = anonymous,
         photoUrl = photoUrl,
         phoneNumber = telephoneNumber,
         defaultMarket = defaultMarket,
@@ -184,7 +184,7 @@ fun UiState.BuyerProfile.uiBuyerProfileToData(): Result.BuyerProfile {
     return Result.BuyerProfile(
         displayName = displayName,
         emailAddress = emailAddress,
-        isAnonymous = isAnonymous,
+        anonymous = isAnonymous,
         photoUrl = photoUrl,
         telephoneNumber = phoneNumber ,
         defaultMarket = defaultMarket,

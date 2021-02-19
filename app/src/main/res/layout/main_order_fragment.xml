@@ -128,7 +128,7 @@
             android:layout_marginBottom="@dimen/price_margin_bottom"
             app:boxBackgroundColor="@color/white"
             android:hint="@string/tv_hint_price"
-
+            app:hintTextColor="@color/price_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_product_image"
             >

@@ -98,11 +98,11 @@ inline fun <reified T : Result> DatabaseReference.getSingleList(): Single<List<T
 
             override fun onDataChange(p0: DataSnapshot) {
                 val resultList = p0.children.map {
-                    it.getValue(T::class.java)!!
+                    val i =  it.getValue(T::class.java)!!
+                    i.id = it.key ?: ""
+                    i
                 }
                 emitter.onSuccess(resultList)
-
-
             }
         }
         addListenerForSingleValueEvent(listener)
@@ -217,9 +217,9 @@ inline fun <reified T> Task<T>.getTypedSingle(): Single<T> {
     return Single.create { emitter ->
         val onSuccessListener = OnSuccessListener<T> { result ->
             result?.let { emitter.onSuccess(result) } ?:
-                            emitter.onError(CancellationException("Upload was canceled.")) }
+                            emitter.onError(CancellationException("Operation was canceled.")) }
         addOnSuccessListener(onSuccessListener)
-        addOnCanceledListener { emitter.onError(CancellationException("Upload was canceled.")) }
+        addOnCanceledListener { emitter.onError(CancellationException("Operation was canceled.")) }
         addOnFailureListener { emitter.onError(it) }
 
     }

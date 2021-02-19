@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
+import com.together.about.AboutFragment
 import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
 import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.databinding.ManageDialogBinding
@@ -136,15 +137,13 @@ class ManageDialog : DialogFragment() {
         viewBinding.btnCancel.setOnClickListener { showWriteMessage(false) }
 
         viewBinding.btnShowInfo.setOnClickListener {
+            MainMessagePipe.uiEvent.onNext(
+                UiEvent.AddFragment(
+                    requireActivity().supportFragmentManager,
+                    AboutFragment(), AboutFragment.TAG
+                )
+            )
             dismiss()
-            MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(requireContext()))
-//            MainMessagePipe.uiEvent.onNext(
-//                UiEvent.AddFragment(
-//                    requireActivity().supportFragmentManager,
-//                    AboutFragment(), AboutFragment.TAG
-//                )
-//            );
-//            dismiss()
         }
         return viewBinding.root
     }

@@ -18,8 +18,10 @@ import com.together.repository.storage.getObservable
 import com.together.repository.storage.getSingle
 import com.together.utils.loadImage
 import com.together.utils.viewLifecycleLazy
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 
@@ -122,14 +124,15 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     }
 
     private fun tryMe() {
-        Database.ordersRoot().limitToLast(10).getSingle().map { userOrders ->
-            userOrders.children.map { it.children.map { it.getValue(Result.Order::class.java) } }
-        }.subscribe({
-                it.flatten()
-                Log.e("TTTTT", "For debugging");
-            }, {
-                it.printStackTrace()
-            }).addTo(disposable)
+
+//        Database.ordersRoot().limitToLast(10).getSingle().map { userOrders ->
+//            userOrders.children.map { it.children.map { it.getValue(Result.Order::class.java) } }
+//        }.subscribe({
+//                it.flatten()
+//                Log.e("TTTTT", "For debugging");
+//            }, {
+//                it.printStackTrace()
+//            }).addTo(disposable)
     }
 
     override fun clicked(item: UiState.Article) {
