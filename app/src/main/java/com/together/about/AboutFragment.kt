@@ -38,22 +38,23 @@ class AboutFragment : BaseFragment(R.layout.fragment_about) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.aboutDisclaimer.text = HtmlCompat.fromHtml(
-            getString(R.string.impressum), HtmlCompat.FROM_HTML_MODE_LEGACY
-        )
+
         viewBinding.btnSettings.setOnClickListener { showPopup() }
         viewBinding.backButton.setOnClickListener {
             if (flavour == "createFragment") {  //fixme  later use id reference directly
                 findNavController().navigate(requireContext().getIntIdentity(flavour, "id"))
             } else {
+                val string = requireContext().getIntIdentity("impressum", "string")
+                viewBinding.aboutDisclaimer.text = HtmlCompat.fromHtml(
+                    getString(string), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
                 requireActivity().onBackPressed()
             }
         }
     }
 
     private fun startCall() {
-        val number = viewModel.sellerProfile._telephoneNumber
-            .replace(" ", "").trim()
+        val number = viewModel.sellerProfile._telephoneNumber.replace(" ", "").trim()
         val uri = "tel:$number"
         val intent = Intent(Intent.ACTION_DIAL)
         intent.data = Uri.parse(uri)

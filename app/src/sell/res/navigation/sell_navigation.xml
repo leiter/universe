@@ -8,11 +8,9 @@
     <fragment
         android:id="@+id/createFragment"
         android:name="com.together.create.CreateFragment"
-        tools:layout="@layout/fragment_create"
-        android:label="fragment_create" >
-        <action
-            android:id="@+id/action_createFragment_to_aboutFragment"
-            app:destination="@id/aboutFragment" />
+        android:label="fragment_create"
+        tools:layout="@layout/fragment_create">
+
         <action
             android:id="@+id/action_createFragment_to_chooseDialog"
             app:destination="@id/chooseDialog" />
@@ -30,55 +28,41 @@
     <dialog
         android:id="@+id/chooseDialog"
         android:name="com.together.addpicture.ChooseDialog"
-        tools:layout="@layout/choose_source"
-        android:label="ChooseDialog" />
+        android:label="ChooseDialog"
+        tools:layout="@layout/choose_source" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.together.loggedout.LoginFragment"
 
-        tools:layout="@layout/fragment_login"
-        android:label="LoginFragment" >
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_createFragment"
-            app:popUpToInclusive="true"
-            app:destination="@id/createFragment" />
+            app:destination="@id/createFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_loginFragment_to_profileFragment"
-            app:popUpToInclusive="true"
-            app:destination="@id/profileFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/aboutFragment"
-        android:name="com.together.about.AboutFragment"
-        android:label="FragmentAbout"
-        tools:layout="@layout/fragment_about" >
-        <argument
-            android:name="navigationId_back_btn"
-            app:argType="string"
-            />
-        <action
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/createFragment"
-            android:id="@+id/action_aboutFragment_to_createFragment"
-            app:destination="@id/createFragment" />
+            app:destination="@id/profileFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.together.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_createFragment"
+            app:destination="@id/createFragment"
             app:popUpTo="@id/createFragment"
-            app:popUpToInclusive="true"
-            app:destination="@id/createFragment" />
+            app:popUpToInclusive="true" />
     </fragment>
+
     <fragment
         android:id="@+id/showOrdersFragment"
         android:name="com.together.orders.ShowOrdersFragment"
         android:label="fragment_show_orders"
-        tools:layout="@layout/fragment_show_orders" >
+        tools:layout="@layout/fragment_show_orders">
         <action
             android:id="@+id/action_showOrdersFragment_to_createFragment"
             app:destination="@id/createFragment" />

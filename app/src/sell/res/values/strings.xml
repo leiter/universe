@@ -4,7 +4,7 @@
     <string name="nav_title_1">Angebot bearbeiten</string>
     <string name="nav_title_2">Aktuelles Angebot</string>
     <string name="nav_title_3">Bestellungen</string>
-    <string name="nav_title_4">Infos</string>
+    <string name="nav_title_4">Meine Daten</string>
 
 
     <string name="about_disclaimer">
@@ -14,7 +14,6 @@
 
     <string name="content_description_btn_start_add_image">Taste started ein Auswahlmenu um ein Bild hinzuzufügen.</string>
     <string name="content_description_seller_profile_save">Taste Profile speichern</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

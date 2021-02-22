@@ -166,7 +166,26 @@ fun DatabaseReference.getSingleExists(): Single<Boolean> {
             removeEventListener(listener)
         }
     }
+}
 
+fun DatabaseReference.getSingleKeyList(): Single<List<String>> {
+    return Single.create { emitter ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val r = p0.children.mapNotNull { it.key  }
+                emitter.onSuccess(r)
+            }
+        }
+
+        addListenerForSingleValueEvent(listener)
+        emitter.setCancellable {
+            removeEventListener(listener)
+        }
+    }
 }
 
 fun Query.getSingle(): Single<DataSnapshot> {

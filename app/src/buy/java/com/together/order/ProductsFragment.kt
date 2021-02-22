@@ -91,8 +91,12 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         )
 
         viewModel.basket.observe(viewLifecycleOwner, {
-            if(it.size==0){ deSelectProduct(); viewBinding.etProductAmount.setText(
-                getString(R.string.zero_count_amount)) }
+            if (it.size == 0) {
+                deSelectProduct()
+                viewBinding.etProductAmount.setText(getString(R.string.zero_count_amount))
+                viewBinding.btnActivateCounter.visibility = View.VISIBLE
+                viewBinding.counter.counterContainer.visibility = View.INVISIBLE
+            }
             viewBinding.btnShowBasket.badgeCount.text = it.size.toString()
         })
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
@@ -102,7 +106,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         })
 
         viewModel.productList.observe(viewLifecycleOwner, {
-            if(it.size > 2) viewBinding.blocking.visibility = View.GONE
+            if (it.size > 2) viewBinding.blocking.visibility = View.GONE
             adapter.setFilteredList(it.toMutableList())
         })
 
@@ -193,7 +197,8 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         if (newVal <= 0) {
             viewBinding.btnActivateCounter.visibility = View.VISIBLE
             viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-            val zeroStr = if(inFocus().unit=="kg") R.string.zero_kg else R.string.zero_count_amount
+            val zeroStr =
+                if (inFocus().unit == "kg") R.string.zero_kg else R.string.zero_count_amount
             viewBinding.etProductAmount.setText(zeroStr)
             inFocus().pieceCounter = 0
             return
@@ -324,7 +329,8 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
             basket.add(p)
         }
         viewBinding.btnShowBasket.badge.startAnimation(
-            AnimationUtils.loadAnimation(requireContext(),R.anim.shake_rotate))
+            AnimationUtils.loadAnimation(requireContext(), R.anim.shake_rotate)
+        )
         if (basket.size == 0) {
             viewBinding.btnShowBasket.badgeCount.visibility = View.INVISIBLE
         } else {

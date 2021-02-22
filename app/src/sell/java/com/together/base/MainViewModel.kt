@@ -89,7 +89,7 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
 
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()
 
-    var profile: UiState.SellerProfile = UiState.SellerProfile()
+    var sellerProfile: UiState.SellerProfile = UiState.SellerProfile()
 
     val editProduct: MutableLiveData<UiState.Article> by lazy {
         MutableLiveData<UiState.Article>().also {

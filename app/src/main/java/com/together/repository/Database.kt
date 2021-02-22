@@ -29,6 +29,9 @@ object Database {
 
     fun orders(): DatabaseReference = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
 
+    fun orderSeller(sellerId:String): DatabaseReference = fire().reference.child(ORDERS)
+        .child(sellerId)
+
     fun ordersRoot(): DatabaseReference = fire().reference.child(ORDERS)
 
     fun nextOrders() = fire().reference.child(ORDERS).orderByValue()
