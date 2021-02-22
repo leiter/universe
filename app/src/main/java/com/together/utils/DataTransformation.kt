@@ -176,7 +176,9 @@ fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
         photoUrl = photoUrl,
         phoneNumber = telephoneNumber,
         defaultMarket = defaultMarket,
-        defaultTime = defaultPickUpTime
+        defaultTime = defaultPickUpTime,
+        placedOrderIds = placedOrderIds
+
     )
 }
 

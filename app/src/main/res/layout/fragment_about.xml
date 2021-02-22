@@ -44,13 +44,14 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/about_disclaimer"
-
+        android:linksClickable="true"
+        android:autoLink="web|email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:textColor="@color/fab_green"
         android:lineSpacingExtra="8.5dp"
-        android:text="@string/developer"
+        android:text="@string/impressum"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
 

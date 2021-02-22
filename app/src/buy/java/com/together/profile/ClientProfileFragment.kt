@@ -2,7 +2,6 @@ package com.together.profile
 
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.NumberPicker
 import android.widget.Toast
@@ -30,25 +29,6 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         setupClicks()
         setupTextFields()
         alterTimePicker()
-        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-//        viewModel.blockingLoaderState.observe(viewLifecycleOwner,{
-//            when (it){
-//                is UiEvent.LoadingDone -> {
-//                    if(it.contextId == UPLOAD_PROFILE){
-//                        viewBinding.progress.loadingIndicator.visibility = View.GONE
-//                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(UPLOAD_PROFILE)
-//                    }
-//                }
-//                is UiEvent.Loading -> {
-//                    if(it.contextId == UPLOAD_PROFILE){
-//                    viewBinding.progress.loadingIndicator.visibility = View.VISIBLE}
-//                }
-//                is UiEvent.LoadingNeutral -> {
-//                    viewBinding.progress.loadingIndicator.visibility = View.GONE
-//                }
-//            }
-//        })
-
         viewModel.loadingContainer.observe(viewLifecycleOwner,{
             handleProgress(it.profileUpload,
                 viewBinding.progress.loadingIndicator,
@@ -58,7 +38,6 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
             )
         })
     }
-
 
     private fun setupTextFields() {
         viewBinding.tvPhoneNumber.setText(viewModel.buyerProfile.phoneNumber)
@@ -203,13 +182,6 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
         viewBinding.root.clearFocus()
         viewBinding.root.hideIme()
         super.onPause()
-    }
-
-    override fun onDestroyView() {
-        requireActivity().window.setSoftInputMode(
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-        )
-        super.onDestroyView()
     }
 
     private fun showPopup() {

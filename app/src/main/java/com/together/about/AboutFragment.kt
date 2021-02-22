@@ -39,7 +39,7 @@ class AboutFragment : BaseFragment(R.layout.fragment_about) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.aboutDisclaimer.text = HtmlCompat.fromHtml(
-            getString(R.string.developer), HtmlCompat.FROM_HTML_MODE_LEGACY
+            getString(R.string.impressum), HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         viewBinding.btnSettings.setOnClickListener { showPopup() }
         viewBinding.backButton.setOnClickListener {

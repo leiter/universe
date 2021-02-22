@@ -154,8 +154,10 @@ sealed class UiState {
         var photoUrl: String = "",
         var phoneNumber: String = "",
         var defaultMarket: String = "",
-        var defaultTime: String = ""
-    ) : UiState() {
+        var defaultTime: String = "",
+        var placedOrderIds:  List<Map<String,String>> = emptyList(),
+
+        ) : UiState() {
         fun getDefaultTimeDisplay(): String {
             return "$defaultTime Uhr"
         }

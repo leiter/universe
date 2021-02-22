@@ -48,16 +48,11 @@ class MainActivity : AppCompatActivity() {
             when (it) {
 
                 is UiState.BaseAuth -> {
-
                     MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
                         supportFragmentManager,
                         ProductsFragment(), ProductsFragment.TAG)
                     )
                 }
-//                    MainMessagePipe.uiEvent.onNext(UiEvent.ReplaceFragment(
-//                        supportFragmentManager,
-//                        ProductsFragment(), ProductsFragment.TAG)
-//                    )
 
                 is UiState.LoginRequired -> {
                     if(hasInternet()){
@@ -76,22 +71,10 @@ class MainActivity : AppCompatActivity() {
                         recreate()
                     }
                     firstStart = false
-//                    FireBaseAuth.loginAnonymously()
-//                    MainMessagePipe.uiEvent.onNext(
-//                        UiEvent.ReplaceFragment(supportFragmentManager, LoginFragment(), "LoginFragment")
-//                    )
                 }
             }
         })
 
-    }
-
-
-    override fun onResume() {  // TODO refine here
-        super.onResume()
-//        if(hasInternet()){
-//            viewModel.refreshData()
-//        }
     }
 
     private var firstStart = true
