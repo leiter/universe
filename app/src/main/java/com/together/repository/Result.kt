@@ -52,7 +52,7 @@ sealed class Result {
         var defaultMarket: String = "",
         var defaultPickUpTime: String = "",
 //        var userDevices: List<Device> = emptyList(),
-        var placedOrderIds: List<Map<String,String>> = emptyList(),
+        var placedOrderIds: Map<String,String> = emptyMap(), // Date , orderId
         ) : Result() {
 
 //        @get:Exclude @set:Exclude

@@ -177,7 +177,7 @@ fun Result.BuyerProfile.dataToUiOrder(): UiState.BuyerProfile {
         phoneNumber = telephoneNumber,
         defaultMarket = defaultMarket,
         defaultTime = defaultPickUpTime,
-        placedOrderIds = placedOrderIds
+        placedOrderIds = placedOrderIds.toMap()
 
     )
 }
@@ -190,7 +190,8 @@ fun UiState.BuyerProfile.uiBuyerProfileToData(): Result.BuyerProfile {
         photoUrl = photoUrl,
         telephoneNumber = phoneNumber ,
         defaultMarket = defaultMarket,
-        defaultPickUpTime = defaultTime
+        defaultPickUpTime = defaultTime,
+        placedOrderIds = placedOrderIds
     )
 }
 

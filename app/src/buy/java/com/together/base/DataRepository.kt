@@ -16,11 +16,15 @@ import io.reactivex.schedulers.Schedulers
 interface DataRepository {
     fun setupProductConnection(): Observable<Result.Article>
     fun setupProviderConnection(): Single<Result.SellerProfile>
-    fun sendOrder(order: Result.Order, update: Boolean = false): Single<Boolean>
+    fun sendOrder(
+        order: Result.Order,
+        update: Boolean = false,
+        buyerProfile: Result.BuyerProfile
+    ): Single<Result.BuyerProfile>
     fun loadOrders(): Single<List<Result.Order>>
     fun clearUserData(): Single<Boolean>
     fun loadExistingOrder(orderId: String): Single<Result.Order>
-    fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean>
+    fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Result.BuyerProfile>
     fun loadBuyerProfile(): Single<Result.BuyerProfile>
 }
 
@@ -44,21 +48,35 @@ class DataRepositoryImpl : DataRepository {
             }.observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun sendOrder(order: Result.Order, update: Boolean): Single<Boolean> {
+    override fun sendOrder(
+        order: Result.Order,
+        update: Boolean,
+        buyerProfile: Result.BuyerProfile
+    ): Single<Result.BuyerProfile> {
         return wrapInConnectionCheck {
             val date = order.pickUpDate.toOrderId()
-            Database.orders().child(date).getSingleExists().flatMap { exists ->
-                if (exists.not() || update) {
-                    return@flatMap Database.orders().child(date).setValue(order).getSingle()
+            val alreadyPlaceOrder = buyerProfile.placedOrderIds.keys.contains(date)
+            val runMe = !alreadyPlaceOrder || update
+//            Database.orderSeller(order.sellerId).child(date).getSingleExists().flatMap { exists ->
+                if (runMe) {
+                    val ref = Database.orderSeller(order.sellerId).child(date)
+                    val k =  if (!alreadyPlaceOrder) ref.push() else ref.child(buyerProfile.placedOrderIds[date]!!)
+                    k.setValue(order).getSingle().zipWith(Single.just(Pair(date,k.key!!)))
                 } else {
                     Single.error(AlreadyPlaceOrder())
                 }
-            }
+//            }
+            .map { pair ->
+                val m = buyerProfile.placedOrderIds.toMutableMap()
+                m[pair.second.first] = pair.second.second
+                buyerProfile.placedOrderIds = m
+                buyerProfile.copy()
+            }.flatMap { saveBuyerProfile(it)  }
         }
     }
 
     override fun loadOrders(): Single<List<Result.Order>> {
-        return wrapInConnectionCheck { Database.orders().orderByKey().getSingleList() }
+        return wrapInConnectionCheck { Database.orderSeller("76qsfkWc4rYCY36D2Eq7dnLR6743").orderByKey().getSingleList() }
     }
 
     override fun clearUserData(): Single<Boolean> {
@@ -80,12 +98,15 @@ class DataRepositoryImpl : DataRepository {
     }
 
     override fun loadExistingOrder(orderId: String): Single<Result.Order> {
-        return wrapInConnectionCheck { Database.orders().child(orderId).getSingleValue() }
+        return wrapInConnectionCheck { Database.orderSeller("76qsfkWc4rYCY36D2Eq7dnLR6743").child(orderId).getSingleValue() }
     }
 
-    override fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Boolean> {
-        return wrapInConnectionCheck { Database.buyer().setValue(buyerProfile).getSingle() }
-            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    override fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Result.BuyerProfile> {
+        return wrapInConnectionCheck { Database.buyer().setValue(buyerProfile).getSingle()
+            .map { it ->
+                buyerProfile
+            } } // fixMe fail in case
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun loadBuyerProfile(): Single<Result.BuyerProfile> {

@@ -170,7 +170,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         sendOrder.pickUpDate = days[dateIndex].time
         sendOrder.sellerId = sellerProfile.id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
-        dataRepository.sendOrder(sendOrder, updateOrder).subscribe({
+        dataRepository.sendOrder(sendOrder, updateOrder, buyerProfile.uiBuyerProfileToData()).subscribe({
+            buyerProfile = it.dataToUiOrder()
             if (updateOrder) updateOrder = false
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
         }, {

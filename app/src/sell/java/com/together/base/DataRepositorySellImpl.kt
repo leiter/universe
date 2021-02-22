@@ -47,9 +47,9 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
 
     override fun loadNextOrders(): Single<List<Result.Order>> {
 
-        return Database.nextOrders().getSingle().map {
+        return Database.nextOrders().getSingle().map { fu ->
             val result = ArrayList<Result.Order>()
-            it.children.forEach {
+            fu.children.forEach {
                 it.children.forEach { order ->
                     val i = order.getValue(Result.Order::class.java)
                     i?.let {  result.add(i) }

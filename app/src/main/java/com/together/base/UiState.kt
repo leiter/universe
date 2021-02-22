@@ -155,7 +155,7 @@ sealed class UiState {
         var phoneNumber: String = "",
         var defaultMarket: String = "",
         var defaultTime: String = "",
-        var placedOrderIds:  List<Map<String,String>> = emptyList(),
+        var placedOrderIds:  Map<String,String> = emptyMap(),
 
         ) : UiState() {
         fun getDefaultTimeDisplay(): String {

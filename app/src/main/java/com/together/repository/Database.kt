@@ -34,7 +34,10 @@ object Database {
 
     fun ordersRoot(): DatabaseReference = fire().reference.child(ORDERS)
 
-    fun nextOrders() = fire().reference.child(ORDERS).orderByValue()
+    fun nextOrders() = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
+        .orderByChild("createdDate")
+//        .child("VjinwVOAVtYoVrIXPKd2poy57oA3")
+//        .orderByChild("createdDate").startAt(1614019579777.toDouble())
 //        .child("Qndow4Nw90dNRelvAGyMgmfAURG3")
 //        .orderByChild("createdDate").equalTo(1613319828391.toDouble())
 
