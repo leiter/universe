@@ -21,8 +21,6 @@ class ShowOrdersFragment : Fragment(R.layout.fragment_show_orders) {
     private val viewBinding: FragmentShowOrdersBinding by viewLifecycleLazy {
         FragmentShowOrdersBinding.bind(requireView()) }
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(viewBinding){

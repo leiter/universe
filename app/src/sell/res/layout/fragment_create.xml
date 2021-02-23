@@ -62,12 +62,23 @@
             android:padding="16dp"
             android:src="@drawable/ic_add" />
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/save_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/create_new_product"
+            android:background="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_save_24" />
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_menu_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/create_new_product"
             android:layout_toEndOf="@+id/btn_drawer_open"
+            android:visibility="gone"
             android:gravity="center"
             android:textSize="24sp"
             tools:text="Linda" />
@@ -96,19 +107,19 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/product_description_layout"
+        android:id="@+id/product_search_term_layout"
         android:layout_width="244dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
         app:layout_constraintTop_toBottomOf="@id/et_product_amount_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/product_description"
+            android:id="@+id/product_search_term"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:textColor="@color/edit_text_text_color"
-            android:hint="Beschreibung"
+            android:hint="Suchbegriffe"
             android:lines="1"
             android:maxLength="30" />
 
@@ -120,7 +131,7 @@
         android:layout_height="wrap_content"
         android:minWidth="250dp"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_description_layout">
+        app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -160,9 +171,9 @@
         android:id="@+id/product_price_unit_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/product_description_layout"
+        app:layout_constraintEnd_toEndOf="@+id/product_search_term_layout"
         app:layout_constraintStart_toEndOf="@+id/product_price_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_description_layout">
+        app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -202,19 +213,19 @@
         android:layout_height="wrap_content"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/product_discount_layout"
+        android:id="@+id/product_number_layout"
         android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/image"
         app:layout_constraintTop_toBottomOf="@id/image">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/product_discount"
+            android:id="@+id/product_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Rabat"
+            android:hint="PNr."
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -228,7 +239,7 @@
         android:src="@drawable/ic_info_outline"
         app:layout_constraintBottom_toBottomOf="@+id/article_available"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/product_discount_layout"
+        app:layout_constraintStart_toEndOf="@+id/product_number_layout"
         app:layout_constraintTop_toTopOf="@+id/article_available" />
 
     <androidx.appcompat.widget.SwitchCompat
@@ -239,10 +250,10 @@
         android:text="Artikel ist verfügbar"
         android:textColor="@color/fab_green"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/product_discount_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/product_number_layout"
         app:layout_constraintEnd_toEndOf="@+id/product_price_unit_layout"
         app:layout_constraintStart_toStartOf="@+id/product_price_layout"
-        app:layout_constraintTop_toTopOf="@+id/product_discount_layout" />
+        app:layout_constraintTop_toTopOf="@+id/product_number_layout" />
 
 
     <ImageButton
@@ -267,7 +278,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_discount_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_number_layout"
         tools:itemCount="14"
         tools:listitem="@layout/item_product" />
 
@@ -283,7 +294,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_discount_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/product_number_layout" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -292,7 +303,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
         android:src="@drawable/ic_add"
-        android:visibility="visible"
+        android:visibility="gone"
         app:backgroundTint="@color/brightGreen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -304,7 +315,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:text="Änderungen Speichern"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

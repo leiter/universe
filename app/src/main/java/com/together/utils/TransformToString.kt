@@ -16,6 +16,10 @@ fun Date.toAppointmentTime() : String {
     return dayFormatDay.format(this.time) + "gegen " + dateFormatTime.format(this.time) + " Uhr"
 }
 
+fun Long.toPickUpText() : String {
+    return dayFormatDay.format(this) + " um " + dateFormatTime.format(this) + " Uhr"
+}
+
 fun Long.toOrderTime() : String {
     val c = Calendar.getInstance()
     c.timeInMillis = this

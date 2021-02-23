@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,16 +11,9 @@ import com.together.R
 import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
-import com.together.repository.Database
-import com.together.repository.Result
-import com.together.repository.storage.getObservable
-import com.together.repository.storage.getSingle
 import com.together.utils.loadImage
 import com.together.utils.viewLifecycleLazy
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 
@@ -29,9 +21,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
     private lateinit var adapter: ProductAdapter
     private val viewBinding: FragmentCreateBinding by viewLifecycleLazy {
-        FragmentCreateBinding.bind(
-            requireView()
-        )
+        FragmentCreateBinding.bind(requireView())
     }
 
     companion object {
@@ -40,7 +30,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
     private fun makeEditable(edit: Boolean) {
         with(viewBinding) {
-            productDescription.isEnabled = edit
+            productSearchTerm.isEnabled = edit
             productName.isEnabled = edit
             productPrice.isEnabled = edit
             productPriceUnit.isEnabled = edit
@@ -50,7 +40,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
     private fun resetProduct() {
         with(viewBinding) {
-            productDescription.setText("")
+            productSearchTerm.setText("")
             productName.setText("")
             productPrice.setText("")
             productPriceUnit.setText("")
@@ -64,9 +54,9 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         adapter = ProductAdapter(this)
         viewBinding.image.tag = false
         with(viewBinding) {
-            saveChanges.setOnClickListener { createBitmap() }
+            saveProduct.setOnClickListener { createBitmap() }
             btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
-            createFab.setOnClickListener { tryMe() }
+//            createFab.setOnClickListener {  }
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             btnDrawerOpen.setOnClickListener {
                 MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
@@ -87,7 +77,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         viewModel.editProduct.observe(viewLifecycleOwner, {
             makeEditable(false)
             viewBinding.productName.setText(it.productName)
-            viewBinding.productDescription.setText(it.productDescription)
+            viewBinding.productSearchTerm.setText(it.productDescription)
             viewBinding.productPrice.setText(it.pricePerUnit)
             viewBinding.productPriceUnit.setText(it.unit)
             viewBinding.articleAvailable.isChecked = it.available
@@ -123,49 +113,12 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         })
     }
 
-    private fun tryMe() {
-
-//        Database.ordersRoot().limitToLast(10).getSingle().map { userOrders ->
-//            userOrders.children.map { it.children.map { it.getValue(Result.Order::class.java) } }
-//        }.subscribe({
-//                it.flatten()
-//                Log.e("TTTTT", "For debugging");
-//            }, {
-//                it.printStackTrace()
-//            }).addTo(disposable)
-    }
-
     override fun clicked(item: UiState.Article) {
         viewModel.editProduct.value = item
     }
 
-    private fun updateProduct(imageUri: Uri) {
-
-        writeToNewProduct()
-
-        val uiState = viewModel.editProduct.value!!
-
-        val result = Result.Article(
-            productName = uiState.productName,
-            imageUrl = imageUri.toString(),
-            unit = viewBinding.productPriceUnit.text.toString(),
-            available = uiState.available,
-            price = uiState.pricePerUnit.replace("€", "")
-                .replace(",", ".").toDouble()
-        )
-        if (uiState.id.isNotEmpty()) {
-            val m = mutableMapOf("price" to 7.8 as Any)
-            Database.updateArticle(uiState.id).updateChildren(m)
-        } else {
-            Database.articles().push().setValue(result)
-        }
-        return
-    }
-
-
     private fun createBitmap() {
         writeToNewProduct()
-
         viewModel.uploadProduct(Single.fromCallable {
             val bitmap: Bitmap = Bitmap.createBitmap(
                 viewBinding.image.width, viewBinding.image.height,
@@ -177,23 +130,16 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(tmpFile))
             tmpFile
         }, viewBinding.image.tag as Boolean)
-
     }
 
     private fun writeToNewProduct() {
         with(viewModel.editProduct) {
             value?.productName = viewBinding.productName.text.toString()
-            value?.productDescription = viewBinding.productDescription.text.toString()
+            value?.searchTerms = viewBinding.productSearchTerm.text.toString()
             value?.pricePerUnit = viewBinding.productPrice.text.toString()
             value?.unit = viewBinding.productPriceUnit.text.toString()
             value?.available = viewBinding.articleAvailable.isChecked
         }
-
-    }
-
-    override fun onDestroyView() {
-        disposable.clear()
-        super.onDestroyView()
     }
 
 }

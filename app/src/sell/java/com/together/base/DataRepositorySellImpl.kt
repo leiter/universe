@@ -7,7 +7,7 @@ import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.*
-import dagger.hilt.android.scopes.ViewModelScoped
+import com.together.utils.getMarketDates
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,9 +17,6 @@ import javax.inject.Inject
 
 
 class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
-
-    init {
-    }
 
     override fun setupProductConnection(): Observable<Result.Article> {
         return Database.articles().getObservable<Result.Article>()
@@ -46,17 +43,19 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
     }
 
     override fun loadNextOrders(): Single<List<Result.Order>> {
-
-        return Database.nextOrders().getSingle().map { fu ->
-            val result = ArrayList<Result.Order>()
-            fu.children.forEach {
-                it.children.forEach { order ->
-                    val i = order.getValue(Result.Order::class.java)
-                    i?.let {  result.add(i) }
+        return loadSellerProfile().map { it.getMarketDates() }.toObservable()
+            .flatMapIterable { it }.map { Database.nextOrders(it) }
+            .flatMap { it.getSingle().toObservable() }
+            .map { fu ->
+                val re = ArrayList<Result.Order>()
+                fu.children.forEach {
+                    val i = it.getValue(Result.Order::class.java)
+                    i?.let { re.add(i) }
                 }
-            }
-            result.sortedByDescending { it.pickUpDate }.reversed()
-        }
+                re.toList()
+            }.toList().map { it.toList().flatten()
+                .sortedByDescending { order -> order.pickUpDate }.reversed() }
+
     }
 
     override fun loadSellerProfile(): Single<Result.SellerProfile> {
@@ -81,7 +80,11 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                 product.imageUrl = it.toString()
                 product
             } else Single.just(product)
-        return start.subscribeOn(Schedulers.io()).map { Database.articles().push().setValue(it) }
+        return start.subscribeOn(Schedulers.io()).map {
+            if (it.id.isEmpty()) Database.articles().push().setValue(it)
+            else Database.articles().child(it.id).setValue(it)
+
+        }
     }
 
 }

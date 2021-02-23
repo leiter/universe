@@ -130,6 +130,10 @@
                 android:id="@+id/weekdays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+                android:textSize="12sp"
                 android:hint="Wochentag"
                 android:lines="1" />
         </com.google.android.material.textfield.TextInputLayout>

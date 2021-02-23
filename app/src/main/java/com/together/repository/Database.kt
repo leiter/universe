@@ -34,12 +34,9 @@ object Database {
 
     fun ordersRoot(): DatabaseReference = fire().reference.child(ORDERS)
 
-    fun nextOrders() = fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
-        .orderByChild("createdDate")
-//        .child("VjinwVOAVtYoVrIXPKd2poy57oA3")
-//        .orderByChild("createdDate").startAt(1614019579777.toDouble())
-//        .child("Qndow4Nw90dNRelvAGyMgmfAURG3")
-//        .orderByChild("createdDate").equalTo(1613319828391.toDouble())
+    fun nextOrders(date: String) = fire().reference.child(ORDERS)
+        .child(FireBaseAuth.getAuth().uid!!)
+        .child(date).orderByChild("pickUpDate")
 
     fun orderIds() = fire().reference.child(ORDER_IDS)
 
@@ -59,7 +56,7 @@ object Database {
     init {
         fire().setPersistenceEnabled(true)
         orders().keepSynced(true)
-        nextOrders().keepSynced(true)
+//        nextOrders().keepSynced(true)
         sellerProfile("").keepSynced(true)
     }
 }

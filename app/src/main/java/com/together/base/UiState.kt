@@ -166,6 +166,7 @@ sealed class UiState {
         override var mode: Int = Result.UNDEFINED
     }
 
+    @Parcelize
     data class SellerProfile(
         override var id: String = "",
         var displayName: String = "",
@@ -184,7 +185,7 @@ sealed class UiState {
         var _urls: MutableList<String> = mutableListOf(),
         var _knownClientIds: MutableList<String> = mutableListOf(),
 
-        ) : UiState() {
+        ) : UiState(), Parcelable {
         override var mode: Int = UNDEFINED
     }
 

@@ -256,7 +256,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun loadOrders() {
         blockingLoaderState.value = UiEvent.Loading(LOAD_OLD_ORDERS)
-        dataRepository.loadOrders().subscribe({ listOfOrders ->
+        dataRepository.loadOrders(sellerProfile.id, buyerProfile.placedOrderIds).subscribe({ listOfOrders ->
             val newStuff = listOfOrders.map { it.dataToUiOrder() }
             oldOrders.value = newStuff.reversed()
             blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)

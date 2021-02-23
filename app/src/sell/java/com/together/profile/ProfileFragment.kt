@@ -81,9 +81,9 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
             }
         })
 
-        viewModel.markets.observe(viewLifecycleOwner, {
+        viewModel.profileLive.observe(viewLifecycleOwner, {
             viewBinding.placesList.removeAllViews()
-            val adapter = MarketAdapter(requireContext(), it, openAddMarket)
+            val adapter = MarketAdapter(requireContext(), it.marketList, openAddMarket)
             (0 until adapter.count).forEach { pos ->
                 val item = adapter.getView(pos, null, viewBinding.placesList)
                 viewBinding.placesList.addView(item)

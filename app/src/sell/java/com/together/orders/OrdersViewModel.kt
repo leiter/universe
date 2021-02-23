@@ -15,11 +15,8 @@ class OrdersViewModel @ViewModelInject constructor(private val dataRepository: D
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     val orders: MutableLiveData<List<UiState.Order>> by lazy {
-        MutableLiveData<List<UiState.Order>>().also {
-            loadNextOrders()
-        }
+        MutableLiveData<List<UiState.Order>>().also { loadNextOrders() }
     }
-
 
     fun loadNextOrders() {
         dataRepository.loadNextOrders().subscribe({ listOfOrders ->

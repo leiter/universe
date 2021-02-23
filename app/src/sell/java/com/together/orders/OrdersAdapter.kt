@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.together.base.UiState
 import com.together.databinding.ItemNextOrderBinding
+import com.together.utils.toPickUpText
 
 class OrdersAdapter(var data: MutableList<UiState.Order> = mutableListOf()) : RecyclerView.Adapter<OrderItemViewHolder>() {
 
@@ -22,12 +23,15 @@ class OrdersAdapter(var data: MutableList<UiState.Order> = mutableListOf()) : Re
     }
 }
 
-class OrderItemViewHolder(private val binding: ItemNextOrderBinding) : RecyclerView.ViewHolder(binding.root){
+class OrderItemViewHolder(private val binding: ItemNextOrderBinding)
+
+    : RecyclerView.ViewHolder(binding.root){
 
     fun bindItem(item: UiState.Order){
         with(binding) {
-            tvProductCount.text = item.productList.size.toString()
-//            tvPersonName.text = item.buyerProfile.displayName
+            tvProductCount.text = item.createProductCount()
+            tvPersonName.text = item.buyerProfile.displayName
+            tvDay.text = item.pickUpDate.toPickUpText()
             llProductItems.removeAllViews()
             val a = OrderedProductAdapter(llProductItems.context,item.productList)
             (0 until a.count).forEach {

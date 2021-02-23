@@ -2,14 +2,20 @@ package com.together.app
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.transition.Transition
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.NumberPicker
+import android.widget.TimePicker
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.together.base.UiState
 import com.together.databinding.FragmentDialogsBinding
+import com.together.profile.PickDayFragment
 import com.together.profile.ProfileViewModel
 
 
@@ -19,7 +25,7 @@ class MarketDialog : DialogFragment() {
     private lateinit var market: UiState.Market
     private lateinit var viewBinding: FragmentDialogsBinding
 
-    val viewModel: ProfileViewModel by viewModels( { requireParentFragment()  })
+    private val viewModel: ProfileViewModel by viewModels({ requireParentFragment() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +42,12 @@ class MarketDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding = FragmentDialogsBinding.inflate(inflater,container,false)
+        viewBinding = FragmentDialogsBinding.inflate(inflater, container, false)
 
-        with(viewBinding){
+        with(viewBinding) {
             setup(begin)
             setup(end)
+            showDayPicker(weekdays)
 
             addPickupPlace.setOnClickListener {
                 val market = UiState.Market(
@@ -54,7 +61,7 @@ class MarketDialog : DialogFragment() {
                     end.text.toString()
                 )
                 val items = viewModel.markets.value!!
-                val s = items.indexOfFirst { it.id == market.id}
+                val s = items.indexOfFirst { it.id == market.id }
                 if (s > -1) {
                     items.removeAt(s)
                     items.add(s, market)
@@ -63,14 +70,18 @@ class MarketDialog : DialogFragment() {
                 dismiss()
             }
             if (modeType == EDIT_MARKET) {
-                placeName.setText(market.name)
-                street.setText(market.street)
-                house.setText(market.houseNumber)
-                zipCode.setText(market.zipCode)
-                city.setText(market.city)
-                weekdays.setText(market.dayOfWeek)
-                begin.setText(market.begin)
-                end.setText(market.end)
+                viewModel.profileLive.observe(viewLifecycleOwner, {
+                    val m = it.marketList.find { it.id == market.id }!!
+                    placeName.setText(m.name)
+                    street.setText(m.street)
+                    house.setText(m.houseNumber)
+                    zipCode.setText(m.zipCode)
+                    city.setText(m.city)
+                    weekdays.setText(m.dayOfWeek)
+                    begin.setText(m.begin)
+                    end.setText(m.end)
+                })
+
             }
         }
         return viewBinding.root
@@ -79,13 +90,22 @@ class MarketDialog : DialogFragment() {
     private fun setup(text: EditText) {
         text.setOnClickListener {
             text.setText("")
-            TimePickerDialog(activity,
+            TimePickerDialog(
+                activity,
                 { _, hourOfDay, minute ->
                     text.setText("%02d:%02d Uhr".format(hourOfDay, minute))
                 },
                 0, 0, true
             ).show()
         }
+    }
+
+    private fun showDayPicker(text: EditText) {
+        text.setOnClickListener {
+            PickDayFragment.newInstance(market)
+                .show(parentFragmentManager, "PickDayFragment")
+        }
+
     }
 
     override fun onStart() {

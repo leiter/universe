@@ -21,7 +21,7 @@ interface DataRepository {
         update: Boolean = false,
         buyerProfile: Result.BuyerProfile
     ): Single<Result.BuyerProfile>
-    fun loadOrders(): Single<List<Result.Order>>
+    fun loadOrders(sellerId: String, placedOrderIds: Map<String,String>): Single<List<Result.Order>>
     fun clearUserData(): Single<Boolean>
     fun loadExistingOrder(orderId: String): Single<Result.Order>
     fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Result.BuyerProfile>
@@ -75,8 +75,17 @@ class DataRepositoryImpl : DataRepository {
         }
     }
 
-    override fun loadOrders(): Single<List<Result.Order>> {
-        return wrapInConnectionCheck { Database.orderSeller("76qsfkWc4rYCY36D2Eq7dnLR6743").orderByKey().getSingleList() }
+    override fun loadOrders(sellerId: String, placedOrderIds: Map<String,String>): Single<List<Result.Order>> {
+        return wrapInConnectionCheck {
+            val list = placedOrderIds.map { item ->  oneOrder(sellerId, item.key,item.value)
+                .subscribeOn(Schedulers.io()) }
+            Observable.fromIterable(list).flatMap { it.toObservable() }.toList()
+        }
+    }
+
+    private fun oneOrder(sellerId: String, date:String,orderId: String): Single<Result.Order>{
+        return Database.orderSeller(sellerId)
+            .child(date).child(orderId).getSingleValue()
     }
 
     override fun clearUserData(): Single<Boolean> {
