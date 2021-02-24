@@ -125,7 +125,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     }
 
-    private fun setMarketAndTime() {
+    fun setMarketAndTime() {
         var market: UiState.Market? = null
         if (buyerProfile.defaultMarket != "") {
             sellerProfile.marketList.find { buyerProfile.defaultMarket == it.id }?.let {
@@ -170,7 +170,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         sendOrder.pickUpDate = days[dateIndex].time
         sendOrder.sellerId = sellerProfile.id
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
-        dataRepository.sendOrder(sendOrder, updateOrder, buyerProfile.uiBuyerProfileToData()).subscribe({
+        dataRepository.sendOrder(sendOrder, updateOrder, buyerProfile.uiBuyerProfileToData())
+            .subscribe({
             buyerProfile = it.dataToUiOrder()
             if (updateOrder) updateOrder = false
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
@@ -182,8 +183,11 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     private fun loadExistingOrder(sendOrder: Result.Order) {
-        dataRepository.loadExistingOrder(sendOrder.pickUpDate.toOrderId()).map { loadedOrder ->
+        val date = sendOrder.pickUpDate.toOrderId()
+        val orderPath = buyerProfile.placedOrderIds[date] as String
+        dataRepository.loadExistingOrder(sellerProfile.id, date, orderPath).map { loadedOrder ->
             order = loadedOrder.dataToUiOrder()
+            order.marketId = sendOrder.marketId
             val currentBasket = basket.value?.toMutableList()
             val loadedBasket =
                 createBasketUDate(productList.value!!.toList(), loadedOrder.dataToUiOrder())
@@ -206,7 +210,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
             }
             basket.value = f.toMutableList()
-        }.subscribe({
+        }.observeOn(AndroidSchedulers.mainThread()).subscribe({
             updateOrder = true
             blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_UPDATED)
         }, {
@@ -242,13 +246,16 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         disposable2.clear()
         resetProductList()
         basket.value = mutableListOf()
-        dataRepository.clearUserData().flatMap {
+        dataRepository.clearUserData(sellerProfile.id,buyerProfile.uiBuyerProfileToData())
+            .flatMap {
+                    it ->
             FireBaseAuth.deleteAccount().getSingle()
         }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 basket.value = mutableListOf()
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
             }, {
+                it ->
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
 
             }).addTo(disposable)
@@ -275,9 +282,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         order.marketId = market.id
     }
 
-    fun refreshData() {
-        disposable2.clear()
-        setupDataStreams()
+    fun provideMarket() : UiState.Market {
+        return sellerProfile.marketList[marketIndex]
     }
+
 }
 

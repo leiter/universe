@@ -24,7 +24,6 @@ object MainMessagePipe {
                     MainActivity.startLogin(it.context)
                 }
                 is UiEvent.LogOut -> {
-                    //fixme
                     FireBaseAuth.logOut()
                 }
 

@@ -53,7 +53,6 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun setupClicks() {
         viewBinding.btnBack.setOnClickListener {
-//            activity?.onBackPressed()
             MainMessagePipe.uiEvent.onNext(
                 UiEvent.ReplaceFragment(
                     requireActivity().supportFragmentManager,
@@ -163,7 +162,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun alterTimePicker() {
         viewBinding.tpSetAppointment.setIs24HourView(true)
-        val defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex]
+        val defaultMarket = viewModel.provideMarket()
         val i = (viewBinding.tpSetAppointment as FrameLayout).children.iterator().next()
         val hourPicker = (i.touchables[0].parent as NumberPicker)
         val minutePicker = (i.touchables[1].parent as NumberPicker)

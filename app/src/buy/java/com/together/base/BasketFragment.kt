@@ -29,7 +29,7 @@ import java.util.*
 
 class BasketFragment : DialogFragment() {
 
-    private val viewBinding: FragmentBasketBinding by viewBinding (FragmentBasketBinding::inflate)
+    private val viewBinding: FragmentBasketBinding by viewBinding(FragmentBasketBinding::inflate)
     private var adapter: BasketAdapter? = null
     private val viewModel: MainViewModel by activityViewModels()
     private var showingTimePicker: Boolean = false
@@ -45,7 +45,11 @@ class BasketFragment : DialogFragment() {
             ad.notifyItemRemoved(pos)
             viewBinding.basketSum.text = calculatePurchaseSum(viewModel.basket.value!!)
             MainMessagePipe.uiEvent.onNext(UiEvent.BasketMinusOne)
-            if (viewModel.basket.value?.size == 0) dismiss()
+            if (viewModel.basket.value?.size == 0) {
+                viewModel.basket.value = mutableListOf()
+                viewModel.order = UiState.Order()
+                dismiss()
+            }
         }
 
     private fun showSetTime(show: Boolean) {
@@ -76,11 +80,12 @@ class BasketFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        viewBinding.btnSendOrder.setOnClickListener { viewModel.sendOrder() }
+        viewBinding.btnSendOrder.setOnClickListener { manageSendOrder() }
 
         viewBinding.ckSetReminder.checkedChanges().subscribe { isChecked ->
-            if(isChecked){
-                viewModel.buyerProfile.defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex].id
+            if (isChecked) {
+                viewModel.buyerProfile.defaultMarket =
+                    viewModel.provideMarket().id
                 viewModel.buyerProfile.defaultTime = viewModel.days[0].getHourAndMinute()
                 viewModel.uploadBuyerProfile(true)
             }
@@ -106,6 +111,22 @@ class BasketFragment : DialogFragment() {
         return viewBinding.root
     }
 
+    private fun manageSendOrder() {
+        if (viewBinding.tvClientName.text.toString().doesNotFit()) {
+            viewBinding.tvClientNameLayout.error = "Eingabe ist erforderlich."
+            viewBinding.tvClientName.textChanges().skipInitialValue().subscribe {
+                if (it.toString().doesNotFit().not()) {
+                    viewBinding.tvClientNameLayout.error = ""
+                }
+            }.addTo(disposable)
+            return
+        } else {
+            viewModel.buyerProfile.displayName = viewBinding.tvClientName.text.toString()
+        }
+        viewModel.sendOrder()
+
+    }
+
     private fun setPaceAndDateForOrder() {
         val selectedIndex = viewBinding.tlMarketContainer.selectedTabPosition
         val date = viewModel.days[viewBinding.tlDateContainer.selectedTabPosition]
@@ -126,7 +147,7 @@ class BasketFragment : DialogFragment() {
             .setView(viewBinding.root).create()
     }
 
-    private fun setListAdapter(){
+    private fun setListAdapter() {
         val b = viewModel.basket.value!!.toMutableList()
         adapter?.data = b
         viewBinding.basketSum.text = calculatePurchaseSum(b)
@@ -140,6 +161,7 @@ class BasketFragment : DialogFragment() {
         setupMarketButtons()
         setPaceAndDateForOrder()
         alterTimePicker()
+        viewBinding.tvClientName.setText(viewModel.buyerProfile.displayName)
         viewBinding.etMessage.textChanges().skipInitialValue().subscribe {
             viewModel.order.message = it.toString()
         }.addTo(disposable)
@@ -151,7 +173,7 @@ class BasketFragment : DialogFragment() {
                 is UiEvent.LoadingDone -> {
                     when (uiEvent.contextId) {
                         SEND_ORDER -> {
-                            viewBinding.progress.loadingIndicator.visibility = View.GONE
+                            viewBinding.progressss.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(SEND_ORDER)
                             toastMsg = "Bestellung erfolgreich gesendet."
                             viewModel.basket.value = mutableListOf()
@@ -161,14 +183,17 @@ class BasketFragment : DialogFragment() {
                         SEND_ORDER_FAILED -> {
                             toastMsg = "Bestellung konnte nicht gesendet werden."
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
-                                SEND_ORDER_FAILED)
+                                SEND_ORDER_FAILED
+                            )
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {
-                            toastMsg = "Die bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
-                            viewBinding.progress.loadingIndicator.visibility = View.GONE
+                            toastMsg =
+                                "Die bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
+                            viewBinding.progressss.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
-                                SEND_ORDER_UPDATED)
+                                SEND_ORDER_UPDATED
+                            )
                             setListAdapter()
                         }
                     }
@@ -180,7 +205,7 @@ class BasketFragment : DialogFragment() {
 
                 is UiEvent.Loading -> {
                     if (uiEvent.contextId == SEND_ORDER) {
-                        viewBinding.progress.loadingIndicator.visibility = View.VISIBLE
+                        viewBinding.progressss.loadingIndicator.visibility = View.VISIBLE
                     }
                 }
             }
@@ -188,7 +213,7 @@ class BasketFragment : DialogFragment() {
     }
 
     private fun alterTimePicker() {
-        val defaultMarket = viewModel.sellerProfile.marketList[viewModel.marketIndex]
+        val defaultMarket = viewModel.provideMarket()
         val i = (viewBinding.tpSetAppointment as FrameLayout).children.iterator().next()
         val hourPicker = (i.touchables[0].parent as NumberPicker)
         val minutePicker = (i.touchables[1].parent as NumberPicker)
@@ -218,14 +243,15 @@ class BasketFragment : DialogFragment() {
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
-                showDates( null, viewModel.dateIndex)
+
+                showDates(null, viewModel.dateIndex)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 viewModel.marketIndex = viewBinding.tlMarketContainer.selectedTabPosition
                 viewBinding.tlDateContainer.getTabAt(viewModel.dateIndex)?.select()
-                showDates( null, viewModel.dateIndex)
+                showDates(null, viewModel.dateIndex)
             }
         })
         viewBinding.tlDateContainer.addOnTabSelectedListener(object :
@@ -265,9 +291,16 @@ class BasketFragment : DialogFragment() {
         newDays: Array<Date>? = null,
         selectPos: Int = -1
     ) {
-        val dayTime = if (viewModel.order.pickUpDate != 0L) viewModel.order.pickUpDate else null
-        viewModel.days = newDays ?:
-        getDays(viewModel.sellerProfile.marketList[viewModel.marketIndex], dayTime?.let { Date(it) })
+        val dayTime = if (viewModel.order.pickUpDate != 0L) viewModel.order.pickUpDate
+        else {
+            if (viewModel.buyerProfile.defaultTime != "") {
+                viewModel.setMarketAndTime()
+            }
+            viewModel.days[0].time
+        }
+        viewModel.days = newDays ?: getDays(
+            viewModel.provideMarket(), Date(dayTime)
+        )
 
         viewBinding.tlDateContainer.removeAllTabs()
         viewModel.days.forEach {

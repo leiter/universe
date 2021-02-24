@@ -20,7 +20,9 @@ import com.together.utils.viewLifecycleLazy
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
-class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdapter.ItemClicked, View.OnFocusChangeListener {
+class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdapter.ItemClicked,
+
+    View.OnFocusChangeListener {
 
     private lateinit var adapter: ProductAdapter
     private lateinit var productData: List<UiState.Article>
@@ -39,7 +41,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         itemIndexScrollTo = productData.lastIndexOf(item)
         deSelectProduct()
         selectedItemIndex = productData.indexOfFirst { it.id == item.id }
-
         productData[selectedItemIndex].isSelected = true
         adapter.notifyItemChanged(selectedItemIndex)
     }

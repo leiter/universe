@@ -40,14 +40,16 @@ class AboutFragment : BaseFragment(R.layout.fragment_about) {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding.btnSettings.setOnClickListener { showPopup() }
+        if (flavour != "createFragment") {
+            val string = requireContext().getIntIdentity("impressum", "string")
+            viewBinding.aboutDisclaimer.text = HtmlCompat.fromHtml(
+                getString(string), HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        }
         viewBinding.backButton.setOnClickListener {
             if (flavour == "createFragment") {  //fixme  later use id reference directly
                 findNavController().navigate(requireContext().getIntIdentity(flavour, "id"))
             } else {
-                val string = requireContext().getIntIdentity("impressum", "string")
-                viewBinding.aboutDisclaimer.text = HtmlCompat.fromHtml(
-                    getString(string), HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
                 requireActivity().onBackPressed()
             }
         }

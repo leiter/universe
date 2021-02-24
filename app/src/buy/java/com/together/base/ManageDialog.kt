@@ -59,7 +59,7 @@ class ManageDialog : DialogFragment() {
             it.id == viewModel.order.marketId }
 
         val dayTime = selectedOrder.pickUpDate.toDate()
-            viewModel.days = getDays(viewModel.sellerProfile.marketList[viewModel.marketIndex],dayTime)
+            viewModel.days = getDays(viewModel.provideMarket(),dayTime)
         val neList = viewModel.productList.value!!.toMutableSet().toList()
         viewModel.basket.value = createBasketUDate(neList, selectedOrder.copy())
         dismiss()

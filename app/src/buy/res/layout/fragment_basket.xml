@@ -206,14 +206,51 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_market_name"
             tools:text="Do, 25.06.2021 ca. 15:00 Uhr" />
 
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tv_client_name_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_pick_up_phrase"
+            app:layout_constraintEnd_toEndOf="@+id/tv_market_date"
+            app:layout_constraintStart_toStartOf="@id/tv_menu_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_market_date">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_client_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:lines="1" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <com.google.android.material.textview.MaterialTextView-->
+<!--            android:id="@+id/tv_product_sum"-->
+
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:gravity="center"-->
+<!--            tools:text="15 Produkte"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/tv_client_name_layout"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/tv_client_name_layout"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/tv_client_name_layout" />-->
+
+
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:background="@color/fab_green"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_market_date" />
+            app:layout_constraintTop_toBottomOf="@id/tv_client_name_layout" />
+
+
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -260,11 +297,11 @@
             app:layout_constraintTop_toBottomOf="@+id/basket_sum" />
 
         <include
-            android:id="@+id/progress"
+            android:id="@+id/progressss"
             layout="@layout/item_blocking_progress"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

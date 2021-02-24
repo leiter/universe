@@ -98,7 +98,7 @@ object TestData {
             6,
             "Knoblauch",
             true,
-            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp6508924231056424774.tmp?alt=media&token=00aae628-6dea-404c-bd7d-101de3ecdd4e",
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/fire-one-58ddc.appspot.com/o/images%2Ftmp520357711478880421.tmp?alt=media&token=00aae628-6dea-404c-bd7d-101de3ecdd4e",
             price = 10.69,
             unit = "kg",
             category = "Knoblauch",

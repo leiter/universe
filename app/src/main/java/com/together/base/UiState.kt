@@ -169,6 +169,7 @@ sealed class UiState {
     @Parcelize
     data class SellerProfile(
         override var id: String = "",
+        override var mode: Int = UNDEFINED,
         var displayName: String = "",
         var firstName: String = "",
         var lastName: String = "",
@@ -185,10 +186,7 @@ sealed class UiState {
         var _urls: MutableList<String> = mutableListOf(),
         var _knownClientIds: MutableList<String> = mutableListOf(),
 
-        ) : UiState(), Parcelable {
-        override var mode: Int = UNDEFINED
-    }
-
+        ) : UiState(), Parcelable
 
     @Parcelize
     data class Market(

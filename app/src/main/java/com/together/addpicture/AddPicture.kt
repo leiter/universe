@@ -143,7 +143,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
         }
 
         if (permissions.size == 1 &&
-            (requestCode == REQUEST_TAKE_PICTURE_PERMISSION || requestCode == 65758) &&  //todo
+            (requestCode == REQUEST_TAKE_PICTURE_PERMISSION || requestCode == 65758) &&
             permissions[0] == Manifest.permission.CAMERA &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
