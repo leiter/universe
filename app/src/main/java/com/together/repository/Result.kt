@@ -64,7 +64,7 @@ sealed class Result {
     data class Article(
         override var id: String = "",
         override var mode: Int = UNDEFINED,
-        var productId: Int = -1,
+        var productId: String = "",
         var productName: String = "",
         var available: Boolean = false,
         var unit: String = "",
@@ -81,7 +81,7 @@ sealed class Result {
     data class OrderedProduct(
         override var id: String = "",
         override var mode: Int = UNDEFINED,
-        var productId: Int = -1,
+        var productId: String = "-1",
         var productName: String = "",
         var unit: String = "",
         var price: Double = 0.0,

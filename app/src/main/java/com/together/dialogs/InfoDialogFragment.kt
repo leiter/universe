@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import com.together.base.MainViewModel
 import com.together.databinding.FragmentInfoDialogBinding
 import com.together.utils.viewBinding
 
@@ -15,23 +18,51 @@ class InfoDialogFragment : DialogFragment() {
     private var usageMode: String? = null
     private var productInfo: String? = null
 
-    private val viewBinding : FragmentInfoDialogBinding by viewBinding( FragmentInfoDialogBinding::inflate)
+    private val viewModel: MainViewModel by activityViewModels()
+
+    private val viewBinding : FragmentInfoDialogBinding by viewBinding(FragmentInfoDialogBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE,0)
+        setStyle(STYLE_NO_TITLE, 0)
+
         requireArguments().let {
             usageMode = it.getString(USAGE_MODE)
             productInfo = it.getString(PRODUCT_INFO)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 //        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        viewBinding.tvProductInfo.text = productInfo
+        when(usageMode){
+            SHOW_INFO -> viewBinding.tvProductInfo.text = productInfo
+            EDIT_INFO -> setUpEditMode()
+        }
+
+        val d = dialog!!
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(d.window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+        d.show()
+        d.window?.attributes = lp
         return viewBinding.root
+    }
+
+    private fun setUpEditMode() {
+        isCancelable = false
+        with(viewBinding){
+            etDetailInfo.setText(productInfo)
+            btnSaveChanges.setOnClickListener {
+                viewModel.editProduct.value?.detailInfo = etDetailInfo.text.toString()
+                dismiss()
+            }
+            btnCancelChanges.setOnClickListener { dismiss()  }
+        }
     }
 
     companion object {

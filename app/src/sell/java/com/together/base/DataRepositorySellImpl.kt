@@ -53,8 +53,10 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                     i?.let { re.add(i) }
                 }
                 re.toList()
-            }.toList().map { it.toList().flatten()
-                .sortedByDescending { order -> order.pickUpDate }.reversed() }
+            }.toList().map {
+                it.toList().flatten()
+                    .sortedByDescending { order -> order.pickUpDate }.reversed()
+            }
 
     }
 
@@ -69,7 +71,7 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
         file: Single<File>,
         fileAttached: Boolean,
         product: Result.Article
-    ): Single<Task<Void>> {
+    ): Single<String> {
         val start = if (fileAttached)
             file.flatMap {
                 val uri = Uri.fromFile(it)
@@ -81,9 +83,18 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                 product
             } else Single.just(product)
         return start.subscribeOn(Schedulers.io()).map {
-            if (it.id.isEmpty()) Database.articles().push().setValue(it)
-            else Database.articles().child(it.id).setValue(it)
+            val id: String
+            if (it.id.isEmpty()) {
+                val ref = Database.articles().push()
+                id = ref.key!!
+                Pair(ref.setValue(it),id)
+            } else {
+                id = it.id
+                Pair(Database.articles().child(it.id).setValue(it),id)
+            }
 
+        }. map {
+            it.second
         }
     }
 

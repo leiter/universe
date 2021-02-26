@@ -44,7 +44,7 @@ sealed class UiState {
     data class OrderedProduct(
         override var id: String = "",
         override var mode: Int = UNDEFINED,
-        var productId: Int = -1,
+        var productId: String = "",
         var productName: String = "",
         var unit: String = "",
         var price: Double = 0.0,
@@ -54,7 +54,7 @@ sealed class UiState {
     ) : UiState()
 
     data class Article(
-        var productId: Int = -1,
+        var productId: String = "",
         var productName: String = "",
         var productDescription: String? = null,
         var available: Boolean = false,

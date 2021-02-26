@@ -11,7 +11,9 @@ import com.together.R
 import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
+import com.together.dialogs.InfoDialogFragment
 import com.together.utils.loadImage
+import com.together.utils.showShortToast
 import com.together.utils.viewLifecycleLazy
 import io.reactivex.Single
 import java.io.File
@@ -35,6 +37,9 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             productPrice.isEnabled = edit
             productPriceUnit.isEnabled = edit
             manageImage.isEnabled = edit
+            btnEditInfo.isEnabled = edit
+            swAvailable.isEnabled = edit
+            etProductWeigh.isEnabled = edit
         }
     }
 
@@ -44,6 +49,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             productName.setText("")
             productPrice.setText("")
             productPriceUnit.setText("")
+            etProductWeigh.setText("")
             image.setImageBitmap(null)
         }
     }
@@ -55,17 +61,21 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         viewBinding.image.tag = false
         with(viewBinding) {
             saveProduct.setOnClickListener { createBitmap() }
-            btnDeleteProduct.setOnClickListener { viewModel.deleteProduct() }
+            btnDeleteProduct.setOnClickListener { deleteProduct() }
 //            createFab.setOnClickListener {  }
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             btnDrawerOpen.setOnClickListener {
                 MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
             }
 
-            createNewProduct.visibility = View.VISIBLE
-            createNewProduct.setOnClickListener { makeEditable(true) }
+            btnEditInfo.setOnClickListener { showDetailInfo() }
 
-            btnEditProduct.setOnClickListener { }
+            createNewProduct.setOnClickListener {
+                viewModel.editProduct.value = UiState.Article()
+                makeEditable(true)
+            }
+
+            btnEditProduct.setOnClickListener { makeEditable(true) }
 
             productList.layoutManager = LinearLayoutManager(context)
             productList.adapter = adapter
@@ -75,17 +85,24 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             requireContext().loadImage(viewBinding.image, it.uri.toString())
         })
         viewModel.editProduct.observe(viewLifecycleOwner, {
+            resetProduct()
             makeEditable(false)
-            viewBinding.productName.setText(it.productName)
-            viewBinding.productSearchTerm.setText(it.productDescription)
-            viewBinding.productPrice.setText(it.pricePerUnit)
-            viewBinding.productPriceUnit.setText(it.unit)
-            viewBinding.articleAvailable.isChecked = it.available
+            with(viewBinding) {
+                productName.setText(it.productName)
+                productSearchTerm.setText(it.searchTerms)
+                productPrice.setText(it.pricePerUnit)
+                productPriceUnit.setText(it.unit)
+                etProductCategory.setText(it.category)
+                swAvailable.isChecked = it.available
+                val weight = if (it.weightPerPiece==0.0) "" else it.weightPerPiece.toString()
+                etProductWeigh.setText(weight)
+            }
+
+
             if (it.remoteImageUrl.isEmpty()) {
                 viewBinding.changePicture.visibility = View.GONE
             } else {
                 viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
-//                com.together.utils.viewBinding.changePicture.visibility = View.VISIBLE
             }
         })
 
@@ -113,6 +130,13 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         })
     }
 
+    private fun deleteProduct() {
+        if (viewModel.editProduct.value?.id != "") {
+            viewModel.deleteProduct()
+        } else requireContext().showShortToast("Es ist kein Produkt ausgewählt.")
+
+    }
+
     override fun clicked(item: UiState.Article) {
         viewModel.editProduct.value = item
     }
@@ -135,11 +159,21 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     private fun writeToNewProduct() {
         with(viewModel.editProduct) {
             value?.productName = viewBinding.productName.text.toString()
+            value?.productDescription = viewBinding.productName.text.toString()
+            value?.productId = viewBinding.productNumber.text.toString()
+            value?.weightPerPiece = viewBinding.etProductWeigh.text.toString().toDouble()
             value?.searchTerms = viewBinding.productSearchTerm.text.toString()
             value?.pricePerUnit = viewBinding.productPrice.text.toString()
             value?.unit = viewBinding.productPriceUnit.text.toString()
-            value?.available = viewBinding.articleAvailable.isChecked
+            value?.available = viewBinding.swAvailable.isChecked
         }
+    }
+
+    private fun showDetailInfo(){
+        InfoDialogFragment.newInstance(
+            InfoDialogFragment.EDIT_INFO,
+            viewModel.editProduct.value!!.detailInfo
+        ).show(childFragmentManager, InfoDialogFragment.TAG)
     }
 
 }

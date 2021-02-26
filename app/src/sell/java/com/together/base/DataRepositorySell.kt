@@ -18,7 +18,7 @@ interface DataRepositorySell {
         file: Single<File>,
         fileAttached: Boolean,
         product: Result.Article
-    ): Single<Task<Void>>
+    ): Single<String>
 
 }
 

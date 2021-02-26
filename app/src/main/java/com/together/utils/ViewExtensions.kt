@@ -6,6 +6,7 @@ import android.os.Build
 import android.view.View
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.together.R
@@ -59,6 +60,9 @@ fun Fragment.handleProgress(loading: UiEvent.Loading,
 
 }
 
+fun Int.asColor(context: Context) = ContextCompat.getColor(context, this)
+fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
+
 fun View.show(){
     this.visibility = View.VISIBLE
 }
@@ -88,7 +92,7 @@ fun Context.showAlertDialog(positiveButtonLable : String = getString(android.R.s
 }
 
 // Toash extensions
-fun Context.showShotToast(message : String){
+fun Context.showShortToast(message : String){
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 

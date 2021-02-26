@@ -89,7 +89,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_product_amount_layout"
-        android:layout_width="244dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:hint="Produktname"
+            android:hint="Boskop Apfel"
             android:lines="1"
             android:maxLength="30"
             android:textColor="@color/edit_text_text_color" />
@@ -108,8 +108,9 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_search_term_layout"
-        android:layout_width="244dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/et_product_amount_layout"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
         app:layout_constraintTop_toBottomOf="@id/et_product_amount_layout">
 
@@ -118,18 +119,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:textColor="@color/edit_text_text_color"
-            android:hint="Suchbegriffe"
+            android:hint="Suche: Apfel,Äpfel"
             android:lines="1"
-            android:maxLength="30" />
+            android:singleLine="true"
+            android:maxLines="1"
+            android:textColor="@color/edit_text_text_color" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_price_layout"
-        android:layout_width="144dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:minWidth="250dp"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
         app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout">
 
@@ -141,28 +142,46 @@
             android:digits="0123456789,."
             android:enabled="false"
             android:textColor="@color/edit_text_text_color"
-            android:hint="Preis pro Einheit"
+            android:hint="Preis"
             android:inputType="numberDecimal"
             android:lines="1"
-            android:maxLength="30" />
+            android:maxLength="10" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
-        android:layout_width="match_parent"
+        android:id="@+id/et_product_weigh_layout"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
         app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/product_ic_menu_hamburgerdescription_text"
+            android:id="@+id/et_product_weigh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Platz für einen ausführlichen Beschreibungtext"
+            android:inputType="numberDecimal"
+            android:hint="Einwaage"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout
+
+        >
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_product_category_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@id/product_number_layout"
+        app:layout_constraintStart_toEndOf="@+id/et_product_weigh_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_product_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Produktkategorie"
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,7 +190,7 @@
         android:id="@+id/product_price_unit_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/product_search_term_layout"
+        app:layout_constraintEnd_toEndOf="@+id/product_number_layout"
         app:layout_constraintStart_toEndOf="@+id/product_price_layout"
         app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout">
 
@@ -182,10 +201,9 @@
             android:layout_height="wrap_content"
             android:enabled="false"
             android:gravity="center"
-            android:textColor="@color/edit_text_text_color"
-            android:hint="Einheit z.B Kg"
+            android:hint="Kg, Stück"
             android:lines="1"
-            android:maxLength="5" />
+            android:textColor="@color/edit_text_text_color" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -195,13 +213,12 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/et_product_amount_layout"
+        app:layout_constraintStart_toEndOf="@+id/product_number_layout"
         app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout" />
     <ImageButton
         android:id="@+id/change_picture"
@@ -216,10 +233,10 @@
         android:id="@+id/product_number_layout"
         android:layout_width="72dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@id/image"
-        app:layout_constraintTop_toBottomOf="@id/image">
+        app:layout_constraintBottom_toBottomOf="@+id/et_product_amount_layout"
+        app:layout_constraintStart_toEndOf="@+id/et_product_amount_layout"
+        app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/product_number"
@@ -230,30 +247,33 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
+        android:id="@+id/btn_edit_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="12dp"
+        android:clickable="true"
+        android:focusable="true"
         android:background="?attr/selectableItemBackground"
         android:padding="16dp"
         android:src="@drawable/ic_info_outline"
-        app:layout_constraintBottom_toBottomOf="@+id/article_available"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/product_number_layout"
-        app:layout_constraintTop_toTopOf="@+id/article_available" />
+        app:layout_constraintBottom_toBottomOf="@+id/product_search_term_layout"
+        app:layout_constraintEnd_toEndOf="@+id/product_number_layout"
+        app:layout_constraintStart_toEndOf="@+id/product_search_term_layout"
+        app:layout_constraintTop_toBottomOf="@+id/et_product_amount_layout" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/article_available"
+        android:id="@+id/sw_available"
         android:layout_width="0dp"
+        android:paddingStart="4dp"
         android:layout_height="wrap_content"
         android:checked="false"
-        android:text="Artikel ist verfügbar"
+        android:text="Verfügbar"
         android:textColor="@color/fab_green"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/product_number_layout"
-        app:layout_constraintEnd_toEndOf="@+id/product_price_unit_layout"
-        app:layout_constraintStart_toStartOf="@+id/product_price_layout"
-        app:layout_constraintTop_toTopOf="@+id/product_number_layout" />
+
+        app:layout_constraintBottom_toTopOf="@+id/product_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/product_price_layout" />
 
 
     <ImageButton
@@ -266,7 +286,7 @@
         android:src="@drawable/ic_photo_camera"
         app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/et_product_amount_layout"
+        app:layout_constraintStart_toStartOf="@id/image"
         app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout" />
 
 
@@ -274,11 +294,11 @@
         android:id="@+id/product_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_number_layout"
+        app:layout_constraintTop_toBottomOf="@+id/et_product_category_layout"
         tools:itemCount="14"
         tools:listitem="@layout/item_product" />
 
@@ -286,15 +306,15 @@
         android:id="@+id/empty_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:text="Sie haben noch keine \n   Produkte angelegt"
-        android:visibility="visible"
         android:lineSpacingMultiplier="1.4"
+        android:text="Sie haben noch keine \n   Produkte angelegt"
+        android:textSize="24sp"
+        android:visibility="visible"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_number_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/et_product_category_layout" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -310,16 +330,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/empty_message" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/save_changes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:visibility="gone"
-        android:text="Änderungen Speichern"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
     <FrameLayout
         android:id="@+id/loading_indicator"

@@ -1,16 +1,17 @@
 package com.together.orders
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.together.base.DataRepositorySell
 import com.together.base.UiState
 import com.together.utils.dataToUiOrder
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import javax.inject.Inject
 
-
-class OrdersViewModel @ViewModelInject constructor(private val dataRepository: DataRepositorySell) : ViewModel() {
+@HiltViewModel
+class OrdersViewModel @Inject constructor(private val dataRepository: DataRepositorySell) : ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 

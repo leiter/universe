@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.base.UiEvent.Companion.UNDEFINED
+import com.together.base.UiEvent.Companion.UPLOAD_PRODUCT
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
@@ -41,6 +42,7 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
     ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
+    private var disposable2: CompositeDisposable = CompositeDisposable()
 
     init {
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
@@ -61,7 +63,7 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
     }
 
     private val productData: MutableLiveData<MutableList<UiState.Article>> by lazy {
-        disposable.add(
+        disposable2.add(
             dataRepository.setupProductConnection()
                 .subscribe({
                     val e = it.dataArticleToUi()
@@ -108,12 +110,14 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
             dataRepository.deleteProduct(deleteMe)
                 .subscribe({ success ->
                     if (success) {
+                        editProduct.value = UiState.Article()
                         blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
                     } else {
                         // msg
                         blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
                     }
                 }, {
+                    editProduct.value = UiState.Article()
                     // msg
                     blockingLoaderState.value = UiEvent.LoadingDone(DELETE_PRODUCT)
                 })
@@ -122,17 +126,23 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
 
     fun uploadProduct(file: Single<File>, fileAttached: Boolean) {
         val product = editProduct.value!!.uiArticleToData()
+        blockingLoaderState.value = UiEvent.Loading()
         dataRepository.uploadProduct(file,fileAttached,product)
             .subscribe({
-
+                editProduct.value?.id = it
+                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
             },{
-
+                blockingLoaderState.value = UiEvent.Loading(UPLOAD_PRODUCT)
             }).addTo(disposable)
     }
 
     override fun onCleared() {
         disposable.clear()
         super.onCleared()
+    }
+
+    fun prepareLogout() {
+        disposable2.clear()
     }
 
 }

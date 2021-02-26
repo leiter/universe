@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    app:layout_constraintWidth_min="244dp"
     android:theme="@style/MyDialogTheme"
     tools:context=".dialogs.InfoDialogFragment">
 
@@ -15,4 +18,41 @@
         android:textSize="18sp"
         tools:text="@string/appbar_scrolling_view_behavior" />
 
-</FrameLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_detail_info_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:hint="Produktbeschreibung eingeben"
+        app:layout_constraintHeight_min="144dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_detail_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save_changes"
+        android:layout_marginTop="16dp"
+        android:text="Speichern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/et_detail_info_layout"
+        app:layout_constraintTop_toBottomOf="@+id/et_detail_info_layout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel_changes"
+        android:layout_marginTop="16dp"
+
+        android:text="Abbrechen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/et_detail_info_layout"
+        app:layout_constraintTop_toBottomOf="@+id/et_detail_info_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
