@@ -3,6 +3,7 @@ package com.together.base
 import android.net.Uri
 import android.util.Log
 import com.google.android.gms.tasks.Task
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.together.repository.Database
 import com.together.repository.Result
@@ -43,23 +44,23 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
             ?: Database.articles().child(product.id).removeValue().getSingle()
     }
 
-    override fun loadNextOrders(): Single<List<Result.Order>> {
+    override fun loadNextOrders(): Observable<List<Result.Order>> {
+        val re = ArrayList<Result.Order>()
         return loadSellerProfile().map { it.getMarketDates() }.toObservable()
             .flatMapIterable { it }.map { Database.nextOrders(it) }
-            .flatMap { it.getSingle().toObservable() }
+            .flatMap { it.getObservable() }
             .map { fu ->
-                val re = ArrayList<Result.Order>()
-                fu.children.forEach {
-                    val i = it.getValue(Result.Order::class.java)
-                    Log.e("TTTTT", it.toString());
-                    i?.let { re.add(i) }
+                val i = fu.getValue(Result.Order::class.java)
+                i?.id = fu.key!!
+                i?.let {
+                    val o = re.find { it.id == i.id }
+                    o?.let{ re.remove(o) }
+                    re.add(i)
                 }
-                re.toList()
-            }.toList().map {
-                it.toList().flatten()
-                    .sortedByDescending { order -> order.pickUpDate }.reversed()
+                re
+            }.map {
+                it.sortedByDescending { order -> order.pickUpDate }.reversed()
             }
-
     }
 
     override fun loadSellerProfile(): Single<Result.SellerProfile> {
@@ -90,13 +91,13 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                 val ref = Database.articles().push()
                 id = ref.key!!
                 val r = result.copy(id = id)
-                Pair(ref.setValue(result),r)
+                Pair(ref.setValue(result), r)
             } else {
                 id = result.id
-                Pair(Database.articles().child(id).setValue(result),result)
+                Pair(Database.articles().child(id).setValue(result), result)
             }
 
-        }. map {
+        }.map {
             it.second
         }
     }

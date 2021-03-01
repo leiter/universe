@@ -56,6 +56,35 @@ inline fun <reified T : Result> DatabaseReference.getObservable(): Observable<T>
         emitter.setCancellable { removeEventListener(listener) }
     }
 }
+fun Query.getObservable(): Observable<DataSnapshot> {
+
+    return Observable.create { emitter ->
+
+        val listener = addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                emitter.onNext(p0)
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                emitter.onNext(p0)
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                emitter.onNext(p0)
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+                emitter.onNext(p0)
+            }
+        })
+
+        emitter.setCancellable { removeEventListener(listener) }
+    }
+}
 
 inline fun <reified T : Result> DatabaseReference.getSingle(typeHint: Int = -1): Single<T> {
     return Single.create { emitter ->

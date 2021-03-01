@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.together.R
 import com.together.databinding.FragmentShowOrdersBinding
 import com.together.utils.viewLifecycleLazy
@@ -13,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ShowOrdersFragment : Fragment(R.layout.fragment_show_orders) {
+class ShowOrdersFragment : Fragment(R.layout.fragment_show_orders){
 
     @Inject
     lateinit var viewModel: OrdersViewModel// by viewModels()
@@ -29,8 +30,10 @@ class ShowOrdersFragment : Fragment(R.layout.fragment_show_orders) {
                 findNavController().navigate(R.id.action_showOrdersFragment_to_createFragment)
             }
             rvNewOrders.adapter = adapter
-            rvNewOrders.layoutManager = LinearLayoutManager(requireActivity(),
-                RecyclerView.VERTICAL, false)
+            rvNewOrders.layoutManager = LinearLayoutManager(
+                requireActivity(),
+                RecyclerView.VERTICAL, false
+            )
         }
 
         viewModel.orders.observe(viewLifecycleOwner, {

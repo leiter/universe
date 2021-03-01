@@ -15,9 +15,7 @@ object Database {
     private const val CLIENTS = "buyer_profile"
     private const val STORAGE_PREFIX = "images/"
 
-    private fun fire(): FirebaseDatabase {
-        return FirebaseDatabase.getInstance()
-    }
+    private fun fire(): FirebaseDatabase { return FirebaseDatabase.getInstance() }
 
     fun articles(): DatabaseReference =
         fire().reference.child(ARTICLES).child(FireBaseAuth.getAuth().uid!!)
@@ -30,13 +28,8 @@ object Database {
 
     fun connectedStatus() = fire().getReference(".info/connected")
 
-    fun orders(): DatabaseReference =
-        fire().reference.child(ORDERS).child(FireBaseAuth.getAuth().uid!!)
-
     fun orderSeller(sellerId: String): DatabaseReference = fire().reference.child(ORDERS)
         .child(sellerId)
-
-    fun ordersRoot(): DatabaseReference = fire().reference.child(ORDERS)
 
     fun nextOrders(date: String) = fire().reference.child(ORDERS)
         .child(FireBaseAuth.getAuth().uid!!)
@@ -48,9 +41,6 @@ object Database {
     fun buyer(): DatabaseReference =
         fire().reference.child(CLIENTS).child(FireBaseAuth.getAuth().uid!!)
 
-    fun updateArticle(id: String): DatabaseReference = fire().reference.child(ARTICLES)
-        .child(FireBaseAuth.getAuth().uid!!).child(id)
-
     fun storage(filename: String = ""): StorageReference {
         val path = if (filename == "") "$STORAGE_PREFIX${System.currentTimeMillis()}_ttt.jpeg"
         else filename
@@ -59,16 +49,6 @@ object Database {
 
     init {
         fire().setPersistenceEnabled(true)
-
-//        if (BuildConfig.FLAVOR == "sell") {
-//
-//        }
-//        orders().keepSynced(true)
-//        nextOrders().keepSynced(true)
-//        sellerProfile("").keepSynced(true)
     }
 
 }
-
-//76qsfkWc4rYCY36D2Eq7dnLR6743
-//Qndow4Nw90dNRelvAGyMgmfAURG3

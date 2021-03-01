@@ -12,7 +12,7 @@ interface DataRepositorySell {
     fun setupProductConnection(): Observable<Result.Article>
     fun uploadSellerProfile(profile: Result.SellerProfile): Single<Boolean>
     fun deleteProduct(product: Result.Article): Single<Boolean>
-    fun loadNextOrders(): Single<List<Result.Order>>
+    fun loadNextOrders(): Observable<List<Result.Order>>
     fun loadSellerProfile(): Single<Result.SellerProfile>
     fun uploadProduct(
         file: Single<File>,
