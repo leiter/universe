@@ -12,9 +12,7 @@ import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
 import com.together.dialogs.InfoDialogFragment
-import com.together.utils.loadImage
-import com.together.utils.showShortToast
-import com.together.utils.viewLifecycleLazy
+import com.together.utils.*
 import io.reactivex.Single
 import java.io.File
 import java.io.FileOutputStream
@@ -61,11 +59,14 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         adapter = ProductAdapter(this)
         with(viewBinding) {
             saveProduct.setOnClickListener { createBitmap() }
-            btnDeleteProduct.setOnClickListener { deleteProduct() }
+            btnDeleteProduct.setOnClickListener {
+                requireContext().showAlertDialog("Löschen",
+                    message = "Soll das Produkt wirklich gelöscht werden?",
+                    actionOnPositiveButton = ::deleteProduct)
+                 }
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             changePicture.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             btnDrawerOpen.setOnClickListener {
@@ -98,7 +99,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 productPriceUnit.setText(it.unit)
                 etProductCategory.setText(it.category)
                 swAvailable.isChecked = it.available
-                val weight = if (it.weightPerPiece==0.0) "" else it.weightPerPiece.toString()
+                val weight = if (it.weightPerPiece == 0.0) "" else it.weightPerPiece.toString()
                 etProductWeigh.setText(weight)
             }
 
@@ -148,7 +149,11 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     }
 
     private fun createBitmap() {
-        writeToNewProduct()
+        if(!writeToNewProduct()) return
+        if(viewModel.editProduct.value?.remoteImageUrl.isNullOrEmpty() && !viewModel.uploadImage ) {
+            requireContext().showLongToast("Bild hinzufügen.")
+            return
+        }
         viewModel.uploadProduct(Single.fromCallable {
             val bitmap: Bitmap = Bitmap.createBitmap(
                 viewBinding.image.width, viewBinding.image.height,
@@ -162,20 +167,48 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         })
     }
 
-    private fun writeToNewProduct() {
+    private fun writeToNewProduct() : Boolean {
+
         with(viewModel.editProduct) {
-            value?.productName = viewBinding.productName.text.toString()
-            value?.productDescription = viewBinding.productName.text.toString()
+            if (viewBinding.productName.validate(::validString, "Produktnamen eingeben") == "") {
+                return false
+            } else {
+                value?.productName = viewBinding.productName.text.toString().trim()
+            }
+            if (viewBinding.productSearchTerm.validate(::validString, "Suchbegriffe eingeben.") == "") {
+                return false
+            } else {
+                value?.searchTerms = viewBinding.productSearchTerm.text.toString().trim()
+            }
+            if (viewBinding.productPrice.validate(::validString, "Preis eingeben.") == "") {
+                return false
+            } else {
+                value?.pricePerUnit = viewBinding.productPrice.text.toString().trim()
+            }
+            if (viewBinding.productPriceUnit.validate(::validString, "Einheit eingeben.") == "") {
+                return false
+            } else {
+                value?.unit = viewBinding.productPriceUnit.text.toString().trim()
+            }
+
+            if (viewBinding.etProductWeigh.validate(::validString, "Einzelgewicht eingeben.") == "") {
+                return false
+            } else {
+                value?.weightPerPiece = viewBinding.etProductWeigh.text.toString().trim().toDouble()
+            }
+
+            if (viewBinding.etProductCategory.validate(::validString, "Kategorie eingeben.") == "") {
+                return false
+            } else {
+                value?.productDescription = viewBinding.etProductCategory.text.toString().trim()
+            }
             value?.productId = viewBinding.productNumber.text.toString()
-            value?.weightPerPiece = viewBinding.etProductWeigh.text.toString().toDouble()
-            value?.searchTerms = viewBinding.productSearchTerm.text.toString().trim()
-            value?.pricePerUnit = viewBinding.productPrice.text.toString()
-            value?.unit = viewBinding.productPriceUnit.text.toString()
             value?.available = viewBinding.swAvailable.isChecked
         }
+        return true
     }
 
-    private fun showDetailInfo(){
+    private fun showDetailInfo() {
         InfoDialogFragment.newInstance(
             InfoDialogFragment.EDIT_INFO,
             viewModel.editProduct.value!!.detailInfo

@@ -1,5 +1,6 @@
 package com.together.base
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -57,7 +58,7 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
 
                 is Result.NewImageCreated -> {
                     uploadImage = true
-                    newProduct.value = UiState.NewProductImage(it.uri!!)
+                    newProduct.value = UiState.NewProductImage(Uri.parse(it.uri!!))
                 }
                 is Result.SetDetailDescription -> {
                     editProduct.value?.detailInfo = it.text

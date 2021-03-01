@@ -1,5 +1,6 @@
 package com.together.base
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,8 +23,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
-    ViewModel() {
+class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
     private var disposable2: CompositeDisposable = CompositeDisposable()
@@ -86,13 +86,10 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
 
                 is Result.NewImageCreated -> {
-                    if (newProduct.value == null)
-                        newProduct.value = UiState.NewProductImage(it.uri!!)
-                    else newProduct.value = UiState.NewProductImage(it.uri!!)
+                    newProduct.value = UiState.NewProductImage(Uri.parse(it.uri!!))
                 }
                 is Result.ImageLoaded -> {
-                    imageLoadingProgress.value =
-                        UiState.LoadingProgress(it.progressId, it.show)
+                    imageLoadingProgress.value = UiState.LoadingProgress(it.progressId, it.show)
                 }
             }
         })
@@ -101,15 +98,16 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     private fun setupDataStreams() {
 
         dataRepository.setupProviderConnection()
-            .subscribe({ sellerProfile = it.dataToUiSeller()
-                       days = getDays(sellerProfile.marketList[0])
-                       },
+            .subscribe({
+                sellerProfile = it.dataToUiSeller()
+                days = getDays(sellerProfile.marketList[0])
+            },
                 { it.printStackTrace() }).addTo(disposable2)
 
         dataRepository.setupProductConnection()
             .subscribe({
                 val e = it.dataArticleToUi()
-                productData.addItem(e)
+                productData.addItem(e, presentedProduct)
                 if (productData.value?.size == 1) {
                     presentedProduct.value = productData.value!![0]
                 }
@@ -119,7 +117,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         dataRepository.loadBuyerProfile().subscribe({ buyer ->
             buyerProfile = buyer.dataToUiOrder()
             setMarketAndTime()
-            }, {
+        }, {
             it.printStackTrace()
         }).addTo(disposable2)
 
@@ -143,21 +141,30 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     fun resetAmountCount(id: String) {
         productData.value?.first { it.id == id }?.pieceCounter = 0
     }
+
     fun resetProductList() {
-        productData.value?.forEach { it.pieceCounter = 0; it.amountCount = 0.0; it.isSelected = false }
+        productData.value?.forEach {
+            it.pieceCounter = 0; it.amountCount = 0.0; it.isSelected = false
+        }
     }
 
     fun uploadBuyerProfile(giveFeedback: Boolean) {
         val next = loadingContainer.value!!
-        loadingContainer.value = next.copy(profileUpload = UiEvent.Loading(showProgress = true,
-            autoConsumeResult = !giveFeedback))
+        loadingContainer.value = next.copy(
+            profileUpload = UiEvent.Loading(
+                showProgress = true,
+                autoConsumeResult = !giveFeedback
+            )
+        )
         dataRepository.saveBuyerProfile(buyerProfile.uiBuyerProfileToData()).subscribe(
             {
                 setMarketAndTime()
                 val flag = if (giveFeedback) -1 else 0
-                loadingContainer.value = next.copy(profileUpload = UiEvent.Loading(contextId = flag))
+                loadingContainer.value =
+                    next.copy(profileUpload = UiEvent.Loading(contextId = flag))
             }, {
-                if (!giveFeedback) loadingContainer.value = next.copy(profileUpload = UiEvent.Loading(exception = it))
+                if (!giveFeedback) loadingContainer.value =
+                    next.copy(profileUpload = UiEvent.Loading(exception = it))
                 else loadingContainer.value = next.copy(profileUpload = UiEvent.Loading())
             }
         ).addTo(disposable)
@@ -172,14 +179,14 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
         dataRepository.sendOrder(sendOrder, updateOrder, buyerProfile.uiBuyerProfileToData())
             .subscribe({
-            buyerProfile = it.dataToUiOrder()
-            if (updateOrder) updateOrder = false
-            blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
-        }, {
-            if (it is AlreadyPlaceOrder) {
-                loadExistingOrder(sendOrder)
-            } else blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
-        }).addTo(disposable)
+                buyerProfile = it.dataToUiOrder()
+                if (updateOrder) updateOrder = false
+                blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
+            }, {
+                if (it is AlreadyPlaceOrder) {
+                    loadExistingOrder(sendOrder)
+                } else blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
+            }).addTo(disposable)
     }
 
     private fun loadExistingOrder(sendOrder: Result.Order) {
@@ -224,7 +231,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     var smsMessageText = ""
 
     val blockingLoaderState: MutableLiveData<UiEvent.LoadingIndication> by lazy {
-        MutableLiveData<UiEvent.LoadingIndication>().also { it.value = UiEvent.LoadingNeutral(UNDEFINED) }
+        MutableLiveData<UiEvent.LoadingIndication>().also {
+            it.value = UiEvent.LoadingNeutral(UNDEFINED)
+        }
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {
@@ -246,16 +255,14 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         disposable2.clear()
         resetProductList()
         basket.value = mutableListOf()
-        dataRepository.clearUserData(sellerProfile.id,buyerProfile.uiBuyerProfileToData())
-            .flatMap {
-                    it ->
-            FireBaseAuth.deleteAccount().getSingle()
-        }.observeOn(AndroidSchedulers.mainThread())
+        dataRepository.clearUserData(sellerProfile.id, buyerProfile.uiBuyerProfileToData())
+            .flatMap { it ->
+                FireBaseAuth.deleteAccount().getSingle()
+            }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 basket.value = mutableListOf()
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
-            }, {
-                it ->
+            }, { it ->
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
 
             }).addTo(disposable)
@@ -263,13 +270,14 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun loadOrders() {
         blockingLoaderState.value = UiEvent.Loading(LOAD_OLD_ORDERS)
-        dataRepository.loadOrders(sellerProfile.id, buyerProfile.placedOrderIds).subscribe({ listOfOrders ->
-            val newStuff = listOfOrders.map { it.dataToUiOrder() }
-            oldOrders.value = newStuff.reversed()
-            blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
-        }, {
-            blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
-        }).addTo(disposable)
+        dataRepository.loadOrders(sellerProfile.id, buyerProfile.placedOrderIds)
+            .subscribe({ listOfOrders ->
+                val newStuff = listOfOrders.map { it.dataToUiOrder() }
+                oldOrders.value = newStuff.reversed()
+                blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
+            }, {
+                blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
+            }).addTo(disposable)
     }
 
     override fun onCleared() {
@@ -282,7 +290,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         order.marketId = market.id
     }
 
-    fun provideMarket() : UiState.Market {
+    fun provideMarket(): UiState.Market {
         return sellerProfile.marketList[marketIndex]
     }
 

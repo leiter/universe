@@ -184,7 +184,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
                     }.subscribeOn(Schedulers.io()).map {
 
                 }.observeOn(AndroidSchedulers.mainThread()).subscribe({
-                    val image = Result.NewImageCreated(fileUri)
+                    val image = Result.NewImageCreated(fileUri.toString())
                     dialogFragment = null
                     MainMessagePipe.mainThreadMessage.onNext(image)
                     activity.finish()
@@ -206,7 +206,7 @@ class AddPictureImpl(private val activity: AppCompatActivity) : AddPicture {
 //                    cursor.close()
 //                    fileUri = Uri.fromFile(File(getPathFromURI(data.data!!)))
 //                    val image = Result.NewImageCreated(fileUri)
-                    val image = Result.NewImageCreated(data.data)
+                    val image = Result.NewImageCreated(data.data.toString())
                     MainMessagePipe.mainThreadMessage.onNext(image)
                     dialogFragment = null
                     activity.finish()

@@ -1,6 +1,5 @@
 package com.together.repository
 
-import android.net.Uri
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
@@ -38,10 +37,11 @@ sealed class Result {
     }
 
     data class NewImageCreated(
-        var uri: Uri?,
-        override var id: String = "",
+        var uri: String?
+    ) : Result(){
+        override var id: String = ""
         override var mode: Int = UNDEFINED
-    ) : Result()
+    }
 
     data class BuyerProfile(
         var displayName: String = "",

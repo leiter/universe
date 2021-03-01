@@ -28,7 +28,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
     private lateinit var productData: List<UiState.Article>
     private val digitsWithComma = DigitsKeyListener.getInstance("0123456789,")
     private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
-    private var itemIndexScrollTo: Int = -1
     private val viewBinding: MainOrderFragmentBinding by viewLifecycleLazy {
         MainOrderFragmentBinding.bind(requireView()) }
     private var selectedItemIndex = -1
@@ -38,14 +37,13 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         if (!::productData.isInitialized) {
             productData = adapter.data.toMutableList()
         }
-        itemIndexScrollTo = productData.lastIndexOf(item)
         deSelectProduct()
         selectedItemIndex = productData.indexOfFirst { it.id == item.id }
         productData[selectedItemIndex].isSelected = true
         adapter.notifyItemChanged(selectedItemIndex)
     }
 
-    private fun deSelectProduct(){
+    private fun deSelectProduct() {
         if (selectedItemIndex > -1) {
             adapter.data[selectedItemIndex].isSelected = false
             adapter.notifyItemChanged(selectedItemIndex)
@@ -93,21 +91,23 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
 
         viewModel.basket.observe(viewLifecycleOwner, {
             if (it.size == 0) {
-                deSelectProduct()
                 viewBinding.etProductAmount.setText(getString(R.string.zero_count_amount))
                 viewBinding.btnActivateCounter.visibility = View.VISIBLE
                 viewBinding.counter.counterContainer.visibility = View.INVISIBLE
+                deSelectProduct()
             }
             viewBinding.btnShowBasket.badgeCount.text = it.size.toString()
         })
         viewModel.presentedProduct.observe(viewLifecycleOwner, {
-            setPresentedProduct(it)
             viewBinding.tvMenuTitle.text = getString(R.string.bodenschatz_caps)
             viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
+            setPresentedProduct(it)
+
         })
 
         viewModel.productList.observe(viewLifecycleOwner, {
             if (it.size > 2) viewBinding.blocking.visibility = View.GONE
+            productData = it.toList()
             adapter.setFilteredList(it.toMutableList())
         })
 
@@ -160,7 +160,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
 
         disposable.add(
             viewBinding.etProductAmount.textChanges()
-                .debounce(200, TimeUnit.MILLISECONDS)
+                .debounce(400, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
@@ -244,6 +244,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         viewBinding.etProductAmount.setSelection(amountCountText.length)
         viewBinding.products.clearFocus()
         viewBinding.etProductAmount.requestFocus()
+
         requireContext().loadImage(viewBinding.ivProductImage, product.remoteImageUrl)
     }
 

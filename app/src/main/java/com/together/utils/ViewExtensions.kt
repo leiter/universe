@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.view.View
+import android.widget.EditText
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -77,21 +78,24 @@ fun View.remove(){
 
 // Show alert dialog
 fun Context.showAlertDialog(positiveButtonLable : String = getString(android.R.string.ok),
-                            title : String = getString(R.string.app_name), message : String,
-                            actionOnPositveButton : () -> Unit) {
+                            title : String = getString(R.string.app_name),
+                            message : String,
+                            actionOnPositiveButton : () -> Unit) {
     val builder = AlertDialog.Builder(this)
         .setTitle(title)
         .setMessage(message)
         .setCancelable(false)
         .setPositiveButton(positiveButtonLable) { dialog, id ->
             dialog.cancel()
-            actionOnPositveButton()
+            actionOnPositiveButton()
+        }.setNegativeButton("Abbrechen") { dialog, id ->
+            dialog.cancel()
         }
     val alert = builder.create()
     alert?.show()
 }
 
-// Toash extensions
+// Toast extensions
 fun Context.showShortToast(message : String){
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
@@ -117,3 +121,13 @@ fun View.snackBarWithAction(message : String, actionlable : String,
         }
 }
 
+
+inline fun EditText.validate(checker: (String)-> Boolean, errorText: String) : String  {
+    val content = text.toString()
+    return if(checker(content))
+        content
+    else {
+        context.showLongToast(errorText)
+        ""
+    }
+}
