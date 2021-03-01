@@ -1,6 +1,7 @@
 package com.together.base
 
 import android.net.Uri
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 import com.together.repository.Database
@@ -50,6 +51,7 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                 val re = ArrayList<Result.Order>()
                 fu.children.forEach {
                     val i = it.getValue(Result.Order::class.java)
+                    Log.e("TTTTT", it.toString());
                     i?.let { re.add(i) }
                 }
                 re.toList()
@@ -71,7 +73,7 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
         file: Single<File>,
         fileAttached: Boolean,
         product: Result.Article
-    ): Single<String> {
+    ): Single<Result.Article> {
         val start = if (fileAttached)
             file.flatMap {
                 val uri = Uri.fromFile(it)
@@ -82,15 +84,16 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                 product.imageUrl = it.toString()
                 product
             } else Single.just(product)
-        return start.subscribeOn(Schedulers.io()).map {
+        return start.subscribeOn(Schedulers.io()).map { result ->
             val id: String
-            if (it.id.isEmpty()) {
+            if (result.id.isEmpty()) {
                 val ref = Database.articles().push()
                 id = ref.key!!
-                Pair(ref.setValue(it),id)
+                val r = result.copy(id = id)
+                Pair(ref.setValue(result),r)
             } else {
-                id = it.id
-                Pair(Database.articles().child(it.id).setValue(it),id)
+                id = result.id
+                Pair(Database.articles().child(id).setValue(result),result)
             }
 
         }. map {

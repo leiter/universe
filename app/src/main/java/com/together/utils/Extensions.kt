@@ -68,7 +68,6 @@ fun Context.loadImage(imageView: ImageView, url: String){
         .networkPolicy(NetworkPolicy.OFFLINE)
         .into(imageView, object : Callback {
             override fun onSuccess() {
-                imageView.tag = true
                 MainMessagePipe.mainThreadMessage.onNext(
                     Result.ImageLoaded(R.id.pr_load_image_progress, false)
                 )
@@ -80,14 +79,12 @@ fun Context.loadImage(imageView: ImageView, url: String){
                     .error(R.drawable.obst_1)
                     .into(imageView, object : Callback {
                         override fun onSuccess() {
-                            imageView.tag = true
                             MainMessagePipe.mainThreadMessage.onNext(
                                 Result.ImageLoaded(R.id.pr_load_image_progress, false)
                             )
                         }
 
                         override fun onError() {
-                            imageView.tag = false  //fixme
                             MainMessagePipe.mainThreadMessage.onNext(
                                 Result.ImageLoaded(R.id.pr_load_image_progress, false)
                             )

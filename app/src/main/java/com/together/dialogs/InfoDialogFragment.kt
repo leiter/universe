@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.together.base.MainMessagePipe
 import com.together.base.MainViewModel
 import com.together.databinding.FragmentInfoDialogBinding
+import com.together.repository.Result
 import com.together.utils.viewBinding
 
 
@@ -58,7 +60,8 @@ class InfoDialogFragment : DialogFragment() {
         with(viewBinding){
             etDetailInfo.setText(productInfo)
             btnSaveChanges.setOnClickListener {
-                viewModel.editProduct.value?.detailInfo = etDetailInfo.text.toString()
+                val r = Result.SetDetailDescription(etDetailInfo.text.toString())
+                MainMessagePipe.mainThreadMessage.onNext(r)
                 dismiss()
             }
             btnCancelChanges.setOnClickListener { dismiss()  }

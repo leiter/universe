@@ -34,7 +34,7 @@ fun UiState.Article.uiArticleToData(): Result.Article {
         available = this.available,
         category = this.category,
         detailInfo = this.detailInfo,
-        searchTerms = "${this.searchTerms},${this.category}",
+        searchTerms = "${this.searchTerms.replace(" ",",")},${this.category}",
         weighPerPiece = this.weightPerPiece,
         productId = this.productId
     )
@@ -138,7 +138,6 @@ fun UiState.Order.uiBuyerProfileToData(): Result.Order {
         marketId = marketId,
         pickUpDate = pickUpDate,
         message = message,
-        notFavourite = isNotFavourite,
         articles = productList.map { it.uiOrderedProductData() },
     )
 }

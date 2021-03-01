@@ -36,20 +36,25 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             productName.isEnabled = edit
             productPrice.isEnabled = edit
             productPriceUnit.isEnabled = edit
+            productNumber.isEnabled = edit
             manageImage.isEnabled = edit
             btnEditInfo.isEnabled = edit
             swAvailable.isEnabled = edit
             etProductWeigh.isEnabled = edit
+            etProductCategory.isEnabled = edit
         }
     }
 
     private fun resetProduct() {
+        viewModel.uploadImage = false
         with(viewBinding) {
             productSearchTerm.setText("")
             productName.setText("")
             productPrice.setText("")
             productPriceUnit.setText("")
+            productNumber.setText("")
             etProductWeigh.setText("")
+            etProductCategory.setText("")
             image.setImageBitmap(null)
         }
     }
@@ -58,12 +63,11 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ProductAdapter(this)
-        viewBinding.image.tag = false
         with(viewBinding) {
             saveProduct.setOnClickListener { createBitmap() }
             btnDeleteProduct.setOnClickListener { deleteProduct() }
-//            createFab.setOnClickListener {  }
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
+            changePicture.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             btnDrawerOpen.setOnClickListener {
                 MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
             }
@@ -98,25 +102,27 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 etProductWeigh.setText(weight)
             }
 
-
             if (it.remoteImageUrl.isEmpty()) {
+                viewBinding.manageImage.visibility = View.VISIBLE
                 viewBinding.changePicture.visibility = View.GONE
             } else {
+                viewBinding.changePicture.visibility = View.VISIBLE
+                viewBinding.manageImage.visibility = View.GONE
                 viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
             }
         })
 
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, {
             if (it is UiEvent.LoadingDone) {
-                viewBinding.loadingIndicator.visibility = View.GONE
+                viewBinding.loadingCreate.visibility = View.GONE
                 if (it.contextId == DELETE_PRODUCT) {
                     resetProduct()
                 }
 
             } else if (it is UiEvent.Loading) {
-                viewBinding.loadingIndicator.visibility = View.VISIBLE
+                viewBinding.loadingCreate.visibility = View.VISIBLE
             } else {
-                viewBinding.loadingIndicator.visibility = View.GONE
+                viewBinding.loadingCreate.visibility = View.GONE
             }
         })
 
@@ -153,7 +159,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             val tmpFile = File.createTempFile("img", "trash")
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(tmpFile))
             tmpFile
-        }, viewBinding.image.tag as Boolean)
+        })
     }
 
     private fun writeToNewProduct() {
@@ -162,7 +168,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             value?.productDescription = viewBinding.productName.text.toString()
             value?.productId = viewBinding.productNumber.text.toString()
             value?.weightPerPiece = viewBinding.etProductWeigh.text.toString().toDouble()
-            value?.searchTerms = viewBinding.productSearchTerm.text.toString()
+            value?.searchTerms = viewBinding.productSearchTerm.text.toString().trim()
             value?.pricePerUnit = viewBinding.productPrice.text.toString()
             value?.unit = viewBinding.productPriceUnit.text.toString()
             value?.available = viewBinding.swAvailable.isChecked

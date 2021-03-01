@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="afterDescendants"
-    android:orientation="vertical"
     android:padding="4dp">
 
     <com.google.android.material.textview.MaterialTextView
@@ -15,10 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:padding="8dp"
+        android:layout_gravity="start"
         android:textAllCaps="false"
-        app:layout_constraintStart_toStartOf="parent"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="Linda" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -26,10 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
+        android:layout_gravity="end"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="2.93€" />
+        tools:text="2.93€/kg" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

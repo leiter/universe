@@ -99,11 +99,10 @@
             android:id="@+id/product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:hint="Boskop Apfel"
-            android:lines="1"
-            android:maxLength="30"
-            android:textColor="@color/edit_text_text_color" />
+            android:hint="Produktname"
+            android:inputType="text"
+            style="@style/CreateEditText"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -118,12 +117,10 @@
             android:id="@+id/product_search_term"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Suche: Apfel,Äpfel"
-            android:lines="1"
-            android:singleLine="true"
-            android:maxLines="1"
-            android:textColor="@color/edit_text_text_color" />
+            android:inputType="text"
+            style="@style/CreateEditText"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -139,12 +136,10 @@
             android:id="@+id/product_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:digits="0123456789,."
-            android:enabled="false"
-            android:textColor="@color/edit_text_text_color"
+            android:digits="0123456789,"
             android:hint="Preis"
             android:inputType="numberDecimal"
-            android:lines="1"
+            style="@style/CreateEditText"
             android:maxLength="10" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -161,12 +156,12 @@
             android:id="@+id/et_product_weigh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:digits="0123456789,"
             android:hint="Einwaage"
-            android:lines="1" />
-    </com.google.android.material.textfield.TextInputLayout
-
-        >
+            style="@style/CreateEditText"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_product_category_layout"
@@ -182,7 +177,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Produktkategorie"
-            android:lines="1" />
+            android:inputType="text"
+            style="@style/CreateEditText"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -201,9 +198,11 @@
             android:layout_height="wrap_content"
             android:enabled="false"
             android:gravity="center"
+            android:inputType="text"
             android:hint="Kg, Stück"
-            android:lines="1"
-            android:textColor="@color/edit_text_text_color" />
+            style="@style/CreateEditText"
+
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -243,7 +242,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="PNr."
-            android:lines="1" />
+            style="@style/CreateEditText"
+            android:inputType="text"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
@@ -269,7 +270,8 @@
         android:text="Verfügbar"
         android:textColor="@color/fab_green"
         android:textSize="16sp"
-
+        android:enabled="false"
+        app:thumbTint="@color/switch_button"
         app:layout_constraintBottom_toTopOf="@+id/product_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/image"
@@ -302,49 +304,31 @@
         tools:itemCount="14"
         tools:listitem="@layout/item_product" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/empty_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingMultiplier="1.4"
         android:text="Sie haben noch keine \n   Produkte angelegt"
         android:textSize="24sp"
-        android:visibility="visible"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
         app:layout_constraintTop_toBottomOf="@+id/et_product_category_layout" />
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/create_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_add"
-        android:visibility="gone"
-        app:backgroundTint="@color/brightGreen"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/empty_message" />
-
-
 
     <FrameLayout
-        android:id="@+id/loading_indicator"
+        android:id="@+id/loading_create"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">
-
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
-
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

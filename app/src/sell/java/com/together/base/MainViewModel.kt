@@ -12,6 +12,7 @@ import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
 import com.together.utils.uiArticleToData
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.io.File
@@ -43,6 +44,7 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
 
     private var disposable: CompositeDisposable = CompositeDisposable()
     private var disposable2: CompositeDisposable = CompositeDisposable()
+    var uploadImage : Boolean = false
 
     init {
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
@@ -54,9 +56,11 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
                     loggedState.value = UiState.BaseAuth()
 
                 is Result.NewImageCreated -> {
-                    if (newProduct.value == null)
-                        newProduct.value = UiState.NewProductImage(it.uri!!)
-                    else newProduct.value = UiState.NewProductImage(it.uri!!)
+                    uploadImage = true
+                    newProduct.value = UiState.NewProductImage(it.uri!!)
+                }
+                is Result.SetDetailDescription -> {
+                    editProduct.value?.detailInfo = it.text
                 }
             }
         })
@@ -99,8 +103,6 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
         }
     }
 
-
-
     fun deleteProduct() {
         editProduct.value?.let {
             val id = it.id
@@ -124,12 +126,12 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
         }
     }
 
-    fun uploadProduct(file: Single<File>, fileAttached: Boolean) {
+    fun uploadProduct(file: Single<File>) {
         val product = editProduct.value!!.uiArticleToData()
         blockingLoaderState.value = UiEvent.Loading()
-        dataRepository.uploadProduct(file,fileAttached,product)
+        dataRepository.uploadProduct(file,uploadImage ,product).observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                editProduct.value?.id = it
+                editProduct.value  = it.dataArticleToUi()
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
             },{
                 blockingLoaderState.value = UiEvent.Loading(UPLOAD_PRODUCT)

@@ -48,10 +48,10 @@ class ChooseDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding.captureImage.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
-        viewBinding.btnWriteMsg.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
-        viewBinding.cancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
-        viewBinding.btnShowInfo.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO); dismiss() }
+        viewBinding.btnCaptureImage.setOnClickListener { actionChannel.onNext(Action.TAKE_PICKTURE); dismiss() }
+        viewBinding.btnImportImage.setOnClickListener { actionChannel.onNext(Action.CHOOSE_PICTURE); dismiss() }
+        viewBinding.btnCancel.setOnClickListener { actionChannel.onNext(Action.CANCEL_ADD_PICTURE); dismiss() }
+        viewBinding.btnDeleteImage.setOnClickListener { actionChannel.onNext(Action.DELETE_PHOTO); dismiss() }
         return viewBinding.root
     }
 

@@ -143,6 +143,11 @@ sealed class Result {
         override var mode: Int = UNDEFINED
     }
 
+    data class SetDetailDescription(val text: String) : Result(){
+        override var id: String = ""
+        override var mode: Int = UNDEFINED
+    }
+
     data class CleanUpResult(
         val started: Boolean = false,
         val placedOrderIds: Map<String, String> = emptyMap(),
