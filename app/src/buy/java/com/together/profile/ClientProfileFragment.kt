@@ -120,6 +120,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun clearMarketSetting() {
         showPickMarket(false)
+        showTimePicker(false)
         viewBinding.tvPickupTime.text = ""
         viewModel.buyerProfile.defaultTime = ""
         viewBinding.tvMarketName.text = ""

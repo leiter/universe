@@ -7,11 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import com.together.base.MainMessagePipe
-import com.together.base.MainViewModel
 import com.together.databinding.FragmentInfoDialogBinding
 import com.together.repository.Result
+import com.together.utils.show
 import com.together.utils.viewBinding
 
 
@@ -19,8 +18,6 @@ class InfoDialogFragment : DialogFragment() {
 
     private var usageMode: String? = null
     private var productInfo: String? = null
-
-    private val viewModel: MainViewModel by activityViewModels()
 
     private val viewBinding : FragmentInfoDialogBinding by viewBinding(FragmentInfoDialogBinding::inflate)
 
@@ -58,6 +55,9 @@ class InfoDialogFragment : DialogFragment() {
     private fun setUpEditMode() {
         isCancelable = false
         with(viewBinding){
+            etDetailInfoLayout.show()
+            btnSaveChanges.show()
+            btnCancelChanges.show()
             etDetailInfo.setText(productInfo)
             btnSaveChanges.setOnClickListener {
                 val r = Result.SetDetailDescription(etDetailInfo.text.toString())

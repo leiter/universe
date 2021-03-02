@@ -151,7 +151,7 @@
             tools:text="Stangensellerie"
             android:textStyle="bold"
             android:lines="1"
-            android:textSize="24sp"
+            android:textSize="@dimen/product_category_text_size"
             android:layout_marginTop="8dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"

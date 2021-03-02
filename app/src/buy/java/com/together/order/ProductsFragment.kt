@@ -159,7 +159,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         )
 
         disposable.add(
-            viewBinding.etProductAmount.textChanges()
+            viewBinding.etProductAmount.textChanges().skipInitialValue()
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

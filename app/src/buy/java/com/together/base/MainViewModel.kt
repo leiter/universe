@@ -276,7 +276,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 oldOrders.value = newStuff.reversed()
                 blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
             }, {
-                blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS)
+                blockingLoaderState.value = UiEvent.LoadingDone(LOAD_OLD_ORDERS, it)
             }).addTo(disposable)
     }
 

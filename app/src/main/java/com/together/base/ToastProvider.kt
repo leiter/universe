@@ -1,6 +1,7 @@
 package com.together.base
 
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 
 class ToastProvider(private val toastData: UiEvent.ShowToast)  {
@@ -14,6 +15,6 @@ class ToastProvider(private val toastData: UiEvent.ShowToast)  {
     }
 
     fun show(){
-        Handler().post(getRunnable())
+        Handler(Looper.getMainLooper()).post(getRunnable())
     }
 }

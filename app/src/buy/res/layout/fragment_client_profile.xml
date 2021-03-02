@@ -51,6 +51,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/materialTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="12dp"
@@ -103,8 +104,8 @@
                 android:id="@+id/tv_display_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="text"
-                android:layout_marginEnd="54dp" />
+                android:layout_marginEnd="54dp"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -147,8 +148,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
-                android:inputType="textEmailAddress"
-                android:layout_marginEnd="54dp" />
+                android:layout_marginEnd="54dp"
+                android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -189,9 +190,9 @@
                 android:id="@+id/tv_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="phone"
+                android:layout_marginEnd="54dp"
 
-                android:layout_marginEnd="54dp" />
+                android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -215,9 +216,11 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:text="@string/btn_client_profile_show_markets"
-            android:textSize="24sp"
+            android:textSize="@dimen/product_category_text_size"
             app:drawableStartCompat="@drawable/ic_market_place"
-            app:layout_constraintStart_toEndOf="@id/gl_start"
+            app:layout_constraintEnd_toStartOf="@+id/btn_choose_pickup_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_phone_number_layout" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -232,7 +235,9 @@
             android:text="@string/btn_client_profile_pick_up_time"
             android:textSize="24sp"
             app:drawableStartCompat="@drawable/ic_set_default_time"
-            app:layout_constraintEnd_toStartOf="@id/gl_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn_choose_market"
             app:layout_constraintTop_toBottomOf="@id/tv_phone_number_layout" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -247,7 +252,7 @@
             android:textSize="16sp"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="@+id/btn_choose_market"
-            app:layout_constraintStart_toEndOf="@id/gl_start"
+            app:layout_constraintStart_toStartOf="@+id/btn_choose_market"
             app:layout_constraintTop_toBottomOf="@id/btn_choose_market"
             tools:text="Marktplatz" />
 
@@ -263,11 +268,10 @@
             android:lines="2"
             android:textSize="18sp"
             android:visibility="visible"
-            app:layout_constraintEnd_toStartOf="@id/gl_end"
+            app:layout_constraintEnd_toEndOf="@+id/btn_choose_pickup_time"
             app:layout_constraintStart_toStartOf="@+id/btn_choose_pickup_time"
             app:layout_constraintTop_toBottomOf="@id/btn_choose_pickup_time"
             tools:text="Abholzeit" />
-
 
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -346,11 +350,11 @@
             android:layout_height="144dp"
             android:layout_marginTop="8dp"
             android:timePickerMode="spinner"
-            app:layout_goneMarginBottom="96dp"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/btn_set_pickup_time"
             app:layout_constraintStart_toEndOf="@id/btn_clear_pickup_time"
-            app:layout_constraintTop_toBottomOf="@id/tl_market_container" />
+            app:layout_constraintTop_toBottomOf="@id/tl_market_container"
+            app:layout_goneMarginBottom="96dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save_profile"

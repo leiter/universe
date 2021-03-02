@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.together.repository.NeutralException
+import com.together.repository.NoInternetConnection
 
 
 sealed class UiEvent {
@@ -78,7 +80,7 @@ sealed class UiEvent {
     data class LoadingDone(
         override val contextId: Int, val exception: Throwable? = null,
         override val showProgress: Boolean = false,
-        override var autoConsumeResult: Boolean = false
+        override var autoConsumeResult: Boolean = false,
     ) : UiEvent(), LoadingIndication
 
     data class LoadingD<T>(

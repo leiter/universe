@@ -91,7 +91,7 @@ android {
         buy {
             dimension = "basic"
             applicationIdSuffix ".buy"
-            versionCode 15
+            versionCode 17
             compileSdkVersion 30
             targetSdkVersion 30
             signingConfig signingConfigs.release

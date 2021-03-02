@@ -12,6 +12,8 @@ import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.base.UtilsActivity
 import com.together.databinding.FragmentProfileBinding
+import com.together.utils.hide
+import com.together.utils.show
 import com.together.utils.viewLifecycleLazy
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -29,6 +31,15 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
 
     private val viewBinding: FragmentProfileBinding by viewLifecycleLazy {
         FragmentProfileBinding.bind(requireView())
+    }
+
+    private var hasBackButton: Boolean? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            hasBackButton = it.getBoolean("with_back_btn")
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,15 +69,21 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
             addPickupPlace.setOnClickListener {
                 MarketDialog().show(childFragmentManager, MarketDialog.MARKET_DIALOG_TAG)
             }
+            postProfile.setOnClickListener {
+                viewModel.uploadSellerProfile()
+//            if (!errorHints(i)) return@setOnClickListener
+            }
+            btnShowMangeImage.setOnClickListener {
+                UtilsActivity.startAddImage(requireActivity())
+            }
+
+            if(hasBackButton!!) {
+                btnGoBack.show()
+                btnGoBack.setOnClickListener {
+                    findNavController().navigate(R.id.action_profileFragment_to_createFragment) }
+            } else btnGoBack.hide()
         }
 
-        viewBinding.postProfile.setOnClickListener {
-            viewModel.uploadSellerProfile()
-//            if (!errorHints(i)) return@setOnClickListener
-        }
-        viewBinding.btnShowMangeImage.setOnClickListener {
-            UtilsActivity.startAddImage(requireActivity())
-        }
 
         viewModel.profileLive.observe(viewLifecycleOwner,{ profile ->
 

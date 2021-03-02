@@ -40,6 +40,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             swAvailable.isEnabled = edit
             etProductWeigh.isEnabled = edit
             etProductCategory.isEnabled = edit
+            changePicture.isEnabled = edit
         }
     }
 
@@ -98,6 +99,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 productPrice.setText(it.pricePerUnit)
                 productPriceUnit.setText(it.unit)
                 etProductCategory.setText(it.category)
+                productNumber.setText(it.productId)
                 swAvailable.isChecked = it.available
                 val weight = if (it.weightPerPiece == 0.0) "" else it.weightPerPiece.toString()
                 etProductWeigh.setText(weight)

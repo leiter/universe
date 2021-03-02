@@ -1,6 +1,10 @@
 <resources>
     <dimen name="toolbar_title_size">16sp</dimen>
 	<dimen name="preview_image_width">96dp</dimen>
-	<dimen name="preview_image_height">192dp</dimen>
+	<dimen name="preview_image_height">176dp</dimen>
 	<dimen name="price_margin_bottom">0dp</dimen>
+	<dimen name="product_category_text_size">18sp</dimen>
+	<dimen name="profile_drawable_size">24dp</dimen>
+
+
 </resources>

@@ -10,7 +10,7 @@
     <string name="about_disclaimer">
         Diese App wurde entwickelt um Biolandwirten und Biogemüsehandlern eine Möglichkeit zu bieten den Verkauf ihrer nachhaltig produzierten Produkte im unmittelbaren Umland zu vereinfachen. Hierbei wird darauf Wert gelegt das Lebensmittel unverpackt an den Konsumenten geliefert werden und ein direkter Lohnenswerter Handel für Produzenten und Konsumenten entsteht.</string>
 
-    <string name="app_name">Stand</string>
+    <string name="app_name">Marktstand</string>
 
     <string name="content_description_btn_start_add_image">Taste started ein Auswahlmenu um ein Bild hinzuzufügen.</string>
     <string name="content_description_seller_profile_save">Taste Profile speichern</string>

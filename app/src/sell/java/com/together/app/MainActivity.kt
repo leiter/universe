@@ -66,10 +66,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(viewBinding.root)
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
-//                .replace(R.id.container, ProductsFragment()).commit()
+//                .replace(R.id.container, Cre()).commit()
 //        }
 
-        NavigationUI.setupWithNavController(viewBinding.navigationView,findNavController(R.id.navigation_controller))
+        NavigationUI.setupWithNavController(viewBinding.navigationView,
+            findNavController(R.id.navigation_controller))
 
         viewModel.loggedState.observe(this, {
             when (it) {
@@ -84,7 +85,6 @@ class MainActivity : AppCompatActivity() {
                             viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                         }
                     }, {
-
                         MainMessagePipe.uiEvent.onNext(
                             UiEvent.ShowToast(
                                 baseContext,
@@ -166,6 +166,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDrawerNavigation(): Disposable {
         return viewBinding.navigationView.itemSelections().subscribe ({
+            val bundle = Bundle()
+            when(it.itemId) {
+                R.id.action_createFragment_to_profileFragment -> {
+                    bundle.putBoolean(
+                        "with_back_btn",
+                        true
+                    )
+                    findNavController(R.id.navigation_controller).navigate(
+                        R.id.action_createFragment_to_profileFragment,
+                        bundle
+                    )
+                    viewBinding.drawerLayout.closeDrawers()
+                    return@subscribe
+                }
+            }
+
             NavigationUI.onNavDestinationSelected(it, findNavController(R.id.navigation_controller))
             viewBinding.drawerLayout.closeDrawers()
         },{ it.printStackTrace() })

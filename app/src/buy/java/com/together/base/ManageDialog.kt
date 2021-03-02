@@ -18,6 +18,7 @@ import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
 import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
 import com.together.databinding.ManageDialogBinding
 import com.together.profile.ClientProfileFragment
+import com.together.repository.NoInternetConnection
 import com.together.utils.*
 import io.reactivex.disposables.Disposable
 
@@ -25,7 +26,7 @@ import io.reactivex.disposables.Disposable
 class ManageDialog : DialogFragment() {
 
     private lateinit var disposable: Disposable
-    private val viewBinding:ManageDialogBinding by viewBinding(ManageDialogBinding::inflate)
+    private val viewBinding: ManageDialogBinding by viewBinding(ManageDialogBinding::inflate)
     private var adapter: OldOrdersAdapter? = null
     private val viewModel: MainViewModel by activityViewModels()
 
@@ -49,17 +50,19 @@ class ManageDialog : DialogFragment() {
         MainMessagePipe.uiEvent.onNext(
             UiEvent.ReplaceFragment(
                 requireActivity().supportFragmentManager,
-                ClientProfileFragment(), ClientProfileFragment.TAG)
+                ClientProfileFragment(), ClientProfileFragment.TAG
+            )
         ); dismiss()
     }
 
     private val clickToOpenOrder: (UiState.Order) -> Unit = { selectedOrder ->
         viewModel.order = selectedOrder
         viewModel.marketIndex = viewModel.sellerProfile.marketList.indexOfFirst {
-            it.id == viewModel.order.marketId }
+            it.id == viewModel.order.marketId
+        }
 
         val dayTime = selectedOrder.pickUpDate.toDate()
-            viewModel.days = getDays(viewModel.provideMarket(),dayTime)
+        viewModel.days = getDays(viewModel.provideMarket(), dayTime)
         val neList = viewModel.productList.value!!.toMutableSet().toList()
         viewModel.basket.value = createBasketUDate(neList, selectedOrder.copy())
         dismiss()
@@ -110,7 +113,15 @@ class ManageDialog : DialogFragment() {
                     if (uiEvent.contextId == LOAD_OLD_ORDERS) {
                         viewBinding.prLoadOrders.visibility = View.GONE
                         viewModel.oldOrders.observe(viewLifecycleOwner, orderObserver)
-                        viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(LOAD_OLD_ORDERS)
+                        uiEvent.exception?.let {
+                            when (uiEvent.exception) {
+                                is NoInternetConnection ->
+                                    requireContext().showLongToast("Keine Internetverbindung.")
+                                else -> requireContext().showLongToast("Bestellungen konnten nicht geladen werden.")
+                            }
+                        }
+                        viewModel.blockingLoaderState.value =
+                            UiEvent.LoadingNeutral(LOAD_OLD_ORDERS)
                     }
                     if (uiEvent.contextId == CLEAR_ACCOUNT) {
                         viewBinding.prLogOut.visibility = View.GONE

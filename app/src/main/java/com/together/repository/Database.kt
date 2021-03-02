@@ -49,6 +49,9 @@ object Database {
 
     init {
         fire().setPersistenceEnabled(true)
+        if(BuildConfig.FLAVOR=="buy"){
+            sellerProfile("",false).keepSynced(true)
+        }
     }
 
 }

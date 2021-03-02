@@ -235,6 +235,26 @@ fun Query.getSingle(): Single<DataSnapshot> {
 
 
 }
+
+inline fun <reified  T> Query.getObservableData(): Observable<T> {
+    return Observable.create { emitter ->
+
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                emitter.onError(p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val i = p0.getValue(T::class.java)
+                i?.let {  emitter.onNext(i) }
+            }
+        }
+        addValueEventListener(valueEventListener)
+        emitter.setCancellable { removeEventListener(valueEventListener) }
+    }
+
+
+}
 inline fun <reified T : Result> Query.getSingleList(): Single<List<T>> {
     return Single.create { emitter ->
         val listener = object : ValueEventListener {

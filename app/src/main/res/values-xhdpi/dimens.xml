@@ -3,4 +3,8 @@
 	<dimen name="preview_image_width">144dp</dimen>
 	<dimen name="preview_image_height">244dp</dimen>
 	<dimen name="price_margin_bottom">8dp</dimen>
+	<dimen name="product_category_text_size">22sp</dimen>
+	<dimen name="profile_drawable_size">48dp</dimen>
+
+
 </resources>
