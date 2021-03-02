@@ -233,7 +233,7 @@
             android:focusable="true"
             android:gravity="center_vertical"
             android:text="@string/btn_client_profile_pick_up_time"
-            android:textSize="24sp"
+            android:textSize="@dimen/product_category_text_size"
             app:drawableStartCompat="@drawable/ic_set_default_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

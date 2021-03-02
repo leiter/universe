@@ -40,12 +40,34 @@ fun MutableList<UiState.Article>.addItem(
     productData.value = this.toMutableList()
 }
 
+inline fun <reified T : UiState> MutableList<T>.addGenItem(
+    item: T,
+    productData: MutableLiveData<MutableList<T>>
+) {
+    val index = indexOf(item)
+    when (item.mode) {
+        UiState.ADDED -> add(item)
+        UiState.REMOVED -> removeAt(indexOf(first { it.id == item.id }))
+        UiState.CHANGED -> {
+            if (index == -1) {
+                val i = indexOf(first { it.id == item.id })
+                removeAt(i)
+                add(i, item)
+            } else {
+                removeAt(index)
+                add(index, item)
+            }
+        }
+    }
+    productData.value = this.toMutableList()
+}
+
 class MainViewModel(private val dataRepository: DataRepositorySell = DataRepositorySellImpl()) :
     ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
     private var disposable2: CompositeDisposable = CompositeDisposable()
-    var uploadImage : Boolean = false
+    var uploadImage: Boolean = false
 
     init {
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
@@ -130,12 +152,13 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
     fun uploadProduct(file: Single<File>) {
         val product = editProduct.value!!.uiArticleToData()
         blockingLoaderState.value = UiEvent.Loading()
-        dataRepository.uploadProduct(file,uploadImage ,product).observeOn(AndroidSchedulers.mainThread())
+        dataRepository.uploadProduct(file, uploadImage, product)
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                editProduct.value  = it.dataArticleToUi()
+                editProduct.value = it.dataArticleToUi()
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
-            },{
-                blockingLoaderState.value = UiEvent.Loading(UPLOAD_PRODUCT)
+            }, {
+                blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
             }).addTo(disposable)
     }
 

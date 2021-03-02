@@ -4,7 +4,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.together.BuildConfig
 import com.together.repository.auth.FireBaseAuth
 
 object Database {
@@ -49,9 +48,9 @@ object Database {
 
     init {
         fire().setPersistenceEnabled(true)
-        if(BuildConfig.FLAVOR=="buy"){
-            sellerProfile("",false).keepSynced(true)
-        }
+//        if(BuildConfig.FLAVOR=="buy"){
+//            sellerProfile("",false).keepSynced(true)
+//        }
     }
 
 }

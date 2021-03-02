@@ -32,6 +32,7 @@ class OrderItemViewHolder(private val binding: ItemNextOrderBinding)
             tvProductCount.text = item.createProductCount()
             tvPersonName.text = item.buyerProfile.displayName
             tvDay.text = item.pickUpDate.toPickUpText()
+            tvMessage.text = item.message
             llProductItems.removeAllViews()
             val a = OrderedProductAdapter(llProductItems.context,item.productList)
             (0 until a.count).forEach {

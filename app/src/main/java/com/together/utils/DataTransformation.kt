@@ -16,7 +16,7 @@ fun Result.Article.dataArticleToUi(): UiState.Article {
         available = this.available,
         category = this.category,
         detailInfo = this.detailInfo,
-        searchTerms = "${this.searchTerms},${this.category}",
+        searchTerms = "${this.searchTerms}",
         weightPerPiece = this.weighPerPiece,
         productId = this.productId
     )

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import androidx.core.graphics.createBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.together.R
 import com.together.base.*
@@ -62,12 +63,31 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         super.onViewCreated(view, savedInstanceState)
         adapter = ProductAdapter(this)
         with(viewBinding) {
-            saveProduct.setOnClickListener { createBitmap() }
-            btnDeleteProduct.setOnClickListener {
-                requireContext().showAlertDialog("Löschen",
-                    message = "Soll das Produkt wirklich gelöscht werden?",
-                    actionOnPositiveButton = ::deleteProduct)
+            saveProduct.setOnClickListener {
+                if (!writeToNewProduct()) return@setOnClickListener
+                if (viewModel.editProduct.value?.remoteImageUrl.isNullOrEmpty() && !viewModel.uploadImage) {
+                    requireContext().showLongToast("Bild hinzufügen.")
+                    return@setOnClickListener
+                }
+                requireContext().showAlertDialog(
+                    "Speichern",
+                    title = "Speichern",
+                    message = "Soll das Produkt wirklich gespeichert werden?",
+                    actionOnPositiveButton = ::createBitmap
+                )
                  }
+            btnDeleteProduct.setOnClickListener {
+                if (viewModel.editProduct.value?.id == "") {
+                    requireContext().showShortToast("Es ist kein Produkt ausgewählt.")
+                    return@setOnClickListener
+                }
+                requireContext().showAlertDialog(
+                    "Löschen",
+                    message = "Soll das Produkt wirklich gelöscht werden?",
+                    actionOnPositiveButton = ::deleteProduct,
+                    title = "Löschen"
+                )
+            }
             manageImage.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             changePicture.setOnClickListener { UtilsActivity.startAddImage(requireActivity()) }
             btnDrawerOpen.setOnClickListener {
@@ -140,10 +160,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     }
 
     private fun deleteProduct() {
-        if (viewModel.editProduct.value?.id != "") {
-            viewModel.deleteProduct()
-        } else requireContext().showShortToast("Es ist kein Produkt ausgewählt.")
-
+        viewModel.deleteProduct()
     }
 
     override fun clicked(item: UiState.Article) {
@@ -151,11 +168,6 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     }
 
     private fun createBitmap() {
-        if(!writeToNewProduct()) return
-        if(viewModel.editProduct.value?.remoteImageUrl.isNullOrEmpty() && !viewModel.uploadImage ) {
-            requireContext().showLongToast("Bild hinzufügen.")
-            return
-        }
         viewModel.uploadProduct(Single.fromCallable {
             val bitmap: Bitmap = Bitmap.createBitmap(
                 viewBinding.image.width, viewBinding.image.height,
@@ -169,7 +181,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         })
     }
 
-    private fun writeToNewProduct() : Boolean {
+    private fun writeToNewProduct(): Boolean {
 
         with(viewModel.editProduct) {
             if (viewBinding.productName.validate(::validString, "Produktnamen eingeben") == "") {
@@ -177,7 +189,11 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             } else {
                 value?.productName = viewBinding.productName.text.toString().trim()
             }
-            if (viewBinding.productSearchTerm.validate(::validString, "Suchbegriffe eingeben.") == "") {
+            if (viewBinding.productSearchTerm.validate(
+                    ::validString,
+                    "Suchbegriffe eingeben."
+                ) == ""
+            ) {
                 return false
             } else {
                 value?.searchTerms = viewBinding.productSearchTerm.text.toString().trim()
@@ -193,16 +209,24 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 value?.unit = viewBinding.productPriceUnit.text.toString().trim()
             }
 
-            if (viewBinding.etProductWeigh.validate(::validString, "Einzelgewicht eingeben.") == "") {
+            if (viewBinding.etProductWeigh.validate(
+                    ::validString,
+                    "Einzelgewicht eingeben."
+                ) == ""
+            ) {
                 return false
             } else {
                 value?.weightPerPiece = viewBinding.etProductWeigh.text.toString().trim().toDouble()
             }
 
-            if (viewBinding.etProductCategory.validate(::validString, "Kategorie eingeben.") == "") {
+            if (viewBinding.etProductCategory.validate(
+                    ::validString,
+                    "Kategorie eingeben."
+                ) == ""
+            ) {
                 return false
             } else {
-                value?.productDescription = viewBinding.etProductCategory.text.toString().trim()
+                value?.category = viewBinding.etProductCategory.text.toString().trim()
             }
             value?.productId = viewBinding.productNumber.text.toString()
             value?.available = viewBinding.swAvailable.isChecked
