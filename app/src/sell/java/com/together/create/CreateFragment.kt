@@ -59,23 +59,27 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         }
     }
 
+    val saveClick : (View) -> Unit =  lambda@{
+        if (!writeToNewProduct()) {
+            return@lambda
+        }
+        if (viewModel.editProduct.value?.remoteImageUrl.isNullOrEmpty() && !viewModel.uploadImage) {
+            requireContext().showLongToast("Bild hinzufügen.")
+            return@lambda
+        }
+        requireContext().showAlertDialog(
+            "Speichern",
+            title = "Speichern",
+            message = "Soll das Produkt wirklich gespeichert werden?",
+            actionOnPositiveButton = ::createBitmap
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = ProductAdapter(this)
         with(viewBinding) {
-            saveProduct.setOnClickListener {
-                if (!writeToNewProduct()) return@setOnClickListener
-                if (viewModel.editProduct.value?.remoteImageUrl.isNullOrEmpty() && !viewModel.uploadImage) {
-                    requireContext().showLongToast("Bild hinzufügen.")
-                    return@setOnClickListener
-                }
-                requireContext().showAlertDialog(
-                    "Speichern",
-                    title = "Speichern",
-                    message = "Soll das Produkt wirklich gespeichert werden?",
-                    actionOnPositiveButton = ::createBitmap
-                )
-                 }
+            saveProduct.setOnClickListener(saveClick)
             btnDeleteProduct.setOnClickListener {
                 if (viewModel.editProduct.value?.id == "") {
                     requireContext().showShortToast("Es ist kein Produkt ausgewählt.")
@@ -151,17 +155,15 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
         viewModel.productList.observe(viewLifecycleOwner, {
             if (it.size > 0) {
-                viewBinding.emptyMessage.visibility = View.GONE
+                viewBinding.emptyMessage.remove()
                 adapter.setFilteredList(it.toMutableList())
             } else {
-                viewBinding.emptyMessage.visibility = View.VISIBLE
+                viewBinding.emptyMessage.show()
             }
         })
     }
 
-    private fun deleteProduct() {
-        viewModel.deleteProduct()
-    }
+    private fun deleteProduct() { viewModel.deleteProduct() }
 
     override fun clicked(item: UiState.Article) {
         viewModel.editProduct.value = item

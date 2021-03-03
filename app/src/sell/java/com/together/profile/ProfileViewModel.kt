@@ -18,11 +18,11 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
-    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
-        MutableLiveData<MutableList<UiState.Market>>().also {
-            it.value = mutableListOf()
-        }
-    }
+//    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
+//        MutableLiveData<MutableList<UiState.Market>>().also {
+//            it.value = mutableListOf()
+//        }
+//    }
 
     val profileLive: MutableLiveData<UiState.SellerProfile> by lazy {
         MutableLiveData<UiState.SellerProfile>().also {
@@ -39,8 +39,7 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
                     val seller = it.dataToUiSeller()
                     profileLive.value = seller
                     profile = seller
-                    markets.value = seller.marketList
-
+//                    markets.value = seller.marketList
                 },{
                     it.printStackTrace()
                 }
@@ -56,7 +55,7 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
     fun uploadSellerProfile() {
         blockingLoaderState.value = UiEvent.Loading(0)
         val p = profile.uiSellerToData()
-        p.markets = markets.value!!.map { it.uiMarketToData() }.toMutableList()
+//        p.markets = markets.value!!.map { it.uiMarketToData() }.toMutableList()
         dataRepository.uploadSellerProfile(p).subscribe({ success ->
             if (success) {
                 blockingLoaderState.value = UiEvent.LoadingDone(UiEvent.UPLOAD_PRODUCT)

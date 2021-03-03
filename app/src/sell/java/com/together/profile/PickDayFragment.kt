@@ -20,14 +20,16 @@ class PickDayFragment : DialogFragment() {
     private lateinit var viewBinding: FragmentPickDayBinding
 
     private val viewModel: ProfileViewModel by viewModels({ requireParentFragment() })
+    private var marketIndex: Int = -1
 
     private lateinit var market: UiState.Market
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            market = it.getParcelable(BundleKey)!!
-        }
+            marketIndex = it.getInt(BundleKey,-1)
+            market = if(marketIndex>-1) viewModel.profile.marketList[marketIndex]
+        else UiState.Market() }
     }
 
     override fun onCreateView(
@@ -54,18 +56,24 @@ class PickDayFragment : DialogFragment() {
         h.visibility = View.GONE
 
         viewBinding.btnCancel.setOnClickListener { dismiss() }
+
         viewBinding.btnSet.setOnClickListener {
-            val pr = viewModel.profileLive.value?.copy()!!
+            val pr = viewModel.profileLive.value!!
             val index = viewBinding.tpDays.currentHour
             market.dayIndicator = index + 1
             market.dayOfWeek = minutePicker.displayedValues[index]
-            val rePlaceInt=  pr.marketList.indexOfFirst { market.id == it.id }
-            pr.marketList.removeAt(pr.marketList.indexOfFirst { market.id == it.id })
-            pr.marketList.add(rePlaceInt,market)
             val p = pr.marketList.toMutableList()
-            p.add(rePlaceInt, market)
-            viewModel.markets.value = p
-            viewModel.profileLive.value = pr
+
+            if(marketIndex>-1){
+                pr.marketList.removeAt(marketIndex)
+                pr.marketList.add(marketIndex,market)
+                p.add(marketIndex, market)
+            } else {
+                p.add(market)
+                pr.marketList.add(market)
+            }
+//            viewModel.markets.value = p
+//            viewModel.profileLive.value = pr
             dismiss()
         }
 
@@ -76,10 +84,10 @@ class PickDayFragment : DialogFragment() {
     companion object {
         const val BundleKey = "market"
         @JvmStatic
-        fun newInstance(param1: Parcelable) =
+        fun newInstance(param1: Int) =
             PickDayFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(BundleKey, param1)
+                    putInt(BundleKey, param1)
                 }
             }
     }

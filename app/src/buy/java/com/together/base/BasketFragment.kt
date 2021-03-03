@@ -61,11 +61,16 @@ class BasketFragment : DialogFragment() {
         showSetTime(showingTimePicker)
         if (showingTimePicker) {
             updatePickUptime()
+            with(viewBinding){
+
+            }
             viewBinding.tlDateContainer.visibility = View.VISIBLE
             viewBinding.tlMarketContainer.visibility = View.VISIBLE
             viewBinding.tpSetAppointment.visibility = View.INVISIBLE
+            viewBinding.etMessageLayout.visibility = View.VISIBLE
             viewBinding.btnCancelAppointmentTime.visibility = View.GONE
         } else {
+            viewBinding.etMessageLayout.visibility = View.GONE
             viewBinding.tlDateContainer.visibility = View.INVISIBLE
             viewBinding.tlMarketContainer.visibility = View.INVISIBLE
             viewBinding.tpSetAppointment.visibility = View.VISIBLE
@@ -95,6 +100,7 @@ class BasketFragment : DialogFragment() {
         viewBinding.btnHideAppointment.setOnClickListener { showFinalizeDate(false) }
         viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
         viewBinding.btnCancelAppointmentTime.setOnClickListener {
+            viewBinding.etMessageLayout.show()
             viewBinding.tpSetAppointment.visibility = View.INVISIBLE
             viewBinding.tlDateContainer.visibility = View.VISIBLE
             viewBinding.tlMarketContainer.visibility = View.VISIBLE

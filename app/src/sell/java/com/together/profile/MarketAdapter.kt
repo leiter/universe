@@ -13,7 +13,7 @@ import com.together.base.UiState
 
 class MarketAdapter(context: Context,
                     private val markets: MutableList<UiState.Market>,
-                    private val openDialog: (UiState.Market) -> Unit) :
+                    private val openDialog: (Int) -> Unit) :
     ArrayAdapter<UiState.Market>(context, R.layout.item_market, markets) {
 
     @SuppressLint("ViewHolder")
@@ -27,7 +27,7 @@ class MarketAdapter(context: Context,
         v.findViewById<TextView>(R.id.weekdays).text = markets[position].dayOfWeek
         v.findViewById<TextView>(R.id.begin).text = markets[position].begin
         v.findViewById<TextView>(R.id.end).text = markets[position].end
-        v.findViewById<MaterialButton>(R.id.edit_pickup_place).setOnClickListener { openDialog(markets[position]) }
+        v.findViewById<MaterialButton>(R.id.edit_pickup_place).setOnClickListener { openDialog(position) }
         return v
     }
 

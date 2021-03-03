@@ -12,14 +12,12 @@ import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.base.UtilsActivity
 import com.together.databinding.FragmentProfileBinding
-import com.together.utils.hide
-import com.together.utils.show
-import com.together.utils.viewLifecycleLazy
+import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
 
-class ProfileFragment() : Fragment(R.layout.fragment_profile) {
+class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     val viewModel: ProfileViewModel by viewModels()
 
@@ -67,10 +65,12 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
                 viewModel.profile.lastName = it.toString()
             }.addTo(disposable)
             addPickupPlace.setOnClickListener {
-                MarketDialog().show(childFragmentManager, MarketDialog.MARKET_DIALOG_TAG)
+                val i = if(viewModel.profileLive.value!!.marketList.isEmpty()) -1 else 0
+                MarketDialog.newInstance(MarketDialog.EDIT_MARKET,-1)
+                    .show(childFragmentManager, MarketDialog.MARKET_DIALOG_TAG)
             }
             postProfile.setOnClickListener {
-                viewModel.uploadSellerProfile()
+                uploadSellerProfile()
 //            if (!errorHints(i)) return@setOnClickListener
             }
             btnShowMangeImage.setOnClickListener {
@@ -96,11 +96,8 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
                 city.setText(profile.city)
                 street.setText(profile.street)
             }
-        })
-
-        viewModel.profileLive.observe(viewLifecycleOwner, {
             viewBinding.placesList.removeAllViews()
-            val adapter = MarketAdapter(requireContext(), it.marketList, openAddMarket)
+            val adapter = MarketAdapter(requireContext(), profile.marketList, openAddMarket)
             (0 until adapter.count).forEach { pos ->
                 val item = adapter.getView(pos, null, viewBinding.placesList)
                 viewBinding.placesList.addView(item)
@@ -122,7 +119,52 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    private val openAddMarket: (UiState.Market) -> Unit
+    fun uploadSellerProfile() :Boolean {
+
+        with(viewModel.profile) {
+            if( viewBinding.companyName
+                    .validate(::validString,"Unternehmensnamen eingeben.") == "") {
+                return false
+            } else this.displayName = viewBinding.companyName.text.toString()
+
+            if( viewBinding.firstName
+                    .validate(::validString,"Vornamen eingeben.") == "") {
+                return false
+            } else this.firstName = viewBinding.firstName.text.toString()
+
+            if( viewBinding.lastName
+                    .validate(::validString,"Nachnamen eingeben.") == "") {
+                return false
+            } else this.lastName = viewBinding.lastName.text.toString()
+            if( viewBinding.street
+                    .validate(::validString,"Straße eingeben.") == "") {
+                return false
+            } else this.street = viewBinding.street.text.toString()
+
+            if( viewBinding.house
+                    .validate(::validString,"Hausnummer eingeben.") == "") {
+                return false
+            } else this.houseNumber = viewBinding.house.text.toString()
+            if( viewBinding.zipCode
+                    .validate(::validString,"Postleitzahl eingeben.") == "") {
+                return false
+            } else this.zipCode = viewBinding.zipCode.text.toString()
+            if( viewBinding.city
+                    .validate(::validString,"Stadt eingeben.") == "") {
+                return false
+            } else this.city = viewBinding.city.text.toString()
+            if(this.marketList.isEmpty()){
+                requireContext()
+                    .showLongToast("Es muss mindestens ein Markt hinzugefügt werden.")
+                return false
+            }
+        }
+
+        viewModel.uploadSellerProfile()
+        return true
+    }
+
+    private val openAddMarket: (Int) -> Unit
         inline get() = {
             MarketDialog.newInstance(MarketDialog.EDIT_MARKET, it).show(
                 childFragmentManager, MarketDialog.MARKET_DIALOG_TAG

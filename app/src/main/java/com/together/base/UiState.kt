@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Parcelable
 import com.together.repository.Result
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 sealed class UiState {
 
@@ -155,7 +156,7 @@ sealed class UiState {
         var phoneNumber: String = "",
         var defaultMarket: String = "",
         var defaultTime: String = "",
-        var placedOrderIds:  Map<String,String> = emptyMap(),
+        var placedOrderIds: Map<String, String> = emptyMap(),
 
         ) : UiState() {
         fun getDefaultTimeDisplay(): String {
@@ -195,13 +196,26 @@ sealed class UiState {
         var houseNumber: String = "",
         var city: String = "",
         var zipCode: String = "",
-        var dayOfWeek: String,
+        var dayOfWeek: String = "",
         var begin: String = "",
         var end: String = "",
         var dayIndicator: Int = UNDEFINED,
-        override var id: String = "",
+        override var id: String = UUID.randomUUID().toString(),
         override var mode: Int = UNDEFINED
-    ) : UiState(), Parcelable
+    ) : UiState(), Parcelable {
+
+//        fun isItGood(): Boolean {
+//            return name.isNotEmpty() &&
+//            street.isNotEmpty() &&
+//            houseNumber.isNotEmpty() &&
+//            city.isNotEmpty() &&
+//            zipCode.isNotEmpty() &&
+//            dayOfWeek.isNotEmpty() &&
+//            begin.isNotEmpty() &&
+//            end.isNotEmpty() &&
+//            dayIndicator != UNDEFINED
+//        }
+    }
 
 
 }
