@@ -86,7 +86,7 @@ android {
             dimension = "basic"
             applicationIdSuffix ".sell"
             targetSdkVersion 29
-            versionCode 4
+            versionCode 5
             signingConfig signingConfigs.release
         }
 

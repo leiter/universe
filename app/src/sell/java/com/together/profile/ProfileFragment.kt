@@ -9,7 +9,6 @@ import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.MarketDialog
 import com.together.base.UiEvent
-import com.together.base.UtilsActivity
 import com.together.databinding.FragmentProfileBinding
 import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
-    val viewModel: ProfileViewModel by viewModels()
+    private val viewModel: ProfileViewModel by viewModels()
 
     private val disposable = CompositeDisposable()
 
@@ -68,12 +67,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 MarketDialog.newInstance(MarketDialog.EDIT_MARKET,-1)
                     .show(childFragmentManager, MarketDialog.MARKET_DIALOG_TAG)
             }
-            postProfile.setOnClickListener {
+            btnSaveProfile.setOnClickListener {
                 uploadSellerProfile()
 //            if (!errorHints(i)) return@setOnClickListener
-            }
-            btnShowMangeImage.setOnClickListener {
-                UtilsActivity.startAddImage(requireActivity())
             }
 
             if(hasBackButton!!) {
@@ -106,11 +102,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         viewModel.blockingLoaderState.observe(viewLifecycleOwner) {
             when (it) {
                 is UiEvent.LoadingDone -> {
-                    viewBinding.loadingIndicator.visibility = View.GONE
+                    viewBinding.loadingProfile.visibility = View.GONE
                 }
-                is UiEvent.Loading -> viewBinding.loadingIndicator.visibility = View.VISIBLE
+                is UiEvent.Loading -> viewBinding.loadingProfile.visibility = View.VISIBLE
                 is UiEvent.ShowCreateFragment -> {
-                    viewBinding.loadingIndicator.visibility = View.GONE
+                    viewBinding.loadingProfile.visibility = View.GONE
                     viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(-1)
                     findNavController().navigate(R.id.createFragment)
                 }
@@ -155,6 +151,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             if(this.marketList.isEmpty()){
                 requireContext()
                     .showLongToast("Es muss mindestens ein Markt hinzugefügt werden.")
+                return false
+            }
+            if(!this.marketList.all { it.isItGood() }){
+                requireContext().showLongToast("Alle Felder eines Marktes sind auszufüllen.")
+                return false
+            }
+
+            if(!this.marketList.all { it.isGoodTiming() }){
+                requireContext().showLongToast("Alle Felder eines Marktes sind auszufüllen.")
                 return false
             }
         }

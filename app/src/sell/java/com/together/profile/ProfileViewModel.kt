@@ -66,10 +66,6 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
     fun uploadSellerProfile() {
         blockingLoaderState.value = UiEvent.Loading(0)
         val p = profile.uiSellerToData()
-        p.markets.forEach {
-            it.begin = it.begin.replace(" Uhr" ,"")
-            it.end = it.end.replace(" Uhr" ,"")
-        }
         dataRepository.uploadSellerProfile(p).subscribe({ success ->
             if (success) {
                 blockingLoaderState.value = UiEvent.LoadingDone(UiEvent.UPLOAD_PRODUCT)

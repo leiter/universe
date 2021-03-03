@@ -97,8 +97,8 @@ fun UiState.Market.uiMarketToData(): Result.Market {
         city = this.city,
         zipCode = this.zipCode,
         dayOfWeek = this.dayOfWeek,
-        begin = this.begin,
-        end = this.end,
+        begin = this.cleanBegin,
+        end = this.cleanEnd,
         dayIndex = this.dayIndicator
     )
 }

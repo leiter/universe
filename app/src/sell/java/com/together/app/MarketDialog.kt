@@ -9,10 +9,12 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.jakewharton.rxbinding3.widget.textChanges
+import com.together.R
 import com.together.base.UiState
 import com.together.databinding.FragmentDialogsBinding
 import com.together.profile.PickDayFragment
 import com.together.profile.ProfileViewModel
+import com.together.utils.showLongToast
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 
@@ -71,7 +73,15 @@ class MarketDialog : DialogFragment() {
 
             addPickupPlace.setOnClickListener {
                 viewModel.fillInMarket()
-                dismiss()
+                when {
+                    viewModel.currentMarket.isItGood().not() -> {
+                        requireContext().showLongToast("Alle Felder sind auszufüllen.")
+                    }
+                    viewModel.currentMarket.isGoodTiming().not() -> {
+                        requireContext().showLongToast("Der Beginn ist später als das Ende.")
+                    }
+                    else -> dismiss()
+                }
             }
             placeName.setText(market.name)
             street.setText(market.street)
@@ -92,7 +102,10 @@ class MarketDialog : DialogFragment() {
             TimePickerDialog(
                 activity,
                 { _, hourOfDay, minute ->
-                    text.setText("%02d:%02d Uhr".format(hourOfDay, minute))
+                    val time = "%02d:%02d Uhr".format(hourOfDay, minute)
+                    if(text.id== R.id.begin)viewModel.currentMarket.begin = time
+                    if(text.id== R.id.end)viewModel.currentMarket.end = time
+                    text.setText(time)
                 },
                 0, 0, true
             ).show()
@@ -129,7 +142,6 @@ class MarketDialog : DialogFragment() {
         const val EDIT_MARKET = 1
 
         private const val ARG_PARAM1 = "operationMode"
-        private const val ARG_PARAM2 = "marketToEdit"
         private const val ARG_PARAM3 = "marketToEdit"
 
         const val MARKET_DIALOG_TAG = "MARKET_DIALOG_TAG"

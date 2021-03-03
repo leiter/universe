@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="24dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,8 +20,8 @@
             android:id="@+id/place_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:cursorVisible="false"
+            android:focusable="false"
             android:hint="Name/Ort des Marktes"
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -41,8 +42,8 @@
             android:id="@+id/street"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:cursorVisible="false"
+            android:focusable="false"
             android:hint="Straße"
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -51,9 +52,7 @@
         android:id="@+id/house_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/place_name_layout"
         app:layout_constraintStart_toEndOf="@id/street_layout"
         app:layout_constraintTop_toBottomOf="@id/place_name_layout">
 
@@ -61,8 +60,8 @@
             android:id="@+id/house"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:cursorVisible="false"
+            android:focusable="false"
             android:hint="HausNr"
             android:lines="1"
             android:maxLength="10" />
@@ -71,18 +70,21 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/zip_code_layout"
-        android:layout_width="120dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintEnd_toStartOf="@+id/city_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintStart_toStartOf="@id/place_name_layout"
         app:layout_constraintTop_toBottomOf="@id/street_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/zip_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:cursorVisible="false"
+            android:focusable="false"
             android:hint="Postleitzahl"
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -91,27 +93,32 @@
         android:id="@+id/city_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/zip_code_layout"
+
+        app:layout_constraintEnd_toEndOf="@id/place_name_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.6"
+        app:layout_constraintStart_toEndOf="@+id/zip_code_layout"
         app:layout_constraintTop_toBottomOf="@id/street_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:cursorVisible="false"
+            android:focusable="false"
             android:hint="Stadt"
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/weekdays_layout"
-        android:layout_width="120dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+
         android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/begin_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/zip_code_layout">
 
@@ -119,8 +126,8 @@
             android:id="@+id/weekdays"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:cursorVisible="false"
+            android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="Wochentag"
             android:lines="1"
@@ -129,21 +136,20 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/begin_layout"
-        android:layout_width="96dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/zip_code_layout"
+        app:layout_constraintEnd_toStartOf="@+id/end_layout"
+        app:layout_constraintHorizontal_weight="0.3"
+        app:layout_constraintStart_toEndOf="@+id/weekdays_layout"
         app:layout_constraintTop_toBottomOf="@id/city_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/begin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:cursorVisible="false"
+            android:focusable="false"
             android:focusableInTouchMode="true"
             android:hint="Beginn"
             android:lines="1"
@@ -152,13 +158,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/end_layout"
-        android:layout_width="96dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/begin_layout"
+
+        app:layout_constraintEnd_toEndOf="@id/place_name_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.3"
+        app:layout_constraintStart_toEndOf="@+id/begin_layout"
         app:layout_constraintTop_toBottomOf="@id/city_layout">
 
         <com.google.android.material.textfield.TextInputEditText

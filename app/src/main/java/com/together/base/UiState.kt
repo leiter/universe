@@ -211,17 +211,28 @@ sealed class UiState {
         override var mode: Int = UNDEFINED
     ) : UiState(), Parcelable {
 
-//        fun isItGood(): Boolean {
-//            return name.isNotEmpty() &&
-//            street.isNotEmpty() &&
-//            houseNumber.isNotEmpty() &&
-//            city.isNotEmpty() &&
-//            zipCode.isNotEmpty() &&
-//            dayOfWeek.isNotEmpty() &&
-//            begin.isNotEmpty() &&
-//            end.isNotEmpty() &&
-//            dayIndicator != UNDEFINED
-//        }
+        fun isItGood(): Boolean {
+            return name.isNotEmpty() &&
+            street.isNotEmpty() &&
+            houseNumber.isNotEmpty() &&
+            city.isNotEmpty() &&
+            zipCode.isNotEmpty() &&
+            dayOfWeek.isNotEmpty() &&
+            begin.isNotEmpty() &&
+            end.isNotEmpty() &&
+            dayIndicator != UNDEFINED
+        }
+
+        fun isGoodTiming(): Boolean {
+            return cleanBegin.replace(":","").toInt() <
+                    cleanEnd.replace(":","").toInt()
+        }
+
+        val cleanBegin: String
+        get() {  return begin.replace(" Uhr", "")}
+
+        val cleanEnd: String
+        get() {  return end.replace(" Uhr", "")}
     }
 
 

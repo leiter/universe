@@ -198,7 +198,6 @@ class MainActivity : AppCompatActivity() {
         viewBinding.btnBottom.btnContainer.visibility = View.VISIBLE
         viewBinding.btnBottom.btnContainer.setOnClickListener {
             viewModel.prepareLogout()
-
             viewBinding.drawerLayout.closeDrawers()
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         }

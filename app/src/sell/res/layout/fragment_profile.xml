@@ -9,6 +9,7 @@
     tools:context=".profile.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingBottom="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -32,19 +33,19 @@
             android:gravity="center"
             android:text="Mein Profil"
             android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_show_mange_image"
+            app:layout_constraintEnd_toStartOf="@+id/btn_save_profile"
             app:layout_constraintStart_toEndOf="@+id/btn_go_back"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btn_show_mange_image"
+            android:id="@+id/btn_save_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/content_description_btn_start_add_image"
             android:background="?attr/selectableItemBackground"
             android:padding="16dp"
-            android:visibility="invisible"
-            android:src="@drawable/ic_photo_camera"
+            android:visibility="visible"
+            android:src="@drawable/ic_save_24"
             app:layout_constraintBottom_toBottomOf="@id/tv_menu_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_menu_title" />
@@ -64,7 +65,6 @@
             android:id="@+id/company_name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/store_image"
@@ -84,7 +84,6 @@
             android:id="@+id/first_name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/company_name_layout">
@@ -102,7 +101,6 @@
             android:id="@+id/last_name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/first_name_layout">
@@ -217,19 +215,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_pickup_place" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/post_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/content_description_seller_profile_save"
-            android:src="@drawable/ic_edit_black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <FrameLayout
-            android:id="@+id/loading_indicator"
+            android:id="@+id/loading_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
