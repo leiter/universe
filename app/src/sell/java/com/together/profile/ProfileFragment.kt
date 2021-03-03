@@ -9,7 +9,6 @@ import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.app.MarketDialog
 import com.together.base.UiEvent
-import com.together.base.UiState
 import com.together.base.UtilsActivity
 import com.together.databinding.FragmentProfileBinding
 import com.together.utils.*
@@ -65,7 +64,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 viewModel.profile.lastName = it.toString()
             }.addTo(disposable)
             addPickupPlace.setOnClickListener {
-                val i = if(viewModel.profileLive.value!!.marketList.isEmpty()) -1 else 0
+                viewModel.setCurrentMarket(-1)
                 MarketDialog.newInstance(MarketDialog.EDIT_MARKET,-1)
                     .show(childFragmentManager, MarketDialog.MARKET_DIALOG_TAG)
             }
@@ -166,6 +165,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private val openAddMarket: (Int) -> Unit
         inline get() = {
+            viewModel.setCurrentMarket(it)
             MarketDialog.newInstance(MarketDialog.EDIT_MARKET, it).show(
                 childFragmentManager, MarketDialog.MARKET_DIALOG_TAG
             )

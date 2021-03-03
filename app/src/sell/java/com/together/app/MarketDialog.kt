@@ -33,8 +33,7 @@ class MarketDialog : DialogFragment() {
             modeType = it.getInt(ARG_PARAM1)
             if (modeType == EDIT_MARKET) {
                 marketIndex = it.getInt(ARG_PARAM3)
-                market = if(marketIndex>-1) viewModel.profile.marketList[marketIndex]
-                            else UiState.Market()
+                market = viewModel.currentMarket
             }
         }
     }
@@ -51,39 +50,29 @@ class MarketDialog : DialogFragment() {
             setup(end)
             showDayPicker(weekdays)
 
-            placeName.textChanges().skipInitialValue().subscribe { market.name = it.toString() }.addTo(disposable)
-            street.textChanges().skipInitialValue().subscribe { market.street = it.toString() }.addTo(disposable)
-            house.textChanges().skipInitialValue().subscribe { market.houseNumber = it.toString() }.addTo(disposable)
-            zipCode.textChanges().skipInitialValue().subscribe { market.zipCode = it.toString() }.addTo(disposable)
-            city.textChanges().skipInitialValue().subscribe { market.city = it.toString() }.addTo(disposable)
-            weekdays.textChanges().skipInitialValue().subscribe { market.dayOfWeek = it.toString() }.addTo(disposable)
-            begin.textChanges().skipInitialValue().subscribe { market.begin = it.toString() }.addTo(disposable)
-            end.textChanges().skipInitialValue().subscribe { market.end = it.toString() }.addTo(disposable)
+            placeName.textChanges().skipInitialValue()
+                .subscribe { market.name = it.toString() }.addTo(disposable)
+            street.textChanges().skipInitialValue()
+                .subscribe { market.street = it.toString() }.addTo(disposable)
+            house.textChanges().skipInitialValue()
+                .subscribe { market.houseNumber = it.toString() }.addTo(disposable)
+            zipCode.textChanges().skipInitialValue()
+                .subscribe { market.zipCode = it.toString() }.addTo(disposable)
+            city.textChanges().skipInitialValue()
+                .subscribe { market.city = it.toString() }.addTo(disposable)
+            begin.textChanges().skipInitialValue()
+                .subscribe { market.begin = it.toString() }.addTo(disposable)
+            end.textChanges().skipInitialValue()
+                .subscribe { market.end = it.toString() }.addTo(disposable)
 
+            viewModel.profileLive.observe(viewLifecycleOwner, {
+                weekdays.setText(viewModel.currentMarket.dayOfWeek)
+            })
 
             addPickupPlace.setOnClickListener {
-                val profile = viewModel.profileLive.value!!
-                val items = profile.marketList
-                val s = items.indexOfFirst { it.id == market.id }
-                if (s > -1) {
-                    items.removeAt(s)
-                    items.add(s, market)
-                } else items.add(market)
-
-                val newProfile = profile.copy(marketList = items)
-//                viewModel.markets.value = items
-                viewModel.profileLive.value = newProfile
-                viewModel.profile = newProfile.copy()
-//                val profile = viewModel.profileLive.value?.copy(marketList = items )
-//                viewModel.profileLive.value = profile
+                viewModel.fillInMarket()
                 dismiss()
             }
-//            if (modeType == EDIT_MARKET) {
-//                viewModel.profileLive.observe(viewLifecycleOwner, {
-//                        if(it.marketList.isEmpty()) UiState.Market()
-//                    else it.marketList.find { it.id == market.id }!!
-
-
             placeName.setText(market.name)
             street.setText(market.street)
             house.setText(market.houseNumber)
@@ -92,13 +81,10 @@ class MarketDialog : DialogFragment() {
             weekdays.setText(market.dayOfWeek)
             begin.setText(market.begin)
             end.setText(market.end)
-//                })
-
-
-//            }
         }
         return viewBinding.root
     }
+
 
     private fun setup(text: EditText) {
         text.setOnClickListener {
@@ -115,22 +101,10 @@ class MarketDialog : DialogFragment() {
 
     private fun showDayPicker(text: EditText) {
         text.setOnClickListener {
-
-            val profile = viewModel.profileLive.value!!
-            val items = profile.marketList
-            val s = items.indexOfFirst { it.id == market.id }
-            if (s > -1) {
-                items.removeAt(s)
-                items.add(s, market)
-            } else items.add(market)
-
-            val newProfile = profile.copy(marketList = items)
-            viewModel.profileLive.value = newProfile
-            marketIndex = s
+            viewModel.fillInMarket()
             PickDayFragment.newInstance(marketIndex)
                 .show(parentFragmentManager, "PickDayFragment")
         }
-
     }
 
     override fun onStart() {

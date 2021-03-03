@@ -7,7 +7,6 @@ import com.together.base.DataRepositorySellImpl
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.utils.dataToUiSeller
-import com.together.utils.uiMarketToData
 import com.together.utils.uiSellerToData
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -18,17 +17,30 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
-//    val markets: MutableLiveData<MutableList<UiState.Market>> by lazy {
-//        MutableLiveData<MutableList<UiState.Market>>().also {
-//            it.value = mutableListOf()
-//        }
-//    }
+    var currentMarket = UiState.Market()
+    fun setCurrentMarket(index : Int = -1 ){
+        currentMarket = if (index>-1)
+            profileLive.value!!.marketList[index] else UiState.Market()
+    }
+
+    fun fillInMarket() {
+        val profile = profileLive.value!!
+        val items = profile.marketList
+        val s = items.indexOfFirst { it.id == currentMarket.id }
+        if (s > -1) {
+            items.removeAt(s)
+            items.add(s, currentMarket)
+        } else items.add(currentMarket)
+
+        val newProfile = profile.copy(marketList = items)
+        profileLive.value = newProfile
+        this.profile = newProfile.copy()
+    }
 
     val profileLive: MutableLiveData<UiState.SellerProfile> by lazy {
         MutableLiveData<UiState.SellerProfile>().also {
             it.value = UiState.SellerProfile()
             loadProfile()
-
         }
     }
 
@@ -39,7 +51,6 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
                     val seller = it.dataToUiSeller()
                     profileLive.value = seller
                     profile = seller
-//                    markets.value = seller.marketList
                 },{
                     it.printStackTrace()
                 }
@@ -55,7 +66,10 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
     fun uploadSellerProfile() {
         blockingLoaderState.value = UiEvent.Loading(0)
         val p = profile.uiSellerToData()
-//        p.markets = markets.value!!.map { it.uiMarketToData() }.toMutableList()
+        p.markets.forEach {
+            it.begin = it.begin.replace(" Uhr" ,"")
+            it.end = it.end.replace(" Uhr" ,"")
+        }
         dataRepository.uploadSellerProfile(p).subscribe({ success ->
             if (success) {
                 blockingLoaderState.value = UiEvent.LoadingDone(UiEvent.UPLOAD_PRODUCT)

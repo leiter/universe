@@ -75,6 +75,13 @@ sealed class UiState {
         override var mode: Int = UNDEFINED
 
     ) : UiState() {
+
+        fun prepareSearchTerms(): String {
+            val bag = "$searchTerms,$category".replace(","," ")
+                .trim().replace("""\s{2,}""".toRegex(), " ")
+                .replace(" ",",").split(",").toSet()
+            return bag.joinToString(",")
+        }
         var pieceCounter: Int = 0
             set(value) {
                 field = value

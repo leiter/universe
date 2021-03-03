@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -54,6 +55,12 @@ class MainActivity : AppCompatActivity() {
         fun startLogin(context: Context) {
             val i = Intent(context, MainActivity::class.java).apply {
                 action = context.packageName + LOGIN_ACTION
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(i)
+        }
+        fun reStart(context: Context) {
+            val i = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(i)
@@ -166,16 +173,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDrawerNavigation(): Disposable {
         return viewBinding.navigationView.itemSelections().subscribe ({
-            val bundle = Bundle()
             when(it.itemId) {
                 R.id.action_createFragment_to_profileFragment -> {
-                    bundle.putBoolean(
-                        "with_back_btn",
-                        true
-                    )
                     findNavController(R.id.navigation_controller).navigate(
                         R.id.action_createFragment_to_profileFragment,
-                        bundle
+                        bundleOf("with_back_btn" to true )
                     )
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
@@ -196,6 +198,7 @@ class MainActivity : AppCompatActivity() {
         viewBinding.btnBottom.btnContainer.visibility = View.VISIBLE
         viewBinding.btnBottom.btnContainer.setOnClickListener {
             viewModel.prepareLogout()
+
             viewBinding.drawerLayout.closeDrawers()
             MainMessagePipe.uiEvent.onNext(UiEvent.LogOut)
         }

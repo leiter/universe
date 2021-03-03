@@ -28,8 +28,8 @@ class PickDayFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             marketIndex = it.getInt(BundleKey,-1)
-            market = if(marketIndex>-1) viewModel.profile.marketList[marketIndex]
-        else UiState.Market() }
+            market = viewModel.currentMarket
+        }
     }
 
     override fun onCreateView(
@@ -58,22 +58,10 @@ class PickDayFragment : DialogFragment() {
         viewBinding.btnCancel.setOnClickListener { dismiss() }
 
         viewBinding.btnSet.setOnClickListener {
-            val pr = viewModel.profileLive.value!!
             val index = viewBinding.tpDays.currentHour
-            market.dayIndicator = index + 1
-            market.dayOfWeek = minutePicker.displayedValues[index]
-            val p = pr.marketList.toMutableList()
-
-            if(marketIndex>-1){
-                pr.marketList.removeAt(marketIndex)
-                pr.marketList.add(marketIndex,market)
-                p.add(marketIndex, market)
-            } else {
-                p.add(market)
-                pr.marketList.add(market)
-            }
-//            viewModel.markets.value = p
-//            viewModel.profileLive.value = pr
+            viewModel.currentMarket.dayOfWeek = minutePicker.displayedValues[index]
+            viewModel.currentMarket.dayIndicator = index + 1
+            viewModel.fillInMarket()
             dismiss()
         }
 

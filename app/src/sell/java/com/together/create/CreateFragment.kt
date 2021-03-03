@@ -218,7 +218,8 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             ) {
                 return false
             } else {
-                value?.weightPerPiece = viewBinding.etProductWeigh.text.toString().trim().toDouble()
+                value?.weightPerPiece = viewBinding.etProductWeigh.text.toString()
+                    .replace(",",".").trim().toDouble()
             }
 
             if (viewBinding.etProductCategory.validate(

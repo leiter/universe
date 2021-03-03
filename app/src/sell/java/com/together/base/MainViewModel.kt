@@ -11,6 +11,7 @@ import com.together.base.UiEvent.Companion.UPLOAD_PRODUCT
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
+import com.together.utils.dataToUiSeller
 import com.together.utils.uiArticleToData
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -76,7 +77,9 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
                     loggedState.value = UiState.LoggedOut
 
                 is Result.LoggedIn ->
+                {
                     loggedState.value = UiState.BaseAuth()
+                }
 
                 is Result.NewImageCreated -> {
                     uploadImage = true
@@ -90,16 +93,13 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
     }
 
     private val productData: MutableLiveData<MutableList<UiState.Article>> by lazy {
-        disposable2.add(
-            dataRepository.setupProductConnection()
-                .subscribe({
-                    val e = it.dataArticleToUi()
-                    productData.value?.addItem(e, productData)
+        dataRepository.setupProductConnection()
+            .subscribe({
+                val e = it.dataArticleToUi()
+                productData.value?.addItem(e, productData)
 
-                }, { it.printStackTrace() },
-                    { Log.e("Rx", "Complete called."); })
-
-        )
+            }, { it.printStackTrace() },
+                { Log.e("Rx", "Complete called."); }).addTo(disposable2)
         MutableLiveData(emptyList<UiState.Article>().toMutableList())
     }
 
