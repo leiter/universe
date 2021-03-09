@@ -349,7 +349,7 @@
             android:layout_width="0dp"
             android:layout_height="144dp"
             android:layout_marginTop="8dp"
-            android:timePickerMode="spinner"
+            style="@style/SpinnerTimePicker"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/btn_set_pickup_time"
             app:layout_constraintStart_toEndOf="@id/btn_clear_pickup_time"

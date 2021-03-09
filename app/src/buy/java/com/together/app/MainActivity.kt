@@ -2,6 +2,7 @@ package com.together.app
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -34,8 +35,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isTablet(){
+        if(resources.getBoolean(R.bool.isTablet)) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
+        isTablet()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

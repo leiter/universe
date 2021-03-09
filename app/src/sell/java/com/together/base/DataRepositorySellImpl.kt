@@ -1,9 +1,6 @@
 package com.together.base
 
 import android.net.Uri
-import android.util.Log
-import com.google.android.gms.tasks.Task
-import com.google.firebase.database.DataSnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.together.repository.Database
 import com.together.repository.Result
@@ -75,9 +72,14 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
         fileAttached: Boolean,
         product: Result.Article
     ): Single<Result.Article> {
+        val deleteOldFile =  try {
+            FirebaseStorage.getInstance().getReferenceFromUrl(product.imageUrl)
+        } catch (e: Exception) {
+            null
+        }
         val start = if (fileAttached)
-            file.flatMap {
-                val uri = Uri.fromFile(it)
+            file.flatMap { localFile ->
+                val uri = Uri.fromFile(localFile)
                 Database.storage().putFile(uri).getSingle()
             }.flatMap {
                 it.metadata?.reference?.downloadUrl?.getTypedSingle()
@@ -96,8 +98,8 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                 id = result.id
                 Pair(Database.articles().child(id).setValue(result), result)
             }
-
         }.map {
+            deleteOldFile?.delete()  // could be improved
             it.second
         }
     }

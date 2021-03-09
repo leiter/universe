@@ -30,16 +30,14 @@ class OrdersViewModel @Inject constructor(private val dataRepository: DataReposi
         MutableLiveData<List<UiState.Order>>().also { loadNextOrders() }
     }
 
-    fun loadNextOrders() {
+    private fun loadNextOrders() {
         dataRepository.loadNextOrders().subscribe({ listOfOrders ->
             orders.value =  listOfOrders.map { it.dataToUiOrder() }
         }, {
-            Log.e("TTTTT", "For debugging",it);
         }).addTo(disposable)
     }
 
     override fun onCleared() {
-        Log.e("cccccccc", "For debugging");
         disposable.clear()
         super.onCleared()
     }

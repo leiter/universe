@@ -101,6 +101,7 @@ class MarketDialog : DialogFragment() {
             text.setText("")
             TimePickerDialog(
                 activity,
+                R.style.SpinnerTimePicker,
                 { _, hourOfDay, minute ->
                     val time = "%02d:%02d Uhr".format(hourOfDay, minute)
                     if(text.id== R.id.begin)viewModel.currentMarket.begin = time

@@ -114,7 +114,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    fun uploadSellerProfile() :Boolean {
+    private fun uploadSellerProfile() :Boolean {
 
         with(viewModel.profile) {
             if( viewBinding.companyName

@@ -103,7 +103,7 @@
             android:id="@+id/tp_set_appointment"
             android:layout_width="0dp"
             android:layout_height="144dp"
-            android:timePickerMode="spinner"
+            style="@style/SpinnerTimePicker"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/btn_change_appointment_time"
             app:layout_constraintEnd_toStartOf="@+id/btn_change_appointment_time"

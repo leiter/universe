@@ -101,10 +101,10 @@ class BasketFragment : DialogFragment() {
         viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
         viewBinding.btnCancelAppointmentTime.setOnClickListener {
             viewBinding.etMessageLayout.show()
-            viewBinding.tpSetAppointment.visibility = View.INVISIBLE
-            viewBinding.tlDateContainer.visibility = View.VISIBLE
-            viewBinding.tlMarketContainer.visibility = View.VISIBLE
-            it.visibility = View.INVISIBLE
+            viewBinding.tpSetAppointment.hide()
+            viewBinding.tlDateContainer.show()
+            viewBinding.tlMarketContainer.show()
+            it.hide()
             viewBinding.btnChangeAppointmentTime.setImageResource(R.drawable.ic_appointment_time)
             showingTimePicker = false
         }
@@ -283,13 +283,13 @@ class BasketFragment : DialogFragment() {
 
     private fun showFinalizeDate(show: Boolean) {
         if (!show) {
-            viewBinding.appointmentContainer.visibility = View.GONE
+            viewBinding.appointmentContainer.remove()
         } else {
-            viewBinding.orderContainer.visibility = View.GONE
-            viewBinding.appointmentContainer.visibility = View.VISIBLE
+            viewBinding.orderContainer.remove()
+            viewBinding.appointmentContainer.show()
         }
         if (!show) {
-            viewBinding.orderContainer.visibility = View.VISIBLE
+            viewBinding.orderContainer.show()
         }
     }
 

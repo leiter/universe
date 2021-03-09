@@ -14,7 +14,6 @@
         <item name="singleLine">true</item>
         <item name="maxLines">1</item>
         <item name="android:textColor">@color/edit_text_text_color</item>
-
     </style>
 
 </resources>

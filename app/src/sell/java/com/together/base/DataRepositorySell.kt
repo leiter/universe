@@ -1,6 +1,5 @@
 package com.together.base
 
-import com.google.android.gms.tasks.Task
 import com.together.repository.Result
 import io.reactivex.Observable
 import io.reactivex.Single

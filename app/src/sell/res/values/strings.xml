@@ -14,6 +14,15 @@
 
     <string name="content_description_btn_start_add_image">Taste started ein Auswahlmenu um ein Bild hinzuzufügen.</string>
     <string name="content_description_seller_profile_save">Taste Profile speichern</string>
+    <string name="et_create_product_hint_product_name">Produktname</string>
+    <string name="et_create_product_hint_search_product">Suche: Apfel,Äpfel</string>
+    <string name="et_create_product_hint_product_price">Preis</string>
+    <string name="et_create_product_hint_product_weight">Einwaage</string>
+    <string name="et_create_product_hint_product_category">Produktkategorie</string>
+    <string name="et_create_product_hint_product_unit">Kg, Stück</string>
+    <string name="et_create_product_hint_product_number">PNr.</string>
+    <string name="sw_create_product_label">Verfügbar</string>
+    <string name="tv_create_product_no_products">Sie haben noch keine Produkte angelegt</string>
 
 
 </resources>

@@ -6,13 +6,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import androidx.core.graphics.createBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.together.R
 import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.databinding.FragmentCreateBinding
 import com.together.dialogs.InfoDialogFragment
+import com.together.repository.Result
 import com.together.utils.*
 import io.reactivex.Single
 import java.io.File
@@ -59,7 +59,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         }
     }
 
-    val saveClick : (View) -> Unit =  lambda@{
+    private val saveClick : (View) -> Unit =  lambda@{
         if (!writeToNewProduct()) {
             return@lambda
         }
@@ -135,7 +135,8 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             } else {
                 viewBinding.changePicture.visibility = View.VISIBLE
                 viewBinding.manageImage.visibility = View.GONE
-                viewModel.newProduct.value = UiState.NewProductImage(Uri.parse(it.remoteImageUrl))
+                viewModel.newProduct.value = UiState.NewProductImage(
+                    Uri.parse(it.remoteImageUrl),Result.UNDEFINED)
             }
         })
 

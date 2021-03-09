@@ -1,7 +1,6 @@
 package com.together.profile
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.together.base.UiState
 import com.together.databinding.FragmentPickDayBinding
+import com.together.utils.extractHour
 
 
 class PickDayFragment : DialogFragment() {
@@ -58,14 +58,12 @@ class PickDayFragment : DialogFragment() {
         viewBinding.btnCancel.setOnClickListener { dismiss() }
 
         viewBinding.btnSet.setOnClickListener {
-            val index = viewBinding.tpDays.currentHour
+            val index = viewBinding.tpDays.extractHour()
             viewModel.currentMarket.dayOfWeek = minutePicker.displayedValues[index]
             viewModel.currentMarket.dayIndicator = index + 1
             viewModel.fillInMarket()
             dismiss()
         }
-
-
         return viewBinding.root
     }
 

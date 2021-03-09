@@ -83,8 +83,7 @@
         android:id="@+id/presented_product"
         android:layout_width="match_parent"
         android:layout_height="@dimen/preview_image_height"
-        android:layout_below="@id/toolbar"
-        android:background="@color/soft_brown_no_alpha">
+        android:layout_below="@id/toolbar">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_product_image"
@@ -94,6 +93,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_add_shopping_cart_black" />
+
+        <View
+
+            android:background="@color/soft_brown_no_alpha"
+            app:layout_constraintTop_toTopOf="@id/iv_product_image"
+            app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
 
         <ProgressBar
             android:id="@+id/pr_load_image_progress"

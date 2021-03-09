@@ -14,6 +14,7 @@ import com.together.repository.Database
 import com.together.repository.storage.getSingleExists
 import com.together.utils.viewLifecycleLazy
 
+
 class LoginFragment : BaseFragment(R.layout.fragment_login) {
     companion object {
         const val TAG = "LoginFragment"

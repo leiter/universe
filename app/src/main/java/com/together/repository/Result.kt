@@ -1,6 +1,7 @@
 package com.together.repository
 
 import com.google.firebase.auth.FirebaseUser
+import java.io.File
 import java.util.*
 
 sealed class Result {
@@ -14,6 +15,9 @@ sealed class Result {
         const val MOVED = 2
         const val REMOVED = 3
         const val UNDEFINED = -1
+
+        const val MODE_IMAGE_PICKER = 12
+        const val MODE_CAMERA_IMAGE = 13
     }
 
     data class ImageLoaded(val progressId: Int, val show: Boolean) : Result() {
@@ -37,10 +41,12 @@ sealed class Result {
     }
 
     data class NewImageCreated(
-        var uri: String?
+        var uri: String?,
+        override var mode: Int,
+        val currentImageFile: File? = null
+
     ) : Result(){
         override var id: String = ""
-        override var mode: Int = UNDEFINED
     }
 
     data class BuyerProfile(

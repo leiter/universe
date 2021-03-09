@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Parcelable
 import com.together.repository.Result
 import kotlinx.parcelize.Parcelize
+import java.io.File
 import java.util.*
 
 sealed class UiState {
@@ -123,7 +124,7 @@ sealed class UiState {
         }
     }
 
-    data class NewProductImage(val uri: Uri)
+    data class NewProductImage(val uri: Uri, val origin: Int, val currentImageFile: File? = null)
 
     data class Order(
         override var id: String = "",

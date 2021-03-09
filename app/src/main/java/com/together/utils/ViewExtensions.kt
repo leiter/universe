@@ -16,47 +16,59 @@ import com.together.repository.NoInternetConnection
 import java.util.*
 
 
-fun TimePicker.getTimePair(minuteSteps: Int = 15):Pair<Int,Int>{
+fun TimePicker.getTimePair(minuteSteps: Int = 15): Pair<Int, Int> {
+    return Pair(
+        this.extractHour(),
+        this.extractMinute() * minuteSteps
+    )
+
+}
+
+fun TimePicker.extractHour(): Int {
     return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-        Pair(
-            this.currentHour,
-            this.currentMinute * minuteSteps
-        )
+        this.currentHour
     } else {
-        Pair(
-            this.hour,
-            this.minute * minuteSteps
-        )
+        this.hour
+    }
+}
+
+fun TimePicker.extractMinute(): Int {
+    return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        this.currentMinute
+    } else {
+        this.minute
     }
 }
 
 fun String.getDayTimeDate(): Date {
     val t = this.split(":")
     val c = Calendar.getInstance()
-    c.set(Calendar.HOUR_OF_DAY,t[0].toInt())
-    c.set(Calendar.MINUTE,t[1].toInt())
+    c.set(Calendar.HOUR_OF_DAY, t[0].toInt())
+    c.set(Calendar.MINUTE, t[1].toInt())
     return c.time
 }
 
-fun Fragment.handleProgress(loading: UiEvent.Loading,
-                            progress:View,
-                            toastNoInternet:Int,
-                            toastUnknown: Int, toastSuccess: Int) {
-    if(loading.autoConsumeResult){
+fun Fragment.handleProgress(
+    loading: UiEvent.Loading,
+    progress: View,
+    toastNoInternet: Int,
+    toastUnknown: Int, toastSuccess: Int
+) {
+    if (loading.autoConsumeResult) {
         loading.exception = null
         loading.contextId = -1
         return
     }
     progress.visibility = loading.visible
     if (loading.didFail) {
-        val t = if (loading.exception is NoInternetConnection){
+        val t = if (loading.exception is NoInternetConnection) {
             toastNoInternet
         } else toastUnknown
         Toast.makeText(requireContext(), t, Toast.LENGTH_SHORT).show()
         loading.exception = null
-    } else if(loading.contextId != -1 ) {
+    } else if (loading.contextId != -1) {
         Toast.makeText(requireContext(), toastSuccess, Toast.LENGTH_SHORT).show()
-        loading.contextId=-1
+        loading.contextId = -1
     }
 
 }
@@ -64,7 +76,7 @@ fun Fragment.handleProgress(loading: UiEvent.Loading,
 fun Int.asColor(context: Context) = ContextCompat.getColor(context, this)
 fun Int.asDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 
-fun View.show(){
+fun View.show() {
     this.visibility = View.VISIBLE
 }
 
@@ -72,15 +84,17 @@ fun View.hide() {
     this.visibility = View.INVISIBLE
 }
 
-fun View.remove(){
+fun View.remove() {
     this.visibility = View.GONE
 }
 
 // Show alert dialog
-fun Context.showAlertDialog(positiveButtonLable : String = getString(android.R.string.ok),
-                            title : String = getString(R.string.app_name),
-                            message : String,
-                            actionOnPositiveButton : () -> Unit) {
+fun Context.showAlertDialog(
+    positiveButtonLable: String = getString(android.R.string.ok),
+    title: String = getString(R.string.app_name),
+    message: String,
+    actionOnPositiveButton: () -> Unit
+) {
     val builder = AlertDialog.Builder(this)
         .setTitle(title)
         .setMessage(message)
@@ -96,25 +110,27 @@ fun Context.showAlertDialog(positiveButtonLable : String = getString(android.R.s
 }
 
 // Toast extensions
-fun Context.showShortToast(message : String){
+fun Context.showShortToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.showLongToast(message : String){
+fun Context.showLongToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
 // Snackbar Extensions
-fun View.showShotSnackbar(message : String){
+fun View.showShotSnackbar(message: String) {
     Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
 }
 
-fun View.showLongSnackbar(message : String){
+fun View.showLongSnackbar(message: String) {
     Snackbar.make(this, message, Snackbar.LENGTH_LONG).show()
 }
 
-fun View.snackBarWithAction(message : String, actionlable : String,
-                            block : () -> Unit){
+fun View.snackBarWithAction(
+    message: String, actionlable: String,
+    block: () -> Unit
+) {
     Snackbar.make(this, message, Snackbar.LENGTH_LONG)
         .setAction(actionlable) {
             block()
@@ -122,9 +138,9 @@ fun View.snackBarWithAction(message : String, actionlable : String,
 }
 
 
-inline fun EditText.validate(checker: (String)-> Boolean, errorText: String) : String  {
+inline fun EditText.validate(checker: (String) -> Boolean, errorText: String): String {
     val content = text.toString()
-    return if(checker(content))
+    return if (checker(content))
         content
     else {
         context.showLongToast(errorText)

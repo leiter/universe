@@ -86,7 +86,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
 
                 is Result.NewImageCreated -> {
-                    newProduct.value = UiState.NewProductImage(Uri.parse(it.uri!!))
+                    newProduct.value = UiState.NewProductImage(Uri.parse(it.uri!!),Result.UNDEFINED)
                 }
                 is Result.ImageLoaded -> {
                     imageLoadingProgress.value = UiState.LoadingProgress(it.progressId, it.show)

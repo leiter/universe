@@ -2,6 +2,7 @@ package com.together.base
 
 import android.net.Uri
 import android.util.Log
+import androidx.core.content.FileProvider
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +12,6 @@ import com.together.base.UiEvent.Companion.UPLOAD_PRODUCT
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
-import com.together.utils.dataToUiSeller
 import com.together.utils.uiArticleToData
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -76,14 +76,14 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
                 is Result.LoggedOut ->
                     loggedState.value = UiState.LoggedOut
 
-                is Result.LoggedIn ->
-                {
+                is Result.LoggedIn -> {
                     loggedState.value = UiState.BaseAuth()
                 }
 
                 is Result.NewImageCreated -> {
                     uploadImage = true
-                    newProduct.value = UiState.NewProductImage(Uri.parse(it.uri!!))
+                    newProduct.value = UiState.NewProductImage(Uri.parse(it.uri!!),
+                        it.mode, it.currentImageFile)
                 }
                 is Result.SetDetailDescription -> {
                     editProduct.value?.detailInfo = it.text
@@ -155,8 +155,9 @@ class MainViewModel(private val dataRepository: DataRepositorySell = DataReposit
         dataRepository.uploadProduct(file, uploadImage, product)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                editProduct.value = it.dataArticleToUi()
+                newProduct.value?.currentImageFile?.delete()
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
+                editProduct.value = it.dataArticleToUi()
             }, {
                 blockingLoaderState.value = UiEvent.LoadingDone(UPLOAD_PRODUCT)
             }).addTo(disposable)

@@ -7,8 +7,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.together.repository.NeutralException
-import com.together.repository.NoInternetConnection
 
 
 sealed class UiEvent {
