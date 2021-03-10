@@ -23,7 +23,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {
+class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
+    ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
     private var disposable2: CompositeDisposable = CompositeDisposable()
@@ -86,10 +87,11 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 }
 
                 is Result.NewImageCreated -> {
-                    newProduct.value = UiState.NewProductImage(Uri.parse(it.uri!!),Result.UNDEFINED)
+                    newProduct.value =
+                        UiState.NewProductImage(Uri.parse(it.uri!!), Result.UNDEFINED)
                 }
                 is Result.ImageLoaded -> {
-                    imageLoadingProgress.value = UiState.LoadingProgress(it.progressId, it.show)
+                    imageLoadingProgress.value = UiState.LoadingProgress(it.show)
                 }
             }
         })
@@ -193,8 +195,12 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         val date = sendOrder.pickUpDate.toOrderId()
         val orderPath = buyerProfile.placedOrderIds[date] as String
         dataRepository.loadExistingOrder(sellerProfile.id, date, orderPath).map { loadedOrder ->
+            val cacheMsg = order.message
             order = loadedOrder.dataToUiOrder()
             order.marketId = sendOrder.marketId
+            if (cacheMsg != order.message) {
+                order.message = cacheMsg
+            }
             val currentBasket = basket.value?.toMutableList()
             val loadedBasket =
                 createBasketUDate(productList.value!!.toList(), loadedOrder.dataToUiOrder())
@@ -226,7 +232,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     }
 
     val imageLoadingProgress = MutableLiveData<UiState.LoadingProgress>().also {
-        it.value = UiState.LoadingProgress(-1, false)
+        it.value = UiState.LoadingProgress(false)
     }
     var smsMessageText = ""
 

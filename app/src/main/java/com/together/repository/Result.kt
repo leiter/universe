@@ -20,7 +20,7 @@ sealed class Result {
         const val MODE_CAMERA_IMAGE = 13
     }
 
-    data class ImageLoaded(val progressId: Int, val show: Boolean) : Result() {
+    data class ImageLoaded(val show: Boolean) : Result() {
         override var id: String = "No result"
         override var mode: Int = UNDEFINED
     }

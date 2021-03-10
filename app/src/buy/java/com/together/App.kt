@@ -12,11 +12,6 @@ class App : Application() {
         setupPicasso()
     }
 
-//    override fun attachBaseContext(base: Context) {
-//        super.attachBaseContext(base)
-//        MultiDex.install(this)
-//    }
-
     private fun setupPicasso(){
         val picassoBuild = Picasso.Builder(this)
             .downloader(OkHttp3Downloader(this, Long.MAX_VALUE))

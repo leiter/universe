@@ -69,7 +69,7 @@ fun Context.loadImage(imageView: ImageView, url: String){
         .into(imageView, object : Callback {
             override fun onSuccess() {
                 MainMessagePipe.mainThreadMessage.onNext(
-                    Result.ImageLoaded(R.id.pr_load_image_progress, false)
+                    Result.ImageLoaded(false)
                 )
             }
 
@@ -80,13 +80,13 @@ fun Context.loadImage(imageView: ImageView, url: String){
                     .into(imageView, object : Callback {
                         override fun onSuccess() {
                             MainMessagePipe.mainThreadMessage.onNext(
-                                Result.ImageLoaded(R.id.pr_load_image_progress, false)
+                                Result.ImageLoaded(false)
                             )
                         }
 
                         override fun onError() {
                             MainMessagePipe.mainThreadMessage.onNext(
-                                Result.ImageLoaded(R.id.pr_load_image_progress, false)
+                                Result.ImageLoaded(false)
                             )
                         }
                     })

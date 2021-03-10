@@ -6,6 +6,7 @@ import com.together.repository.Result
 import kotlinx.parcelize.Parcelize
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 sealed class UiState {
 
@@ -21,7 +22,7 @@ sealed class UiState {
         const val UNDEFINED = -1
     }
 
-    data class LoadingProgress(val progressViewId: Int, val show: Boolean)
+    data class LoadingProgress(val show: Boolean)
 
     object LoggedOut : UiState() {
         override var id = "StateLoggedOut"
@@ -55,6 +56,13 @@ sealed class UiState {
         var piecesCount: Int = -1
     ) : UiState()
 
+    @Parcelize
+    data class ProductList(val list: ArrayList<Article> = ArrayList()) : UiState(), Parcelable {
+        override var id: String = ""
+        override var mode: Int = -1
+    }
+
+    @Parcelize
     data class Article(
         var productId: String = "",
         var productName: String = "",
@@ -75,7 +83,7 @@ sealed class UiState {
         override var id: String = "",
         override var mode: Int = UNDEFINED
 
-    ) : UiState() {
+    ) : UiState(), Parcelable {
 
         fun prepareSearchTerms(): String {
             val bag = "$searchTerms,$category".replace(","," ")

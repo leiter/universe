@@ -8,7 +8,7 @@ import com.together.databinding.ItemProductBinding
 
 class ArticleViewHolder(
     private val binding: ItemProductBinding,
-    private val click: ProductAdapter.ItemClicked
+    private val click: ProductAdapter.ItemClicked? = null
 )
     : RecyclerView.ViewHolder(binding.root) {
 
@@ -26,7 +26,7 @@ class ArticleViewHolder(
         val price = item.pricePerUnit + "/" + item.unit
         binding.productPrice.text = price
         binding.root.setOnClickListener {
-            click.clicked(item)
+            click?.clicked(item)
         }
     }
 

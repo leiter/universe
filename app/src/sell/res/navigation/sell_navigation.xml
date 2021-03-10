@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_createFragment_to_showOrdersFragment"
             app:destination="@id/showOrdersFragment" />
+        <action
+            android:id="@+id/action_createFragment_to_productViewsFragment"
+            app:destination="@id/productViewsFragment" />
 
     </fragment>
     <dialog
@@ -69,6 +72,19 @@
         tools:layout="@layout/fragment_show_orders">
         <action
             android:id="@+id/action_showOrdersFragment_to_createFragment"
+            app:destination="@id/createFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/productViewsFragment"
+        android:name="com.together.overview.ProductViewsFragment"
+        android:label="product_views_fragment"
+        tools:layout="@layout/product_views_fragment" >
+
+        <argument
+            android:name="product_list"
+            app:argType="com.together.base.UiState.Article" />
+        <action android:id="@+id/action_productViewsFragment_to_createFragment"
             app:destination="@id/createFragment" />
     </fragment>
 

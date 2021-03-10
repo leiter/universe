@@ -69,15 +69,15 @@ android {
         exclude 'META-INF/NOTICE'
     }
 
-    sourceSets {
-        buy {
-            java.srcDirs = [ 'src/buy/java/', 'src/buy/java']
-        }
-
-        sell {
-            java.srcDirs = [ 'src/sell/java/', 'src/sell/java']
-        }
-    }
+//    sourceSets {
+//        buy {
+//            java.srcDirs = [ 'src/buy/java/', 'src/buy/java']
+//        }
+//
+//        sell {
+//            java.srcDirs = [ 'src/sell/java/', 'src/sell/java', 'src/main/java/', 'src/main/java']
+//        }
+//    }
 
     flavorDimensions("basic")
     productFlavors {
@@ -86,7 +86,7 @@ android {
             dimension = "basic"
             applicationIdSuffix ".sell"
             targetSdkVersion 29
-            versionCode 7
+            versionCode 8
             signingConfig signingConfigs.release
         }
 

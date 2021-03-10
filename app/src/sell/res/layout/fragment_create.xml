@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
+
     tools:context=".create.CreateFragment">
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -65,6 +64,17 @@
 
         app:layout_constraintEnd_toStartOf="@+id/create_new_product"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_filter_products"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Suche"
+        android:textColorHint="@color/fab_green"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_drawer_open"
+        app:layout_constraintEnd_toStartOf="@+id/save_product"
+        app:layout_constraintStart_toEndOf="@+id/btn_drawer_open"
+        app:layout_constraintTop_toTopOf="@+id/btn_drawer_open" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_menu_title"

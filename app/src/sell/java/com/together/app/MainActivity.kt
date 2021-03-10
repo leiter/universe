@@ -182,6 +182,14 @@ class MainActivity : AppCompatActivity() {
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
                 }
+//                R.id.action_createFragment_to_productViewsFragment -> {
+//                    val payload = viewModel.productList.value!!.toList()
+//                    findNavController(R.id.navigation_controller).navigate(
+//                        it.itemId, bundleOf("product_list" to UiState.ProductList(payload))
+//                    )
+//                    viewBinding.drawerLayout.closeDrawers()
+//                    return@subscribe
+//                }
             }
 
             NavigationUI.onNavDestinationSelected(it, findNavController(R.id.navigation_controller))

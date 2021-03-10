@@ -88,7 +88,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/preview_image_height"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="9:16"
+        app:layout_constraintDimensionRatio="10:16"
         app:layout_constraintStart_toStartOf="@id/view"
         app:layout_constraintTop_toBottomOf="@id/btn_manage_profile"
         tools:src="@drawable/ic_add_shopping_cart_black" />
@@ -257,8 +257,9 @@
         app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_product_image"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:stackFromEnd="true"
-        tools:itemCount="12"
+        tools:itemCount="9"
         tools:listitem="@layout/item_product" />
 
     <FrameLayout

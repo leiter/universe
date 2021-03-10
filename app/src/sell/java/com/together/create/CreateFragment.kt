@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.*
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
@@ -15,10 +16,17 @@ import com.together.dialogs.InfoDialogFragment
 import com.together.repository.Result
 import com.together.utils.*
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.TimeUnit
 
-class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked {
+class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked,
+    View.OnFocusChangeListener {
+
+    private lateinit var productData: List<UiState.Article>
 
     private lateinit var adapter: ProductAdapter
     private val viewBinding: FragmentCreateBinding by viewLifecycleLazy {
@@ -59,7 +67,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         }
     }
 
-    private val saveClick : (View) -> Unit =  lambda@{
+    private val saveClick: (View) -> Unit = lambda@{
         if (!writeToNewProduct()) {
             return@lambda
         }
@@ -79,6 +87,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         super.onViewCreated(view, savedInstanceState)
         adapter = ProductAdapter(this)
         with(viewBinding) {
+            etFilterProducts.setOnFocusChangeListener(this@CreateFragment)
             saveProduct.setOnClickListener(saveClick)
             btnDeleteProduct.setOnClickListener {
                 if (viewModel.editProduct.value?.id == "") {
@@ -136,7 +145,8 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 viewBinding.changePicture.visibility = View.VISIBLE
                 viewBinding.manageImage.visibility = View.GONE
                 viewModel.newProduct.value = UiState.NewProductImage(
-                    Uri.parse(it.remoteImageUrl),Result.UNDEFINED)
+                    Uri.parse(it.remoteImageUrl), Result.UNDEFINED
+                )
             }
         })
 
@@ -162,12 +172,37 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 viewBinding.emptyMessage.show()
             }
         })
+
+        viewBinding.etFilterProducts.textChanges().skipInitialValue()
+            .debounce(400, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .map { searchTerm ->
+                if (!::productData.isInitialized) {
+                    productData = adapter.data.toMutableList()
+                }
+                if (searchTerm.isNotEmpty()) {
+                    productData.forEach { it.isSelected = false }
+                }
+
+                productData.filter {
+                    it.productName.startsWith(searchTerm, ignoreCase = true) ||
+                            it.searchTerms.matches(
+                                ".*$searchTerm.*".toRegex(RegexOption.IGNORE_CASE)
+                            )
+                }
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { filtered -> adapter.setFilteredList(filtered.toMutableList()) }
+            .addTo(disposable)
     }
 
-    private fun deleteProduct() { viewModel.deleteProduct() }
+    private fun deleteProduct() {
+        viewModel.deleteProduct()
+    }
 
     override fun clicked(item: UiState.Article) {
         viewModel.editProduct.value = item
+        viewBinding.etFilterProducts.clearFocus()
     }
 
     private fun createBitmap() {
@@ -220,7 +255,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 return false
             } else {
                 value?.weightPerPiece = viewBinding.etProductWeigh.text.toString()
-                    .replace(",",".").trim().toDouble()
+                    .replace(",", ".").trim().toDouble()
             }
 
             if (viewBinding.etProductCategory.validate(
@@ -243,6 +278,14 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             InfoDialogFragment.EDIT_INFO,
             viewModel.editProduct.value!!.detailInfo
         ).show(childFragmentManager, InfoDialogFragment.TAG)
+    }
+
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
+        if (v?.id == R.id.et_filter_products) {
+            if (hasFocus.not()) {
+                viewBinding.etFilterProducts.setText("")
+            }
+        }
     }
 
 }
