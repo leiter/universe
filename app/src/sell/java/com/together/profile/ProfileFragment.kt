@@ -23,6 +23,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     companion object {
         const val TAG = "ProfileFragment"
+        const val KEY_BACK_BUTTON = "with_back_btn"
     }
 
     private val viewBinding: FragmentProfileBinding by viewLifecycleLazy {
@@ -34,7 +35,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            hasBackButton = it.getBoolean("with_back_btn")
+            hasBackButton = it.getBoolean(KEY_BACK_BUTTON)
         }
     }
 

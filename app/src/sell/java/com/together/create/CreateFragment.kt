@@ -15,6 +15,7 @@ import com.together.databinding.FragmentCreateBinding
 import com.together.dialogs.InfoDialogFragment
 import com.together.repository.Result
 import com.together.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
@@ -22,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
+
 
 class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked,
     View.OnFocusChangeListener {

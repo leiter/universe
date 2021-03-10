@@ -3,10 +3,10 @@
 
     <item
         android:id="@+id/btn_buyer_view"
-        android:title="Einkauferansicht" />
+        android:title="@string/btn_show_available_products" />
 
     <item
         android:id="@+id/btn_not_available"
-        android:title="Nicht verfügbar" />
+        android:title="@string/btn_show_not_available_products" />
 
 </menu>

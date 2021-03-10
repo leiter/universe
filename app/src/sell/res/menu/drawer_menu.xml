@@ -9,17 +9,17 @@
             android:title="@string/nav_title_1" />
 
         <item
-            android:id="@+id/action_createFragment_to_showOrdersFragment"
+            android:id="@+id/showOrdersFragment"
             android:icon="@drawable/ic_shopping_basket"
             android:title="@string/nav_title_3" />
 
         <item
-            android:id="@+id/action_createFragment_to_profileFragment"
+            android:id="@+id/profileFragment"
             android:icon="@drawable/ic_person"
             android:title="@string/nav_title_4" />
 
         <item
-            android:id="@+id/action_createFragment_to_productViewsFragment"
+            android:id="@+id/productViewsFragment"
             android:icon="@drawable/ic_shopping_cart_black_24dp"
             android:title="@string/nav_title_5" />
 

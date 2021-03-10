@@ -24,6 +24,7 @@
     <string name="et_create_product_hint_product_number">PNr.</string>
     <string name="sw_create_product_label">Verfügbar</string>
     <string name="tv_create_product_no_products">Sie haben noch keine Produkte angelegt</string>
+    <string name="btn_show_available_products">Verfügbar</string>
 
 
 </resources>

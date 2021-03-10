@@ -83,7 +83,7 @@
 
         <argument
             android:name="product_list"
-            app:argType="com.together.base.UiState.Article" />
+            app:argType="com.together.base.UiState$ProductList" />
         <action android:id="@+id/action_productViewsFragment_to_createFragment"
             app:destination="@id/createFragment" />
     </fragment>

@@ -13,11 +13,13 @@ import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.dataArticleToUi
 import com.together.utils.uiArticleToData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.io.File
+import javax.inject.Inject
 
 fun MutableList<UiState.Article>.addItem(
     item: UiState.Article,
@@ -63,7 +65,8 @@ inline fun <reified T : UiState> MutableList<T>.addGenItem(
     productData.value = this.toMutableList()
 }
 
-class MainViewModel(private val dataRepository: DataRepositorySell = DataRepositorySellImpl()) :
+@HiltViewModel
+class MainViewModel @Inject constructor(private val dataRepository: DataRepositorySellImpl) :
     ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()

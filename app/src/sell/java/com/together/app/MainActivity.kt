@@ -25,6 +25,8 @@ import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.databinding.ActivityMainBinding
+import com.together.overview.ProductViewsFragment.Companion.KEY_PRODUCT_LIST
+import com.together.profile.ProfileFragment.Companion.KEY_BACK_BUTTON
 import com.together.repository.Database
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.getSingleExists
@@ -35,12 +37,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+//    private val viewModel: MainViewModel by viewModels()
+    @Inject
+    lateinit var viewModel: MainViewModel
 
     private val viewBinding : ActivityMainBinding by viewBinding (ActivityMainBinding::inflate)
 
@@ -55,12 +60,6 @@ class MainActivity : AppCompatActivity() {
         fun startLogin(context: Context) {
             val i = Intent(context, MainActivity::class.java).apply {
                 action = context.packageName + LOGIN_ACTION
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            context.startActivity(i)
-        }
-        fun reStart(context: Context) {
-            val i = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(i)
@@ -127,12 +126,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-
         if (intent != null && intent.action == packageName + LOGIN_ACTION) {
             startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
         }
@@ -174,24 +171,23 @@ class MainActivity : AppCompatActivity() {
     private fun setupDrawerNavigation(): Disposable {
         return viewBinding.navigationView.itemSelections().subscribe ({
             when(it.itemId) {
-                R.id.action_createFragment_to_profileFragment -> {
+                R.id.profileFragment -> {
                     findNavController(R.id.navigation_controller).navigate(
-                        R.id.action_createFragment_to_profileFragment,
-                        bundleOf("with_back_btn" to true )
+                        it.itemId,
+                        bundleOf(KEY_BACK_BUTTON to true )
                     )
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
                 }
-//                R.id.action_createFragment_to_productViewsFragment -> {
-//                    val payload = viewModel.productList.value!!.toList()
-//                    findNavController(R.id.navigation_controller).navigate(
-//                        it.itemId, bundleOf("product_list" to UiState.ProductList(payload))
-//                    )
-//                    viewBinding.drawerLayout.closeDrawers()
-//                    return@subscribe
-//                }
+                R.id.productViewsFragment -> {
+                    val payload = ArrayList(viewModel.productList.value!!)
+                    findNavController(R.id.navigation_controller).navigate(
+                        it.itemId, bundleOf(KEY_PRODUCT_LIST to UiState.ProductList(payload))
+                    )
+                    viewBinding.drawerLayout.closeDrawers()
+                    return@subscribe
+                }
             }
-
             NavigationUI.onNavDestinationSelected(it, findNavController(R.id.navigation_controller))
             viewBinding.drawerLayout.closeDrawers()
         },{ it.printStackTrace() })
