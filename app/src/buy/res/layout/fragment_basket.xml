@@ -101,13 +101,13 @@
 
         <TimePicker
             android:id="@+id/tp_set_appointment"
+            style="@style/SpinnerTimePicker"
             android:layout_width="0dp"
             android:layout_height="144dp"
-            style="@style/SpinnerTimePicker"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/btn_change_appointment_time"
             app:layout_constraintEnd_toStartOf="@+id/btn_change_appointment_time"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_cancel_appointment_time"
             app:layout_constraintTop_toTopOf="@+id/btn_change_appointment_time" />
 
 
@@ -131,6 +131,7 @@
             android:src="@drawable/ic_clear_green"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/tl_date_container"
+            app:layout_constraintEnd_toStartOf="@+id/tp_set_appointment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tl_date_container" />
 

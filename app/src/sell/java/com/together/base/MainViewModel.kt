@@ -65,8 +65,7 @@ inline fun <reified T : UiState> MutableList<T>.addGenItem(
     productData.value = this.toMutableList()
 }
 
-@HiltViewModel
-class MainViewModel @Inject constructor(private val dataRepository: DataRepositorySellImpl) :
+class MainViewModel (private val dataRepository: DataRepositorySell = DataRepositorySellImpl()) :
     ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()

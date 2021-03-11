@@ -110,9 +110,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             .subscribe({
                 val e = it.dataArticleToUi()
                 productData.addItem(e, presentedProduct)
-                if (productData.value?.size == 1) {
-                    presentedProduct.value = productData.value!![0]
-                }
+//                if (productData.value?.size == 1) {
+//                    presentedProduct.value = productData.value!![0]
+//                }
             }, { it.printStackTrace() },
                 { Log.d("MainViewModel", "Rx Complete called."); }).addTo(disposable2)
 

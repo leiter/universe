@@ -43,9 +43,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-//    private val viewModel: MainViewModel by viewModels()
-    @Inject
-    lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
     private val viewBinding : ActivityMainBinding by viewBinding (ActivityMainBinding::inflate)
 

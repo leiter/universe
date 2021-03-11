@@ -126,4 +126,7 @@ fun MutableLiveData<MutableList<UiState.Article>>.addItem(
         }
     }
     value = value!!.toMutableList()
+    if(value!!.size==1){
+        presentedProduct.value = value!![0]
+    }
 }

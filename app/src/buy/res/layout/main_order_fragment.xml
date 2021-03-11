@@ -81,6 +81,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/preview_image_height"
         android:background="@color/soft_brown_no_alpha"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_product_image"
         app:layout_constraintTop_toBottomOf="@id/btn_manage_profile" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -125,7 +127,7 @@
         android:lines="1"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/horizontal_top_gap_product_present"
         android:layout_marginStart="8dp"
         android:textSize="@dimen/product_category_text_size"
         android:textStyle="bold"
@@ -139,7 +141,7 @@
         android:id="@+id/tv_price_name_layout"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/horizontal_gap_product_present"
         android:hint="@string/tv_hint_price"
         app:boxBackgroundColor="@color/white"
         app:layout_constraintStart_toStartOf="@id/tv_product_category"
@@ -153,6 +155,7 @@
             android:layout_height="match_parent"
             android:enabled="false"
             android:lines="1"
+            android:maxLines="1"
             android:text="@string/zero_price_euro"
             android:textColor="@color/price_text_color"
             android:textColorHint="@color/price_text_color"
@@ -168,7 +171,7 @@
         android:lines="2"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:textSize="14sp"
+        android:textSize="@dimen/text_size_info_product_present"
         android:textStyle="bold"
         app:drawableStartCompat="@drawable/ic_info_outline"
         app:layout_constraintEnd_toEndOf="parent"
@@ -181,7 +184,7 @@
         android:id="@+id/et_product_amount_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/horizontal_gap_product_present"
         app:boxBackgroundColor="@color/white"
         app:hintTextColor="@color/fab_green"
         app:layout_constraintEnd_toEndOf="@+id/tv_price_name_layout"
@@ -196,6 +199,7 @@
             android:hint="@string/tv_hint_amount"
             android:imeOptions="actionDone"
             android:inputType="numberDecimal"
+            android:maxLines="1"
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -266,6 +270,7 @@
         android:id="@+id/blocking"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="24dp"
         android:background="@drawable/splash"
         android:visibility="gone">
 

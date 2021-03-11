@@ -1,4 +1,5 @@
 <resources>
+
     <dimen name="toolbar_title_size">16sp</dimen>
 	<dimen name="preview_image_width">96dp</dimen>
 	<dimen name="preview_image_height">176dp</dimen>

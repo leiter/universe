@@ -14,6 +14,7 @@ import com.together.base.*
 import com.together.databinding.MainOrderFragmentBinding
 import com.together.dialogs.InfoDialogFragment
 import com.together.utils.loadImage
+import com.together.utils.showLongToast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import com.together.utils.viewLifecycleLazy
@@ -78,16 +79,26 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         viewBinding.blocking.visibility = View.VISIBLE
 
         viewBinding.tvProductName.setOnClickListener {
+            val text = viewModel.presentedProduct.value!!.detailInfo
+            if(text.isNotEmpty())
             InfoDialogFragment.newInstance(
-                InfoDialogFragment.SHOW_INFO,
-                viewModel.presentedProduct.value!!.detailInfo
+                InfoDialogFragment.SHOW_INFO, text
             ).show(childFragmentManager, InfoDialogFragment.TAG)
-
+            else requireContext().showLongToast("Es sind keine Infos verfügbar.")
         }
 
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
             { viewBinding.prLoadImageProgress.visibility = View.GONE }
         )
+
+
+
+
+        viewModel.productList.observe(viewLifecycleOwner, {
+            if (it.size > 2) viewBinding.blocking.visibility = View.GONE
+            productData = it.toList()
+            adapter.setFilteredList(it.toMutableList())
+        })
 
         viewModel.basket.observe(viewLifecycleOwner, {
             if (it.size == 0) {
@@ -97,18 +108,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
                 deSelectProduct()
             }
             viewBinding.btnShowBasket.badgeCount.text = it.size.toString()
-        })
-        viewModel.presentedProduct.observe(viewLifecycleOwner, {
-            viewBinding.tvMenuTitle.text = getString(R.string.bodenschatz_caps)
-            viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
-            setPresentedProduct(it)
-
-        })
-
-        viewModel.productList.observe(viewLifecycleOwner, {
-            if (it.size > 2) viewBinding.blocking.visibility = View.GONE
-            productData = it.toList()
-            adapter.setFilteredList(it.toMutableList())
         })
 
         viewBinding.btnShowBasket.badge.setOnClickListener {
@@ -185,6 +184,13 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
                         viewModel.basket.value?.size.toString()
                 }
             }
+        })
+
+        viewModel.presentedProduct.observe(viewLifecycleOwner, {
+            viewBinding.tvMenuTitle.text = getString(R.string.bodenschatz_caps)
+            viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
+            setPresentedProduct(it)
+
         })
     }
 

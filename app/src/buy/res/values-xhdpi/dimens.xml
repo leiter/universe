@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="horizontal_gap_product_present">16dp</dimen>
+    <dimen name="horizontal_top_gap_product_present">8dp</dimen>
+    <dimen name="text_size_info_product_present">14sp</dimen>
+
+</resources>

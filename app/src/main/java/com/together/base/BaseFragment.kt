@@ -7,11 +7,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-@AndroidEntryPoint
+
 abstract class BaseFragment(@LayoutRes layoutId: Int) : Fragment(layoutId) {
 
-    @Inject
-    lateinit var viewModel: MainViewModel //by activityViewModels()
+    val viewModel: MainViewModel by activityViewModels()
 
     val disposable = CompositeDisposable()
 
