@@ -56,13 +56,12 @@ sealed class UiState {
         var piecesCount: Int = -1
     ) : UiState()
 
-    @Parcelize
-    data class ProductList(val list: ArrayList<Article> = ArrayList()) : UiState(), Parcelable {
+
+    data class ProductList(val list: ArrayList<Article> = ArrayList()) : UiState() {
         override var id: String = ""
         override var mode: Int = -1
     }
 
-    @Parcelize
     data class Article(
         var productId: String = "",
         var productName: String = "",
@@ -83,7 +82,7 @@ sealed class UiState {
         override var id: String = "",
         override var mode: Int = UNDEFINED
 
-    ) : UiState(), Parcelable {
+    ) : UiState() {
 
         fun prepareSearchTerms(): String {
             val bag = "$searchTerms,$category,$productName".replace(","," ")

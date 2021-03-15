@@ -24,7 +24,22 @@
     <string name="et_create_product_hint_product_number">PNr.</string>
     <string name="sw_create_product_label">Verfügbar</string>
     <string name="tv_create_product_no_products">Sie haben noch keine Produkte angelegt</string>
+
+    <plurals name="tv_not_available_products">
+        <item quantity="zero">@string/tv_not_available_products</item>
+        <item quantity="one">%d Produkt nicht verfügbar</item>
+        <item quantity="other">%d Produkte nicht verfügbar</item>
+    </plurals>
+    <plurals name="tv_show_available_products">
+        <item quantity="zero">@string/tv_show_available_products</item>
+        <item quantity="one">%d Produkt verfügbar</item>
+        <item quantity="other">%d Produkte verfügbar</item>
+    </plurals>
+
+    <string name="tv_not_available_products">Alle Produkte im Angebot</string>
+    <string name="tv_show_available_products">Keine Produkte im Angebot</string>
     <string name="btn_show_available_products">Verfügbar</string>
+    <string name="et_create_product_hint_product_search">Suche</string>
 
 
 </resources>

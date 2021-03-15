@@ -13,11 +13,9 @@ import com.together.R
 import com.together.base.*
 import com.together.databinding.MainOrderFragmentBinding
 import com.together.dialogs.InfoDialogFragment
-import com.together.utils.loadImage
-import com.together.utils.showLongToast
+import com.together.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import com.together.utils.viewLifecycleLazy
 import java.text.NumberFormat
 import java.util.concurrent.TimeUnit
 
@@ -90,9 +88,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
             { viewBinding.prLoadImageProgress.visibility = View.GONE }
         )
-
-
-
 
         viewModel.productList.observe(viewLifecycleOwner, {
             if (it.size > 2) viewBinding.blocking.visibility = View.GONE
@@ -250,6 +245,14 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         viewBinding.etProductAmount.setSelection(amountCountText.length)
         viewBinding.products.clearFocus()
         viewBinding.etProductAmount.requestFocus()
+
+        if(product.unit.toLowerCase()=="kg" && product.weightPerPiece==0.0){
+            viewBinding.tvEstimatedWeight.hide()
+            viewBinding.btnActivateCounter.hide()
+        } else {
+            viewBinding.tvEstimatedWeight.show()
+            viewBinding.btnActivateCounter.show()
+        }
 
         requireContext().loadImage(viewBinding.ivProductImage, product.remoteImageUrl)
     }

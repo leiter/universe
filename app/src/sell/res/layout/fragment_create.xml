@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".create.CreateFragment">
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -78,7 +77,7 @@
         android:id="@+id/et_filter_products"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Suche"
+        android:hint="@string/et_create_product_hint_product_search"
         android:textColorHint="@color/fab_green"
         app:layout_constraintBottom_toBottomOf="@+id/btn_drawer_open"
         app:layout_constraintEnd_toStartOf="@+id/btn_clear_search"
@@ -102,7 +101,7 @@
         android:id="@+id/et_product_name_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="0dp"
         app:layout_constraintEnd_toStartOf="@+id/product_number_layout"
         app:layout_constraintHorizontal_weight="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +110,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/product_name"
             style="@style/CreateEditText"
-
+            android:lines="1"
+            android:maxLines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/et_create_product_hint_product_name"
@@ -124,7 +124,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/product_price_unit_layout"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.35"
         app:layout_constraintStart_toStartOf="@id/et_product_name_layout"
         app:layout_constraintTop_toBottomOf="@+id/et_product_category_layout">
 
@@ -136,6 +136,8 @@
             android:layout_height="wrap_content"
             android:digits="0123456789,"
             android:hint="@string/et_create_product_hint_product_price"
+            android:lines="1"
+            android:maxLines="1"
             android:inputType="numberDecimal"
             android:maxLength="10" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -146,7 +148,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/image"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.3"
         app:layout_constraintStart_toEndOf="@+id/product_price_unit_layout"
         app:layout_constraintTop_toTopOf="@+id/product_price_layout">
 
@@ -155,6 +157,8 @@
             style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
             android:digits="0123456789,"
             android:hint="@string/et_create_product_hint_product_weight"
             android:inputType="number" />
@@ -164,7 +168,6 @@
         android:id="@+id/et_product_category_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="@+id/et_product_name_layout"
         app:layout_constraintStart_toStartOf="@+id/et_product_name_layout"
         app:layout_constraintTop_toBottomOf="@+id/et_product_name_layout">
@@ -174,6 +177,8 @@
             style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
             android:hint="@string/et_create_product_hint_product_category"
             android:inputType="textCapWords" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -184,7 +189,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/et_product_weigh_layout"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="0.3"
         app:layout_constraintStart_toEndOf="@+id/product_price_layout"
         app:layout_constraintTop_toTopOf="@+id/product_price_layout">
 
@@ -194,6 +199,8 @@
             style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
             android:enabled="false"
             android:gravity="center"
             android:hint="@string/et_create_product_hint_product_unit"
@@ -207,7 +214,6 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:clickable="true"
         android:focusable="true"
@@ -229,9 +235,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_number_layout"
-        android:layout_width="72dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="visible"
+        app:layout_constraintWidth_min="72dp"
         app:layout_constraintBottom_toBottomOf="@+id/et_product_name_layout"
         app:layout_constraintEnd_toStartOf="@+id/image"
         app:layout_constraintStart_toEndOf="@+id/et_product_name_layout"
@@ -242,6 +249,8 @@
             style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
             android:hint="@string/et_create_product_hint_product_number"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -305,6 +314,8 @@
             style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
             android:hint="@string/et_create_product_hint_search_product"
             android:inputType="textCapWords" />
 

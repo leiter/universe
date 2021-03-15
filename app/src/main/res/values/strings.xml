@@ -40,8 +40,8 @@
     <string name="ck_btn_basket_remind_time_and_place">Markt und Uhrzeit merken</string>
     <string name="tv_basket_title_set_time">Abholung</string>
     <string name="tv_basket_hint_add_msg">Nachricht hinzufügen</string>
-    <string name="tv_basket_title">Bestellung</string>
-    <string name="btn_basket_send_order">Bestellung senden</string>
+    <string name="tv_basket_title">Auswahl</string>
+    <string name="btn_basket_send_order">Senden</string>
     <string name="tv_client_profile_hint_email">E-Mail-Adresse</string>
     <string name="btn_client_profile_save">Speichern</string>
     <string name="tv_client_profile_title">Meine Daten</string>

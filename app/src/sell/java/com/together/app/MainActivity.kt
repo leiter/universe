@@ -25,7 +25,6 @@ import com.together.base.MainViewModel
 import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.databinding.ActivityMainBinding
-import com.together.overview.ProductViewsFragment.Companion.KEY_PRODUCT_LIST
 import com.together.profile.ProfileFragment.Companion.KEY_BACK_BUTTON
 import com.together.repository.Database
 import com.together.repository.auth.FireBaseAuth
@@ -37,7 +36,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -182,7 +180,6 @@ class MainActivity : AppCompatActivity() {
                     MainMessagePipe.transferCache.onNext(UiState.ProductList(payload))
                     findNavController(R.id.navigation_controller).navigate(
                         it.itemId)
-//                    )  , bundleOf(KEY_PRODUCT_LIST to UiState.ProductList(payload)
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
                 }

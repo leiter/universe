@@ -89,10 +89,6 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         with(viewBinding) {
             etFilterProducts.onFocusChangeListener = this@CreateFragment
             saveProduct.setOnClickListener(saveClick)
-            productName.textChanges().skipInitialValue().subscribe {
-                val t = viewModel.editProduct.value!!.prepareSearchTerms()
-                productSearchTerm.setText(t)
-            }.addTo(disposable)
             btnDeleteProduct.setOnClickListener {
                 if (viewModel.editProduct.value?.id == "") {
                     requireContext().showShortToast("Es ist kein Produkt ausgewählt.")
@@ -140,6 +136,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 productNumber.setText(it.productId)
                 swAvailable.isChecked = it.available
                 val weight = if (it.weightPerPiece == 0.0) "" else it.weightPerPiece.toString()
+                    .replace(".",",")
                 etProductWeigh.setText(weight)
             }
 
@@ -251,18 +248,12 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 value?.unit = viewBinding.productPriceUnit.text.toString().trim()
             }
 
-//            if (viewBinding.etProductWeigh.validate(
-//                    ::validString,
-//                    "Einzelgewicht eingeben."
-//                ) == ""
-//            ) {
-//                return false
-//            } else {
             val v = viewBinding.etProductWeigh.text.toString()
                  if(v.isNotEmpty()) {
                      value?.weightPerPiece = v.replace(",", ".").trim().toDouble()
+                 } else {
+                     value?.weightPerPiece = if(value!!.unit=="Kg") 0.0 else 1.0
                  }
-//            }
 
             if (viewBinding.etProductCategory.validate(
                     ::validString,

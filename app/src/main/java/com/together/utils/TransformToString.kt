@@ -1,5 +1,6 @@
 package com.together.utils
 
+import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,4 +41,16 @@ fun Long.toDate() : Date {
     val c = Calendar.getInstance()
     c.timeInMillis = this
     return c.time
+}
+
+fun Context.getQuantityString(
+    pluralResId: Int,
+    quantity: Int,
+    zeroResId: Int? = null
+): String {
+    return if (zeroResId != null && quantity == 0) {
+        resources.getString(zeroResId)
+    } else {
+        resources.getQuantityString(pluralResId, quantity, quantity)
+    }
 }

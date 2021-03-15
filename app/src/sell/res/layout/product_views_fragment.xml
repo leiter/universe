@@ -34,7 +34,8 @@
         android:layout_height="?attr/actionBarSize"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
+        tools:text="Verfügbar"
         app:layout_constraintEnd_toStartOf="@+id/btn_filter_options"
         app:layout_constraintStart_toEndOf="@+id/btn_go_back"
         app:layout_constraintTop_toTopOf="parent" />
