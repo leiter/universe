@@ -2,9 +2,9 @@
 <resources>
 
 
-    <string name="toast_fail_no_internet_profile_upload">Daten wurden nicht upgedatet. Es besteht keine Internetverbindung.</string>
-    <string name="toast_fail_unknown_profile_upload">Daten wurden nicht upgedatet. Unbekannter Fehler.</string>
-    <string name="toast_success_profile_upload">Daten erfolgreich upgedatet.</string>
+    <string name="toast_fail_no_internet_profile_upload">Daten wurden nicht gespeichert. Es besteht keine Internetverbindung.</string>
+    <string name="toast_fail_unknown_profile_upload">Daten wurden nicht gespeichert. Unbekannter Fehler.</string>
+    <string name="toast_success_profile_upload">Daten erfolgreich gespeichert.</string>
 
     <string name="impressum">&lt;div class=\'impressum\'>&lt;h1>Impressum&lt;/h1>&lt;p>Eric Dehn&lt;br>
 Neue Gartenstraße&lt;br>
@@ -21,6 +21,8 @@ Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten d
 &lt;/p>&lt;br>&lt;/div></string>
 
     <string name="hint_pick_up_phrase">Abholkennwort</string>
+    <string name="toast_msg_already_ordered">Die bereits gewählten Produkte wurde geladen, bitte überprüfen sie die Auswahl.</string>
+    <string name="toast_msg_could_not_send_order">Auswahl konnte nicht gesendet werden.</string>
 
 
 </resources>

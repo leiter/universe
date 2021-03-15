@@ -34,6 +34,7 @@
     <style name="MarketPickerTab" parent="TextAppearance.Design.Tab">
         <item name="android:lines">3</item>
         <item name="android:minLines">3</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
 

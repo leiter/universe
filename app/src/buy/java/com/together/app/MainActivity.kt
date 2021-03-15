@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun isTablet(){
         if(resources.getBoolean(R.bool.isTablet)) {
+            viewModel.isTablet = true
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }

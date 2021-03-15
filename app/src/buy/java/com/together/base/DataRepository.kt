@@ -79,8 +79,7 @@ class DataRepositoryImpl : DataRepository {
                 k.setValue(order).getSingle().zipWith(Single.just(Pair(date, k.key!!)))
             } else {
                 Single.error(AlreadyPlaceOrder())
-            }
-                .map { pair ->
+            }.map { pair ->
                     val m = buyerProfile.placedOrderIds.toMutableMap()
                     m[pair.second.first] = pair.second.second
                     buyerProfile.placedOrderIds = m

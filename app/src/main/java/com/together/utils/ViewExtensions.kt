@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.sdsmdg.tastytoast.TastyToast
 import com.together.R
 import com.together.base.UiEvent
 import com.together.repository.NoInternetConnection
@@ -64,10 +65,12 @@ fun Fragment.handleProgress(
         val t = if (loading.exception is NoInternetConnection) {
             toastNoInternet
         } else toastUnknown
-        Toast.makeText(requireContext(), t, Toast.LENGTH_SHORT).show()
+        TastyToast.makeText(requireContext(),getString(t),Toast.LENGTH_SHORT,TastyToast.ERROR).show()
+//        Toast.makeText(requireContext(), t, Toast.LENGTH_SHORT).show()
         loading.exception = null
     } else if (loading.contextId != -1) {
-        Toast.makeText(requireContext(), toastSuccess, Toast.LENGTH_SHORT).show()
+        TastyToast.makeText(requireContext(),getString(toastSuccess),Toast.LENGTH_SHORT,TastyToast.SUCCESS).show()
+//        Toast.makeText(requireContext(), toastSuccess, Toast.LENGTH_SHORT).show()
         loading.contextId = -1
     }
 

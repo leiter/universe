@@ -8,16 +8,14 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import com.google.android.material.tabs.TabLayout
+import com.sdsmdg.tastytoast.TastyToast
 import com.together.R
 import com.together.base.BaseFragment
 import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.databinding.FragmentClientProfileBinding
 import com.together.order.ProductsFragment
-import com.together.utils.getTimePair
-import com.together.utils.handleProgress
-import com.together.utils.hideIme
-import com.together.utils.viewLifecycleLazy
+import com.together.utils.*
 
 
 class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
@@ -95,10 +93,9 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun showChoosePickUptime() {
         if (viewModel.buyerProfile.defaultMarket == "") {
-            Toast.makeText(
-                requireContext(), "Bitte erst den Marktplatz bestimmen.",
-                Toast.LENGTH_LONG
-            ).show()
+            TastyToast.makeText(requireContext(), "Bitte erst den Marktplatz bestimmen.",
+                Toast.LENGTH_LONG,TastyToast.INFO).show()
+
             return
         }
         viewBinding.root.hideIme()
@@ -129,22 +126,28 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun showPickMarket(show: Boolean) {
         setupMarketButtons()
-        val v = if (show) View.VISIBLE else View.GONE
-        viewBinding.tlMarketContainer.visibility = v
-        viewBinding.btnClearMarket.visibility = v
-        viewBinding.btnSetMarket.visibility = v
+        if (show) {
+            with(viewBinding){
+                tlMarketContainer.show()
+                btnClearMarket.show()
+                btnSetMarket.show()
+            }
+
+            }
+        else {
+            with(viewBinding){
+                tlMarketContainer.removeAllTabs()
+                tlMarketContainer.remove()
+                btnClearMarket.remove()
+                btnSetMarket.remove()
+            }
+        }
         if(show) viewBinding.root.hideIme()
     }
 
-
     private fun setupMarketButtons() {
+
         val marketList = viewModel.sellerProfile.marketList
-        viewBinding.tlMarketContainer.removeAllTabs()
-        marketList.forEach {
-            val m = viewBinding.tlMarketContainer.newTab()
-            m.text = it.name
-            viewBinding.tlMarketContainer.addTab(m, false)
-        }
 
         viewBinding.tlMarketContainer.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
@@ -159,6 +162,13 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 //                viewModel.marketIndex = com.together.utils.viewBinding.tlMarketContainer.selectedTabPosition
             }
         })
+
+        viewBinding.tlMarketContainer.removeAllTabs()
+        marketList.forEach {
+            val m = viewBinding.tlMarketContainer.newTab()
+            m.text = it.name
+            viewBinding.tlMarketContainer.addTab(m, false)
+        }
     }
 
     private fun alterTimePicker() {

@@ -2,6 +2,7 @@ package com.together.order
 
 import android.os.Bundle
 import android.text.method.DigitsKeyListener
+import android.text.method.ScrollingMovementMethod
 import android.view.Gravity
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -15,38 +16,40 @@ import com.together.databinding.MainOrderFragmentBinding
 import com.together.dialogs.InfoDialogFragment
 import com.together.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import java.text.NumberFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdapter.ItemClicked,
 
     View.OnFocusChangeListener {
 
-    private lateinit var adapter: ProductAdapter
-    private lateinit var productData: List<UiState.Article>
+    private val adapter: ProductAdapter = ProductAdapter(this)
     private val digitsWithComma = DigitsKeyListener.getInstance("0123456789,")
     private val digitsWithOutComma = DigitsKeyListener.getInstance("0123456789")
     private val viewBinding: MainOrderFragmentBinding by viewLifecycleLazy {
-        MainOrderFragmentBinding.bind(requireView()) }
-    private var selectedItemIndex = -1
+        MainOrderFragmentBinding.bind(requireView())
+    }
+    private lateinit var amountDisposable: Disposable
 
     override fun clicked(item: UiState.Article) {
         viewModel.presentedProduct.value = item
-        if (!::productData.isInitialized) {
-            productData = adapter.data.toMutableList()
-        }
-        deSelectProduct()
-        selectedItemIndex = productData.indexOfFirst { it.id == item.id }
-        productData[selectedItemIndex].isSelected = true
-        adapter.notifyItemChanged(selectedItemIndex)
-    }
+        val productData =
+            viewModel.productList.value!!.toMutableList()
+        val selectedItemIndex = productData.indexOfFirst { it.id == item.id }
 
-    private fun deSelectProduct() {
-        if (selectedItemIndex > -1) {
-            adapter.data[selectedItemIndex].isSelected = false
-            adapter.notifyItemChanged(selectedItemIndex)
+        val indexToRemove = productData.filter { !it.isSelected }
+        indexToRemove.forEachIndexed { index, _ ->
+            val n = productData[index].copy(isSelected = false)
+            productData[index] = n
         }
+
+        val i = productData[selectedItemIndex].copy(isSelected = true)
+        productData[selectedItemIndex] = i
+        adapter.submitList(productData.toMutableList())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,21 +71,19 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
             ManageDialog().show(childFragmentManager, ManageDialog.TAG)
         }
 
-        adapter = ProductAdapter(this)
-        viewBinding.articleList.layoutManager = LinearLayoutManager(
-            context,
-            RecyclerView.VERTICAL, false
-        )
+        viewBinding.articleList.layoutManager = LinearLayoutManager(context)
         viewBinding.articleList.adapter = adapter
         viewBinding.blocking.visibility = View.VISIBLE
 
         viewBinding.tvProductName.setOnClickListener {
-            val text = viewModel.presentedProduct.value!!.detailInfo
-            if(text.isNotEmpty())
-            InfoDialogFragment.newInstance(
-                InfoDialogFragment.SHOW_INFO, text
-            ).show(childFragmentManager, InfoDialogFragment.TAG)
-            else requireContext().showLongToast("Es sind keine Infos verfügbar.")
+            if (viewModel.isTablet.not()) {
+                val text = viewModel.presentedProduct.value!!.detailInfo
+                if (text.isNotEmpty())
+                    InfoDialogFragment.newInstance(
+                        InfoDialogFragment.SHOW_INFO, text
+                    ).show(childFragmentManager, InfoDialogFragment.TAG)
+                else requireContext().showLongToast("Es sind keine Infos verfügbar.")
+            }
         }
 
         viewModel.imageLoadingProgress.observe(viewLifecycleOwner,
@@ -91,8 +92,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
 
         viewModel.productList.observe(viewLifecycleOwner, {
             if (it.size > 2) viewBinding.blocking.visibility = View.GONE
-            productData = it.toList()
-            adapter.setFilteredList(it.toMutableList())
+            adapter.submitList(it.toMutableList())
         })
 
         viewModel.basket.observe(viewLifecycleOwner, {
@@ -100,7 +100,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
                 viewBinding.etProductAmount.setText(getString(R.string.zero_count_amount))
                 viewBinding.btnActivateCounter.visibility = View.VISIBLE
                 viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-                deSelectProduct()
             }
             viewBinding.btnShowBasket.badgeCount.text = it.size.toString()
         })
@@ -108,12 +107,13 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
         viewBinding.btnShowBasket.badge.setOnClickListener {
             if (viewModel.basket.value!!.size > 0)
                 BasketFragment().show(childFragmentManager, BasketFragment.TAG)
-            else MainMessagePipe.uiEvent.onNext(
-                UiEvent.ShowToast(
-                    requireContext(),
-                    R.string.empty_basket_msg, Gravity.CENTER
+            else
+                MainMessagePipe.uiEvent.onNext(
+                    UiEvent.ShowToast(
+                        requireContext(),
+                        R.string.empty_basket_msg, Gravity.CENTER
+                    )
                 )
-            )
         }
 
         viewBinding.etMenuSearchProducts.onFocusChangeListener = this
@@ -128,37 +128,60 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
             return@setOnEditorActionListener false
         }
 
-        disposable.add(
-            viewBinding.etMenuSearchProducts.textChanges().skipInitialValue()
-                .debounce(400, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .map { searchTerm ->
-                    if (!::productData.isInitialized) {
-                        productData = adapter.data.toMutableList()
-                    }
-                    if (searchTerm.isNotEmpty()) {
-                        productData.forEach { it.isSelected = false }
-                        selectedItemIndex = -1
-                    }
-
-                    productData.filter {
-                        it.productName.startsWith(searchTerm, ignoreCase = true) ||
-                                it.searchTerms.matches(
-                                    ".*$searchTerm.*".toRegex(RegexOption.IGNORE_CASE)
-                                )
-                    }
+        viewBinding.etMenuSearchProducts.textChanges().skipInitialValue()
+            .debounce(400, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .map { searchTerm ->
+                val productData = viewModel.productList.value!!.toMutableList()
+                if (searchTerm.isNotEmpty()) {
+                    productData.forEach { it.isSelected = false }
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { filtered -> adapter.setFilteredList(filtered.toMutableList()) }
-        )
 
-        disposable.add(
+                productData.filter {
+                    it.productName.startsWith(searchTerm, ignoreCase = true) ||
+                            it.searchTerms.matches(
+                                ".*$searchTerm.*".toRegex(RegexOption.IGNORE_CASE)
+                            )
+                }
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { filtered -> adapter.submitList(filtered.toMutableList()) }
+            .addTo(disposable)
+
+
+
+        MainMessagePipe.uiEvent.subscribe {
+            when (it) {
+                is UiEvent.BasketMinusOne -> {
+                    viewBinding.btnShowBasket.badgeCount.text =
+                        viewModel.basket.value?.size.toString()
+                }
+            }
+        }.addTo(disposable)
+
+        viewModel.presentedProduct.observe(viewLifecycleOwner, {
+            viewBinding.tvMenuTitle.text = getString(R.string.bodenschatz_caps)
+            viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
+            setPresentedProduct(it)
+            setupAmountListener()
+        })
+    }
+
+    private fun inFocus(): UiState.Article {
+        return viewModel.presentedProduct.value!!
+    }
+
+    private fun setupAmountListener() {
+        if (::amountDisposable.isInitialized && amountDisposable.isDisposed.not()) {
+            amountDisposable.dispose()
+        }
+        amountDisposable =
             viewBinding.etProductAmount.textChanges().skipInitialValue()
-                .debounce(400, TimeUnit.MILLISECONDS)
+                .debounce(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
-                        if (it.contains(",") || inFocus().unit != "kg") {
+                        if (it.contains(",") || inFocus().unit.toLowerCase(Locale.ROOT) != "kg") {
                             viewBinding.etProductAmount.keyListener = digitsWithOutComma
                         } else {
                             viewBinding.etProductAmount.keyListener = digitsWithComma
@@ -170,27 +193,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
                         viewBinding.tvPriceAmount.setText(getString(R.string.zero_price_euro))
                     }
                 }, { it.printStackTrace() })
-        )
-
-        disposable.add(MainMessagePipe.uiEvent.subscribe {
-            when (it) {
-                is UiEvent.BasketMinusOne -> {
-                    viewBinding.btnShowBasket.badgeCount.text =
-                        viewModel.basket.value?.size.toString()
-                }
-            }
-        })
-
-        viewModel.presentedProduct.observe(viewLifecycleOwner, {
-            viewBinding.tvMenuTitle.text = getString(R.string.bodenschatz_caps)
-            viewBinding.btnShowBasket.badge.visibility = View.VISIBLE
-            setPresentedProduct(it)
-
-        })
-    }
-
-    private fun inFocus(): UiState.Article {
-        return viewModel.presentedProduct.value!!
     }
 
     private fun clickPlusOrMinus(isPlus: Boolean) {
@@ -234,41 +236,52 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
     }
 
     private fun setPresentedProduct(product: UiState.Article) {
-        viewBinding.btnActivateCounter.visibility = View.VISIBLE
-        viewBinding.btnActivateCounter.visibility = View.INVISIBLE
-        viewBinding.tvProductCategory.text = product.category
-        viewBinding.tvProductName.text = product.productName
-        viewBinding.prLoadImageProgress.visibility = View.VISIBLE
-        viewBinding.tvEstimatedWeight.text = product.getWeightText()
-        val amountCountText = product.calculateAmountCountDisplay()
-        viewBinding.etProductAmount.setText(amountCountText)
-        viewBinding.etProductAmount.setSelection(amountCountText.length)
-        viewBinding.products.clearFocus()
-        viewBinding.etProductAmount.requestFocus()
+        with(viewBinding) {
+            btnActivateCounter.visibility = View.VISIBLE
+            btnActivateCounter.visibility = View.INVISIBLE
+            tvProductCategory.text = product.category
+            tvProductName.text = product.productName
+            prLoadImageProgress.visibility = View.VISIBLE
+            tvEstimatedWeight.text = product.getWeightText()
+            val amountCountText = product.calculateAmountCountDisplay()
+            etProductAmount.setText(amountCountText)
+            etProductAmount.setSelection(amountCountText.length)
+            products.clearFocus()
+            etProductAmount.requestFocus()
 
-        if(product.unit.toLowerCase()=="kg" && product.weightPerPiece==0.0){
-            viewBinding.tvEstimatedWeight.hide()
-            viewBinding.btnActivateCounter.hide()
-        } else {
-            viewBinding.tvEstimatedWeight.show()
-            viewBinding.btnActivateCounter.show()
+            if (product.unit.toLowerCase(Locale.ROOT) == "kg" && product.weightPerPiece == 0.0) {
+                tvEstimatedWeight.hide()
+                btnActivateCounter.hide()
+            } else {
+                tvEstimatedWeight.show()
+                btnActivateCounter.show()
+            }
+
+            if (viewModel.isTablet) {
+                tvProductDetailText.text = product.detailInfo
+                tvProductDetailText.movementMethod = ScrollingMovementMethod()
+            }
+
+            requireContext().loadImage(ivProductImage, product.remoteImageUrl)
         }
 
-        requireContext().loadImage(viewBinding.ivProductImage, product.remoteImageUrl)
+
     }
 
     override fun onFocusChange(p0: View?, p1: Boolean) {
         if (p0?.id == R.id.et_product_amount) {
             if (p1) {
-                viewBinding.btnActivateCounter.visibility = View.VISIBLE
-                viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-                viewBinding.btnProductAmountClear.setImageResource(R.drawable.ic_clear)
-                viewBinding.btnProductAmountClear.setOnClickListener {
-                    viewBinding.etProductAmount.setText("")
-                    viewBinding.btnActivateCounter.visibility = View.VISIBLE
-                    viewBinding.counter.counterContainer.visibility = View.INVISIBLE
-                    inFocus().pieceCounter = 0
-                    inFocus().amountCount = 0.0
+                with(viewBinding) {
+                    btnActivateCounter.visibility = View.VISIBLE
+                    counter.counterContainer.visibility = View.INVISIBLE
+                    btnProductAmountClear.setImageResource(R.drawable.ic_clear)
+                    btnProductAmountClear.setOnClickListener {
+                        etProductAmount.setText("")
+                        btnActivateCounter.visibility = View.VISIBLE
+                        counter.counterContainer.visibility = View.INVISIBLE
+                        inFocus().pieceCounter = 0
+                        inFocus().amountCount = 0.0
+                    }
                 }
             } else {
                 viewBinding.btnProductAmountClear.setImageBitmap(null)
@@ -278,24 +291,27 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
 
         if (p0?.id == R.id.et_menu_search_products) {
             if (p1) {
-                viewBinding.btnMenuSearch.setImageResource(R.drawable.search_icon)
-                viewBinding.btnMenuSearch.setOnClickListener {
-                    viewBinding.etMenuSearchProducts.setText(
-                        ""
-                    )
+                with(viewBinding) {
+                    btnMenuSearch.setImageResource(R.drawable.search_icon)
+                    btnMenuSearch.setOnClickListener { etMenuSearchProducts.setText("") }
                 }
 
+
             } else {
-                viewBinding.etMenuSearchProducts.clearFocus()
-                viewBinding.etMenuSearchProducts.visibility = View.INVISIBLE
-                viewBinding.etMenuSearchProducts.setText("")
-                viewBinding.tvMenuTitle.visibility = View.VISIBLE
-                viewBinding.btnMenuSearch.setImageResource(R.drawable.ic_search_48)
-                viewBinding.btnMenuSearch.setOnClickListener {
-                    viewBinding.tvMenuTitle.visibility = View.INVISIBLE
-                    viewBinding.etMenuSearchProducts.visibility = View.VISIBLE
-                    viewBinding.etMenuSearchProducts.requestFocus()
+                with(viewBinding) {
+                    etMenuSearchProducts.clearFocus()
+                    etMenuSearchProducts.hide()
+                    etMenuSearchProducts.setText("")
+                    tvMenuTitle.show()
+                    btnMenuSearch.setImageResource(R.drawable.ic_search_48)
+                    btnMenuSearch.setOnClickListener {
+                        tvMenuTitle.hide()
+                        etMenuSearchProducts.show()
+                        etMenuSearchProducts.requestFocus()
+                    }
                 }
+
+
             }
         }
     }
@@ -343,9 +359,9 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment), ProductAdap
             AnimationUtils.loadAnimation(requireContext(), R.anim.shake_rotate)
         )
         if (basket.size == 0) {
-            viewBinding.btnShowBasket.badgeCount.visibility = View.INVISIBLE
+            viewBinding.btnShowBasket.badgeCount.hide()
         } else {
-            viewBinding.btnShowBasket.badgeCount.visibility = View.VISIBLE
+            viewBinding.btnShowBasket.badgeCount.show()
             viewBinding.btnShowBasket.badgeCount.text = basket.size.toString()
         }
     }

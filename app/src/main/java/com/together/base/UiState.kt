@@ -104,19 +104,19 @@ sealed class UiState {
                 return "%.2f€".format((priceDigit * amountCount)).replace(".", ","); }
 
         private fun prepareAmountDisplay(): String {
-            val amountStart: String = if (unit != "kg") {
+            val amountStart: String = if (unit.toLowerCase() != "kg") {
                 amountCount.toString().split(".")[0]
             } else "%.3f".format(amountCount).replace(".", ",")
             return "$amountStart $unit"
         }
 
         fun calculateAmountCountDisplay(): String {
-            return if (unit != "kg") amountCount.toString().split(".")[0]
+            return if (unit.toLowerCase() != "kg") amountCount.toString().split(".")[0]
             else "%.3f".format(amountCount).replace(".", ",")
         }
 
         fun getWeightText(): String {
-            return if (unit != "kg") "" else {
+            return if (unit.toLowerCase() != "kg") "Pro $unit" else {
                 val result: String = when {
                     weightPerPiece >= 1 -> {
                         "Ca. ${this.weightPerPiece}kg pro Stück."

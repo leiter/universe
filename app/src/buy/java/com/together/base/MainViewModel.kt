@@ -43,6 +43,8 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     var order = UiState.Order()
 
+    var isTablet: Boolean = false
+
     private var updateOrder = false
 
     lateinit var days: Array<Date>
@@ -110,9 +112,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             .subscribe({
                 val e = it.dataArticleToUi()
                 productData.addItem(e, presentedProduct)
-//                if (productData.value?.size == 1) {
-//                    presentedProduct.value = productData.value!![0]
-//                }
+                if (productData.value?.size == 1) {
+                    presentedProduct.value = productData.value!![0]
+                }
             }, { it.printStackTrace() },
                 { Log.d("MainViewModel", "Rx Complete called."); }).addTo(disposable2)
 
@@ -148,6 +150,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         productData.value?.forEach {
             it.pieceCounter = 0; it.amountCount = 0.0; it.isSelected = false
         }
+        productData.value = productData.value?.toMutableList()
     }
 
     fun uploadBuyerProfile(giveFeedback: Boolean) {
@@ -181,6 +184,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         sendOrder.articles = basket.value?.map { it.toOrderedItem() }!!
         dataRepository.sendOrder(sendOrder, updateOrder, buyerProfile.uiBuyerProfileToData())
             .subscribe({
+                resetProductList()
                 buyerProfile = it.dataToUiOrder()
                 if (updateOrder) updateOrder = false
                 blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)

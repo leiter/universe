@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
+import com.sdsmdg.tastytoast.TastyToast
 import com.together.R
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
@@ -97,7 +98,9 @@ class BasketFragment : DialogFragment() {
         }.addTo(disposable)
 
         viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
-        viewBinding.btnHideAppointment.setOnClickListener { showFinalizeDate(false) }
+        viewBinding.btnHideAppointment.setOnClickListener {
+            viewBinding.root.hideIme()
+            showFinalizeDate(false) }
         viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
         viewBinding.btnCancelAppointmentTime.setOnClickListener {
             viewBinding.etMessageLayout.show()
@@ -111,6 +114,7 @@ class BasketFragment : DialogFragment() {
         viewBinding.tpSetAppointment.setIs24HourView(true)
         viewBinding.btnSetAppointment.setOnClickListener {
             setPaceAndDateForOrder()
+            viewBinding.root.hideIme()
             showFinalizeDate(false)
         }
         viewBinding.etMessage.setText(viewModel.order.message)
@@ -175,27 +179,31 @@ class BasketFragment : DialogFragment() {
         viewModel.dayText.observe(viewLifecycleOwner, { viewBinding.tvMarketDate.text = it })
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
             var toastMsg: String? = null
+            var toastType: Int = -1
             when (uiEvent) {
                 is UiEvent.LoadingDone -> {
                     when (uiEvent.contextId) {
                         SEND_ORDER -> {
+                            toastType = TastyToast.SUCCESS
                             viewBinding.progressss.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(SEND_ORDER)
-                            toastMsg = "Bestellung erfolgreich gesendet."
+                            toastMsg = "Auswahl erfolgreich gesendet."
                             viewModel.basket.value = mutableListOf()
                             viewModel.resetProductList()
                             dismiss()
                         }
                         SEND_ORDER_FAILED -> {
-                            toastMsg = "Bestellung konnte nicht gesendet werden."
+                            toastType = TastyToast.ERROR
+                            toastMsg = getString(R.string.toast_msg_could_not_send_order)
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
                                 SEND_ORDER_FAILED
                             )
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {
+                            toastType = TastyToast.INFO
                             toastMsg =
-                                "Die bereits bestellten Produkte wurde geladen, bitte überprüfen sie die Bestellung."
+                                getString(R.string.toast_msg_already_ordered)
                             viewBinding.progressss.loadingIndicator.visibility = View.GONE
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
                                 SEND_ORDER_UPDATED
@@ -203,10 +211,13 @@ class BasketFragment : DialogFragment() {
                             setListAdapter()
                         }
                     }
-                    Toast.makeText(
-                        requireContext(),
-                        toastMsg, Toast.LENGTH_LONG
+                    TastyToast.makeText(requireContext(),
+                        toastMsg, Toast.LENGTH_LONG,toastType
                     ).show()
+//                    Toast.makeText(
+//                        requireContext(),
+//                        toastMsg, Toast.LENGTH_LONG
+//                    ).show()
                 }
 
                 is UiEvent.Loading -> {
@@ -287,6 +298,7 @@ class BasketFragment : DialogFragment() {
         } else {
             viewBinding.orderContainer.remove()
             viewBinding.appointmentContainer.show()
+            viewBinding.root.hideIme()
         }
         if (!show) {
             viewBinding.orderContainer.show()

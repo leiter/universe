@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
+
         android:background="@color/soft_brown_no_alpha"
         android:clickable="true"
         android:focusable="true"
@@ -304,17 +305,18 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_market_container"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/btn_set_market"
-            app:layout_constraintStart_toEndOf="@id/btn_clear_market"
+            app:layout_constraintStart_toEndOf="@+id/btn_clear_market"
             app:layout_constraintTop_toBottomOf="@+id/tv_market_name"
             app:tabBackground="@drawable/tab_layout_background"
-            app:tabIndicator="@null"
             app:tabSelectedTextColor="@color/white"
-            app:tabTextAppearance="@style/MarketPickerTab" />
+            app:tabTextAppearance="@style/MarketPickerTab"
+            app:tabIndicator="@null"
+            />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_clear_pickup_time"
