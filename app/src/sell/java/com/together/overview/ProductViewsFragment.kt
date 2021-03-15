@@ -7,10 +7,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.together.R
+import com.together.base.MainMessagePipe
 import com.together.base.ProdAdapter
 import com.together.base.UiState
 import com.together.databinding.ProductViewsFragmentBinding
 import com.together.utils.viewLifecycleLazy
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 
 class ProductViewsFragment : Fragment(R.layout.product_views_fragment) {
 
@@ -20,13 +23,16 @@ class ProductViewsFragment : Fragment(R.layout.product_views_fragment) {
         const val KEY_PRODUCT_LIST = "product_list"
     }
 
+    private val disposable = CompositeDisposable()
+
     private val viewBinding: ProductViewsFragmentBinding by viewLifecycleLazy {
         ProductViewsFragmentBinding.bind(requireView())
     }
 
-    private val data : UiState.ProductList by lazy {
-        arguments?.getParcelable(KEY_PRODUCT_LIST) as? UiState.ProductList ?: UiState.ProductList()
-    }
+    private lateinit var data : UiState.ProductList
+//    by lazy {
+//        arguments?.getParcelable(KEY_PRODUCT_LIST) as? UiState.ProductList ?: UiState.ProductList()
+//    }
 
     private val adapter = ProdAdapter()
 
@@ -40,8 +46,15 @@ class ProductViewsFragment : Fragment(R.layout.product_views_fragment) {
             rvProductView.layoutManager = LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL,false)
             rvProductView.adapter = adapter
-            setListState(AVAILABLE_ITEMS)
+//            setListState(AVAILABLE_ITEMS)
         }
+
+        MainMessagePipe.transferCache.subscribe {
+            if (it is UiState.ProductList) {
+                data = it
+                setListState(AVAILABLE_ITEMS)
+            }
+        }.addTo(disposable)
     }
 
     private fun setListState(filterMode: Int)  {
@@ -80,5 +93,8 @@ class ProductViewsFragment : Fragment(R.layout.product_views_fragment) {
         popupMenu.show()
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        disposable.clear()
+    }
 }

@@ -15,7 +15,6 @@ import com.together.databinding.FragmentCreateBinding
 import com.together.dialogs.InfoDialogFragment
 import com.together.repository.Result
 import com.together.utils.*
-import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
@@ -23,7 +22,6 @@ import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
-
 
 class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked,
     View.OnFocusChangeListener {
@@ -89,8 +87,12 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         super.onViewCreated(view, savedInstanceState)
         adapter = ProductAdapter(this)
         with(viewBinding) {
-            etFilterProducts.setOnFocusChangeListener(this@CreateFragment)
+            etFilterProducts.onFocusChangeListener = this@CreateFragment
             saveProduct.setOnClickListener(saveClick)
+            productName.textChanges().skipInitialValue().subscribe {
+                val t = viewModel.editProduct.value!!.prepareSearchTerms()
+                productSearchTerm.setText(t)
+            }.addTo(disposable)
             btnDeleteProduct.setOnClickListener {
                 if (viewModel.editProduct.value?.id == "") {
                     requireContext().showShortToast("Es ist kein Produkt ausgewählt.")
@@ -109,9 +111,10 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 MainMessagePipe.uiEvent.onNext(UiEvent.DrawerState(Gravity.START))
             }
 
+            btnClearSearch.setOnClickListener { viewBinding.etFilterProducts.clearFocus() }
             btnEditInfo.setOnClickListener { showDetailInfo() }
 
-            createNewProduct.setOnClickListener {
+            btnCreateNewProduct.setOnClickListener {
                 viewModel.editProduct.value = UiState.Article()
                 makeEditable(true)
             }
@@ -204,7 +207,6 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
 
     override fun clicked(item: UiState.Article) {
         viewModel.editProduct.value = item
-        viewBinding.etFilterProducts.clearFocus()
     }
 
     private fun createBitmap() {
@@ -249,16 +251,18 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 value?.unit = viewBinding.productPriceUnit.text.toString().trim()
             }
 
-            if (viewBinding.etProductWeigh.validate(
-                    ::validString,
-                    "Einzelgewicht eingeben."
-                ) == ""
-            ) {
-                return false
-            } else {
-                value?.weightPerPiece = viewBinding.etProductWeigh.text.toString()
-                    .replace(",", ".").trim().toDouble()
-            }
+//            if (viewBinding.etProductWeigh.validate(
+//                    ::validString,
+//                    "Einzelgewicht eingeben."
+//                ) == ""
+//            ) {
+//                return false
+//            } else {
+            val v = viewBinding.etProductWeigh.text.toString()
+                 if(v.isNotEmpty()) {
+                     value?.weightPerPiece = v.replace(",", ".").trim().toDouble()
+                 }
+//            }
 
             if (viewBinding.etProductCategory.validate(
                     ::validString,
@@ -285,7 +289,16 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
         if (v?.id == R.id.et_filter_products) {
             if (hasFocus.not()) {
+                with(viewBinding){
+                    btnCreateNewProduct.show()
+                    btnClearSearch.remove()
+                }
                 viewBinding.etFilterProducts.setText("")
+            } else {
+                with(viewBinding){
+                    btnCreateNewProduct.remove()
+                    btnClearSearch.show()
+                }
             }
         }
     }

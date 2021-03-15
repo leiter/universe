@@ -179,9 +179,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.productViewsFragment -> {
                     val payload = ArrayList(viewModel.productList.value!!)
+                    MainMessagePipe.transferCache.onNext(UiState.ProductList(payload))
                     findNavController(R.id.navigation_controller).navigate(
-                        it.itemId, bundleOf(KEY_PRODUCT_LIST to UiState.ProductList(payload))
-                    )
+                        it.itemId)
+//                    )  , bundleOf(KEY_PRODUCT_LIST to UiState.ProductList(payload)
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
                 }

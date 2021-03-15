@@ -99,7 +99,7 @@ class DataRepositorySellImpl @Inject constructor() : DataRepositorySell {
                 Pair(Database.articles().child(id).setValue(result), result)
             }
         }.map {
-            deleteOldFile?.delete()  // could be improved
+            if(fileAttached) deleteOldFile?.delete()
             it.second
         }
     }

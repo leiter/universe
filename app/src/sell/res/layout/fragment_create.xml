@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/create_new_product"
+        android:id="@+id/btn_create_new_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
@@ -60,9 +60,18 @@
         android:background="?attr/selectableItemBackground"
         android:padding="16dp"
         android:src="@drawable/ic_save_24"
+        app:layout_constraintEnd_toStartOf="@+id/btn_create_new_product"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-        app:layout_constraintEnd_toStartOf="@+id/create_new_product"
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btn_clear_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="?attr/selectableItemBackground"
+        android:padding="16dp"
+        android:src="@drawable/ic_clear_green"
+        app:layout_constraintEnd_toStartOf="@+id/save_product"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputEditText
@@ -72,7 +81,7 @@
         android:hint="Suche"
         android:textColorHint="@color/fab_green"
         app:layout_constraintBottom_toBottomOf="@+id/btn_drawer_open"
-        app:layout_constraintEnd_toStartOf="@+id/save_product"
+        app:layout_constraintEnd_toStartOf="@+id/btn_clear_search"
         app:layout_constraintStart_toEndOf="@+id/btn_drawer_open"
         app:layout_constraintTop_toTopOf="@+id/btn_drawer_open" />
 
@@ -83,14 +92,14 @@
         android:gravity="center"
         android:textSize="24sp"
         android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/create_new_product"
+        app:layout_constraintEnd_toStartOf="@+id/btn_create_new_product"
         app:layout_constraintStart_toEndOf="@+id/btn_drawer_open"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Linda" />
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/et_product_amount_layout"
+        android:id="@+id/et_product_name_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -109,30 +118,15 @@
             android:inputType="textCapWords" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/product_search_term_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/et_product_amount_layout"
-        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@id/et_product_amount_layout">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/product_search_term"
-            style="@style/CreateEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/et_create_product_hint_search_product"
-            android:inputType="textCapWords" />
-
-    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_price_layout"
-        android:layout_width="120dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout">
+        app:layout_constraintEnd_toStartOf="@+id/product_price_unit_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/et_product_name_layout"
+        app:layout_constraintTop_toBottomOf="@+id/et_product_category_layout">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -149,11 +143,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_product_weigh_layout"
-        android:layout_width="96dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
+        app:layout_constraintEnd_toStartOf="@+id/image"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/product_price_unit_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_price_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_product_weigh"
@@ -170,9 +165,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@id/product_number_layout"
-        app:layout_constraintStart_toEndOf="@+id/et_product_weigh_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
+        app:layout_constraintEnd_toEndOf="@+id/et_product_name_layout"
+        app:layout_constraintStart_toStartOf="@+id/et_product_name_layout"
+        app:layout_constraintTop_toBottomOf="@+id/et_product_name_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_product_category"
@@ -188,9 +183,10 @@
         android:id="@+id/product_price_unit_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/product_number_layout"
+        app:layout_constraintEnd_toStartOf="@+id/et_product_weigh_layout"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/product_price_layout"
-        app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout">
+        app:layout_constraintTop_toTopOf="@+id/product_price_layout">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -201,7 +197,7 @@
             android:enabled="false"
             android:gravity="center"
             android:hint="@string/et_create_product_hint_product_unit"
-            android:inputType="text"
+            android:inputType="textCapWords"
 
             />
     </com.google.android.material.textfield.TextInputLayout>
@@ -220,7 +216,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="0.4"
         app:layout_constraintStart_toEndOf="@+id/product_number_layout"
-        app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout" />
+        app:layout_constraintTop_toTopOf="@+id/et_product_name_layout" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/change_picture"
@@ -236,10 +232,10 @@
         android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/et_product_amount_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/et_product_name_layout"
         app:layout_constraintEnd_toStartOf="@+id/image"
-        app:layout_constraintStart_toEndOf="@+id/et_product_amount_layout"
-        app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout">
+        app:layout_constraintStart_toEndOf="@+id/et_product_name_layout"
+        app:layout_constraintTop_toTopOf="@+id/et_product_name_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/product_number"
@@ -259,10 +255,10 @@
         android:focusable="true"
         android:padding="16dp"
         android:src="@drawable/ic_info_outline"
-        app:layout_constraintBottom_toBottomOf="@+id/product_search_term_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/et_product_category_layout"
         app:layout_constraintEnd_toEndOf="@+id/product_number_layout"
-        app:layout_constraintStart_toEndOf="@+id/product_search_term_layout"
-        app:layout_constraintTop_toBottomOf="@+id/et_product_amount_layout" />
+        app:layout_constraintStart_toEndOf="@+id/et_product_category_layout"
+        app:layout_constraintTop_toTopOf="@+id/et_product_category_layout" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/sw_available"
@@ -275,10 +271,10 @@
         android:text="@string/sw_create_product_label"
         android:textColor="@color/fab_green"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/product_list"
+        app:layout_constraintBottom_toBottomOf="@+id/product_search_term_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/image"
-        app:layout_constraintTop_toBottomOf="@+id/product_price_layout"
+        app:layout_constraintTop_toTopOf="@+id/product_search_term_layout"
         app:thumbTint="@color/switch_button" />
 
 
@@ -293,18 +289,35 @@
         app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/image"
-        app:layout_constraintTop_toTopOf="@+id/et_product_amount_layout" />
+        app:layout_constraintTop_toTopOf="@+id/et_product_name_layout" />
 
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_search_term_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/et_product_weigh_layout"
+        app:layout_constraintStart_toStartOf="@id/et_product_name_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_price_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/product_search_term"
+            style="@style/CreateEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/et_create_product_hint_search_product"
+            android:inputType="textCapWords" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/et_product_amount_layout"
-        app:layout_constraintTop_toBottomOf="@+id/et_product_category_layout"
+        app:layout_constraintStart_toStartOf="@id/et_product_name_layout"
+        app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout"
         tools:itemCount="14"
         tools:listitem="@layout/item_product" />
 
@@ -312,15 +325,15 @@
         android:id="@+id/empty_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineSpacingMultiplier="1.4"
         android:gravity="center"
+        android:lineSpacingMultiplier="1.4"
         android:padding="96dp"
         android:text="@string/tv_create_product_no_products"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_product_category_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/product_search_term_layout" />
 
 
     <FrameLayout

@@ -81,9 +81,9 @@
         android:label="product_views_fragment"
         tools:layout="@layout/product_views_fragment" >
 
-        <argument
-            android:name="product_list"
-            app:argType="com.together.base.UiState$ProductList" />
+<!--        <argument-->
+<!--            android:name="product_list"-->
+<!--            app:argType="com.together.base.UiState$ProductList" />-->
         <action android:id="@+id/action_productViewsFragment_to_createFragment"
             app:destination="@id/createFragment" />
     </fragment>

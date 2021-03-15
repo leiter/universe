@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.together.R
 import com.together.databinding.ChooseSourceBinding
 import com.together.utils.viewBinding
 import io.reactivex.subjects.PublishSubject

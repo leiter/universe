@@ -10,12 +10,14 @@ import com.together.app.MainActivity
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 object MainMessagePipe {
 
     private val uiDisposable: Disposable
     val uiEvent: PublishSubject<in UiEvent> = PublishSubject.create()
+    val transferCache: BehaviorSubject<Any> = BehaviorSubject.create()
 
     init {
         uiDisposable = uiEvent.subscribe {

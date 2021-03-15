@@ -86,7 +86,7 @@ sealed class UiState {
     ) : UiState(), Parcelable {
 
         fun prepareSearchTerms(): String {
-            val bag = "$searchTerms,$category".replace(","," ")
+            val bag = "$searchTerms,$category,$productName".replace(","," ")
                 .trim().replace("""\s{2,}""".toRegex(), " ")
                 .replace(" ",",").split(",").toSet()
             return bag.joinToString(",")
