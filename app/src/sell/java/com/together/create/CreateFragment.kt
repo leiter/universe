@@ -26,8 +26,6 @@ import java.util.concurrent.TimeUnit
 class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked,
     View.OnFocusChangeListener {
 
-    private lateinit var productData: List<UiState.Article>
-
     private lateinit var adapter: ProductAdapter
     private val viewBinding: FragmentCreateBinding by viewLifecycleLazy {
         FragmentCreateBinding.bind(requireView())
@@ -169,7 +167,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
         viewModel.productList.observe(viewLifecycleOwner, {
             if (it.size > 0) {
                 viewBinding.emptyMessage.remove()
-                adapter.setFilteredList(it.toMutableList())
+                adapter.submitList(it.toMutableList())
             } else {
                 viewBinding.emptyMessage.show()
             }
@@ -179,9 +177,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
             .debounce(400, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.io())
             .map { searchTerm ->
-                if (!::productData.isInitialized) {
-                    productData = adapter.data.toMutableList()
-                }
+                    val productData = viewModel.productList.value!!
                 if (searchTerm.isNotEmpty()) {
                     productData.forEach { it.isSelected = false }
                 }
@@ -194,7 +190,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                 }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { filtered -> adapter.setFilteredList(filtered.toMutableList()) }
+            .subscribe { filtered -> adapter.submitList(filtered.toMutableList()) }
             .addTo(disposable)
     }
 

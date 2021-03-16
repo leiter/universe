@@ -8,9 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.together.databinding.ItemProductBinding
 
 
-class ProductAdapter(private val click: ItemClicked,
-                     var data: MutableList<UiState.Article> = mutableListOf())
-    : RecyclerView.Adapter<ArticleViewHolder>() {
+class ProductAdapter(private val click: ItemClicked) : RecyclerView.Adapter<ArticleViewHolder>() {
 
     interface ItemClicked {
         fun clicked(item: UiState.Article)
@@ -37,15 +35,9 @@ class ProductAdapter(private val click: ItemClicked,
         holder.bindItem(differ.currentList[position])
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         val binding = ItemProductBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ArticleViewHolder(binding, click)
     }
-
-
-
-
-
 
 }
