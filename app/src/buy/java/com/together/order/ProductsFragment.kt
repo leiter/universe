@@ -108,12 +108,8 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
                 if (viewModel.basket.value!!.size > 0)
                     BasketFragment().show(childFragmentManager, BasketFragment.TAG)
                 else
-                    MainMessagePipe.uiEvent.onNext(
-                        UiEvent.ShowToast(
-                            requireContext(),
-                            R.string.empty_basket_msg, Gravity.CENTER
-                        )
-                    )
+                    viewModel.snacks.value = UiEvent.Snack(
+                        msg = R.string.empty_basket_msg)
             }
 
             etProductAmount.setOnEditorActionListener { _, i, _ ->
@@ -320,20 +316,12 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
         val product = inFocus()
         val inputText = viewBinding.etProductAmount.text.toString()
         if (inputText.isEmpty() || inputText.isBlank()) {
-            MainMessagePipe.uiEvent.onNext(
-                UiEvent.ShowToast(requireContext(),
-                    R.string.product_amount_empty, Gravity.CENTER)
-            )
+            viewModel.snacks.value = UiEvent.Snack(msg = R.string.product_amount_empty)
             return
         }
         val amountCount = inputText.replace(",", ".").toDouble()
         if (amountCount == 0.0) {
-            MainMessagePipe.uiEvent.onNext(
-                UiEvent.ShowToast(
-                    requireContext(),
-                    R.string.product_amount_is_null, Gravity.CENTER
-                )
-            )
+            viewModel.snacks.value = UiEvent.Snack(msg = R.string.product_amount_is_null)
             return
         }
         product.amountCount = amountCount
@@ -352,10 +340,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
         if (inBasket != -1) {
             basket.removeAt(inBasket)
             basket.add(inBasket, p)
-
-        } else {
-            basket.add(p)
-        }
+        } else { basket.add(p) }
         viewBinding.btnShowBasket.badge.startAnimation(
             AnimationUtils.loadAnimation(requireContext(), R.anim.shake_rotate)
         )

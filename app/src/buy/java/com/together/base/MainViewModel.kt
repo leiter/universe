@@ -23,8 +23,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
-    ViewModel() {
+class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
     private var disposable2: CompositeDisposable = CompositeDisposable()
@@ -155,11 +154,12 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
 
     fun uploadBuyerProfile(giveFeedback: Boolean) {
         val next = loadingContainer.value!!
+        val l = UiEvent.Loading(
+            showProgress = true,
+            autoConsumeResult = !giveFeedback
+        )
         loadingContainer.value = next.copy(
-            profileUpload = UiEvent.Loading(
-                showProgress = true,
-                autoConsumeResult = !giveFeedback
-            )
+            profileUpload = l
         )
         dataRepository.saveBuyerProfile(buyerProfile.uiBuyerProfileToData()).subscribe(
             {
@@ -269,13 +269,13 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         resetProductList()
         basket.value = mutableListOf()
         dataRepository.clearUserData(sellerProfile.id, buyerProfile.uiBuyerProfileToData())
-            .flatMap { it ->
+            .flatMap {
                 FireBaseAuth.deleteAccount().getSingle()
             }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 basket.value = mutableListOf()
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
-            }, { it ->
+            }, {
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
 
             }).addTo(disposable)

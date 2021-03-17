@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
-import com.sdsmdg.tastytoast.TastyToast
 import com.together.R
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
@@ -63,19 +62,20 @@ class BasketFragment : DialogFragment() {
         if (showingTimePicker) {
             updatePickUptime()
             with(viewBinding) {
-
+                tlDateContainer.show()
+                tlMarketContainer.show()
+                tpSetAppointment.hide()
+                etMessageLayout.show()
+                btnCancelAppointmentTime.remove()
             }
-            viewBinding.tlDateContainer.visibility = View.VISIBLE
-            viewBinding.tlMarketContainer.visibility = View.VISIBLE
-            viewBinding.tpSetAppointment.visibility = View.INVISIBLE
-            viewBinding.etMessageLayout.visibility = View.VISIBLE
-            viewBinding.btnCancelAppointmentTime.visibility = View.GONE
         } else {
-            viewBinding.etMessageLayout.visibility = View.GONE
-            viewBinding.tlDateContainer.visibility = View.INVISIBLE
-            viewBinding.tlMarketContainer.visibility = View.INVISIBLE
-            viewBinding.tpSetAppointment.visibility = View.VISIBLE
-            viewBinding.btnCancelAppointmentTime.visibility = View.VISIBLE
+            with(viewBinding) {
+                etMessageLayout.remove()
+                tlDateContainer.hide()
+                tlMarketContainer.hide()
+                tpSetAppointment.show()
+                btnCancelAppointmentTime.show()
+            }
         }
         showingTimePicker = !showingTimePicker
     }
@@ -86,39 +86,44 @@ class BasketFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        viewBinding.btnSendOrder.setOnClickListener { manageSendOrder() }
+        with(viewBinding) {
+            btnSendOrder.setOnClickListener { manageSendOrder() }
 
-        viewBinding.ckSetReminder.checkedChanges().subscribe { isChecked ->
-            if (isChecked) {
-                viewModel.buyerProfile.defaultMarket =
-                    viewModel.provideMarket().id
-                viewModel.buyerProfile.defaultTime = viewModel.days[0].getHourAndMinute()
-                viewModel.uploadBuyerProfile(true)
+            ckSetReminder.checkedChanges().subscribe { isChecked ->
+                if (isChecked) {
+                    viewModel.buyerProfile.defaultMarket =
+                        viewModel.provideMarket().id
+                    viewModel.buyerProfile.defaultTime = viewModel.days[0].getHourAndMinute()
+                    viewModel.uploadBuyerProfile(true)
+                }
+            }.addTo(disposable)
+
+            btnChangeAppointmentTime.setOnClickListener(timeClicker)
+            btnHideAppointment.setOnClickListener {
+                root.hideIme()
+                showFinalizeDate(false)
             }
-        }.addTo(disposable)
 
-        viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
-        viewBinding.btnHideAppointment.setOnClickListener {
-            viewBinding.root.hideIme()
-            showFinalizeDate(false)
+            btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
+            btnCancelAppointmentTime.setOnClickListener {
+                etMessageLayout.show()
+                tpSetAppointment.hide()
+                tlDateContainer.show()
+                tlMarketContainer.show()
+                it.hide()
+                btnChangeAppointmentTime.setImageResource(R.drawable.ic_appointment_time)
+                showingTimePicker = false
+            }
+
+            tpSetAppointment.setIs24HourView(true)
+            btnSetAppointment.setOnClickListener {
+                setPaceAndDateForOrder()
+                root.hideIme()
+                showFinalizeDate(false)
+            }
+            etMessage.setText(viewModel.order.message)
+
         }
-        viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
-        viewBinding.btnCancelAppointmentTime.setOnClickListener {
-            viewBinding.etMessageLayout.show()
-            viewBinding.tpSetAppointment.hide()
-            viewBinding.tlDateContainer.show()
-            viewBinding.tlMarketContainer.show()
-            it.hide()
-            viewBinding.btnChangeAppointmentTime.setImageResource(R.drawable.ic_appointment_time)
-            showingTimePicker = false
-        }
-        viewBinding.tpSetAppointment.setIs24HourView(true)
-        viewBinding.btnSetAppointment.setOnClickListener {
-            setPaceAndDateForOrder()
-            viewBinding.root.hideIme()
-            showFinalizeDate(false)
-        }
-        viewBinding.etMessage.setText(viewModel.order.message)
         return viewBinding.root
     }
 
@@ -135,7 +140,6 @@ class BasketFragment : DialogFragment() {
             viewModel.buyerProfile.displayName = viewBinding.tvClientName.text.toString()
         }
         viewModel.sendOrder()
-
     }
 
     private fun setPaceAndDateForOrder() {
@@ -165,8 +169,9 @@ class BasketFragment : DialogFragment() {
         viewBinding.orderBasket.adapter = adapter
         viewBinding.orderBasket.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val displayCount = requireContext().getQuantityString(R.plurals.tv_basket_product_count,b.size,b.size)
-        viewBinding.tvProductCount.text= displayCount
+        val displayCount =
+            requireContext().getQuantityString(R.plurals.tv_basket_product_count, b.size, b.size)
+        viewBinding.tvProductCount.text = displayCount
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -185,8 +190,7 @@ class BasketFragment : DialogFragment() {
         viewModel.marketText.observe(viewLifecycleOwner, { viewBinding.tvMarketName.text = it })
         viewModel.dayText.observe(viewLifecycleOwner, { viewBinding.tvMarketDate.text = it })
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
-            var toastMsg: Int? = null
-            var toastType: Int = -1
+            val toastMsg: Int?
             when (uiEvent) {
                 is UiEvent.LoadingDone -> {
                     when (uiEvent.contextId) {
@@ -196,7 +200,10 @@ class BasketFragment : DialogFragment() {
                             toastMsg = R.string.toast_msg_send_success
                             viewModel.basket.value = mutableListOf()
                             viewModel.resetProductList()
-                            viewModel.snacks.value = UiEvent.Snack(msg = toastMsg, backGroundColor = R.color.fab_green)
+                            viewModel.snacks.value = UiEvent.Snack(
+                                msg = toastMsg,
+                                backGroundColor = R.color.fab_green
+                            )
                             dismiss()
                         }
                         SEND_ORDER_FAILED -> {
@@ -204,8 +211,10 @@ class BasketFragment : DialogFragment() {
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
                                 SEND_ORDER_FAILED
                             )
-                            viewModel.snacks.value = UiEvent.Snack(msg = toastMsg,
-                                backGroundColor = R.color.design_default_color_error)
+                            viewModel.snacks.value = UiEvent.Snack(
+                                msg = toastMsg,
+                                backGroundColor = R.color.design_default_color_error
+                            )
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {
@@ -214,17 +223,10 @@ class BasketFragment : DialogFragment() {
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
                                 SEND_ORDER_UPDATED
                             )
-                            Toast.makeText(
-                                requireContext(),
-                                toastMsg, Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(requireContext(), toastMsg, Toast.LENGTH_LONG).show()
                             setListAdapter()
                         }
                     }
-//                    if ((uiEvent.contextId == SEND_ORDER) || (uiEvent.contextId == SEND_ORDER_FAILED)){
-//                        toastMsg?.let { viewModel.snacks.value = UiEvent.Snack(msg = toastMsg) }
-//                        dismiss()
-//                    }
                 }
 
                 is UiEvent.Loading -> {

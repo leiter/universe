@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-import com.sdsmdg.tastytoast.TastyToast
 import com.together.R
 import com.together.base.UiEvent
 import com.together.repository.NoInternetConnection
@@ -51,7 +50,6 @@ fun String.getDayTimeDate(): Date {
 
 fun Fragment.handleProgress(
     loading: UiEvent.Loading,
-    progress: View,
     toastNoInternet: Int,
     toastUnknown: Int, toastSuccess: Int
 ) {
@@ -60,23 +58,17 @@ fun Fragment.handleProgress(
         loading.contextId = -1
         return
     }
-    progress.visibility = loading.visible
+
     if (loading.didFail) {
         val t = if (loading.exception is NoInternetConnection) {
             toastNoInternet
         } else toastUnknown
-        TastyToast.makeText(requireContext(), getString(t), Toast.LENGTH_SHORT, TastyToast.ERROR)
-            .show()
-//        Toast.makeText(requireContext(), t, Toast.LENGTH_SHORT).show()
+        view?.showSnackbar(UiEvent.Snack(msg = t,
+            backGroundColor = R.color.design_default_color_error))
         loading.exception = null
     } else if (loading.contextId != -1) {
-        TastyToast.makeText(
-            requireContext(),
-            getString(toastSuccess),
-            Toast.LENGTH_SHORT,
-            TastyToast.SUCCESS
-        ).show()
-//        Toast.makeText(requireContext(), toastSuccess, Toast.LENGTH_SHORT).show()
+        view?.showSnackbar(UiEvent.Snack(msg = toastSuccess,
+            backGroundColor = R.color.fab_green))
         loading.contextId = -1
     }
 
@@ -127,13 +119,8 @@ fun Context.showLongToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
-// Snackbar Extensions
-fun View.showShotSnackbar(message: String) {
-    Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
-}
-
-fun View.showLongSnackbar(config: UiEvent.Snack) {
-    val s = Snackbar.make(this, config.msg, Snackbar.LENGTH_LONG)
+fun View.showSnackbar(config: UiEvent.Snack) {
+    val s = Snackbar.make(this, config.msg, config.duration)
     config.backGroundColor?.let {
         s.view.setBackgroundColor(it.asColor(context))
     }
@@ -141,10 +128,10 @@ fun View.showLongSnackbar(config: UiEvent.Snack) {
 }
 
 fun View.snackBarWithAction(
-    message: String, actionlable: String,
+    config: UiEvent.Snack, actionlable: String,
     block: () -> Unit
 ) {
-    Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+    Snackbar.make(this, config.msg, config.duration)
         .setAction(actionlable) {
             block()
         }

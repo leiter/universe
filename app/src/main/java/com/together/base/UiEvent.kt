@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
 
 
 sealed class UiEvent {
@@ -35,7 +36,6 @@ sealed class UiEvent {
 
     }
 
-
     data class LogIn(val context: Context) : UiEvent()
 
     object LogOut : UiEvent()
@@ -50,7 +50,6 @@ sealed class UiEvent {
 
     data class LoadingContainer(
         val profileUpload: Loading = Loading(-1, autoConsumeResult = true)
-
     )
 
     data class Loading(
@@ -151,6 +150,8 @@ sealed class UiEvent {
         var autoConsumeResult: Boolean
     }
 
-    data class Snack(val show: Boolean = true, val msg: Int = UNDEFINED,
+    data class Snack(val show: Boolean = true,
+                     val msg: Int = UNDEFINED,
+                     val duration: Int = Snackbar.LENGTH_LONG,
                      val backGroundColor: Int? = null) : UiEvent()
 }

@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.NumberPicker
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import com.google.android.material.tabs.TabLayout
-import com.sdsmdg.tastytoast.TastyToast
 import com.together.R
 import com.together.base.BaseFragment
 import com.together.base.MainMessagePipe
@@ -24,12 +22,11 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupClicks()
-        setupTextFields()
-        alterTimePicker()
-        viewModel.loadingContainer.observe(viewLifecycleOwner,{
-            handleProgress(it.profileUpload,
-                viewBinding.progress.loadingIndicator,
+        setupClicks(); setupTextFields(); alterTimePicker()
+        viewModel.loadingContainer.observe(viewLifecycleOwner, {
+            viewBinding.progress.loadingIndicator.visibility = it.profileUpload.visible
+            handleProgress(
+                it.profileUpload,
                 R.string.toast_fail_no_internet_profile_upload,
                 R.string.toast_fail_unknown_profile_upload,
                 R.string.toast_success_profile_upload
@@ -38,43 +35,50 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
     }
 
     private fun setupTextFields() {
-        viewBinding.tvPhoneNumber.setText(viewModel.buyerProfile.phoneNumber)
-        viewBinding.tvDisplayName.setText(viewModel.buyerProfile.displayName)
-        viewBinding.tvEmailAddress.setText(viewModel.buyerProfile.emailAddress)
-        if(viewModel.buyerProfile.defaultMarket!=""){
-            viewBinding.tvMarketName.text = viewModel.sellerProfile.marketList
-                .first {  it.id == viewModel.buyerProfile.defaultMarket }.name
+        with(viewBinding) {
+            tvPhoneNumber.setText(viewModel.buyerProfile.phoneNumber)
+            tvDisplayName.setText(viewModel.buyerProfile.displayName)
+            tvEmailAddress.setText(viewModel.buyerProfile.emailAddress)
+            if (viewModel.buyerProfile.defaultMarket != "") {
+                tvMarketName.text = viewModel.sellerProfile.marketList
+                    .first { it.id == viewModel.buyerProfile.defaultMarket }.name
+            }
+            tvPickupTime.text = if (viewModel.buyerProfile.defaultTime != "")
+                viewModel.buyerProfile.getDefaultTimeDisplay() else ""
         }
-        viewBinding.tvPickupTime.text = if(viewModel.buyerProfile.defaultTime!="")
-            viewModel.buyerProfile.getDefaultTimeDisplay() else ""
     }
 
     private fun setupClicks() {
-        viewBinding.btnBack.setOnClickListener {
-            MainMessagePipe.uiEvent.onNext(
-                UiEvent.ReplaceFragment(
-                    requireActivity().supportFragmentManager,
-                    ProductsFragment(), ProductsFragment.TAG)
-            )
+        with(viewBinding) {
+            btnBack.setOnClickListener {
+                MainMessagePipe.uiEvent.onNext(
+                    UiEvent.ReplaceFragment(
+                        requireActivity().supportFragmentManager,
+                        ProductsFragment(), ProductsFragment.TAG
+                    )
+                )
+            }
+            btnClearDisplayName.setOnClickListener { viewBinding.tvDisplayName.setText("") }
+            btnClearEmail.setOnClickListener { viewBinding.tvEmailAddress.setText("") }
+            btnClearPhoneNumber.setOnClickListener { viewBinding.tvPhoneNumber.setText("") }
+            btnOptions.setOnClickListener { showPopup() }
+            btnChooseMarket.setOnClickListener { showPickMarket(true) }
+            btnClearMarket.setOnClickListener { clearMarketSetting() }
+            btnSetMarket.setOnClickListener { setMarketAsDefault() }
+            btnSetPickupTime.setOnClickListener { setPickUpTime() }
+            btnClearPickupTime.setOnClickListener { clearPickUptime() }
+            btnChoosePickupTime.setOnClickListener { showChoosePickUptime() }
+            btnSaveProfile.setOnClickListener { uploadBuyerProfile() }
         }
-        viewBinding.btnClearDisplayName.setOnClickListener { viewBinding.tvDisplayName.setText("") }
-        viewBinding.btnClearEmail.setOnClickListener { viewBinding.tvEmailAddress.setText("") }
-        viewBinding.btnClearPhoneNumber.setOnClickListener { viewBinding.tvPhoneNumber.setText("") }
-        viewBinding.btnOptions.setOnClickListener { showPopup() }
-        viewBinding.btnChooseMarket.setOnClickListener { showPickMarket(true) }
-        viewBinding.btnClearMarket.setOnClickListener { clearMarketSetting() }
-        viewBinding.btnSetMarket.setOnClickListener { setMarketAsDefault() }
-        viewBinding.btnSetPickupTime.setOnClickListener { setPickUpTime() }
-        viewBinding.btnClearPickupTime.setOnClickListener { clearPickUptime() }
-        viewBinding.btnChoosePickupTime.setOnClickListener { showChoosePickUptime() }
-        viewBinding.btnSaveProfile.setOnClickListener { uploadBuyerProfile() }
     }
 
-    private fun uploadBuyerProfile(){
-        viewModel.buyerProfile.phoneNumber = viewBinding.tvPhoneNumber.text.toString()
-        viewModel.buyerProfile.displayName = viewBinding.tvDisplayName.text.toString()
-        viewModel.buyerProfile.emailAddress = viewBinding.tvEmailAddress.text.toString()
-        viewModel.uploadBuyerProfile(false)
+    private fun uploadBuyerProfile() {
+        with(viewModel) {
+            buyerProfile.phoneNumber = viewBinding.tvPhoneNumber.text.toString()
+            buyerProfile.displayName = viewBinding.tvDisplayName.text.toString()
+            buyerProfile.emailAddress = viewBinding.tvEmailAddress.text.toString()
+            uploadBuyerProfile(false)
+        }
     }
 
     private fun clearPickUptime() {
@@ -85,7 +89,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun setPickUpTime() {
         val timeBox = viewBinding.tpSetAppointment.getTimePair().toList()
-        val time = "%02d:%02d".format(timeBox[0],timeBox[1])
+        val time = "%02d:%02d".format(timeBox[0], timeBox[1])
         viewModel.buyerProfile.defaultTime = time
         viewBinding.tvPickupTime.text = viewModel.buyerProfile.getDefaultTimeDisplay()
         showTimePicker(false)
@@ -93,9 +97,10 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
 
     private fun showChoosePickUptime() {
         if (viewModel.buyerProfile.defaultMarket == "") {
-            TastyToast.makeText(requireContext(), "Bitte erst den Marktplatz bestimmen.",
-                Toast.LENGTH_LONG,TastyToast.INFO).show()
-
+            viewModel.snacks.value = UiEvent.Snack(
+                msg =
+                R.string.toast_msg_client_profile_determin_market,
+            )
             return
         }
         viewBinding.root.hideIme()
@@ -127,22 +132,20 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
     private fun showPickMarket(show: Boolean) {
         setupMarketButtons()
         if (show) {
-            with(viewBinding){
+            with(viewBinding) {
                 tlMarketContainer.show()
                 btnClearMarket.show()
                 btnSetMarket.show()
             }
-
-            }
-        else {
-            with(viewBinding){
+        } else {
+            with(viewBinding) {
                 tlMarketContainer.removeAllTabs()
                 tlMarketContainer.remove()
                 btnClearMarket.remove()
                 btnSetMarket.remove()
             }
         }
-        if(show) viewBinding.root.hideIme()
+        if (show) viewBinding.root.hideIme()
     }
 
     private fun setupMarketButtons() {
@@ -158,9 +161,7 @@ class ClientProfileFragment : BaseFragment(R.layout.fragment_client_profile) {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-//                viewModel.marketIndex = com.together.utils.viewBinding.tlMarketContainer.selectedTabPosition
-            }
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
         viewBinding.tlMarketContainer.removeAllTabs()

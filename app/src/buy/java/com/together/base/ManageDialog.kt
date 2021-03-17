@@ -2,10 +2,10 @@ package com.together.base
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -36,14 +36,6 @@ class ManageDialog : DialogFragment() {
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(true)
         return dialog
-    }
-
-    private val clickProfileWhileLoggedOut: (View) -> Unit = {
-//        MainMessagePipe.uiEvent.onNext(
-//            UiEvent.AddFragment(
-//                requireActivity().supportFragmentManager,
-//                LoginFragment(), LoginFragment.TAG)
-//        ); dismiss()
     }
 
     private val clickProfileWhileLoggedIn: (View) -> Unit = {
@@ -91,12 +83,6 @@ class ManageDialog : DialogFragment() {
         viewModel.loggedState.observe(viewLifecycleOwner, {
 
             when (it) {
-                is UiState.LoggedOut -> {
-                    viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedOut)
-                    viewBinding.btnLogOut.setOnClickListener(clickProfileWhileLoggedOut)
-                    viewBinding.btnLogOut.setText(R.string.login_btn_text)
-                }
-
                 is UiState.BaseAuth -> {
                     viewBinding.btnProfile.setOnClickListener(clickProfileWhileLoggedIn)
                     viewBinding.btnLogOut.setOnClickListener {
@@ -104,6 +90,7 @@ class ManageDialog : DialogFragment() {
                     }
                     viewBinding.btnLogOut.setText(R.string.invalidate_session)
                 }
+                else -> Log.d(TAG, "Only interested logged in state.")
             }
         })
 
@@ -165,10 +152,7 @@ class ManageDialog : DialogFragment() {
             adapter?.data = it
             adapter?.notifyDataSetChanged()
         } else {
-            Toast.makeText(
-                requireContext(),
-                "Bisher wurden bisher keine Bestellungen aufgegeben.", Toast.LENGTH_SHORT
-            ).show()
+            viewModel.snacks.value = UiEvent.Snack(msg = R.string.toast_msg_manage_dialog_not_ordered_yet )
             dismiss()
         }
     }
@@ -185,11 +169,14 @@ class ManageDialog : DialogFragment() {
     }
 
     private fun showButtons(visible: Int) {
-        viewBinding.btnProfile.visibility = visible
-        viewBinding.btnWriteMsg.visibility = visible
-        viewBinding.btnShowInfo.visibility = visible
-        viewBinding.btnLogOut.visibility = visible
-        viewBinding.btnShowOrders.visibility = visible
+        with(viewBinding){
+            btnProfile.visibility = visible
+            btnWriteMsg.visibility = visible
+            btnShowInfo.visibility = visible
+            btnLogOut.visibility = visible
+            btnShowOrders.visibility = visible
+        }
+
     }
 
     private fun showOldOrders() {

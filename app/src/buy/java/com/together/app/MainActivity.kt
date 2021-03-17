@@ -4,8 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,7 @@ import com.together.order.ProductsFragment
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.AQ
 import com.together.utils.hasInternet
-import com.together.utils.showLongSnackbar
+import com.together.utils.showSnackbar
 import io.reactivex.disposables.CompositeDisposable
 
 class MainActivity : AppCompatActivity() {
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.snacks.observe(this,{
             if(it.show){
-                findViewById<View>(android.R.id.content).showLongSnackbar(it)
+                findViewById<View>(android.R.id.content).showSnackbar(it)
                     viewModel.snacks.value = UiEvent.Snack(show = false)
             }
 
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity() {
                         ProductsFragment(), ProductsFragment.TAG)
                     )
                 }
-
                 is UiState.LoginRequired -> {
                     if(hasInternet()){
                         FireBaseAuth.loginAnonymously()
@@ -86,14 +84,13 @@ class MainActivity : AppCompatActivity() {
                         MainMessagePipe.uiEvent.onNext(u)
                     }
                 }
-//                    startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
-
                 is UiState.LoggedOut -> {
                     if (!firstStart){
                         recreate()
                     }
                     firstStart = false
                 }
+                else -> Log.d("MainActivity", "Not interested in all UiStates.");
             }
         })
 

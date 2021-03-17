@@ -87,13 +87,13 @@ class MainActivity : AppCompatActivity() {
                             viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                         }
                     }, {
-                        MainMessagePipe.uiEvent.onNext(
-                            UiEvent.ShowToast(
-                                baseContext,
-                                R.string.developer_error_hint,
-                                Gravity.TOP
-                            )
-                        )
+//                        MainMessagePipe.uiEvent.onNext(
+//                            UiEvent.ShowToast(
+//                                baseContext,
+//                                R.string.developer_error_hint,
+//                                Gravity.TOP
+//                            )
+//                        )
 
                     })
                 }

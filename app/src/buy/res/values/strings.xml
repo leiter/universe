@@ -24,6 +24,7 @@ Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten d
     <string name="toast_msg_already_ordered">Die bereits gewählten Produkte wurde geladen, bitte überprüfen sie die Auswahl.</string>
     <string name="toast_msg_could_not_send_order">Auswahl konnte nicht gesendet werden.</string>
     <string name="toast_msg_send_success">Auswahl erfolgreich gesendet.</string>
+    <string name="toast_msg_client_profile_determin_market">Bitte erst den Marktplatz bestimmen.</string>
 
     <plurals name="tv_basket_product_count">
         <item quantity="one">%d Produkt</item>

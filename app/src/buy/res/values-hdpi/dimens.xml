@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="match_parent" format="integer" type="dimen">-1</item>
+    <item name="wrap_content" format="integer" type="dimen">-2</item>
+
     <dimen name="horizontal_gap_product_present">0dp</dimen>
     <dimen name="horizontal_top_gap_product_present">0dp</dimen>
     <dimen name="text_size_info_product_present">12sp</dimen>
     <dimen name="guideline_client_profile">24sp</dimen>
+    <dimen name="tab_client_profile_width">0dp</dimen>
+
 
 </resources>
