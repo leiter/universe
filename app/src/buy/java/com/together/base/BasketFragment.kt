@@ -62,7 +62,7 @@ class BasketFragment : DialogFragment() {
         showSetTime(showingTimePicker)
         if (showingTimePicker) {
             updatePickUptime()
-            with(viewBinding){
+            with(viewBinding) {
 
             }
             viewBinding.tlDateContainer.visibility = View.VISIBLE
@@ -100,7 +100,8 @@ class BasketFragment : DialogFragment() {
         viewBinding.btnChangeAppointmentTime.setOnClickListener(timeClicker)
         viewBinding.btnHideAppointment.setOnClickListener {
             viewBinding.root.hideIme()
-            showFinalizeDate(false) }
+            showFinalizeDate(false)
+        }
         viewBinding.btnShowAppointment.setOnClickListener { showFinalizeDate(true) }
         viewBinding.btnCancelAppointmentTime.setOnClickListener {
             viewBinding.etMessageLayout.show()
@@ -164,6 +165,8 @@ class BasketFragment : DialogFragment() {
         viewBinding.orderBasket.adapter = adapter
         viewBinding.orderBasket.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val displayCount = requireContext().getQuantityString(R.plurals.tv_basket_product_count,b.size,b.size)
+        viewBinding.tvProductCount.text= displayCount
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -171,62 +174,67 @@ class BasketFragment : DialogFragment() {
         setupMarketButtons()
         setPaceAndDateForOrder()
         alterTimePicker()
+
         viewBinding.tvClientName.setText(viewModel.buyerProfile.displayName)
+        viewBinding.tvClientName.textChanges().skipInitialValue().subscribe {
+            viewModel.order.buyerProfile.displayName = it.toString()
+        }.addTo(disposable)
         viewBinding.etMessage.textChanges().skipInitialValue().subscribe {
             viewModel.order.message = it.toString()
         }.addTo(disposable)
         viewModel.marketText.observe(viewLifecycleOwner, { viewBinding.tvMarketName.text = it })
         viewModel.dayText.observe(viewLifecycleOwner, { viewBinding.tvMarketDate.text = it })
         viewModel.blockingLoaderState.observe(viewLifecycleOwner, { uiEvent ->
-            var toastMsg: String? = null
+            var toastMsg: Int? = null
             var toastType: Int = -1
             when (uiEvent) {
                 is UiEvent.LoadingDone -> {
                     when (uiEvent.contextId) {
                         SEND_ORDER -> {
-                            toastType = TastyToast.SUCCESS
-                            viewBinding.progressss.loadingIndicator.visibility = View.GONE
+                            viewBinding.progressss.loadingIndicator.remove()
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(SEND_ORDER)
-                            toastMsg = "Auswahl erfolgreich gesendet."
+                            toastMsg = R.string.toast_msg_send_success
                             viewModel.basket.value = mutableListOf()
                             viewModel.resetProductList()
+                            viewModel.snacks.value = UiEvent.Snack(msg = toastMsg, backGroundColor = R.color.fab_green)
                             dismiss()
                         }
                         SEND_ORDER_FAILED -> {
-                            toastType = TastyToast.ERROR
-                            toastMsg = getString(R.string.toast_msg_could_not_send_order)
+                            toastMsg = R.string.toast_msg_could_not_send_order
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
                                 SEND_ORDER_FAILED
                             )
+                            viewModel.snacks.value = UiEvent.Snack(msg = toastMsg,
+                                backGroundColor = R.color.design_default_color_error)
                             dismiss()
                         }
                         SEND_ORDER_UPDATED -> {
-                            toastType = TastyToast.INFO
-                            toastMsg =
-                                getString(R.string.toast_msg_already_ordered)
-                            viewBinding.progressss.loadingIndicator.visibility = View.GONE
+                            toastMsg = R.string.toast_msg_already_ordered
+                            viewBinding.progressss.loadingIndicator.remove()
                             viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(
                                 SEND_ORDER_UPDATED
                             )
+                            Toast.makeText(
+                                requireContext(),
+                                toastMsg, Toast.LENGTH_LONG
+                            ).show()
                             setListAdapter()
                         }
                     }
-                    TastyToast.makeText(requireContext(),
-                        toastMsg, Toast.LENGTH_LONG,toastType
-                    ).show()
-//                    Toast.makeText(
-//                        requireContext(),
-//                        toastMsg, Toast.LENGTH_LONG
-//                    ).show()
+//                    if ((uiEvent.contextId == SEND_ORDER) || (uiEvent.contextId == SEND_ORDER_FAILED)){
+//                        toastMsg?.let { viewModel.snacks.value = UiEvent.Snack(msg = toastMsg) }
+//                        dismiss()
+//                    }
                 }
 
                 is UiEvent.Loading -> {
                     if (uiEvent.contextId == SEND_ORDER) {
-                        viewBinding.progressss.loadingIndicator.visibility = View.VISIBLE
+                        viewBinding.progressss.loadingIndicator.show()
                     }
                 }
             }
         })
+
     }
 
     private fun alterTimePicker() {
@@ -244,7 +252,8 @@ class BasketFragment : DialogFragment() {
     private fun calculatePurchaseSum(list: MutableList<UiState.Article>): String {
         var sum = 0.0
         list.forEach { sum += it.amountCount * it.priceDigit }
-        return "Gesamtpreis    %.2f€".format(sum)
+        val summ = "%.2f€".format(sum).replace(".", ",")
+        return "Gesamtpreis    $summ"
     }
 
     private fun setupMarketButtons() {

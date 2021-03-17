@@ -13,6 +13,7 @@
 
     <!--    new Colors -->
     <color name="fab_green">#0A6308</color>
+    <color name="error_red">#D51D47</color>
     <color name="soft_brown_no_alpha">#c9b9a0</color>
 
 

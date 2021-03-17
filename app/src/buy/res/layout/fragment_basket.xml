@@ -156,6 +156,7 @@
         android:id="@+id/order_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
         android:layout_marginTop="16dp"
         android:paddingBottom="24dp">
 
@@ -206,7 +207,9 @@
             android:lines="1"
             app:layout_constraintStart_toStartOf="@+id/tv_market_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_market_name"
-            tools:text="Do, 25.06.2021 ca. 15:00 Uhr" />
+            tools:text="Do, 25.06.2021 ca. 15:00 Uhr" >
+            <requestFocus/>
+        </androidx.appcompat.widget.AppCompatTextView>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -229,20 +232,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-<!--        <com.google.android.material.textview.MaterialTextView-->
-<!--            android:id="@+id/tv_product_sum"-->
-
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:gravity="center"-->
-<!--            tools:text="15 Produkte"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/tv_client_name_layout"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/tv_client_name_layout"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/tv_client_name_layout" />-->
-
-
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
@@ -252,18 +241,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_client_name_layout" />
 
-
-
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_product_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="15 Produkte"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp"
+            android:paddingTop="12dp"
+            app:layout_constraintBottom_toTopOf="@+id/order_basket"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_basket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toTopOf="@id/basket_sum"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_count"
             tools:itemCount="16"
             tools:listitem="@layout/item_basket" />
 
@@ -280,7 +280,7 @@
             app:layout_constraintBottom_toTopOf="@id/btn_send_order"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/order_basket"
-            tools:text="12,94€" />
+            tools:text="Gesamtpreis    12,94€" />
 
 
         <com.google.android.material.button.MaterialButton

@@ -65,11 +65,17 @@ fun Fragment.handleProgress(
         val t = if (loading.exception is NoInternetConnection) {
             toastNoInternet
         } else toastUnknown
-        TastyToast.makeText(requireContext(),getString(t),Toast.LENGTH_SHORT,TastyToast.ERROR).show()
+        TastyToast.makeText(requireContext(), getString(t), Toast.LENGTH_SHORT, TastyToast.ERROR)
+            .show()
 //        Toast.makeText(requireContext(), t, Toast.LENGTH_SHORT).show()
         loading.exception = null
     } else if (loading.contextId != -1) {
-        TastyToast.makeText(requireContext(),getString(toastSuccess),Toast.LENGTH_SHORT,TastyToast.SUCCESS).show()
+        TastyToast.makeText(
+            requireContext(),
+            getString(toastSuccess),
+            Toast.LENGTH_SHORT,
+            TastyToast.SUCCESS
+        ).show()
 //        Toast.makeText(requireContext(), toastSuccess, Toast.LENGTH_SHORT).show()
         loading.contextId = -1
     }
@@ -126,8 +132,12 @@ fun View.showShotSnackbar(message: String) {
     Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
 }
 
-fun View.showLongSnackbar(message: String) {
-    Snackbar.make(this, message, Snackbar.LENGTH_LONG).show()
+fun View.showLongSnackbar(config: UiEvent.Snack) {
+    val s = Snackbar.make(this, config.msg, Snackbar.LENGTH_LONG)
+    config.backGroundColor?.let {
+        s.view.setBackgroundColor(it.asColor(context))
+    }
+    s.show()
 }
 
 fun View.snackBarWithAction(

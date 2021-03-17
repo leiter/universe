@@ -150,4 +150,7 @@ sealed class UiEvent {
         val showProgress: Boolean
         var autoConsumeResult: Boolean
     }
+
+    data class Snack(val show: Boolean = true, val msg: Int = UNDEFINED,
+                     val backGroundColor: Int? = null) : UiEvent()
 }

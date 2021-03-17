@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.together.R
@@ -12,6 +15,7 @@ import com.together.order.ProductsFragment
 import com.together.repository.auth.FireBaseAuth
 import com.together.utils.AQ
 import com.together.utils.hasInternet
+import com.together.utils.showLongSnackbar
 import io.reactivex.disposables.CompositeDisposable
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +57,14 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager,
             ProductsFragment(), ProductsFragment.TAG)
         )
+
+        viewModel.snacks.observe(this,{
+            if(it.show){
+                findViewById<View>(android.R.id.content).showLongSnackbar(it)
+                    viewModel.snacks.value = UiEvent.Snack(show = false)
+            }
+
+        })
 
         viewModel.loggedState.observe(this, {
             when (it) {

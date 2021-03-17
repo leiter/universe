@@ -249,6 +249,9 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
     val loggedState: MutableLiveData<UiState> by lazy {
         MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
     }
+    val snacks: MutableLiveData<UiEvent.Snack> by lazy {
+        MutableLiveData<UiEvent.Snack>().also { it.value = UiEvent.Snack(show = false)}
+    }
 
     val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
 
