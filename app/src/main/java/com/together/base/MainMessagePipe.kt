@@ -29,9 +29,6 @@ object MainMessagePipe {
                     FireBaseAuth.logOut()
                 }
 
-                is UiEvent.ShowToast -> {
-                    ToastProvider(it).show()
-                }
                 is UiEvent.ShowLicense -> {
                     it.context.startActivity(Intent(it.context, OssLicensesMenuActivity::class.java))
                 }

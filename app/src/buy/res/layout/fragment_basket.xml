@@ -116,6 +116,7 @@
             android:id="@+id/btn_change_appointment_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/content_description_basket_show_time_picker"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="16dp"
             android:src="@drawable/ic_appointment_time"

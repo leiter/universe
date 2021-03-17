@@ -25,6 +25,14 @@ Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten d
     <string name="toast_msg_could_not_send_order">Auswahl konnte nicht gesendet werden.</string>
     <string name="toast_msg_send_success">Auswahl erfolgreich gesendet.</string>
     <string name="toast_msg_client_profile_determin_market">Bitte erst den Marktplatz bestimmen.</string>
+    <string name="content_description_products_start_counter">Erste Einheit des Produkts hinzufügen. Plus erscheint rechts und Minus links. Auf dieser Position erscheint die aktuelle Mengenangabe.</string>
+    <string name="content_description_products_add_to_counter">Eine weitere Einheit des Produkts hinzufügen.</string>
+    <string name="content_description_products_subtract_from_counter">Eine Einheit des Produktes abziehen.</string>
+    <string name="content_description_client_profile_back_btn">Zurück zur Produktübersicht.</string>
+    <string name="content_description_client_profile_clear_name">Eingabefeld des Anzeigenames löschen.</string>
+    <string name="content_description_client_profile_clear_email_address">Eingabefeld Emailadresse löschen</string>
+    <string name="content_description_client_profile_clear_telephone_number">Eingabefeld Telefonnummer löschen</string>
+    <string name="content_description_basket_show_time_picker">Uhrzeiteingabe anzeigen</string>
 
     <plurals name="tv_basket_product_count">
         <item quantity="one">%d Produkt</item>

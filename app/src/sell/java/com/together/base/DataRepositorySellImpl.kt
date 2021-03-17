@@ -7,7 +7,6 @@ import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
 import com.together.repository.storage.*
 import com.together.utils.getMarketDates
-import dagger.hilt.android.scopes.ViewModelScoped
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

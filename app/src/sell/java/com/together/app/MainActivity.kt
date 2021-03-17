@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -87,14 +88,7 @@ class MainActivity : AppCompatActivity() {
                             viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                         }
                     }, {
-//                        MainMessagePipe.uiEvent.onNext(
-//                            UiEvent.ShowToast(
-//                                baseContext,
-//                                R.string.developer_error_hint,
-//                                Gravity.TOP
-//                            )
-//                        )
-
+                        Log.d("MainActivity", "Exception while login")
                     })
                 }
 
@@ -103,6 +97,7 @@ class MainActivity : AppCompatActivity() {
                     findNavController(R.id.navigation_controller)
                         .navigate(R.id.loginFragment)
                 }
+                else -> Log.d("MainActivity", "Not interested in all UiStates.")
             }
         })
 

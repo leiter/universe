@@ -224,7 +224,7 @@
         android:background="?attr/selectableItemBackground"
         android:padding="8dp"
         android:src="@drawable/ic_add"
-
+        android:contentDescription="@string/content_description_products_start_counter"
         app:layout_constraintBottom_toBottomOf="@+id/et_product_amount_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/et_product_amount_layout"

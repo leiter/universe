@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="match_parent" format="integer" type="dimen">-1</item>
-    <item name="wrap_content" format="integer" type="dimen">-2</item>
+<!--    <item name="match_parent" format="integer" type="dimen">-1dp</item>-->
+<!--    <item name="wrap_content" format="integer" type="dimen">-2dp</item>-->
     <dimen name="guideline_client_profile">240sp</dimen>
-    <dimen name="tab_client_profile_width">@dimen/wrap_content</dimen>
+    <dimen name="tab_client_profile_width">-2dp</dimen>
 
 
 </resources>

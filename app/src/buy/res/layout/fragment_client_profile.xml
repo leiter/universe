@@ -31,6 +31,7 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/content_description_client_profile_back_btn"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:elevation="12dp"
             android:padding="16dp"
@@ -115,7 +116,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:padding="16dp"
-
+            android:contentDescription="@string/content_description_client_profile_clear_name"
             android:src="@drawable/ic_clear_green"
             app:layout_constraintBottom_toBottomOf="@+id/tv_display_name_layout"
             app:layout_constraintEnd_toEndOf="@+id/tv_display_name_layout"
@@ -158,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-
+android:contentDescription="@string/content_description_client_profile_clear_email_address"
             android:padding="16dp"
             android:src="@drawable/ic_clear_green"
             app:layout_constraintBottom_toBottomOf="@+id/tv_email_address_layout"
@@ -201,6 +202,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:contentDescription="@string/content_description_client_profile_clear_telephone_number"
             android:padding="16dp"
             android:src="@drawable/ic_clear_green"
             app:layout_constraintBottom_toBottomOf="@+id/tv_phone_number_layout"

@@ -1,6 +1,7 @@
 package com.together.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -111,6 +112,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(-1)
                     findNavController().navigate(R.id.createFragment)
                 }
+                else -> Log.d(TAG, "Not interested in all UiStates.");
             }
         }
     }

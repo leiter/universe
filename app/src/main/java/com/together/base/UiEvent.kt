@@ -2,9 +2,7 @@ package com.together.base
 
 import android.content.Context
 import android.net.Uri
-import android.view.Gravity
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
@@ -39,12 +37,6 @@ sealed class UiEvent {
     data class LogIn(val context: Context) : UiEvent()
 
     object LogOut : UiEvent()
-
-    data class ShowToast(
-        val context: Context, val msg: Int,
-        val gravity: Int = Gravity.TOP,
-        val length: Int = Toast.LENGTH_SHORT
-    ) : UiEvent()
 
     data class DrawerState(val gravity: Int) : UiEvent()
 
@@ -120,29 +112,11 @@ sealed class UiEvent {
 
     object BasketMinusOne : UiEvent()
 
-    data class RemoveBasketItem(val id: String) : UiEvent()
-
-    data class EditBasketItem(val id: String) : UiEvent()
-
     data class PostProduct(var product: UiState.Article)
 
     object LoadProducts : UiEvent()
 
-    data class PostChatMessage(
-        var creatorId: String,
-        var name: String,
-        var text: String,
-        var photoUrl: String
-    ) : UiEvent()
-
     data class NewImageCreated(val uri: Uri) : UiEvent()
-
-    data class PostAnyMessage(
-        var creatorId: String,
-        var name: String,
-        var text: String,
-        var photoUrl: String
-    ) : UiEvent()
 
     interface LoadingIndication {
         val contextId: Int

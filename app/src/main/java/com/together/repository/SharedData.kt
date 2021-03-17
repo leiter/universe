@@ -36,7 +36,6 @@ data class SharedData(
     lateinit var strings: Map<String, String>
     lateinit var ints: Map<String, Int>
 
-
     private fun prepare(context: Context): SharedPreferences {
         return context.getSharedPreferences(outPutFileName, Context.MODE_PRIVATE)
     }

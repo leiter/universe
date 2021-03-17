@@ -2,7 +2,7 @@
 <!--    10.1” tablet 1280x800 mdpi-->
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-    <dimen name="toolbar_title_size">48sp</dimen>
+    <dimen name="toolbar_title_size">40sp</dimen>
     <dimen name="preview_image_width">390dp</dimen>
     <dimen name="preview_image_height">488dp</dimen>
     <dimen name="price_margin_bottom">8dp</dimen>
