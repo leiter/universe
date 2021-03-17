@@ -1,4 +1,4 @@
-package com.together.base
+package com.together.basket
 
 import android.app.Dialog
 import android.os.Bundle
@@ -18,9 +18,13 @@ import com.google.android.material.tabs.TabLayout
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
+import com.together.base.MainMessagePipe
+import com.together.base.MainViewModel
+import com.together.base.UiEvent
 import com.together.base.UiEvent.Companion.SEND_ORDER
 import com.together.base.UiEvent.Companion.SEND_ORDER_FAILED
 import com.together.base.UiEvent.Companion.SEND_ORDER_UPDATED
+import com.together.base.UiState
 import com.together.databinding.FragmentBasketBinding
 import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable

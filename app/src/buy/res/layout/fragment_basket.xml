@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context=".base.BasketFragment">
+    tools:context=".basket.BasketFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appointment_container"

@@ -56,12 +56,6 @@ sealed class UiState {
         var piecesCount: Int = -1
     ) : UiState()
 
-
-    data class ProductList(val list: ArrayList<Article> = ArrayList()) : UiState() {
-        override var id: String = ""
-        override var mode: Int = -1
-    }
-
     data class Article(
         var productId: String = "",
         var productName: String = "",
@@ -116,7 +110,7 @@ sealed class UiState {
         }
 
         fun getWeightText(): String {
-            return if (unit.toLowerCase() != "kg") "Pro $unit" else {
+            return if (unit.toLowerCase() != "kg") unit else {
                 val result: String = when {
                     weightPerPiece >= 1 -> {
                         "Ca. ${this.weightPerPiece}kg pro Stück."
@@ -203,6 +197,12 @@ sealed class UiState {
         var _knownClientIds: MutableList<String> = mutableListOf(),
 
         ) : UiState(), Parcelable
+
+
+    data class ProductList(val list: ArrayList<Article> = ArrayList()) : UiState() {
+        override var id: String = ""
+        override var mode: Int = -1
+    }
 
     @Parcelize
     data class Market(

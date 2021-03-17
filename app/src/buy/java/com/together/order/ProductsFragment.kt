@@ -2,7 +2,6 @@ package com.together.order
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.view.Gravity
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
@@ -10,8 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.base.*
+import com.together.basket.BasketFragment
 import com.together.databinding.MainOrderFragmentBinding
 import com.together.dialogs.InfoDialogFragment
+import com.together.manage.ManageDialog
 import com.together.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

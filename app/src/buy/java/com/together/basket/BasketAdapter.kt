@@ -1,8 +1,9 @@
-package com.together.base
+package com.together.basket
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.together.base.UiState
 import com.together.databinding.ItemBasketBinding
 
 class BasketAdapter(var data: MutableList<UiState.Article>,

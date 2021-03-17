@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     firstStart = false
                 }
-                else -> Log.d("MainActivity", "Not interested in all UiStates.");
+//                else -> Log.d("MainActivity", "Not interested in all UiStates.");
             }
         })
 

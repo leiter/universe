@@ -1,6 +1,7 @@
-package com.together.base
+package com.together.manage
 
 import androidx.recyclerview.widget.RecyclerView
+import com.together.base.UiState
 import com.together.databinding.ItemOldOrderBinding
 import com.together.utils.toOrderTime
 

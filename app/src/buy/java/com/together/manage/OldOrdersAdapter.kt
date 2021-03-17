@@ -1,8 +1,9 @@
-package com.together.base
+package com.together.manage
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.together.base.UiState
 import com.together.databinding.ItemOldOrderBinding
 
 class OldOrdersAdapter(var data: List<UiState.Order>,

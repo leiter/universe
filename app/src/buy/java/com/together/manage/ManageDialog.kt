@@ -1,8 +1,7 @@
-package com.together.base
+package com.together.manage
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.together.R
 import com.together.about.AboutFragment
+import com.together.base.*
 import com.together.base.UiEvent.Companion.CLEAR_ACCOUNT
 import com.together.base.UiEvent.Companion.LOAD_OLD_ORDERS
+import com.together.basket.BasketFragment
 import com.together.databinding.ManageDialogBinding
 import com.together.profile.ClientProfileFragment
 import com.together.repository.NoInternetConnection
@@ -90,7 +91,7 @@ class ManageDialog : DialogFragment() {
                     }
                     viewBinding.btnLogOut.setText(R.string.invalidate_session)
                 }
-                else -> Log.d(TAG, "Only interested logged in state.")
+//                else -> Log.d(TAG, "Only interested logged in state.")
             }
         })
 
@@ -152,7 +153,8 @@ class ManageDialog : DialogFragment() {
             adapter?.data = it
             adapter?.notifyDataSetChanged()
         } else {
-            viewModel.snacks.value = UiEvent.Snack(msg = R.string.toast_msg_manage_dialog_not_ordered_yet )
+            viewModel.snacks.value =
+                UiEvent.Snack(msg = R.string.toast_msg_manage_dialog_not_ordered_yet)
             dismiss()
         }
     }
