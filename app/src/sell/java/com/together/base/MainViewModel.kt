@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import com.together.base.UiEvent.Companion.DELETE_PRODUCT
 import com.together.base.UiEvent.Companion.UNDEFINED
 import com.together.base.UiEvent.Companion.UPLOAD_PRODUCT
+import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.auth.FireBaseAuth
+import com.together.repository.storage.getSingleExists
 import com.together.utils.dataArticleToUi
 import com.together.utils.uiArticleToData
 import io.reactivex.Single
@@ -76,7 +78,13 @@ class MainViewModel (private val dataRepository: DataRepositorySell = DataReposi
                     loggedState.value = UiState.LoggedOut
 
                 is Result.LoggedIn -> {
-                    loggedState.value = UiState.BaseAuth()
+                    Database.sellerProfile("", true).getSingleExists()
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe({ exists ->
+                            loggedState.value = UiState.BaseAuth(hasProfile = exists)
+                        },{
+                            Log.d("ViewModel", "Exception while login")
+                        })
+
                 }
 
                 is Result.NewImageCreated -> {

@@ -41,5 +41,8 @@
     <string name="btn_show_available_products">Verfügbar</string>
     <string name="et_create_product_hint_product_search">Suche</string>
 
+    <string name="toast_no_internet_no_internet">Keine Internetverbindung</string>
+    <string name="toast_unknown_error">Unbekannter Fehler</string>
+
 
 </resources>

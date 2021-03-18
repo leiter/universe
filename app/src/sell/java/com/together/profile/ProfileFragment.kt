@@ -11,6 +11,7 @@ import com.together.R
 import com.together.app.MarketDialog
 import com.together.base.UiEvent
 import com.together.databinding.FragmentProfileBinding
+import com.together.repository.NoInternetConnection
 import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -104,13 +105,30 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         viewModel.blockingLoaderState.observe(viewLifecycleOwner) {
             when (it) {
                 is UiEvent.LoadingDone -> {
+                    it.exception?.let { ex ->
+                        when (ex) {
+                            is NoInternetConnection -> view.showSnackbar(UiEvent.Snack(
+                                msg = R.string.toast_no_internet_no_internet,
+                                backGroundColor = R.color.design_default_color_error
+                            ))
+                            else -> view.showSnackbar(UiEvent.Snack(
+                                msg = R.string.toast_unknown_error,
+                                backGroundColor = R.color.design_default_color_error
+                            ))
+                        }
+                    }
+                    viewBinding.placesList.show()
                     viewBinding.loadingProfile.visibility = View.GONE
                 }
-                is UiEvent.Loading -> viewBinding.loadingProfile.visibility = View.VISIBLE
+                is UiEvent.Loading -> {
+                    viewBinding.placesList.remove()
+                    viewBinding.loadingProfile.show()
+                }
                 is UiEvent.ShowCreateFragment -> {
+                    viewBinding.placesList.show()
                     viewBinding.loadingProfile.visibility = View.GONE
                     viewModel.blockingLoaderState.value = UiEvent.LoadingNeutral(-1)
-                    findNavController().navigate(R.id.createFragment)
+                    findNavController().navigate(R.id.action_profileFragment_to_createFragment)
                 }
                 else -> Log.d(TAG, "Not interested in all UiStates.");
             }

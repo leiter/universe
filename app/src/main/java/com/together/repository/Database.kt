@@ -28,8 +28,11 @@ object Database {
 
     fun connectedStatus() = fire().getReference(".info/connected")
 
-    fun orderSeller(sellerId: String): DatabaseReference = fire().reference.child(ORDERS)
-        .child(sellerId)
+    fun orderSeller(sellerId: String = ""): DatabaseReference {
+        return if(sellerId.isEmpty())fire().reference.child(ORDERS)
+            .child(FireBaseAuth.getAuth().uid!!)
+        else fire().reference.child(ORDERS).child(sellerId)
+    }
 
     fun nextOrders(date: String) = fire().reference.child(ORDERS)
         .child(FireBaseAuth.getAuth().uid!!)

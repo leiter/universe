@@ -41,7 +41,8 @@ sealed class UiState {
 
     data class BaseAuth(
         override var id: String = "StateLoggedIn",
-        override var mode: Int = UNDEFINED
+        override var mode: Int = UNDEFINED,
+        var hasProfile: Boolean = false
     ) : UiState()
 
     data class OrderedProduct(

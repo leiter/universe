@@ -45,7 +45,7 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
     }
 
     private fun loadProfile(){
-        dataRepository.loadSellerProfile().subscribeOn(Schedulers.io())
+        dataRepository.loadSellerProfile()
             .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
                     val seller = it.dataToUiSeller()
@@ -64,7 +64,7 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
     }
 
     fun uploadSellerProfile() {
-        blockingLoaderState.value = UiEvent.Loading(0)
+        blockingLoaderState.value = UiEvent.Loading(UiEvent.UPLOAD_PRODUCT)
         val p = profile.uiSellerToData()
         dataRepository.uploadSellerProfile(p).subscribe({ success ->
             if (success) {
@@ -74,7 +74,7 @@ class ProfileViewModel(private val dataRepository: DataRepositorySell = DataRepo
                 blockingLoaderState.value = UiEvent.LoadingDone(UiEvent.UPLOAD_PRODUCT)
             }
         }, {
-            blockingLoaderState.value = UiEvent.LoadingDone(UiEvent.UPLOAD_PRODUCT)
+            blockingLoaderState.value = UiEvent.LoadingDone(exception = it, contextId = UiEvent.UPLOAD_PRODUCT)
         }).addTo(disposable)
     }
 

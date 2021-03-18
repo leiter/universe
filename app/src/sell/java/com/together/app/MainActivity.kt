@@ -14,9 +14,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.work.*
 import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding3.material.itemSelections
 import com.squareup.picasso.Picasso
@@ -27,14 +29,11 @@ import com.together.base.UiEvent
 import com.together.base.UiState
 import com.together.databinding.ActivityMainBinding
 import com.together.profile.ProfileFragment.Companion.KEY_BACK_BUTTON
-import com.together.repository.Database
 import com.together.repository.auth.FireBaseAuth
-import com.together.repository.storage.getSingleExists
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import com.together.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
@@ -78,22 +77,27 @@ class MainActivity : AppCompatActivity() {
         viewModel.loggedState.observe(this, {
             when (it) {
                 is UiState.BaseAuth -> {
-                    Database.sellerProfile("", true).getSingleExists()
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe({ exists ->
-                        if (exists) {
+                        if (it.hasProfile) {
+//                            val w = WorkManager.getInstance(this)
+//                            val c = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+//                            val r = PeriodicWorkRequestBuilder<SwitchWorker>(15, TimeUnit.MINUTES)
+////                                .setInitialDelay(10, TimeUnit.SECONDS)
+//                                .setConstraints(c)
+//                                .build()
+//
+//                            w.enqueueUniquePeriodicWork("orderChannel",
+//                                ExistingPeriodicWorkPolicy.REPLACE,r)
                             setLoggedIn(viewBinding.navigationView)
                             disposable.add(setupDrawerNavigation())
-                            viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                            viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
                         } else {
-                            viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                            viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
                         }
-                    }, {
-                        Log.d("MainActivity", "Exception while login")
-                    })
+
                 }
 
                 is UiState.LoggedOut -> {
-                    viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
                     findNavController(R.id.navigation_controller)
                         .navigate(R.id.loginFragment)
                 }
@@ -110,10 +114,10 @@ class MainActivity : AppCompatActivity() {
                     } else viewBinding.drawerLayout.closeDrawers()
                 }
                 is UiEvent.LockDrawer -> {
-                    viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
                 }
                 is UiEvent.UnlockDrawer -> {
-                    viewBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                    viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
                 }
             }
         })

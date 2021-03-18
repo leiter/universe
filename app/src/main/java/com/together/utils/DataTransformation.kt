@@ -2,6 +2,8 @@ package com.together.utils
 
 import com.together.base.UiState
 import com.together.repository.Result
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.full.memberProperties
 
 fun Result.Article.dataArticleToUi(): UiState.Article {
@@ -17,7 +19,7 @@ fun Result.Article.dataArticleToUi(): UiState.Article {
         category = this.category,
         detailInfo = this.detailInfo,
         searchTerms = this.searchTerms.replace(",",", "),
-        weightPerPiece = this.weighPerPiece,
+        weightPerPiece = if(unit.toLowerCase(Locale.ROOT) == "kg ") this.weighPerPiece else 1.0,
         productId = this.productId
     )
 }
@@ -35,7 +37,7 @@ fun UiState.Article.uiArticleToData(): Result.Article {
         category = this.category,
         detailInfo = this.detailInfo,
         searchTerms = this.prepareSearchTerms(),
-        weighPerPiece = this.weightPerPiece,
+        weighPerPiece = if(unit.toLowerCase(Locale.ROOT) == "kg ")this.weightPerPiece else 1.0,
         productId = this.productId
     )
 }
