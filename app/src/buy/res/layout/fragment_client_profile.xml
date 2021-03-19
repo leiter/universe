@@ -2,6 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.together.profile.ClientProfileFragment"
     android:fillViewport="true"
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
@@ -11,11 +12,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:background="@color/soft_brown_no_alpha"
         android:clickable="true"
         android:focusable="true"
-        tools:context="com.together.profile.ClientProfileFragment">
+       >
 
         <View
             android:id="@+id/tb_container"

@@ -76,14 +76,14 @@ android {
             dimension = "basic"
             applicationIdSuffix ".sell"
             targetSdkVersion 29
-            versionCode 15
+            versionCode 16
             signingConfig signingConfigs.release
         }
 
         buy {
             dimension = "basic"
             applicationIdSuffix ".buy"
-            versionCode 29
+            versionCode 30
             compileSdkVersion 30
             targetSdkVersion 30
             signingConfig signingConfigs.release

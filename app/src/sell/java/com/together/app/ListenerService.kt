@@ -23,10 +23,7 @@ import io.reactivex.schedulers.Schedulers
 
 class ListenerService : Service() {
 
-
     private val disposable = CompositeDisposable()
-
-
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
@@ -40,7 +37,6 @@ class ListenerService : Service() {
                     disposable.clear()
                     stopForeground(true)
                     stopSelf()
-
                 }
 
             }

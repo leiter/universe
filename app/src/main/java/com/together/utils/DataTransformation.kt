@@ -19,7 +19,7 @@ fun Result.Article.dataArticleToUi(): UiState.Article {
         category = this.category,
         detailInfo = this.detailInfo,
         searchTerms = this.searchTerms.replace(",",", "),
-        weightPerPiece = if(unit.toLowerCase(Locale.ROOT) == "kg ") this.weighPerPiece else 1.0,
+        weightPerPiece = if(this.unit.toLowerCase(Locale.ROOT) == "kg") this.weighPerPiece else 1.0,
         productId = this.productId
     )
 }
@@ -37,7 +37,7 @@ fun UiState.Article.uiArticleToData(): Result.Article {
         category = this.category,
         detailInfo = this.detailInfo,
         searchTerms = this.prepareSearchTerms(),
-        weighPerPiece = if(unit.toLowerCase(Locale.ROOT) == "kg ")this.weightPerPiece else 1.0,
+        weighPerPiece = if(this.unit.toLowerCase(Locale.ROOT) == "kg") this.weightPerPiece else 1.0,
         productId = this.productId
     )
 }
