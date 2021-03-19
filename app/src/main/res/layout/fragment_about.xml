@@ -53,7 +53,7 @@
             android:linksClickable="true"
             android:textColor="@color/fab_green"
             app:layout_constraintTop_toBottomOf="@id/title_bar"
-            tools:text="@string/impressum" />
+            tools:text="@tools:sample/lorem/random" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

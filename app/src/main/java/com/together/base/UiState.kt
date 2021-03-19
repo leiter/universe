@@ -79,6 +79,10 @@ sealed class UiState {
 
     ) : UiState() {
 
+        fun canBeCounted() : Boolean {
+            return (unit.toLowerCase(Locale.ROOT) == "kg" && weightPerPiece == 0.0)
+        }
+
         fun prepareSearchTerms(): String {
             val bag = "$searchTerms,$category,$productName".replace(","," ")
                 .trim().replace("""\s{2,}""".toRegex(), " ")
@@ -99,19 +103,19 @@ sealed class UiState {
                 return "%.2f€".format((priceDigit * amountCount)).replace(".", ","); }
 
         private fun prepareAmountDisplay(): String {
-            val amountStart: String = if (unit.toLowerCase() != "kg") {
+            val amountStart: String = if (unit.toLowerCase(Locale.ROOT) != "kg") {
                 amountCount.toString().split(".")[0]
             } else "%.3f".format(amountCount).replace(".", ",")
             return "$amountStart $unit"
         }
 
         fun calculateAmountCountDisplay(): String {
-            return if (unit.toLowerCase() != "kg") amountCount.toString().split(".")[0]
+            return if (unit.toLowerCase(Locale.ROOT) != "kg") amountCount.toString().split(".")[0]
             else "%.3f".format(amountCount).replace(".", ",")
         }
 
         fun getWeightText(): String {
-            return if (unit.toLowerCase() != "kg") unit else {
+            return if (unit.toLowerCase(Locale.ROOT) != "kg") unit else {
                 val result: String = when {
                     weightPerPiece >= 1 -> {
                         "Ca. ${this.weightPerPiece}kg pro Stück."

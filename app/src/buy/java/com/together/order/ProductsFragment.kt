@@ -226,8 +226,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
 
     private fun setPresentedProduct(product: UiState.Article) {
         with(viewBinding) {
-            btnActivateCounter.show()
-            btnActivateCounter.hide()
             tvProductCategory.text = product.category
             tvProductName.text = product.productName
             prLoadImageProgress.show()
@@ -238,7 +236,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
             products.clearFocus()
             etProductAmount.requestFocus()
 
-            if (product.unit.toLowerCase(Locale.ROOT) == "kg" && product.weightPerPiece == 0.0) {
+            if (product.canBeCounted()) {
                 tvEstimatedWeight.hide()
                 btnActivateCounter.hide()
             } else {
@@ -258,13 +256,12 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
         if (p0?.id == R.id.et_product_amount) {
             if (p1) {
                 with(viewBinding) {
-                    btnActivateCounter.visibility = View.VISIBLE
+//                    btnActivateCounter.visibility = View.VISIBLE
                     counter.counterContainer.visibility = View.INVISIBLE
                     btnProductAmountClear.setImageResource(R.drawable.ic_clear)
                     btnProductAmountClear.setOnClickListener {
                         etProductAmount.setText("")
-                        if(!(inFocus().unit.toLowerCase(Locale.ROOT) == "kg"
-                            && inFocus().weightPerPiece == 0.0)){
+                        if(inFocus().canBeCounted()){
                             btnActivateCounter.show()
                         }
                         counter.counterContainer.visibility = View.INVISIBLE

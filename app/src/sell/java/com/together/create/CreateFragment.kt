@@ -21,6 +21,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.ItemClicked,
@@ -248,7 +249,7 @@ class CreateFragment : BaseFragment(R.layout.fragment_create), ProductAdapter.It
                  if(v.isNotEmpty()) {
                      value?.weightPerPiece = v.replace(",", ".").trim().toDouble()
                  } else {
-                     value?.weightPerPiece = if(value!!.unit=="Kg") 0.0 else 1.0
+                     value?.weightPerPiece = if(value!!.unit.toLowerCase(Locale.ROOT)=="kg") 0.0 else 1.0
                  }
 
             if (viewBinding.etProductCategory.validate(

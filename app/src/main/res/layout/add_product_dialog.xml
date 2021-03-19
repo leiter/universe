@@ -34,7 +34,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/productImage"
-        android:contentDescription="@string/content_description_product_image"
+        android:contentDescription="Produktbild"
         android:layout_width="192dp"
         android:layout_height="120dp"
         app:layout_constraintEnd_toEndOf="parent"

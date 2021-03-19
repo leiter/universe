@@ -39,4 +39,18 @@ Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten d
         <item quantity="other">%d Produkte</item>
     </plurals>
 
+
+
+
+
+
+    <string name="empty_basket_msg">Sie haben keine Produkte im Einkaufskorb.</string>
+    <string name="product_amount_is_null">Bitte fügen sie eine Mengen größer Null ein.</string>
+    <string name="product_amount_empty">Bitte geben sie eine Mengenangabe ein.</string>
+    <string name="invalidate_session">Alle Daten löschen</string>
+    <string name="login_btn_text">Einloggen</string>
+    <string name="bodenschatz_caps">BODENSCHÄTZE</string>
+    <string name="zero_price_euro">0,00€</string>
+    <string name="zero_count_amount">0</string>
+    <string name="zero_kg">0,000</string>
 </resources>
