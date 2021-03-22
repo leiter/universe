@@ -165,3 +165,24 @@ sealed class Result {
     }
 }
 
+fun Result.Order.changed(otherOrder: Result.Order): Boolean {
+    return when {
+        this.articles.size != otherOrder.articles.size -> true
+        this.pickUpDate != otherOrder.pickUpDate -> true
+        this.message != otherOrder.message -> true
+//        this.articles.changed(otherOrder.articles) -> true
+        else -> false
+    }
+}
+
+fun List<Result.OrderedProduct>.changed(otherList: List<Result.OrderedProduct>): Boolean {
+    val allIds = otherList.map { it.id }
+    return when {
+        this.filter { allIds.contains(it.id) }.size != this.size -> true
+        this.any { it.amountCount != otherList.filter {
+                otherIt -> it.id == otherIt.id }[0].amountCount
+        } -> true
+
+        else -> false
+    }
+}

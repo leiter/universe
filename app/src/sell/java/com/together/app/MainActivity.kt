@@ -36,6 +36,7 @@ import com.together.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
@@ -78,15 +79,15 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is UiState.BaseAuth -> {
                         if (it.hasProfile) {
-//                            val w = WorkManager.getInstance(this)
-//                            val c = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-//                            val r = PeriodicWorkRequestBuilder<SwitchWorker>(15, TimeUnit.MINUTES)
-////                                .setInitialDelay(10, TimeUnit.SECONDS)
-//                                .setConstraints(c)
-//                                .build()
-//
-//                            w.enqueueUniquePeriodicWork("orderChannel",
-//                                ExistingPeriodicWorkPolicy.REPLACE,r)
+                            val w = WorkManager.getInstance()
+                            val c = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                            val r = PeriodicWorkRequestBuilder<SwitchWorker>(15, TimeUnit.MINUTES)
+//                                .setInitialDelay(10, TimeUnit.SECONDS)
+                                .setConstraints(c)
+                                .build()
+
+                            w.enqueueUniquePeriodicWork("orderChannel",
+                                ExistingPeriodicWorkPolicy.REPLACE,r)
                             setLoggedIn(viewBinding.navigationView)
                             disposable.add(setupDrawerNavigation())
                             viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)

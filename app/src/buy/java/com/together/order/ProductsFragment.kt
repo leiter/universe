@@ -23,14 +23,15 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
-    ProductAdapter.ItemClicked,
-    View.OnFocusChangeListener {
+
+    ProductAdapter.ItemClicked, View.OnFocusChangeListener {
 
     private val adapter: ProductAdapter = ProductAdapter(this)
 
     private val viewBinding: MainOrderFragmentBinding by viewLifecycleLazy {
         MainOrderFragmentBinding.bind(requireView())
     }
+
     private lateinit var amountDisposable: Disposable
 
     override fun clicked(item: UiState.Article) {
