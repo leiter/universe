@@ -13,18 +13,17 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.google.firebase.database.DataSnapshot
+import androidx.core.app.NotificationCompat
 import com.together.R
 import com.together.repository.Database
 import com.together.repository.Result
 import com.together.repository.changed
 import com.together.repository.storage.getObservable
+import com.together.repository.storage.parseChildren
 import com.together.utils.*
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 class ListenerService : Service() {
 
@@ -83,7 +82,7 @@ class ListenerService : Service() {
             R.drawable.ic_clear_green, "Ausschalten",
             PendingIntent.getService(this, 2, i, FLAG_UPDATE_CURRENT)
         )
-
+        n.setNotificationSilent()
         startForeground(NOTIFICATION_ID, n.build())
     }
 
@@ -126,27 +125,15 @@ class ListenerService : Service() {
         }
 
         n.addAction(
-            R.drawable.ic_clear_green, "Ausschalten",
+            R.drawable.ic_add_shopping_cart_black, "Ausschalten",
             PendingIntent.getService(this, 2, i, FLAG_UPDATE_CURRENT)
         )
         n.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-
-        n.setContentText(text)
+        n.setStyle(NotificationCompat.BigTextStyle().bigText(text))
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, n.build())
-
-        Log.e("TTTTT", "Altered $alteredItemCount,   Added $addedItemCount");
-    }
-
-    private inline fun <reified T : Result> DataSnapshot.parseChildren(): List<T> {
-        val result = mutableListOf<T>()
-        this.children.forEach {
-            val r = it.getValue(T::class.java)!!
-            r.id = it.key ?: ""
-            result.add(r)
-        }
-        return result.toList()
+        Log.e("TTTTT", "Altered $alteredItemCount,   Added $addedItemCount")
     }
 
     override fun onBind(intent: Intent?): IBinder? {

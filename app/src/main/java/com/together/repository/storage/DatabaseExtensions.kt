@@ -300,3 +300,14 @@ fun UploadTask.getSingle(): Single<UploadTask.TaskSnapshot> {
         addOnFailureListener { emitter.onError(it) }
     }
 }
+
+
+inline fun <reified T : Result> DataSnapshot.parseChildren(): List<T> {
+    val result = mutableListOf<T>()
+    this.children.forEach {
+        val r = it.getValue(T::class.java)!!
+        r.id = it.key ?: ""
+        result.add(r)
+    }
+    return result.toList()
+}

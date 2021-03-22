@@ -9,9 +9,6 @@ import androidx.core.app.NotificationCompat
 import com.together.R
 import com.together.app.MainActivity
 
-class Notification {
-}
-
 fun provideBaseNotificationBuilder(
     context: Context,
     pendingIntent: PendingIntent?=null,
