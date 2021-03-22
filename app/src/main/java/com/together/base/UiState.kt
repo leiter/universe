@@ -74,6 +74,7 @@ sealed class UiState {
         var searchTerms: String = "",
         var weightPerPiece: Double = 0.0,
         var pieces: Int = 0,
+        var inBasket: Boolean = false,
         override var id: String = "",
         override var mode: Int = UNDEFINED
 

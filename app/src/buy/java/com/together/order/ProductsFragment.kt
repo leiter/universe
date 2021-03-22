@@ -39,12 +39,6 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
             viewModel.productList.value!!.toMutableList()
         val selectedItemIndex = productData.indexOfFirst { it.id == item.id }
 
-        val indexToRemove = productData.filter { !it.isSelected }
-        indexToRemove.forEachIndexed { index, _ ->
-            val n = productData[index].copy(isSelected = false)
-            productData[index] = n
-        }
-
         val i = productData[selectedItemIndex].copy(isSelected = true)
         productData[selectedItemIndex] = i
         adapter.submitList(productData.toMutableList())
@@ -153,7 +147,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
                 tvMenuTitle.text = getString(R.string.bodenschatz_caps)
                 btnShowBasket.badge.show()
                 setPresentedProduct(it)
-                setupAmountListener()
+                if(::amountDisposable.isInitialized.not())setupAmountListener()
             })
         }
     }
@@ -161,12 +155,12 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
     private fun inFocus(): UiState.Article { return viewModel.presentedProduct.value!! }
 
     private fun setupAmountListener() {
-        if (::amountDisposable.isInitialized && amountDisposable.isDisposed.not()) {
-            amountDisposable.dispose()
-        }
+//        if (::amountDisposable.isInitialized && amountDisposable.isDisposed.not()) {
+//            amountDisposable.dispose()
+//        }
         amountDisposable =
             viewBinding.etProductAmount.textChanges()
-                .debounce(200, TimeUnit.MILLISECONDS)
+                .debounce(400, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isNotEmpty()) {
@@ -199,6 +193,7 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
         inFocus().pieceCounter = newVal
         val v = inFocus().calculateAmountCountDisplay()
         viewBinding.etProductAmount.setText(v)
+
         viewBinding.counter.tvCounter.text = newVal.toString()
     }
 
@@ -256,14 +251,14 @@ class ProductsFragment : BaseFragment(R.layout.main_order_fragment),
         if (p0?.id == R.id.et_product_amount) {
             if (p1) {
                 with(viewBinding) {
-//                    btnActivateCounter.visibility = View.VISIBLE
+                    btnActivateCounter.visibility = View.VISIBLE
                     counter.counterContainer.visibility = View.INVISIBLE
                     btnProductAmountClear.setImageResource(R.drawable.ic_clear)
                     btnProductAmountClear.setOnClickListener {
                         etProductAmount.setText("")
-                        if(inFocus().canBeCounted()){
-                            btnActivateCounter.show()
-                        }
+//                        if(inFocus().canBeCounted()){
+//                            btnActivateCounter.show()
+//                        }
                         counter.counterContainer.visibility = View.INVISIBLE
                         inFocus().pieceCounter = 0
                         inFocus().amountCount = 0.0

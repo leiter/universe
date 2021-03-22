@@ -307,5 +307,6 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         return sellerProfile.marketList[marketIndex]
     }
 
+
 }
 

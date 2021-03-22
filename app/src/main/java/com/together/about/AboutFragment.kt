@@ -21,9 +21,7 @@ import com.together.utils.viewBinding
 class AboutFragment : BaseFragment(R.layout.fragment_about) {
 
     private val viewBinding: FragmentAboutBinding by viewBinding {
-        FragmentAboutBinding.bind(
-            requireView()
-        )
+        FragmentAboutBinding.bind(requireView())
     }
 
     private var flavour: String = ""
