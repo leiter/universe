@@ -3,7 +3,10 @@ package com.together.app
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -30,6 +33,7 @@ import com.together.base.UiState
 import com.together.databinding.ActivityMainBinding
 import com.together.profile.ProfileFragment.Companion.KEY_BACK_BUTTON
 import com.together.repository.auth.FireBaseAuth
+import com.together.utils.ACTION_SHOW_ORDER_FRAGMENT
 import com.together.utils.AQ
 import com.together.utils.hideIme
 import com.together.utils.viewBinding
@@ -76,9 +80,17 @@ class MainActivity : AppCompatActivity() {
             findNavController(R.id.navigation_controller))
 
         viewModel.loggedState.observe(this, {
+
             when (it) {
                 is UiState.BaseAuth -> {
-                        if (it.hasProfile) {
+                    Log.e("TTTTT", "For debugging IIIIIIIIIII  ${it.hasProfile}");
+
+                    if (it.hasProfile) {
+
+                            setLoggedIn(viewBinding.navigationView)
+                            disposable.add(setupDrawerNavigation())
+                            viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
+
                             val w = WorkManager.getInstance()
                             val c = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
                             val r = PeriodicWorkRequestBuilder<SwitchWorker>(15, TimeUnit.MINUTES)
@@ -87,10 +99,8 @@ class MainActivity : AppCompatActivity() {
                                 .build()
 
                             w.enqueueUniquePeriodicWork("orderChannel",
-                                ExistingPeriodicWorkPolicy.REPLACE,r)
-                            setLoggedIn(viewBinding.navigationView)
-                            disposable.add(setupDrawerNavigation())
-                            viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
+                                ExistingPeriodicWorkPolicy.KEEP,r)
+
                         } else {
                             viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
                         }
@@ -128,6 +138,10 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent != null && intent.action == packageName + LOGIN_ACTION) {
             startActivityForResult(AQ.getFirebaseUIStarter(), LOGIN_REQUEST)
+        }
+        if (intent != null && intent.action == ACTION_SHOW_ORDER_FRAGMENT) {
+            findNavController(R.id.navigation_controller)
+                .navigate(R.id.showOrdersFragment)
         }
     }
 
@@ -190,6 +204,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoggedIn(navigation_drawer: NavigationView) {
+        Log.e("TTTTT", "For debugging llllllllllll");
         val user = FireBaseAuth.getAuth().currentUser!!
         val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)

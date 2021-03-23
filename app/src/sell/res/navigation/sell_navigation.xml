@@ -47,6 +47,9 @@
             android:id="@+id/action_loginFragment_to_profileFragment"
             app:destination="@id/profileFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_showOrdersFragment"
+            app:destination="@id/showOrdersFragment" />
     </fragment>
 
     <fragment
@@ -73,6 +76,9 @@
         <action
             android:id="@+id/action_showOrdersFragment_to_createFragment"
             app:destination="@id/createFragment" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="myapp://bodenschatz.com/bestellung" />
     </fragment>
 
     <fragment
@@ -84,6 +90,7 @@
         <action android:id="@+id/action_productViewsFragment_to_createFragment"
             app:destination="@id/createFragment" />
     </fragment>
+
 
 
 </navigation>

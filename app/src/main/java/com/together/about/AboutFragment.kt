@@ -15,6 +15,8 @@ import com.together.base.MainMessagePipe
 import com.together.base.UiEvent
 import com.together.databinding.FragmentAboutBinding
 import com.together.utils.getIntIdentity
+import com.together.utils.showPopup
+import com.together.utils.showSnackbar
 import com.together.utils.viewBinding
 
 
@@ -45,7 +47,7 @@ class AboutFragment : BaseFragment(R.layout.fragment_about) {
             )
         }
         viewBinding.backButton.setOnClickListener {
-            if (flavour == "createFragment") {  //fixme  later use id reference directly
+            if (flavour == "createFragment") {
                 findNavController().navigate(requireContext().getIntIdentity(flavour, "id"))
             } else {
                 requireActivity().onBackPressed()
@@ -67,11 +69,7 @@ class AboutFragment : BaseFragment(R.layout.fragment_about) {
         try {
             startActivity(myAppLinkToMarket)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(
-                requireContext(),
-                "App rating ist leider nicht möglich",
-                Toast.LENGTH_LONG
-            ).show()
+            viewBinding.root.showSnackbar(UiEvent.Snack(msg = R.string.toast_cannot_rate_the_app))
         }
     }
 
@@ -79,29 +77,15 @@ class AboutFragment : BaseFragment(R.layout.fragment_about) {
         const val TAG = "AboutFragment"
     }
 
+    private val showLicense = {MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(requireContext()))}
+    private val rateApp = {launchMarket()}
+    private val startCall = {startCall()}
+
     private fun showPopup() {
-        val popupMenu = PopupMenu(requireActivity(), viewBinding.btnSettings)
-        popupMenu.menuInflater.inflate(R.menu.menu_setting_about, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.btn_show_licences -> {
-                    MainMessagePipe.uiEvent.onNext(UiEvent.ShowLicense(requireContext()))
-                    true
-                }
-                R.id.btn_rate_app -> {
-                    launchMarket()
-                    true
-                }
-                R.id.btn_call -> {
-                    startCall()
-                    true
-                }
-                else -> {
-                    super.onOptionsItemSelected(item)
-                }
-            }
-        }
-        popupMenu.show()
+        val m = hashMapOf(  R.id.btn_show_licences to showLicense,
+                            R.id.btn_rate_app to rateApp ,
+                            R.id.btn_call to startCall)
+        requireContext().showPopup(viewBinding.btnSettings, m, R.menu.menu_setting_about )
     }
 
 }

@@ -2,6 +2,7 @@ package com.together.orders
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,14 @@ class ShowOrdersFragment : Fragment(R.layout.fragment_show_orders){
                 RecyclerView.VERTICAL, false
             )
         }
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.action_showOrdersFragment_to_createFragment)
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callback)
 
         viewModel.orders.observe(viewLifecycleOwner, {
             adapter.data = it.toMutableList()

@@ -12,6 +12,7 @@ import com.together.base.UiState
 import com.together.databinding.FragmentLoginBinding
 import com.together.repository.Database
 import com.together.repository.storage.getSingleExists
+import com.together.utils.ACTION_SHOW_ORDER_FRAGMENT
 import com.together.utils.viewLifecycleLazy
 
 
@@ -36,15 +37,19 @@ class LoginFragment : BaseFragment(R.layout.fragment_login) {
 
         viewModel.loggedState.observe(viewLifecycleOwner, {
             if (it is UiState.BaseAuth) {
-                Database.sellerProfile("", true).getSingleExists().subscribe { exists ->
-                    if (exists) {
-                        navCon.navigate(R.id.createFragment)
+//                Database.sellerProfile("", true).getSingleExists().subscribe { exists ->
+                    if (it.hasProfile) {
+                        if(requireActivity().intent.action == ACTION_SHOW_ORDER_FRAGMENT) {
+                            navCon.navigate(R.id.showOrdersFragment)
+                        } else {
+                            navCon.navigate(R.id.createFragment)
+                        }
                     } else {
                         findNavController().navigate(R.id.profileFragment)
 
                     }
                 }
-            }
+//            }
         })
 
         viewBinding.plusOneButton.setOnClickListener {

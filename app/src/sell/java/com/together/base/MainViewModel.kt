@@ -120,7 +120,15 @@ class MainViewModel (private val dataRepository: DataRepositorySell = DataReposi
     }
 
     val loggedState: MutableLiveData<UiState> by lazy {
-        MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
+        MutableLiveData<UiState>().also {
+            Database.sellerProfile("", true).getSingleExists()
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ exists ->
+                    loggedState.value = UiState.BaseAuth(hasProfile = exists)
+                },{
+                    Log.d("ViewModel", "Exception while login")
+                })
+
+        }
     }
 
     val newProduct: MutableLiveData<UiState.NewProductImage> = MutableLiveData()

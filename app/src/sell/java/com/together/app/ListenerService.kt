@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.Service
 import android.content.Context
@@ -79,7 +80,7 @@ class ListenerService : Service() {
         }
 
         n.addAction(
-            R.drawable.ic_clear_green, "Ausschalten",
+            R.drawable.ic_stat_name, "Ausschalten",
             PendingIntent.getService(this, 2, i, FLAG_UPDATE_CURRENT)
         )
         n.setNotificationSilent()
@@ -123,6 +124,14 @@ class ListenerService : Service() {
         val i = Intent(this, ListenerService::class.java).apply {
             action = ACTION_STOP_SERVICE
         }
+        n.setContentIntent(PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, MainActivity::class.java).apply {
+                action = ACTION_SHOW_ORDER_FRAGMENT
+            },
+            FLAG_CANCEL_CURRENT
+        ))
 
         n.addAction(
             R.drawable.ic_add_shopping_cart_black, "Ausschalten",

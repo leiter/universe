@@ -48,6 +48,7 @@
     <string name="developer_error_hint">something went wrong</string>
     <string name="btn_show_not_available_products">Nicht verfügbar</string>
     <string name="toast_msg_manage_dialog_not_ordered_yet">Bisher wurden bisher keine Bestellungen aufgegeben.</string>
+    <string name="toast_cannot_rate_the_app">App rating ist leider nicht möglich</string>
 
 
 </resources>

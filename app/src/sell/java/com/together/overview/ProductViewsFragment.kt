@@ -12,6 +12,7 @@ import com.together.base.ProdAdapter
 import com.together.base.UiState
 import com.together.databinding.ProductViewsFragmentBinding
 import com.together.utils.getQuantityString
+import com.together.utils.showPopup
 import com.together.utils.viewLifecycleLazy
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -79,25 +80,14 @@ class ProductViewsFragment : Fragment(R.layout.product_views_fragment) {
         adapter.submitList(result)
     }
 
+    private val available = { setListState(AVAILABLE_ITEMS) }
+
+    private val notAvailable = { setListState(NOT_AVAILABLE_ITEMS) }
+
     private fun showPopup() {
-        val popupMenu = PopupMenu(requireActivity(), viewBinding.btnFilterOptions)
-        popupMenu.menuInflater.inflate(R.menu.menu_product_views, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.btn_buyer_view -> {
-                    setListState(AVAILABLE_ITEMS)
-                    true
-                }
-                R.id.btn_not_available -> {
-                    setListState(NOT_AVAILABLE_ITEMS)
-                    true
-                }
-                else -> {
-                    super.onOptionsItemSelected(item)
-                }
-            }
-        }
-        popupMenu.show()
+        val m = hashMapOf(  R.id.btn_buyer_view to available,
+                            R.id.btn_not_available to notAvailable )
+        requireContext().showPopup(viewBinding.btnFilterOptions, m, R.menu.menu_product_views)
     }
 
     override fun onDestroyView() {
