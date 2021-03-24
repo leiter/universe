@@ -52,9 +52,9 @@ object Database {
 
     init {
         fire().setPersistenceEnabled(true)
-        if(BuildConfig.FLAVOR=="sell"){
-            sellerProfile("",true).keepSynced(true)
-        }
+//        if(BuildConfig.FLAVOR=="sell"){
+//            sellerProfile("",true).keepSynced(true)
+//        }
     }
 
 }

@@ -33,10 +33,7 @@ import com.together.base.UiState
 import com.together.databinding.ActivityMainBinding
 import com.together.profile.ProfileFragment.Companion.KEY_BACK_BUTTON
 import com.together.repository.auth.FireBaseAuth
-import com.together.utils.ACTION_SHOW_ORDER_FRAGMENT
-import com.together.utils.AQ
-import com.together.utils.hideIme
-import com.together.utils.viewBinding
+import com.together.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -48,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    private val viewBinding : ActivityMainBinding by viewBinding (ActivityMainBinding::inflate)
+    private val viewBinding: ActivityMainBinding by viewBinding(ActivityMainBinding::inflate)
 
     private val disposable = CompositeDisposable()
 
@@ -76,34 +73,28 @@ class MainActivity : AppCompatActivity() {
 //                .replace(R.id.container, Cre()).commit()
 //        }
 
-        NavigationUI.setupWithNavController(viewBinding.navigationView,
-            findNavController(R.id.navigation_controller))
+        NavigationUI.setupWithNavController(
+            viewBinding.navigationView,
+            findNavController(R.id.navigation_controller)
+        )
 
         viewModel.loggedState.observe(this, {
 
             when (it) {
                 is UiState.BaseAuth -> {
-                    Log.e("TTTTT", "For debugging IIIIIIIIIII  ${it.hasProfile}");
-
                     if (it.hasProfile) {
 
-                            setLoggedIn(viewBinding.navigationView)
-                            disposable.add(setupDrawerNavigation())
-                            viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
-
-                            val w = WorkManager.getInstance()
-                            val c = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-                            val r = PeriodicWorkRequestBuilder<SwitchWorker>(15, TimeUnit.MINUTES)
-//                                .setInitialDelay(10, TimeUnit.SECONDS)
-                                .setConstraints(c)
-                                .build()
-
-                            w.enqueueUniquePeriodicWork("orderChannel",
-                                ExistingPeriodicWorkPolicy.KEEP,r)
-
-                        } else {
-                            viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
+                        setLoggedIn(viewBinding.navigationView)
+                        disposable.add(setupDrawerNavigation())
+                        viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
+                        if(!viewModel.isWorking) {
+                            startWorkerManager()
+                            viewModel.isWorking = true
                         }
+
+                    } else {
+                        viewBinding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED)
+                    }
 
                 }
 
@@ -132,6 +123,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun startWorkerManager() {
+        val w = WorkManager.getInstance(applicationContext)
+        val c = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val r = OneTimeWorkRequestBuilder<SwitchWorker>()
+            .setInitialDelay(10, TimeUnit.SECONDS)
+            .setInputData(workDataOf(SwitchWorker.MODE to ACTION_START_SERVICE))
+            .addTag("Marco")
+            .setConstraints(c)
+            .build()
+        w.enqueueUniqueWork(ACTION_START_SERVICE,ExistingWorkPolicy.KEEP,r)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -179,12 +182,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupDrawerNavigation(): Disposable {
-        return viewBinding.navigationView.itemSelections().subscribe ({
-            when(it.itemId) {
+        return viewBinding.navigationView.itemSelections().subscribe({
+            when (it.itemId) {
                 R.id.profileFragment -> {
                     findNavController(R.id.navigation_controller).navigate(
                         it.itemId,
-                        bundleOf(KEY_BACK_BUTTON to true )
+                        bundleOf(KEY_BACK_BUTTON to true)
                     )
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
@@ -193,18 +196,18 @@ class MainActivity : AppCompatActivity() {
                     val payload = ArrayList(viewModel.productList.value!!)
                     MainMessagePipe.transferCache.onNext(UiState.ProductList(payload))
                     findNavController(R.id.navigation_controller).navigate(
-                        it.itemId)
+                        it.itemId
+                    )
                     viewBinding.drawerLayout.closeDrawers()
                     return@subscribe
                 }
             }
             NavigationUI.onNavDestinationSelected(it, findNavController(R.id.navigation_controller))
             viewBinding.drawerLayout.closeDrawers()
-        },{ it.printStackTrace() })
+        }, { it.printStackTrace() })
     }
 
     private fun setLoggedIn(navigation_drawer: NavigationView) {
-        Log.e("TTTTT", "For debugging llllllllllll");
         val user = FireBaseAuth.getAuth().currentUser!!
         val head = navigation_drawer.getHeaderView(0)!!
         val avatar = head.findViewById<ImageView>(R.id.user_avatar)

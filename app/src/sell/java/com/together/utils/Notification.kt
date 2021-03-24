@@ -13,18 +13,16 @@ import com.together.app.MainActivity
 
 fun provideBaseNotificationBuilder(
     context: Context,
-    pendingIntent: PendingIntent?=null,
-    orderlist: String = ""
-) = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+    pendingIntent: PendingIntent = provideActivityPendingIntent(context)
+): NotificationCompat.Builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
     .setAutoCancel(true)
     .setSmallIcon(R.drawable.ic_add_shopping_cart_black)
     .setContentTitle("Bodenschätze Bestellungen")
-//    .setContentText(orderlist)
-//    .setContentIntent(pendingIntent)
+    .setContentIntent(pendingIntent)
 
 fun provideActivityPendingIntent(
     context: Context
-) =
+): PendingIntent =
     PendingIntent.getActivity(
         context,
         0,

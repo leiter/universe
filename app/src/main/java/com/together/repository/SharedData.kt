@@ -1,8 +1,8 @@
 package com.together.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import com.together.BuildConfig
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -29,10 +29,11 @@ data class SharedData(
         )
 
         val intKeys = listOf(BUILD_VERSION)
-        val intDefault = listOf(BuildConfig.VERSION_CODE)
+//        val intDefault = listOf(BuildConfig.VERSION_CODE)
 
     }
 
+    var booleans: Map<String, Boolean> = emptyMap()
     lateinit var strings: Map<String, String>
     lateinit var ints: Map<String, Int>
 
@@ -49,20 +50,23 @@ data class SharedData(
                s[key] = pref.getString(key , stringDefault[index]) ?: ""}
            strings = s.toMap()
 
-           intKeys.forEachIndexed { index, key ->
-               i[key] = pref.getInt(key, intDefault[index] )
-           }
+//           intKeys.forEachIndexed { index, key ->
+//               i[key] = pref.getInt(key, intDefault[index] )
+//           }
            ints = i.toMap()
            this
        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun save(context: Context): Single<Boolean> {
+    @SuppressLint("ApplySharedPref")
+    fun save(context: Context): Single<SharedData> {
         return Single.fromCallable {
             prepare(context).edit().also { editor ->
                 strings.keys.forEach { editor.putString(it, strings[it]) }
+                booleans.keys.forEach { editor.putBoolean(it, booleans[it]!!) }
                 ints.keys.forEach { key -> ints[key]?.let { values -> editor.putInt(key, values) } }
             }.commit()
+            this
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 

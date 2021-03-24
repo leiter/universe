@@ -37,8 +37,8 @@ class LoginFragment : BaseFragment(R.layout.fragment_login) {
 
         viewModel.loggedState.observe(viewLifecycleOwner, {
             if (it is UiState.BaseAuth) {
-//                Database.sellerProfile("", true).getSingleExists().subscribe { exists ->
-                    if (it.hasProfile) {
+                Database.sellerProfile("", true).getSingleExists().subscribe { exists ->
+                    if (exists) {
                         if(requireActivity().intent.action == ACTION_SHOW_ORDER_FRAGMENT) {
                             navCon.navigate(R.id.showOrdersFragment)
                         } else {
@@ -49,7 +49,7 @@ class LoginFragment : BaseFragment(R.layout.fragment_login) {
 
                     }
                 }
-//            }
+            }
         })
 
         viewBinding.plusOneButton.setOnClickListener {

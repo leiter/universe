@@ -71,6 +71,8 @@ class MainViewModel (private val dataRepository: DataRepositorySell = DataReposi
     private var disposable2: CompositeDisposable = CompositeDisposable()
     var uploadImage: Boolean = false
 
+    var isWorking = false
+
     init {
         disposable.add(MainMessagePipe.mainThreadMessage.subscribe {
             when (it) {
@@ -121,6 +123,7 @@ class MainViewModel (private val dataRepository: DataRepositorySell = DataReposi
 
     val loggedState: MutableLiveData<UiState> by lazy {
         MutableLiveData<UiState>().also {
+            if(FireBaseAuth.isLoggedIn() is UiState.BaseAuth)
             Database.sellerProfile("", true).getSingleExists()
                 .observeOn(AndroidSchedulers.mainThread()).subscribe({ exists ->
                     loggedState.value = UiState.BaseAuth(hasProfile = exists)

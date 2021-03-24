@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.Service
 import android.content.Context
@@ -52,7 +51,6 @@ class ListenerService : Service() {
                     stopForeground(true)
                     stopSelf()
                 }
-
             }
         }
 
@@ -89,15 +87,18 @@ class ListenerService : Service() {
 
     private fun setUpOrderConnection() {
 
-        val day1 = Database.orderSeller().orderByKey().startAt("20210325").getObservable()
-        val day2 = Database.orderSeller().orderByKey().startAt("20210326").getObservable()
-
-        day1.concatWith(day2).subscribeOn(Schedulers.io())
+        Database.orderSeller().orderByKey().startAt("20210325").getObservable()
+        .subscribeOn(Schedulers.io())
             .subscribe({ dataSnapshot ->
                 val list = dataSnapshot.parseChildren<Result.Order>()
+                val open = openOrders.map { it.id }
+                val nextBlock = list.map { it.id }
+                open.minus(nextBlock).forEach {
+                    openOrders.remove(openOrders.find { it.id.equals(it) })
+                }
                 orderMap[dataSnapshot.key!!] = list
                 manageOrders(list)
-
+                Log.e("OOOOO", "For debugging  ${dataSnapshot.key}")
             }, { Log.e("TTTTT", "For debugging", it) }).addTo(disposable)
     }
 
@@ -115,6 +116,7 @@ class ListenerService : Service() {
                 openOrders.add(newItem)
             }
         }
+
         val text = if (firstTime) "Es liegen ${openOrders.size} Bestellungen vor."
                 else "Es bestehen ${openOrders.size} Bestellungen. " +
                 "$addedItemCount neue Bestellungen und $alteredItemCount geänderte."
@@ -124,14 +126,6 @@ class ListenerService : Service() {
         val i = Intent(this, ListenerService::class.java).apply {
             action = ACTION_STOP_SERVICE
         }
-        n.setContentIntent(PendingIntent.getActivity(
-            this,
-            0,
-            Intent(this, MainActivity::class.java).apply {
-                action = ACTION_SHOW_ORDER_FRAGMENT
-            },
-            FLAG_CANCEL_CURRENT
-        ))
 
         n.addAction(
             R.drawable.ic_add_shopping_cart_black, "Ausschalten",
