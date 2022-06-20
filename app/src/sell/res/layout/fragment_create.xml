@@ -101,6 +101,7 @@
         android:id="@+id/et_product_name_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginStart="0dp"
         app:layout_constraintEnd_toStartOf="@+id/product_number_layout"
         app:layout_constraintHorizontal_weight="0.5"
@@ -122,6 +123,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_price_layout"
         android:layout_width="0dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/product_price_unit_layout"
         app:layout_constraintHorizontal_weight="0.35"
@@ -145,8 +147,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_product_weigh_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price_unit_layout"
         app:layout_constraintEnd_toStartOf="@+id/image"
         app:layout_constraintHorizontal_weight="0.3"
         app:layout_constraintStart_toEndOf="@+id/product_price_unit_layout"
@@ -154,19 +158,20 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_product_weigh"
-            style="@style/CreateEditText"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:maxLines="1"
+            android:layout_height="match_parent"
             android:digits="0123456789,"
             android:hint="@string/et_create_product_hint_product_weight"
-            android:inputType="number" />
+            android:inputType="number"
+            android:lines="1"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_product_category_layout"
         android:layout_width="0dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/et_product_name_layout"
         app:layout_constraintStart_toStartOf="@+id/et_product_name_layout"
@@ -174,10 +179,10 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_product_category"
-            style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:maxLines="1"
             android:hint="@string/et_create_product_hint_product_category"
             android:inputType="textCapWords" />
@@ -186,8 +191,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_price_unit_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/product_price_layout"
         app:layout_constraintEnd_toStartOf="@+id/et_product_weigh_layout"
         app:layout_constraintHorizontal_weight="0.3"
         app:layout_constraintStart_toEndOf="@+id/product_price_layout"
@@ -196,15 +203,14 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/product_price_unit"
-            style="@style/CreateEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:maxLines="1"
+            android:layout_height="match_parent"
             android:enabled="false"
             android:gravity="center"
             android:hint="@string/et_create_product_hint_product_unit"
             android:inputType="textCapWords"
+            android:lines="1"
+            android:maxLines="1"
 
             />
     </com.google.android.material.textfield.TextInputLayout>
@@ -238,6 +244,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="visible"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
         app:layout_constraintWidth_min="72dp"
         app:layout_constraintBottom_toBottomOf="@+id/et_product_name_layout"
         app:layout_constraintEnd_toStartOf="@+id/image"
@@ -246,7 +254,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/product_number"
-            style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -304,6 +311,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/product_search_term_layout"
         android:layout_width="0dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/et_product_weigh_layout"
         app:layout_constraintStart_toStartOf="@id/et_product_name_layout"
@@ -311,7 +320,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/product_search_term"
-            style="@style/CreateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"

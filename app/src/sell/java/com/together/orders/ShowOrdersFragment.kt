@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +17,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ShowOrdersFragment : Fragment(R.layout.fragment_show_orders){
 
-    @Inject
-    lateinit var viewModel: OrdersViewModel// by viewModels()
+    private val viewModel: OrdersViewModel by viewModels()
     private val adapter: OrdersAdapter = OrdersAdapter()
 
     private val viewBinding: FragmentShowOrdersBinding by viewLifecycleLazy {
