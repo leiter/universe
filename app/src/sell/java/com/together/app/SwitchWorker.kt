@@ -29,8 +29,8 @@ class SwitchWorker(context: Context, parameters: WorkerParameters) : Worker(cont
         private const val skipToDayKey = "skipToDay"
         private const val initializedKey = "initializedKey"
 
-        private const val startDefault = "19:38"
-        private const val endDefault = "19:36"
+        private const val startDefault = "20:18"
+        private const val endDefault = "20:17"
         private const val skipToDayDefault = false
 //        private const val initializedDefault = false
     }
@@ -99,7 +99,7 @@ class SwitchWorker(context: Context, parameters: WorkerParameters) : Worker(cont
 //            nextRequest.setConstraints(
 //                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 //            )
-        WorkManager.getInstance(applicationContext)
+        WorkManager.getInstance()
             .enqueueUniqueWork(start, ExistingWorkPolicy.KEEP, nextRequest.build())
     }
 
@@ -114,19 +114,6 @@ class SwitchWorker(context: Context, parameters: WorkerParameters) : Worker(cont
             }
         }
     }
-
-//    override fun createWork(): Single<Result> {
-//        return prePareIfNeeded(applicationContext).map {
-//            val start = inputData.getString(MODE)!!
-//            Log.e("TTTTT", "For debugging  $start")
-//
-//            Log.e("TTTTT", "$it");
-//            val a = if (start == ACTION_START_SERVICE) ACTION_STOP_SERVICE else ACTION_START_SERVICE
-//            handleService(start)
-//            scheduleNextAction(a)
-//            Result.success()
-//        }
-//    }
 
     private fun calculateDelay(): Int {
         return 30

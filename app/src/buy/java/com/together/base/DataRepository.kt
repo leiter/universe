@@ -11,6 +11,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 interface DataRepository {
@@ -37,6 +39,12 @@ interface DataRepository {
         orderId: String,
         orderPath: String
     ): Single<Result.Order>
+
+    fun cancelOrder(
+        sellerId: String,
+        date: String,
+        orderId: String,
+    ): Single<Boolean>
 
     fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Result.BuyerProfile>
     fun loadBuyerProfile(): Single<Result.BuyerProfile>
@@ -80,14 +88,14 @@ class DataRepositoryImpl : DataRepository {
             } else {
                 Single.error(AlreadyPlaceOrder())
             }.map { pair ->
-                    val m = buyerProfile.placedOrderIds.toMutableMap()
-                    m[pair.second.first] = pair.second.second
-                    buyerProfile.placedOrderIds = m
-                    if (order.buyerProfile.displayName != buyerProfile.displayName) {
-                        buyerProfile.displayName = order.buyerProfile.displayName
-                    }
-                    buyerProfile.copy()
-                }.flatMap { saveBuyerProfile(it) }
+                val m = buyerProfile.placedOrderIds.toMutableMap()
+                m[pair.second.first] = pair.second.second
+                buyerProfile.placedOrderIds = m
+                if (order.buyerProfile.displayName != buyerProfile.displayName) {
+                    buyerProfile.displayName = order.buyerProfile.displayName
+                }
+                buyerProfile.copy()
+            }.flatMap { saveBuyerProfile(it) }
         }
     }
 
@@ -104,9 +112,19 @@ class DataRepositoryImpl : DataRepository {
         }
     }
 
+    private fun Long.canBeCanceled(): Boolean {
+        return TimeUnit.MILLISECONDS.toDays(this - Date().time) > 1
+    }
+
+
     private fun oneOrder(sellerId: String, date: String, orderId: String): Single<Result.Order> {
         return Database.orderSeller(sellerId)
-            .child(date).child(orderId).getSingleValue()
+            .child(date).child(orderId).getSingleValue<Result.Order>()
+            .map {
+                if (it.pickUpDate.canBeCanceled())
+                    it.id = orderId;
+                it
+            }
     }
 
     override fun clearUserData(
@@ -153,6 +171,11 @@ class DataRepositoryImpl : DataRepository {
             Database.orderSeller(sellerId).child(orderId).child(orderPath)
                 .getSingleValue<Result.Order>().subscribeOn(Schedulers.io())
         }
+    }
+
+    override fun cancelOrder(sellerId: String, date: String, orderId: String): Single<Boolean> {
+        return deleteOrder(sellerId,date, orderId).map { it != "" }
+
     }
 
     override fun saveBuyerProfile(buyerProfile: Result.BuyerProfile): Single<Result.BuyerProfile> {

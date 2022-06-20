@@ -300,6 +300,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/basket_sum" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/order_basket"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/fab_green"
+            android:text="Bestellung absagen"
+            android:textColor="@color/white"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/basket_sum"
+            app:layout_constraintVertical_bias="0.0" />
+
         <include
             android:id="@+id/progressss"
             layout="@layout/item_blocking_progress"

@@ -128,7 +128,21 @@ class BasketFragment : DialogFragment() {
             etMessage.setText(viewModel.order.message)
 
         }
+        setCancelOrder()
         return viewBinding.root
+    }
+
+    private fun setCancelOrder() {
+        if (viewModel.order.id.isEmpty()) {
+            viewBinding.btnCancelOrder.hide()
+        } else {
+            viewBinding.btnCancelOrder.show()
+            viewBinding.btnCancelOrder.setOnClickListener {
+                viewModel.cancelOrder()
+            }
+
+        }
+
     }
 
     private fun manageSendOrder() {

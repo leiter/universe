@@ -168,8 +168,8 @@ inline fun <reified T : Result> DatabaseReference.getSingleValue(): Single<T> {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                val i = p0.getValue(T::class.java)!!
-                emitter.onSuccess(i)
+                val i = p0.getValue(T::class.java)
+                i?.let { emitter.onSuccess(i) }
             }
         }
         addListenerForSingleValueEvent(listener)

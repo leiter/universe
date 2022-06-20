@@ -3,10 +3,7 @@ package com.together.app
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -126,7 +123,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startWorkerManager() {
-        val w = WorkManager.getInstance(applicationContext)
+        val w = WorkManager.getInstance()
         val c = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val r = OneTimeWorkRequestBuilder<SwitchWorker>()
             .setInitialDelay(10, TimeUnit.SECONDS)

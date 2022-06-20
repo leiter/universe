@@ -20,10 +20,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.*
-import kotlin.collections.ArrayList
 
 
-class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) : ViewModel() {
+class MainViewModel(private val dataRepository: DataRepository = DataRepositoryImpl()) :
+    ViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
     private var disposable2: CompositeDisposable = CompositeDisposable()
@@ -97,6 +97,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
             }
         })
     }
+
 
     private fun setupDataStreams() {
 
@@ -250,7 +251,7 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
         MutableLiveData<UiState>().also { it.value = FireBaseAuth.isLoggedIn() }
     }
     val snacks: MutableLiveData<UiEvent.Snack> by lazy {
-        MutableLiveData<UiEvent.Snack>().also { it.value = UiEvent.Snack(show = false)}
+        MutableLiveData<UiEvent.Snack>().also { it.value = UiEvent.Snack(show = false) }
     }
 
     val presentedProduct: MutableLiveData<UiState.Article> = MutableLiveData()
@@ -279,6 +280,29 @@ class MainViewModel(private val dataRepository: DataRepository = DataRepositoryI
                 blockingLoaderState.value = UiEvent.LoadingDone(CLEAR_ACCOUNT)
 
             }).addTo(disposable)
+    }
+
+    fun cancelOrder() {
+        blockingLoaderState.value = UiEvent.Loading(SEND_ORDER)
+        dataRepository.cancelOrder(
+            sellerProfile.id,
+            days[dateIndex].time.toOrderId(), order.id
+        ).flatMap {
+            buyerProfile.placedOrderIds = buyerProfile.placedOrderIds.filter { it.value != order.id }
+            dataRepository.saveBuyerProfile(buyerProfile.uiBuyerProfileToData())
+        }
+            .observeOn(AndroidSchedulers.mainThread())
+
+            .subscribe({
+                order = UiState.Order()
+                blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER)
+                loadOrders()
+            },
+                {
+                    order = UiState.Order()
+                    loadOrders()
+                    blockingLoaderState.value = UiEvent.LoadingDone(SEND_ORDER_FAILED)
+                }).addTo(disposable)
     }
 
     fun loadOrders() {
