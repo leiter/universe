@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.Service
 import android.content.Context
@@ -24,6 +25,7 @@ import com.together.utils.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 class ListenerService : Service() {
 
@@ -81,13 +83,13 @@ class ListenerService : Service() {
             R.drawable.ic_stat_name, "Ausschalten",
             PendingIntent.getService(this, 2, i, FLAG_UPDATE_CURRENT)
         )
-        n.setNotificationSilent()
+//        n.setNotificationSilent()
         startForeground(NOTIFICATION_ID, n.build())
     }
 
     private fun setUpOrderConnection() {
-
-        Database.orderSeller().orderByKey().startAt("20210325").getObservable()
+        val today = Date().time.toOrderId()  //  "20210325"
+        Database.orderSeller().orderByKey().startAt(today).getObservable()
         .subscribeOn(Schedulers.io())
             .subscribe({ dataSnapshot ->
                 val list = dataSnapshot.parseChildren<Result.Order>()
